@@ -475,15 +475,33 @@
         }
 
         /* Card Gradients */
-        .card-1 .card-image { background: linear-gradient(145deg, #2d1b3d, #6b2a5c); }
-        .card-2 .card-image { background: linear-gradient(145deg, #1b2f3d, #0f5c6b); }
-        .card-3 .card-image { background: linear-gradient(145deg, #3d1b1b, #8a2a2a); }
-        .card-4 .card-image { background: linear-gradient(145deg, #1b3d2a, #1b7a4a); }
-        .card-5 .card-image { background: linear-gradient(145deg, #3d2a1b, #8a5a2a); }
-        .card-6 .card-image { background: linear-gradient(145deg, #1b1b3d, #3a3a8a); }
-        .card-7 .card-image { background: linear-gradient(145deg, #3d1b3d, #8a2a7a); }
-        .card-8 .card-image { background: linear-gradient(145deg, #1b3d3d, #1a7a7a); }
-        .card-9 .card-image { background: linear-gradient(145deg, #2a1b3d, #6a2a8a); }
+        .card-1 .card-image {
+            background: linear-gradient(145deg, #2d1b3d, #6b2a5c);
+        }
+        .card-2 .card-image {
+            background: linear-gradient(145deg, #1b2f3d, #0f5c6b);
+        }
+        .card-3 .card-image {
+            background: linear-gradient(145deg, #3d1b1b, #8a2a2a);
+        }
+        .card-4 .card-image {
+            background: linear-gradient(145deg, #1b3d2a, #1b7a4a);
+        }
+        .card-5 .card-image {
+            background: linear-gradient(145deg, #3d2a1b, #8a5a2a);
+        }
+        .card-6 .card-image {
+            background: linear-gradient(145deg, #1b1b3d, #3a3a8a);
+        }
+        .card-7 .card-image {
+            background: linear-gradient(145deg, #3d1b3d, #8a2a7a);
+        }
+        .card-8 .card-image {
+            background: linear-gradient(145deg, #1b3d3d, #1a7a7a);
+        }
+        .card-9 .card-image {
+            background: linear-gradient(145deg, #2a1b3d, #6a2a8a);
+        }
 
         /* ==================================================== */
         /* SECTION 3: PROMO (full-screen video + vignette)      */
@@ -675,6 +693,125 @@
         }
 
         /* ==================================================== */
+        /* REGISTRATION FORM (moved from <style> to body)       */
+        /* ==================================================== */
+        .register-section {
+            position: relative;
+            z-index: 2;
+            background: #0a0a0f;
+            padding: 60px 0 100px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .register-section .explore-header {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 40px 20px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .register-section .explore-header h2 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.06);
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            line-height: 1;
+        }
+
+        .register-form-wrap {
+            max-width: 600px;
+            margin: 20px auto 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .register-form-wrap form {
+            background: rgba(16, 16, 26, 0.6);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 32px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .register-form-wrap .field-group {
+            margin-bottom: 16px;
+        }
+
+        .register-form-wrap .field-group label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .register-form-wrap .field-group input,
+        .register-form-wrap .field-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .register-form-wrap .field-group input:focus,
+        .register-form-wrap .field-group select:focus {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.04);
+        }
+
+        .register-form-wrap .field-group input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .register-form-wrap .field-group select option {
+            background: #16161f;
+            color: #fff;
+        }
+
+        .register-form-wrap .submit-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #00d4ff, #ff2a6d);
+            color: #0a0a0f;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: inherit;
+        }
+
+        .register-form-wrap .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .register-form-wrap .submit-btn:active {
+            transform: scale(0.97);
+        }
+
+        .register-form-wrap .reg-message {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ==================================================== */
         /* LOGIN MODAL                                           */
         /* ==================================================== */
         .modal-overlay {
@@ -709,6 +846,7 @@
             transform: scale(0.9) translateY(20px);
             opacity: 0;
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            position: relative;
         }
 
         .modal-overlay.open .login-modal {
@@ -829,15 +967,12 @@
             align-items: center;
             justify-content: center;
             transition: 0.2s;
+            z-index: 10;
         }
 
         .modal-close:hover {
             background: rgba(255, 42, 109, 0.1);
             color: #ff2a6d;
-        }
-
-        .login-modal-wrap {
-            position: relative;
         }
 
         /* ==================================================== */
@@ -939,6 +1074,13 @@
             .vignette-bottom {
                 height: 40%;
             }
+
+            .register-section .explore-header {
+                padding: 0 20px 15px 20px;
+            }
+            .register-form-wrap form {
+                padding: 24px 18px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1013,6 +1155,15 @@
             .vignette-bottom {
                 height: 35%;
             }
+
+            .register-form-wrap form {
+                padding: 18px 14px;
+            }
+            .register-form-wrap .field-group input,
+            .register-form-wrap .field-group select {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
         }
     </style>
 </head>
@@ -1024,7 +1175,7 @@
             <svg class="logo-emblem" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="22" cy="22" r="20" fill="#0d0d14" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
                 <path d="M13 12H31M13 12V32M13 22H26M13 32H31"
-                      stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
                 <path d="M31 12L13 32" stroke="url(#grad1)" stroke-width="2" stroke-linecap="round" opacity="0.6" />
                 <defs>
                     <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
@@ -1081,7 +1232,61 @@
         </div>
     </section>
 
-    <!-- SECTION 3: PROMO -->
+    <!-- SECTION 3: REGISTRATION FORM (moved to correct location in body) -->
+    <section class="register-section" id="register">
+        <div class="explore-header">
+            <h2>REGISTER</h2>
+        </div>
+        <div class="register-form-wrap">
+            <form id="registrationForm">
+                <div class="field-group">
+                    <label for="collegeName">College Name</label>
+                    <input id="collegeName" type="text" placeholder="Your College Name" required />
+                </div>
+
+                <div class="field-group">
+                    <label for="eventName">Event Name</label>
+                    <select id="eventName" required>
+                        <option value="">Select an event…</option>
+                        <option value="Treasure Hunt">Treasure Hunt</option>
+                        <option value="Culturals">Culturals</option>
+                        <option value="Singing">Singing</option>
+                        <option value="Football">Football</option>
+                        <option value="Dance Battle">Dance Battle</option>
+                        <option value="Coding Marathon">Coding Marathon</option>
+                        <option value="Food Fest">Food Fest</option>
+                        <option value="Art Expo">Art Expo</option>
+                        <option value="Gaming Arena">Gaming Arena</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="leaderName">Team Leader Name</label>
+                    <input id="leaderName" type="text" placeholder="Full Name" required />
+                </div>
+
+                <div class="field-group">
+                    <label for="phone">Phone Number</label>
+                    <input id="phone" type="tel" placeholder="10-digit number" required />
+                </div>
+
+                <div class="field-group">
+                    <label for="teamName">Team Name</label>
+                    <input id="teamName" type="text" placeholder="Your Team Name" required />
+                </div>
+
+                <div class="field-group">
+                    <label for="memberPhones">Team Members' Phone Numbers</label>
+                    <input id="memberPhones" type="text" placeholder="e.g. 9876543210, 9876543211" required />
+                </div>
+
+                <button type="submit" class="submit-btn">Register Now</button>
+                <div id="registrationMessage" class="reg-message"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- SECTION 4: PROMO -->
     <section class="promo-section" id="promo">
         <div class="video-container">
             <video autoplay muted loop playsinline webkit-playsinline>
@@ -1133,24 +1338,22 @@
 
     <!-- LOGIN MODAL -->
     <div class="modal-overlay" id="loginOverlay">
-        <div class="login-modal-wrap">
+        <div class="login-modal">
             <button class="modal-close" id="modalClose" aria-label="Close">×</button>
-            <div class="login-modal">
-                <h3>DEPLOMAT</h3>
-                <div class="modal-sub">Access your portal</div>
-                <form id="loginForm">
-                    <div class="login-field">
-                        <label for="loginUser">Username / Email</label>
-                        <input type="text" id="loginUser" placeholder="you@deplo.mat" autocomplete="username" required />
-                    </div>
-                    <div class="login-field">
-                        <label for="loginPass">Password</label>
-                        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required />
-                    </div>
-                    <button type="submit" class="login-submit">Login</button>
-                    <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
-                </form>
-            </div>
+            <h3>DEPLOMAT</h3>
+            <div class="modal-sub">Access your portal</div>
+            <form id="loginForm">
+                <div class="login-field">
+                    <label for="loginUser">Username / Email</label>
+                    <input type="text" id="loginUser" placeholder="you@deplo.mat" autocomplete="username" required />
+                </div>
+                <div class="login-field">
+                    <label for="loginPass">Password</label>
+                    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required />
+                </div>
+                <button type="submit" class="login-submit">Login</button>
+                <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
+            </form>
         </div>
     </div>
 
@@ -1209,6 +1412,7 @@
         function openLogin() {
             loginOverlay.classList.add('open');
         }
+
         function closeLogin() {
             loginOverlay.classList.remove('open');
         }
@@ -1262,7 +1466,6 @@
         function updatePromoCountdown() {
             const now = new Date();
             let diff = promoTarget - now;
-
             if (diff < 0) diff = 0;
 
             const d = Math.floor(diff / 86400000);
@@ -1278,7 +1481,130 @@
 
         updatePromoCountdown();
         setInterval(updatePromoCountdown, 1000);
-    </script>
 
+        // --- Registration form handler ---
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const college = document.getElementById('collegeName').value.trim();
+            const event = document.getElementById('eventName').value;
+            const leader = document.getElementById('leaderName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const team = document.getElementById('teamName').value.trim();
+            const members = document.getElementById('memberPhones').value.trim();
+            const msg = document.getElementById('registrationMessage');
+
+            if (!college || !event || !leader || !phone || !team || !members) {
+                msg.textContent = '⚠️ Please fill in all fields.';
+                msg.style.color = '#ff7a9e';
+                return;
+            }
+
+            if (!/^\d{10}$/.test(phone)) {
+                msg.textContent = '⚠️ Please enter a valid 10-digit phone number.';
+                msg.style.color = '#ff7a9e';
+                return;
+            }
+
+            // Simple phone list validation (basic)
+            const phones = members.split(',').map(p => p.trim());
+            const invalid = phones.some(p => !/^\d{10}$/.test(p));
+            if (invalid) {
+                msg.textContent = '⚠️ All member phone numbers must be 10 digits, separated by commas.';
+                msg.style.color = '#ff7a9e';
+                return;
+            }
+
+            // Success
+            msg.textContent = '✅ Registration submitted successfully! We\'ll contact you soon.';
+            msg.style.color = '#00d4ff';
+
+            // Optionally reset form
+            // this.reset();
+
+            // Log data (for demo)
+            console.log({
+                college,
+                event,
+                leader,
+                phone,
+                team,
+                members: phones
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+    <script>
+    // ----------------------------------------------------
+    // STEP 1: PASTE YOUR SUPABASE LINKS HERE
+    // ----------------------------------------------------
+    const supabaseUrl = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';  // <-- PASTE YOUR PROJECT URL HERE
+    const supabaseKey = 'YOUR_PUBLISHABLE_KEY_HERE';                // <-- PASTE YOUR PUBLISHABLE KEY HERE
+    // ----------------------------------------------------
+
+    // Create the connection to Supabase
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // When the page loads, connect the registration form
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registrationForm');
+        const messageDiv = document.getElementById('registrationMessage');
+
+        // If the form exists on the page
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault(); // Stop the page from refreshing
+
+                // Show a loading message
+                messageDiv.innerHTML = 'Submitting...';
+                messageDiv.style.color = 'rgba(255,255,255,0.6)';
+
+                // Get all the data from the form
+                const formData = {
+                    college_name: document.getElementById('collegeName').value.trim(),
+                    event_name: document.getElementById('eventName').value,
+                    team_leader_name: document.getElementById('leaderName').value.trim(),
+                    phone_number: document.getElementById('phone').value.trim(),
+                    team_name: document.getElementById('teamName').value.trim(),
+                    member_phones: document.getElementById('memberPhones').value.trim()
+                };
+
+                // Check if any field is empty
+                if (!formData.college_name || !formData.event_name || !formData.team_leader_name || 
+                    !formData.phone_number || !formData.team_name || !formData.member_phones) {
+                    messageDiv.innerHTML = '⚠️ Please fill in all fields.';
+                    messageDiv.style.color = '#ff2a6d';
+                    return;
+                }
+
+                try {
+                    // Send the data to Supabase
+                    const { data, error } = await supabase
+                        .from('registrations') // Your table name
+                        .insert([formData]);
+
+                    if (error) {
+                        // If there is an error
+                        console.error('Supabase error:', error);
+                        messageDiv.innerHTML = '❌ Registration failed. Please try again.';
+                        messageDiv.style.color = '#ff2a6d';
+                    } else {
+                        // If it works!
+                        console.log('Registration successful:', data);
+                        messageDiv.innerHTML = '✅ Registration successful! 🎉';
+                        messageDiv.style.color = '#00d4ff';
+                        form.reset(); // Clear the form
+                    }
+                } catch (err) {
+                    // If something unexpected breaks
+                    console.error('Error:', err);
+                    messageDiv.innerHTML = '❌ Something went wrong. Please try again.';
+                    messageDiv.style.color = '#ff2a6d';
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>
