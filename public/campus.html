@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VR Campus Tour</title>
+    <title>Explore Campus · VR Tour</title>
     <style>
-        /* Fullscreen reset */
         * {
             margin: 0;
             padding: 0;
@@ -106,7 +105,6 @@
             50% { opacity: 0.9; transform: translateX(-50%) scale(1.05); }
         }
 
-        /* Responsive */
         @media (max-width: 640px) {
             #overlay { padding: 20px; }
             #title { font-size: clamp(1.2rem, 6vw, 2rem); }
@@ -116,14 +114,12 @@
 </head>
 <body>
 
-    <!-- Google VR Tour -->
     <iframe id="vr-frame"
         src="https://share.google/VW9zZQhOLe5Qg6l3J"
         allow="vr; gyroscope; accelerometer; fullscreen"
         allowfullscreen>
     </iframe>
 
-    <!-- Overlay -->
     <div id="overlay" role="button" aria-label="Tap to explore campus">
         <div id="title">
             Explore Campus
@@ -131,7 +127,6 @@
         </div>
     </div>
 
-    <!-- Hint -->
     <div id="hint">⟳ Tap anywhere to begin</div>
 
     <script>
@@ -144,7 +139,6 @@
 
         overlay.addEventListener('click', dismissOverlay);
         overlay.addEventListener('touchstart', dismissOverlay, { passive: true });
-
         overlay.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
