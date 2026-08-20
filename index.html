@@ -26,7 +26,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ----- FLOATING LOGO (top-left, no background, no border) ----- */
+        /* ----- FLOATING LOGO (top-left) ----- */
         .header {
             position: fixed;
             top: 24px;
@@ -169,7 +169,7 @@
         }
 
         /* ==================================================== */
-        /* SECTION 1: HERO (100dvh)                              */
+        /* SECTION 1: HERO                                      */
         /* ==================================================== */
         .hero-section {
             position: relative;
@@ -327,7 +327,7 @@
         }
 
         /* ==================================================== */
-        /* SECTION 2: EXPLORE (horizontal cards)                */
+        /* SECTION 2: EXPLORE (auto‑play carousel)              */
         /* ==================================================== */
         .explore-section {
             position: relative;
@@ -357,22 +357,22 @@
 
         .cards-scroll-wrapper {
             position: relative;
-            padding: 20px 0;
+            padding: 20px 0 10px 0;
             margin: 10px 0;
+            overflow: hidden;
         }
 
         .cards-scroll {
             display: flex;
-            gap: 28px;
-            padding: 24px 40px 30px 40px;
+            gap: 20px;
+            padding: 10px 20px 20px 20px;
             overflow-x: auto;
             overflow-y: visible;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
-            /* Stronger edge fade – more black to make edges vanish */
-            mask-image: linear-gradient(to right, transparent 0%, black 3% 92%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3% 92%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 4% 92%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4% 92%, transparent 100%);
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -382,8 +382,8 @@
         }
 
         .event-card {
-            flex: 0 0 280px;
-            height: 400px;
+            flex: 0 0 260px;          /* desktop size */
+            height: 360px;
             background: linear-gradient(145deg, #16161f, #0c0c12);
             border-radius: 28px;
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -391,23 +391,18 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 28px 22px;
+            padding: 24px 20px;
             scroll-snap-align: start;
             transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
-            cursor: default;
+            cursor: pointer;
             will-change: transform;
         }
 
-        .event-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 212, 255, 0.04);
-        }
-
+        /* tap/active scaling */
         .event-card:active {
-            transform: scale(0.97);
+            transform: scale(1.04);
             transition-duration: 0.1s;
         }
 
@@ -427,18 +422,18 @@
             transform: scale(1.05);
         }
 
+        /* Fixed black gradient – seamless */
         .event-card .card-content {
             position: relative;
             z-index: 2;
-            /* Deeper black gradient – matches VR page feel */
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
-            margin: 0 -22px -28px -22px;
-            padding: 50px 22px 28px 22px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
+            margin: 0 -20px -24px -20px;
+            padding: 40px 20px 24px 20px;
             border-radius: 0 0 28px 28px;
         }
 
         .event-card .card-name {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
@@ -455,7 +450,7 @@
         .event-card .card-explore-badge {
             position: absolute;
             bottom: 20px;
-            right: 22px;
+            right: 20px;
             z-index: 3;
             font-size: 0.6rem;
             letter-spacing: 3px;
@@ -486,8 +481,33 @@
         .card-8 .card-image { background: linear-gradient(145deg, #1b3d3d, #1a7a7a); }
         .card-9 .card-image { background: linear-gradient(145deg, #2a1b3d, #6a2a8a); }
 
+        /* ----- DOTS INDICATOR ----- */
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 6px 0;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #00d4ff;
+            width: 24px;
+            border-radius: 6px;
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+        }
+
         /* ==================================================== */
-        /* SECTION 3: PROMO (full-screen video + vignette)      */
+        /* SECTION 3: PROMO                                     */
         /* ==================================================== */
         .promo-section {
             position: relative;
@@ -840,7 +860,7 @@
         }
 
         /* ==================================================== */
-        /* RESPONSIVE – Cards now fill the screen on mobile      */
+        /* RESPONSIVE – smaller cards on mobile                  */
         /* ==================================================== */
         @media (max-width: 768px) {
             .header {
@@ -885,104 +905,18 @@
                 padding: 0 20px 15px 20px;
             }
 
-            /* ----- CARDS: BIGGER & FULL-SCREEN ON MOBILE ----- */
+            /* Smaller cards on mobile */
             .cards-scroll {
-                padding: 16px 10px 24px 10px;
+                padding: 10px 12px 20px 12px;
                 gap: 12px;
                 mask-image: linear-gradient(to right, transparent 0%, black 3% 93%, transparent 100%);
                 -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3% 93%, transparent 100%);
             }
             .event-card {
-                flex: 0 0 82vw;          /* 82% of viewport width */
-                height: 70vh;            /* 70% of viewport height */
-                padding: 24px 18px;
-                border-radius: 24px;
-            }
-            .event-card .card-content {
-                margin: 0 -18px -24px -18px;
-                padding: 40px 18px 24px 18px;
-            }
-            .event-card .card-name {
-                font-size: 1.6rem;
-            }
-            .event-card .card-sub {
-                font-size: 0.8rem;
-                letter-spacing: 2px;
-            }
-            .event-card .card-explore-badge {
-                font-size: 0.65rem;
-                padding: 6px 16px;
-                bottom: 24px;
-                right: 18px;
-            }
-
-            .promo-countdown {
-                gap: 12px;
-            }
-            .promo-countdown .cd-item {
-                padding: 12px 16px;
-                min-width: 60px;
-            }
-            .promo-countdown .cd-item span {
-                font-size: 2rem;
-            }
-            .promo-cta {
-                font-size: 0.7rem;
-                letter-spacing: 4px;
-                padding: 12px 24px;
-            }
-            .promo-credits {
-                font-size: 0.5rem;
-                letter-spacing: 2px;
-                bottom: 20px;
-            }
-            .promo-credits span {
-                margin: 0 6px;
-            }
-            .vignette-left, .vignette-right {
-                width: 12%;
-            }
-            .vignette-bottom {
-                height: 40%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                top: 14px;
-                left: 14px;
-            }
-            .logo-emblem {
-                width: 32px;
-                height: 32px;
-            }
-            .epic-dropdown {
-                top: 42px;
-                min-width: 140px;
-                max-width: calc(100vw - 32px);
-                padding: 4px 0;
-                border-radius: 16px;
-            }
-            .dropdown-item {
-                font-size: 11px;
-                padding: 7px 16px;
-                gap: 10px;
-            }
-            .dropdown-item .icon {
-                width: 18px;
-                height: 18px;
-                font-size: 9px;
-            }
-            .dropdown-section-title {
-                font-size: 7px;
-                padding: 4px 16px 2px 16px;
-            }
-
-            .event-card {
-                flex: 0 0 85vw;
-                height: 65vh;
+                flex: 0 0 75vw;
+                height: 60vh;
                 padding: 20px 16px;
-                border-radius: 22px;
+                border-radius: 24px;
             }
             .event-card .card-content {
                 margin: 0 -16px -20px -16px;
@@ -992,7 +926,7 @@
                 font-size: 1.4rem;
             }
             .event-card .card-sub {
-                font-size: 0.7rem;
+                font-size: 0.75rem;
             }
             .event-card .card-explore-badge {
                 font-size: 0.6rem;
@@ -1000,38 +934,30 @@
                 bottom: 20px;
                 right: 16px;
             }
+            .dots-container {
+                gap: 6px;
+                margin-top: 8px;
+            }
+            .dot {
+                width: 6px;
+                height: 6px;
+            }
+            .dot.active {
+                width: 18px;
+            }
+        }
 
-            .promo-countdown .cd-item {
-                padding: 8px 12px;
-                min-width: 48px;
-                border-radius: 12px;
+        @media (max-width: 480px) {
+            .event-card {
+                flex: 0 0 78vw;
+                height: 55vh;
+                border-radius: 22px;
             }
-            .promo-countdown .cd-item span {
-                font-size: 1.5rem;
+            .event-card .card-name {
+                font-size: 1.2rem;
             }
-            .promo-countdown .cd-item small {
-                font-size: 0.5rem;
-                letter-spacing: 1.5px;
-            }
-            .promo-cta {
-                font-size: 0.6rem;
-                letter-spacing: 3px;
-                padding: 10px 18px;
-                border-radius: 40px;
-            }
-            .promo-credits {
-                font-size: 0.4rem;
-                letter-spacing: 1.5px;
-                bottom: 14px;
-            }
-            .promo-credits span {
-                margin: 0 4px;
-            }
-            .vignette-left, .vignette-right {
-                width: 8%;
-            }
-            .vignette-bottom {
-                height: 35%;
+            .event-card .card-sub {
+                font-size: 0.65rem;
             }
         }
     </style>
@@ -1091,7 +1017,7 @@
         </div>
     </section>
 
-    <!-- SECTION 2: EXPLORE -->
+    <!-- SECTION 2: EXPLORE (CAROUSEL) -->
     <section class="explore-section" id="explore">
         <div class="explore-header">
             <h2>EXPLORE</h2>
@@ -1099,6 +1025,8 @@
         <div class="cards-scroll-wrapper">
             <div class="cards-scroll" id="cardsScroll"></div>
         </div>
+        <!-- DOTS -->
+        <div class="dots-container" id="dotsContainer"></div>
     </section>
 
     <!-- SECTION 3: PROMO -->
@@ -1187,6 +1115,12 @@
         ];
 
         const cardsScroll = document.getElementById('cardsScroll');
+        const dotsContainer = document.getElementById('dotsContainer');
+        let currentIndex = 0;
+        let autoPlayInterval = null;
+        const cardElements = [];
+
+        // Build cards
         events.forEach((evt, i) => {
             const card = document.createElement('div');
             card.className = 'event-card card-' + (i + 1);
@@ -1198,9 +1132,100 @@
                 '</div>' +
                 '<div class="card-explore-badge">Explore →</div>';
             cardsScroll.appendChild(card);
+            cardElements.push(card);
+
+            // Tap/click – scale up effect
+            card.addEventListener('click', () => {
+                // temporarily add a class to scale up
+                card.style.transition = 'transform 0.15s ease';
+                card.style.transform = 'scale(1.06)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 300);
+                // pause auto for a bit
+                pauseAutoPlay(4000);
+            });
+
+            // Dot click – go to that card
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.dataset.index = i;
+            dot.addEventListener('click', () => {
+                goToCard(i);
+                pauseAutoPlay(5000);
+            });
+            dotsContainer.appendChild(dot);
         });
 
-        // --- Dropdown ---
+        const dots = dotsContainer.querySelectorAll('.dot');
+
+        // Function to scroll to a specific card index
+        function goToCard(index) {
+            const card = cardElements[index];
+            if (!card) return;
+            const scrollLeft = card.offsetLeft - (cardsScroll.offsetWidth - card.offsetWidth) / 2;
+            cardsScroll.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+            updateDots(index);
+            currentIndex = index;
+        }
+
+        // Update dots
+        function updateDots(activeIndex) {
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === activeIndex);
+            });
+        }
+
+        // Auto-play: move to next card every 3 seconds
+        function startAutoPlay() {
+            if (autoPlayInterval) clearInterval(autoPlayInterval);
+            autoPlayInterval = setInterval(() => {
+                const next = (currentIndex + 1) % cardElements.length;
+                goToCard(next);
+            }, 3500);
+        }
+
+        function pauseAutoPlay(duration = 4000) {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                setTimeout(() => {
+                    startAutoPlay();
+                }, duration);
+            }
+        }
+
+        // Detect when user manually scrolls – update dots and currentIndex
+        cardsScroll.addEventListener('scroll', () => {
+            // Find the card closest to the center
+            const containerRect = cardsScroll.getBoundingClientRect();
+            const containerCenter = containerRect.left + containerRect.width / 2;
+            let closestIndex = 0;
+            let closestDist = Infinity;
+            cardElements.forEach((card, i) => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.left + rect.width / 2;
+                const dist = Math.abs(containerCenter - cardCenter);
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closestIndex = i;
+                }
+            });
+            if (closestIndex !== currentIndex) {
+                currentIndex = closestIndex;
+                updateDots(currentIndex);
+                // reset auto-play timer on manual scroll
+                pauseAutoPlay(5000);
+            }
+        });
+
+        // Initialize: go to first card after a tiny delay
+        setTimeout(() => {
+            goToCard(0);
+            startAutoPlay();
+        }, 300);
+
+        // --- Dropdown logic (unchanged) ---
         const trigger = document.getElementById('logoTrigger');
         const dropdown = document.getElementById('dropdownMenu');
 
@@ -1218,7 +1243,6 @@
             }
         });
 
-        // --- Dropdown item actions ---
         const loginOverlay = document.getElementById('loginOverlay');
         const modalClose = document.getElementById('modalClose');
         const loginForm = document.getElementById('loginForm');
@@ -1272,28 +1296,24 @@
 
         // --- Promo CTA ---
         document.getElementById('promoCta').addEventListener('click', () => {
-            // Placeholder: promo video playback would go here.
+            // Placeholder
         });
 
-        // --- Promo Countdown (target: Dec 31, 2026 23:59:59) ---
+        // --- Countdown ---
         const promoTarget = new Date('2026-12-31T23:59:59');
-
         function updatePromoCountdown() {
             const now = new Date();
             let diff = promoTarget - now;
             if (diff < 0) diff = 0;
-
             const d = Math.floor(diff / 86400000);
             const h = Math.floor((diff % 86400000) / 3600000);
             const m = Math.floor((diff % 3600000) / 60000);
             const s = Math.floor((diff % 60000) / 1000);
-
             document.getElementById('pDays').textContent = String(d).padStart(2, '0');
             document.getElementById('pHours').textContent = String(h).padStart(2, '0');
             document.getElementById('pMins').textContent = String(m).padStart(2, '0');
             document.getElementById('pSecs').textContent = String(s).padStart(2, '0');
         }
-
         updatePromoCountdown();
         setInterval(updatePromoCountdown, 1000);
     </script>
