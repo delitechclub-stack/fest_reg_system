@@ -316,8 +316,7 @@
         }
 
         @keyframes pulseExplore {
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 0.3;
                 transform: translateY(0);
             }
@@ -371,6 +370,7 @@
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
+            /* Stronger edge fade – more black to make edges vanish */
             mask-image: linear-gradient(to right, transparent 0%, black 3% 92%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3% 92%, transparent 100%);
             scrollbar-width: none;
@@ -385,8 +385,8 @@
             flex: 0 0 280px;
             height: 400px;
             background: linear-gradient(145deg, #16161f, #0c0c12);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -395,7 +395,7 @@
             scroll-snap-align: start;
             transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
-            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
             cursor: default;
             will-change: transform;
         }
@@ -430,10 +430,11 @@
         .event-card .card-content {
             position: relative;
             z-index: 2;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
+            /* Deeper black gradient – matches VR page feel */
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
             margin: 0 -22px -28px -22px;
-            padding: 40px 22px 28px 22px;
-            border-radius: 0 0 24px 24px;
+            padding: 50px 22px 28px 22px;
+            border-radius: 0 0 28px 28px;
         }
 
         .event-card .card-name {
@@ -475,33 +476,15 @@
         }
 
         /* Card Gradients */
-        .card-1 .card-image {
-            background: linear-gradient(145deg, #2d1b3d, #6b2a5c);
-        }
-        .card-2 .card-image {
-            background: linear-gradient(145deg, #1b2f3d, #0f5c6b);
-        }
-        .card-3 .card-image {
-            background: linear-gradient(145deg, #3d1b1b, #8a2a2a);
-        }
-        .card-4 .card-image {
-            background: linear-gradient(145deg, #1b3d2a, #1b7a4a);
-        }
-        .card-5 .card-image {
-            background: linear-gradient(145deg, #3d2a1b, #8a5a2a);
-        }
-        .card-6 .card-image {
-            background: linear-gradient(145deg, #1b1b3d, #3a3a8a);
-        }
-        .card-7 .card-image {
-            background: linear-gradient(145deg, #3d1b3d, #8a2a7a);
-        }
-        .card-8 .card-image {
-            background: linear-gradient(145deg, #1b3d3d, #1a7a7a);
-        }
-        .card-9 .card-image {
-            background: linear-gradient(145deg, #2a1b3d, #6a2a8a);
-        }
+        .card-1 .card-image { background: linear-gradient(145deg, #2d1b3d, #6b2a5c); }
+        .card-2 .card-image { background: linear-gradient(145deg, #1b2f3d, #0f5c6b); }
+        .card-3 .card-image { background: linear-gradient(145deg, #3d1b1b, #8a2a2a); }
+        .card-4 .card-image { background: linear-gradient(145deg, #1b3d2a, #1b7a4a); }
+        .card-5 .card-image { background: linear-gradient(145deg, #3d2a1b, #8a5a2a); }
+        .card-6 .card-image { background: linear-gradient(145deg, #1b1b3d, #3a3a8a); }
+        .card-7 .card-image { background: linear-gradient(145deg, #3d1b3d, #8a2a7a); }
+        .card-8 .card-image { background: linear-gradient(145deg, #1b3d3d, #1a7a7a); }
+        .card-9 .card-image { background: linear-gradient(145deg, #2a1b3d, #6a2a8a); }
 
         /* ==================================================== */
         /* SECTION 3: PROMO (full-screen video + vignette)      */
@@ -857,7 +840,7 @@
         }
 
         /* ==================================================== */
-        /* RESPONSIVE                                            */
+        /* RESPONSIVE – Cards now fill the screen on mobile      */
         /* ==================================================== */
         @media (max-width: 768px) {
             .header {
@@ -891,9 +874,7 @@
             .hero-center h1 {
                 letter-spacing: 6px;
             }
-            .orb1,
-            .orb2,
-            .orb3 {
+            .orb1, .orb2, .orb3 {
                 display: none;
             }
 
@@ -903,26 +884,36 @@
             .explore-header {
                 padding: 0 20px 15px 20px;
             }
+
+            /* ----- CARDS: BIGGER & FULL-SCREEN ON MOBILE ----- */
             .cards-scroll {
-                padding: 20px 20px 24px 20px;
-                gap: 18px;
-                mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
+                padding: 16px 10px 24px 10px;
+                gap: 12px;
+                mask-image: linear-gradient(to right, transparent 0%, black 3% 93%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3% 93%, transparent 100%);
             }
             .event-card {
-                flex: 0 0 220px;
-                height: 320px;
-                padding: 20px 16px;
-            }
-            .event-card:hover {
-                transform: translateY(-4px) scale(1.02);
+                flex: 0 0 82vw;          /* 82% of viewport width */
+                height: 70vh;            /* 70% of viewport height */
+                padding: 24px 18px;
+                border-radius: 24px;
             }
             .event-card .card-content {
-                margin: 0 -16px -20px -16px;
-                padding: 30px 16px 20px 16px;
+                margin: 0 -18px -24px -18px;
+                padding: 40px 18px 24px 18px;
             }
             .event-card .card-name {
-                font-size: 1.1rem;
+                font-size: 1.6rem;
+            }
+            .event-card .card-sub {
+                font-size: 0.8rem;
+                letter-spacing: 2px;
+            }
+            .event-card .card-explore-badge {
+                font-size: 0.65rem;
+                padding: 6px 16px;
+                bottom: 24px;
+                right: 18px;
             }
 
             .promo-countdown {
@@ -948,8 +939,7 @@
             .promo-credits span {
                 margin: 0 6px;
             }
-            .vignette-left,
-            .vignette-right {
+            .vignette-left, .vignette-right {
                 width: 12%;
             }
             .vignette-bottom {
@@ -989,11 +979,26 @@
             }
 
             .event-card {
-                flex: 0 0 180px;
-                height: 260px;
+                flex: 0 0 85vw;
+                height: 65vh;
+                padding: 20px 16px;
+                border-radius: 22px;
+            }
+            .event-card .card-content {
+                margin: 0 -16px -20px -16px;
+                padding: 32px 16px 20px 16px;
             }
             .event-card .card-name {
-                font-size: 0.9rem;
+                font-size: 1.4rem;
+            }
+            .event-card .card-sub {
+                font-size: 0.7rem;
+            }
+            .event-card .card-explore-badge {
+                font-size: 0.6rem;
+                padding: 4px 12px;
+                bottom: 20px;
+                right: 16px;
             }
 
             .promo-countdown .cd-item {
@@ -1022,8 +1027,7 @@
             .promo-credits span {
                 margin: 0 4px;
             }
-            .vignette-left,
-            .vignette-right {
+            .vignette-left, .vignette-right {
                 width: 8%;
             }
             .vignette-bottom {
@@ -1060,7 +1064,6 @@
                 <div class="dropdown-section-title">⟡ Access</div>
                 <a class="dropdown-item login-item" data-action="login"><span class="icon">⟡</span> Login</a>
                 <a class="dropdown-item" data-action="explore-event"><span class="icon">▸</span> Explore Event</a>
-                <!-- 🔽 THIS IS THE LINE WE CHANGED 🔽 -->
                 <a class="dropdown-item" data-action="redirect" data-url="campus.html"><span class="icon">◈</span> Explore Campus</a>
             </div>
         </div>
