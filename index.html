@@ -6,7 +6,6 @@
     <title>DEPLOMAT · Immersive Experience</title>
 
     <style>
-        /* ----- RESET & BASE ----- */
         * {
             margin: 0;
             padding: 0;
@@ -327,7 +326,7 @@
         }
 
         /* ==================================================== */
-        /* SECTION 2: EXPLORE (cover‑flow carousel)             */
+        /* SECTION 2: EXPLORE (Netflix‑style carousel)          */
         /* ==================================================== */
         .explore-section {
             position: relative;
@@ -357,24 +356,24 @@
 
         .cards-scroll-wrapper {
             position: relative;
-            padding: 16px 0 8px 0;
-            margin: 8px 0;
+            padding: 12px 0 4px 0;
+            margin: 6px 0;
             overflow: hidden;
         }
 
         .cards-scroll {
             display: flex;
-            gap: 8px; /* ← TIGHT GAP – smooth flow */
-            padding: 10px 12px 20px 12px;
+            gap: 6px; /* min gap – Netflix style */
+            padding: 10px 12px 16px 12px;
             overflow-x: auto;
             overflow-y: visible;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
-            mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
             scrollbar-width: none;
             -ms-overflow-style: none;
+            mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
         }
 
         .cards-scroll::-webkit-scrollbar {
@@ -382,18 +381,18 @@
         }
 
         .event-card {
-            flex: 0 0 260px;
-            height: 360px;
+            flex: 0 0 220px;
+            height: 320px;
             background: linear-gradient(145deg, #16161f, #0c0c12);
-            border-radius: 28px;
+            border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.06);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 24px 20px;
-            scroll-snap-align: center; /* ← CENTER ALIGNMENT */
-            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
+            padding: 20px 16px;
+            scroll-snap-align: center;
+            transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
             position: relative;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
             cursor: pointer;
@@ -425,13 +424,13 @@
             position: relative;
             z-index: 2;
             background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
-            margin: 0 -20px -24px -20px;
-            padding: 40px 20px 24px 20px;
-            border-radius: 0 0 28px 28px;
+            margin: 0 -16px -20px -16px;
+            padding: 32px 16px 20px 16px;
+            border-radius: 0 0 24px 24px;
         }
 
         .event-card .card-name {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
@@ -439,25 +438,25 @@
         }
 
         .event-card .card-sub {
-            font-size: 0.7rem;
-            letter-spacing: 3px;
+            font-size: 0.65rem;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.3);
         }
 
         .event-card .card-explore-badge {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
+            bottom: 16px;
+            right: 16px;
             z-index: 3;
-            font-size: 0.6rem;
-            letter-spacing: 3px;
+            font-size: 0.55rem;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
             color: #00d4ff;
             opacity: 0;
             transition: 0.3s ease;
             background: rgba(0, 0, 0, 0.6);
-            padding: 4px 14px;
+            padding: 4px 12px;
             border-radius: 40px;
             backdrop-filter: blur(4px);
             border: 1px solid rgba(0, 212, 255, 0.15);
@@ -858,7 +857,7 @@
         }
 
         /* ==================================================== */
-        /* RESPONSIVE – tight, centered cards on mobile         */
+        /* RESPONSIVE – tight, fluid on all devices             */
         /* ==================================================== */
         @media (max-width: 768px) {
             .header {
@@ -903,44 +902,42 @@
                 padding: 0 20px 15px 20px;
             }
 
-            /* TIGHT, CENTERED CARDS ON MOBILE */
             .cards-scroll {
-                padding: 8px 8px 16px 8px;
-                gap: 6px; /* minimal gap – feels like a flow */
+                gap: 4px; /* even tighter on mobile */
+                padding: 6px 6px 12px 6px;
                 mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
                 -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
             }
 
             .event-card {
-                flex: 0 0 72vw;    /* slightly narrower so adjacent cards peek */
-                height: 52vh;
-                padding: 18px 14px;
-                border-radius: 22px;
-                scroll-snap-align: center;
+                flex: 0 0 65vw;
+                height: 48vh;
+                padding: 16px 12px;
+                border-radius: 20px;
             }
 
             .event-card .card-content {
-                margin: 0 -14px -18px -14px;
-                padding: 28px 14px 18px 14px;
-                border-radius: 0 0 22px 22px;
+                margin: 0 -12px -16px -12px;
+                padding: 24px 12px 16px 12px;
+                border-radius: 0 0 20px 20px;
             }
 
             .event-card .card-name {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             .event-card .card-sub {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
             }
             .event-card .card-explore-badge {
-                font-size: 0.55rem;
+                font-size: 0.5rem;
                 padding: 3px 10px;
-                bottom: 16px;
-                right: 14px;
+                bottom: 14px;
+                right: 12px;
             }
 
             .dots-container {
                 gap: 6px;
-                margin-top: 6px;
+                margin-top: 4px;
             }
             .dot {
                 width: 6px;
@@ -953,15 +950,15 @@
 
         @media (max-width: 480px) {
             .event-card {
-                flex: 0 0 74vw;
-                height: 48vh;
-                border-radius: 20px;
+                flex: 0 0 70vw;
+                height: 44vh;
+                border-radius: 18px;
             }
             .event-card .card-name {
-                font-size: 1.0rem;
+                font-size: 1rem;
             }
             .event-card .card-sub {
-                font-size: 0.6rem;
+                font-size: 0.55rem;
             }
         }
     </style>
@@ -1124,10 +1121,43 @@
         let autoPlayInterval = null;
         const cardElements = [];
 
-        // Build cards
-        events.forEach((evt, i) => {
+        // ---- Build cards (and clones for infinite loop) ----
+        function buildCarousel() {
+            // First, add original cards
+            events.forEach((evt, i) => {
+                const card = createCard(evt, i);
+                cardsScroll.appendChild(card);
+                cardElements.push(card);
+            });
+
+            // Then clone first few cards (e.g., 3) and append them to create seamless loop
+            const cloneCount = Math.min(3, events.length);
+            for (let i = 0; i < cloneCount; i++) {
+                const clone = createCard(events[i], i + events.length);
+                cardsScroll.appendChild(clone);
+                cardElements.push(clone);
+            }
+
+            // Build dots (only for original cards)
+            events.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.dataset.index = i;
+                dot.addEventListener('click', function() {
+                    scrollToCard(i);
+                    pauseAutoPlay(5000);
+                });
+                dotsContainer.appendChild(dot);
+            });
+
+            // Update dots
+            updateDots(0);
+        }
+
+        function createCard(evt, id) {
             const card = document.createElement('div');
-            card.className = 'event-card card-' + (i + 1);
+            card.className = 'event-card card-' + (id % events.length + 1);
+            card.dataset.originalIndex = id % events.length; // store original index for reference
             card.innerHTML =
                 '<div class="card-image"></div>' +
                 '<div class="card-content">' +
@@ -1135,31 +1165,16 @@
                 '<div class="card-sub">' + evt.sub + '</div>' +
                 '</div>' +
                 '<div class="card-explore-badge">Explore →</div>';
-            cardsScroll.appendChild(card);
-            cardElements.push(card);
-
-            // Tap/click – scroll to center
+            // Click to go to that card (original index)
             card.addEventListener('click', function(e) {
-                scrollToCard(i);
+                const originalIdx = parseInt(this.dataset.originalIndex);
+                scrollToCard(originalIdx);
                 pauseAutoPlay(4000);
             });
+            return card;
+        }
 
-            // Dot click – go to that card
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            dot.dataset.index = i;
-            dot.addEventListener('click', function() {
-                scrollToCard(parseInt(this.dataset.index));
-                pauseAutoPlay(5000);
-            });
-            dotsContainer.appendChild(dot);
-        });
-
-        const dots = dotsContainer.querySelectorAll('.dot');
-
-        // --- Carousel update: scales based on distance from center ---
-        let rafId = null;
-
+        // ---- Scroll & update functions ----
         function updateCarousel() {
             const container = cardsScroll;
             const containerRect = container.getBoundingClientRect();
@@ -1168,7 +1183,11 @@
             let closestIndex = 0;
             let closestDist = Infinity;
 
-            cardElements.forEach((card, i) => {
+            // We only consider original cards (those with originalIndex < events.length)
+            // but we need to find the closest card among all, then map to original index.
+            let closestCard = null;
+            const allCards = container.querySelectorAll('.event-card');
+            allCards.forEach((card, i) => {
                 const rect = card.getBoundingClientRect();
                 const cardCenter = rect.left + rect.width / 2;
                 const dist = Math.abs(containerCenter - cardCenter);
@@ -1180,39 +1199,52 @@
                 card.style.zIndex = zIndex;
                 if (dist < closestDist) {
                     closestDist = dist;
-                    closestIndex = i;
+                    closestCard = card;
                 }
             });
 
-            if (closestIndex !== currentIndex) {
-                currentIndex = closestIndex;
-                updateDots(currentIndex);
+            if (closestCard) {
+                const originalIdx = parseInt(closestCard.dataset.originalIndex);
+                if (originalIdx !== currentIndex) {
+                    currentIndex = originalIdx;
+                    updateDots(currentIndex);
+                }
             }
         }
 
         function updateDots(activeIndex) {
+            const dots = dotsContainer.querySelectorAll('.dot');
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === activeIndex);
             });
         }
 
-        // Scroll to a specific card (center it)
+        // Scroll to a specific original card index (0..N-1)
         function scrollToCard(index) {
-            const card = cardElements[index];
-            if (!card) return;
+            // Find the first card in the scroll container that has that originalIndex
             const container = cardsScroll;
-            const cardLeft = card.offsetLeft;
-            const cardWidth = card.offsetWidth;
+            const cards = container.querySelectorAll('.event-card');
+            let targetCard = null;
+            for (let i = 0; i < cards.length; i++) {
+                if (parseInt(cards[i].dataset.originalIndex) === index) {
+                    targetCard = cards[i];
+                    break;
+                }
+            }
+            if (!targetCard) return;
+
+            const cardLeft = targetCard.offsetLeft;
+            const cardWidth = targetCard.offsetWidth;
             const containerWidth = container.clientWidth;
             const scrollTarget = cardLeft - (containerWidth - cardWidth) / 2;
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // --- Auto-play ---
+        // ---- Auto-play ----
         function startAutoPlay() {
             if (autoPlayInterval) clearInterval(autoPlayInterval);
             autoPlayInterval = setInterval(() => {
-                const next = (currentIndex + 1) % cardElements.length;
+                const next = (currentIndex + 1) % events.length;
                 scrollToCard(next);
             }, 3500);
         }
@@ -1227,24 +1259,58 @@
             }
         }
 
-        // --- Scroll listener ---
+        // ---- Detect when scroll ends and reset position for infinite loop ----
+        let isScrolling = false;
         cardsScroll.addEventListener('scroll', function() {
-            if (rafId) cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(updateCarousel);
+            if (!isScrolling) {
+                isScrolling = true;
+                // update carousel on scroll
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(updateCarousel);
+            }
+            // Reset flag after scrolling stops
+            clearTimeout(this.scrollTimeout);
+            this.scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+                // Check if we are near the end (clones) and jump back
+                const scrollLeft = this.scrollLeft;
+                const maxScroll = this.scrollWidth - this.clientWidth;
+                const threshold = 50; // pixels from end
+                if (scrollLeft > maxScroll - threshold) {
+                    // Jump to the beginning (to the first original card)
+                    const firstCard = this.querySelector('.event-card');
+                    if (firstCard) {
+                        const firstCardLeft = firstCard.offsetLeft;
+                        const containerWidth = this.clientWidth;
+                        const cardWidth = firstCard.offsetWidth;
+                        const target = firstCardLeft - (containerWidth - cardWidth) / 2;
+                        this.scrollTo({ left: target, behavior: 'auto' }); // instant jump
+                    }
+                }
+            }, 150);
         });
 
+        let rafId = null;
+        // Also update on resize
         window.addEventListener('resize', function() {
             if (rafId) cancelAnimationFrame(rafId);
             rafId = requestAnimationFrame(updateCarousel);
         });
 
-        // Initial setup after short delay
+        // ---- Build carousel and init ----
+        buildCarousel();
+
+        // Wait for layout, then set initial position and start auto-play
         setTimeout(() => {
             scrollToCard(0);
-            startAutoPlay();
+            // ensure carousel updated
+            setTimeout(() => {
+                updateCarousel();
+                startAutoPlay();
+            }, 100);
         }, 400);
 
-        // --- DROPDOWN LOGIC (unchanged) ---
+        // ---- DROPDOWN LOGIC (unchanged) ----
         const trigger = document.getElementById('logoTrigger');
         const dropdown = document.getElementById('dropdownMenu');
 
