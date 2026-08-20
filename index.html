@@ -334,7 +334,7 @@
             z-index: 2;
             background: #0a0a0f;
             min-height: 100dvh;
-            padding: 120px 0 80px 0;
+            padding: 120px 0 60px 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -357,23 +357,22 @@
 
         .cards-scroll-wrapper {
             position: relative;
-            padding: 20px 0 10px 0;
-            margin: 10px 0;
+            padding: 16px 0 8px 0;
+            margin: 8px 0;
             overflow: hidden;
         }
 
         .cards-scroll {
-            position: relative; /* so offsetLeft works relative to this */
             display: flex;
-            gap: 20px;
-            padding: 10px 20px 20px 20px;
+            gap: 8px; /* ← TIGHT GAP – smooth flow */
+            padding: 10px 12px 20px 12px;
             overflow-x: auto;
             overflow-y: visible;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
-            mask-image: linear-gradient(to right, transparent 0%, black 4% 92%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4% 92%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -393,13 +392,13 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 24px 20px;
-            scroll-snap-align: start;
+            scroll-snap-align: center; /* ← CENTER ALIGNMENT */
             transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
             position: relative;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
             cursor: pointer;
             will-change: transform;
-            transform: scale(1); /* base, will be overwritten by JS */
+            transform: scale(1);
         }
 
         .event-card:active {
@@ -485,7 +484,7 @@
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 8px;
             padding: 6px 0;
         }
 
@@ -859,7 +858,7 @@
         }
 
         /* ==================================================== */
-        /* RESPONSIVE – smaller cards on mobile                  */
+        /* RESPONSIVE – tight, centered cards on mobile         */
         /* ==================================================== */
         @media (max-width: 768px) {
             .header {
@@ -898,43 +897,50 @@
             }
 
             .explore-section {
-                padding: 100px 0 60px 0;
+                padding: 100px 0 40px 0;
             }
             .explore-header {
                 padding: 0 20px 15px 20px;
             }
 
+            /* TIGHT, CENTERED CARDS ON MOBILE */
             .cards-scroll {
-                padding: 10px 12px 20px 12px;
-                gap: 12px;
-                mask-image: linear-gradient(to right, transparent 0%, black 3% 93%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3% 93%, transparent 100%);
+                padding: 8px 8px 16px 8px;
+                gap: 6px; /* minimal gap – feels like a flow */
+                mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 95%, transparent 100%);
             }
+
             .event-card {
-                flex: 0 0 70vw;
-                height: 55vh;
-                padding: 20px 16px;
-                border-radius: 24px;
+                flex: 0 0 72vw;    /* slightly narrower so adjacent cards peek */
+                height: 52vh;
+                padding: 18px 14px;
+                border-radius: 22px;
+                scroll-snap-align: center;
             }
+
             .event-card .card-content {
-                margin: 0 -16px -20px -16px;
-                padding: 32px 16px 20px 16px;
+                margin: 0 -14px -18px -14px;
+                padding: 28px 14px 18px 14px;
+                border-radius: 0 0 22px 22px;
             }
+
             .event-card .card-name {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
             }
             .event-card .card-sub {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
             .event-card .card-explore-badge {
-                font-size: 0.6rem;
-                padding: 4px 12px;
-                bottom: 20px;
-                right: 16px;
+                font-size: 0.55rem;
+                padding: 3px 10px;
+                bottom: 16px;
+                right: 14px;
             }
+
             .dots-container {
                 gap: 6px;
-                margin-top: 8px;
+                margin-top: 6px;
             }
             .dot {
                 width: 6px;
@@ -947,12 +953,12 @@
 
         @media (max-width: 480px) {
             .event-card {
-                flex: 0 0 72vw;
-                height: 50vh;
-                border-radius: 22px;
+                flex: 0 0 74vw;
+                height: 48vh;
+                border-radius: 20px;
             }
             .event-card .card-name {
-                font-size: 1.1rem;
+                font-size: 1.0rem;
             }
             .event-card .card-sub {
                 font-size: 0.6rem;
@@ -1134,7 +1140,6 @@
 
             // Tap/click – scroll to center
             card.addEventListener('click', function(e) {
-                // Don't trigger if it's already the center card? We'll just scroll anyway.
                 scrollToCard(i);
                 pauseAutoPlay(4000);
             });
@@ -1167,23 +1172,18 @@
                 const rect = card.getBoundingClientRect();
                 const cardCenter = rect.left + rect.width / 2;
                 const dist = Math.abs(containerCenter - cardCenter);
-                // Normalize distance relative to half the container width
                 const maxDist = containerRect.width / 2;
                 const normalized = Math.min(dist / maxDist, 1);
-                // Scale from 0.7 to 1.0
                 const scale = 1 - normalized * 0.3;
                 const zIndex = Math.round(scale * 10);
-                // Apply transform
                 card.style.transform = 'scale(' + scale + ')';
                 card.style.zIndex = zIndex;
-                // Track closest
                 if (dist < closestDist) {
                     closestDist = dist;
                     closestIndex = i;
                 }
             });
 
-            // Update dots and currentIndex if changed
             if (closestIndex !== currentIndex) {
                 currentIndex = closestIndex;
                 updateDots(currentIndex);
@@ -1206,7 +1206,6 @@
             const containerWidth = container.clientWidth;
             const scrollTarget = cardLeft - (containerWidth - cardWidth) / 2;
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
-            // The scroll event will trigger updateCarousel and dots
         }
 
         // --- Auto-play ---
@@ -1234,22 +1233,18 @@
             rafId = requestAnimationFrame(updateCarousel);
         });
 
-        // Also on resize
         window.addEventListener('resize', function() {
             if (rafId) cancelAnimationFrame(rafId);
             rafId = requestAnimationFrame(updateCarousel);
         });
 
-        // Initial setup after a short delay
+        // Initial setup after short delay
         setTimeout(() => {
-            // Center first card
             scrollToCard(0);
             startAutoPlay();
         }, 400);
 
-        // ------------------------------------------------------------------
         // --- DROPDOWN LOGIC (unchanged) ---
-        // ------------------------------------------------------------------
         const trigger = document.getElementById('logoTrigger');
         const dropdown = document.getElementById('dropdownMenu');
 
@@ -1319,9 +1314,7 @@
         });
 
         // --- Promo CTA ---
-        document.getElementById('promoCta').addEventListener('click', () => {
-            // Placeholder
-        });
+        document.getElementById('promoCta').addEventListener('click', () => {});
 
         // --- Countdown ---
         const promoTarget = new Date('2026-12-31T23:59:59');
