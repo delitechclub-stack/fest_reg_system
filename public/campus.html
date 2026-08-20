@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Explore Campus · VR Tour</title>
+
+    <!-- ⚡ PRELOAD OPTIMIZATIONS ⚡ -->
+    <!-- 1. DNS Prefetch – resolves the domain early -->
+    <link rel="dns-prefetch" href="https://share.google" />
+    <link rel="dns-prefetch" href="https://www.google.com" />
+    <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+
+    <!-- 2. Preconnect – establishes TLS handshake BEFORE the iframe loads -->
+    <link rel="preconnect" href="https://share.google" crossorigin />
+    <link rel="preconnect" href="https://www.google.com" crossorigin />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+
+    <!-- 3. Preload the iframe content (as document) – starts downloading immediately -->
+    <!-- Note: This works for same-origin, but Google might block it. We keep it anyway for best effort. -->
+    <link rel="preload" as="document" href="https://share.google/VW9zZQhOLe5Qg6l3J" />
+
     <style>
         * {
             margin: 0;
@@ -18,7 +34,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Google VR iframe */
+        /* VR iframe – loads behind the overlay */
         #vr-frame {
             position: fixed;
             top: 0;
@@ -27,6 +43,10 @@
             height: 100vh;
             border: none;
             z-index: 1;
+            /* Force eager loading (default, but explicit) */
+            loading: eager;
+            /* Make sure it loads even if not visible yet */
+            opacity: 1;
         }
 
         /* Overlay – black gradient + title */
@@ -114,12 +134,15 @@
 </head>
 <body>
 
+    <!-- VR IFRAME – loads immediately behind the overlay -->
     <iframe id="vr-frame"
         src="https://share.google/VW9zZQhOLe5Qg6l3J"
         allow="vr; gyroscope; accelerometer; fullscreen"
-        allowfullscreen>
+        allowfullscreen
+        loading="eager">
     </iframe>
 
+    <!-- Overlay -->
     <div id="overlay" role="button" aria-label="Tap to explore campus">
         <div id="title">
             Explore Campus
@@ -127,6 +150,7 @@
         </div>
     </div>
 
+    <!-- Hint -->
     <div id="hint">⟳ Tap anywhere to begin</div>
 
     <script>
