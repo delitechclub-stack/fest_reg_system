@@ -316,7 +316,7 @@
         }
 
         /* ==================================================== */
-        /* SECTION 2: EXPLORE – BIG CARDS + DRAG                */
+        /* SECTION 2: EXPLORE – PERFECT CAROUSEL               */
         /* ==================================================== */
         .explore-section {
             position: relative;
@@ -350,7 +350,7 @@
             margin: 8px 0;
             overflow: hidden;
             cursor: grab;
-            /* No touch-action: none – allow vertical scroll */
+            touch-action: pan-y; /* Allows vertical scroll, prevents horizontal page scroll */
         }
 
         .cards-scroll-wrapper:active {
@@ -1103,15 +1103,9 @@
 
         let currentIndex = 0;
         let autoPlayTimer = null;
+        let isUserInteracting = false;
 
-        // ─── DRAG STATE ────────────────────────────────────────────────
-        let isDragging = false;
-        let startX = 0;
-        let startY = 0;
-        let scrollLeftStart = 0;
-        let isHorizontalSwipe = false;
-
-        // ─── BUILD CARDS (with clones for infinite loop) ──────────────
+        // ─── BUILD CARDS (with clones) ────────────────────────────────
         function buildCarousel() {
             scrollContainer.innerHTML = '';
             dotsContainer.innerHTML = '';
@@ -1172,8 +1166,7 @@
                 <div class="card-explore-badge">Explore →</div>
             `;
             card.addEventListener('click', (e) => {
-                // Only trigger if not swiping horizontally
-                if (isHorizontalSwipe) return;
+                if (isUserInteracting) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
                 scrollToCard(origIdx);
                 pauseAutoPlay(4000);
@@ -1242,12 +1235,12 @@
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // ─── INFINITE LOOP – SMOOTH VERSION ────────────────────────────
+        // ─── INFINITE LOOP – SMOOTH (no abrupt jumps) ─────────────────
         function checkInfiniteLoop() {
             const container = scrollContainer;
             const scrollLeft = container.scrollLeft;
             const maxScroll = container.scrollWidth - container.clientWidth;
-            const threshold = 120;
+            const threshold = 100;
 
             const originals = container.querySelectorAll('.event-card:not([data-clone])');
 
@@ -1257,10 +1250,9 @@
                 const cw = container.clientWidth;
                 const tw = firstOrig.offsetWidth;
                 const target = targetLeft - (cw - tw) / 2;
-                // Use instant jump (no animation) so user doesn't notice
                 container.scrollTo({ left: target, behavior: 'auto' });
-                // Update carousel after jump
-                requestAnimationFrame(updateCarousel);
+                // Update dots after jump
+                setTimeout(() => updateCarousel(), 50);
             } else if (scrollLeft > maxScroll - threshold && originals.length > 0) {
                 const lastOrig = originals[originals.length - 1];
                 const targetLeft = lastOrig.offsetLeft;
@@ -1268,38 +1260,38 @@
                 const tw = lastOrig.offsetWidth;
                 const target = targetLeft - (cw - tw) / 2;
                 container.scrollTo({ left: target, behavior: 'auto' });
-                requestAnimationFrame(updateCarousel);
+                setTimeout(() => updateCarousel(), 50);
             }
         }
 
-        // ─── DRAG / SWIPE (mouse + touch) ──────────────────────────────
-        function startDrag(e) {
-            const pageX = e.type === 'touchstart' ? e.touches[0].pageX : e.pageX;
-            const pageY = e.type === 'touchstart' ? e.touches[0].pageY : e.pageY;
-            isDragging = true;
-            isHorizontalSwipe = false;
-            startX = pageX;
-            startY = pageY;
-            scrollLeftStart = scrollContainer.scrollLeft;
-            wrapper.style.cursor = 'grabbing';
+        // ─── POINTER EVENTS (touch + mouse unified) ──────────────────
+        let pointerStartX = 0;
+        let pointerStartY = 0;
+        let pointerScrollLeftStart = 0;
+        let isPointerDown = false;
+        let isSwiping = false;
+
+        wrapper.addEventListener('pointerdown', (e) => {
+            isPointerDown = true;
+            isSwiping = false;
+            pointerStartX = e.clientX;
+            pointerStartY = e.clientY;
+            pointerScrollLeftStart = scrollContainer.scrollLeft;
+            wrapper.setPointerCapture(e.pointerId);
             pauseAutoPlay(6000);
-        }
+        });
 
-        function moveDrag(e) {
-            if (!isDragging) return;
+        document.addEventListener('pointermove', (e) => {
+            if (!isPointerDown) return;
+            const deltaX = e.clientX - pointerStartX;
+            const deltaY = e.clientY - pointerStartY;
 
-            const pageX = e.type === 'touchmove' ? e.touches[0].pageX : e.pageX;
-            const pageY = e.type === 'touchmove' ? e.touches[0].pageY : e.pageY;
-            const deltaX = startX - pageX;
-            const deltaY = startY - pageY;
-
-            // Determine if this is a horizontal swipe (more X movement than Y)
+            // Detect horizontal swipe (more X movement than Y)
             if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
-                isHorizontalSwipe = true;
-                e.preventDefault(); // only prevent default for horizontal swipes
-                const scrollDelta = deltaX * 1.2;
-                scrollContainer.scrollLeft = scrollLeftStart + scrollDelta;
-
+                isSwiping = true;
+                // Prevent default only for horizontal swipes
+                e.preventDefault();
+                scrollContainer.scrollLeft = pointerScrollLeftStart - deltaX * 1.2;
                 // Update scales during drag
                 if (!scrollContainer._raf) {
                     scrollContainer._raf = requestAnimationFrame(() => {
@@ -1307,17 +1299,19 @@
                         scrollContainer._raf = null;
                     });
                 }
+            } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) {
+                // Vertical swipe – allow page scroll, do nothing
+                // But we need to prevent the carousel from moving horizontally
             }
-            // If vertical swipe, do NOT prevent default – allow page scroll
-        }
+        });
 
-        function endDrag(e) {
-            if (!isDragging) return;
-            isDragging = false;
-            wrapper.style.cursor = 'grab';
+        document.addEventListener('pointerup', (e) => {
+            if (!isPointerDown) return;
+            isPointerDown = false;
+            isSwiping = false;
 
-            // If we were swiping horizontally, snap to nearest card
-            if (isHorizontalSwipe) {
+            if (isSwiping) {
+                // Snap to nearest card after swipe ends
                 setTimeout(() => {
                     const rect = scrollContainer.getBoundingClientRect();
                     const centerX = rect.left + rect.width / 2;
@@ -1339,22 +1333,9 @@
                     }
                 }, 100);
             }
-
-            // Reset horizontal flag after a moment
-            setTimeout(() => {
-                isHorizontalSwipe = false;
-            }, 300);
-        }
-
-        // Mouse events
-        wrapper.addEventListener('mousedown', startDrag);
-        document.addEventListener('mousemove', moveDrag);
-        document.addEventListener('mouseup', endDrag);
-
-        // Touch events (with proper handling)
-        wrapper.addEventListener('touchstart', startDrag, { passive: true });
-        document.addEventListener('touchmove', moveDrag, { passive: false });
-        document.addEventListener('touchend', endDrag, { passive: true });
+            // Reset pointer capture
+            wrapper.releasePointerCapture(e.pointerId);
+        });
 
         // ─── SCROLL EVENT ──────────────────────────────────────────────
         let scrollRaf = null;
@@ -1371,7 +1352,7 @@
         function startAutoPlay() {
             if (autoPlayTimer) clearInterval(autoPlayTimer);
             autoPlayTimer = setInterval(() => {
-                if (!isDragging) {
+                if (!isPointerDown) {
                     const next = (currentIndex + 1) % events.length;
                     scrollToCard(next);
                 }
