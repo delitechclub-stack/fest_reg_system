@@ -327,7 +327,7 @@
         }
 
         /* ==================================================== */
-        /* SECTION 2: EXPLORE (auto‑play carousel)              */
+        /* SECTION 2: EXPLORE (cover‑flow carousel)             */
         /* ==================================================== */
         .explore-section {
             position: relative;
@@ -363,6 +363,7 @@
         }
 
         .cards-scroll {
+            position: relative; /* so offsetLeft works relative to this */
             display: flex;
             gap: 20px;
             padding: 10px 20px 20px 20px;
@@ -382,7 +383,7 @@
         }
 
         .event-card {
-            flex: 0 0 260px;          /* desktop size */
+            flex: 0 0 260px;
             height: 360px;
             background: linear-gradient(145deg, #16161f, #0c0c12);
             border-radius: 28px;
@@ -393,16 +394,15 @@
             justify-content: flex-end;
             padding: 24px 20px;
             scroll-snap-align: start;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
             position: relative;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
             cursor: pointer;
             will-change: transform;
+            transform: scale(1); /* base, will be overwritten by JS */
         }
 
-        /* tap/active scaling */
         .event-card:active {
-            transform: scale(1.04);
             transition-duration: 0.1s;
         }
 
@@ -422,7 +422,6 @@
             transform: scale(1.05);
         }
 
-        /* Fixed black gradient – seamless */
         .event-card .card-content {
             position: relative;
             z-index: 2;
@@ -905,7 +904,6 @@
                 padding: 0 20px 15px 20px;
             }
 
-            /* Smaller cards on mobile */
             .cards-scroll {
                 padding: 10px 12px 20px 12px;
                 gap: 12px;
@@ -913,8 +911,8 @@
                 -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3% 93%, transparent 100%);
             }
             .event-card {
-                flex: 0 0 75vw;
-                height: 60vh;
+                flex: 0 0 70vw;
+                height: 55vh;
                 padding: 20px 16px;
                 border-radius: 24px;
             }
@@ -923,10 +921,10 @@
                 padding: 32px 16px 20px 16px;
             }
             .event-card .card-name {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
             .event-card .card-sub {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
             .event-card .card-explore-badge {
                 font-size: 0.6rem;
@@ -949,15 +947,15 @@
 
         @media (max-width: 480px) {
             .event-card {
-                flex: 0 0 78vw;
-                height: 55vh;
+                flex: 0 0 72vw;
+                height: 50vh;
                 border-radius: 22px;
             }
             .event-card .card-name {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             .event-card .card-sub {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
             }
         }
     </style>
@@ -1134,15 +1132,10 @@
             cardsScroll.appendChild(card);
             cardElements.push(card);
 
-            // Tap/click – scale up effect
-            card.addEventListener('click', () => {
-                // temporarily add a class to scale up
-                card.style.transition = 'transform 0.15s ease';
-                card.style.transform = 'scale(1.06)';
-                setTimeout(() => {
-                    card.style.transform = '';
-                }, 300);
-                // pause auto for a bit
+            // Tap/click – scroll to center
+            card.addEventListener('click', function(e) {
+                // Don't trigger if it's already the center card? We'll just scroll anyway.
+                scrollToCard(i);
                 pauseAutoPlay(4000);
             });
 
@@ -1150,8 +1143,8 @@
             const dot = document.createElement('div');
             dot.className = 'dot';
             dot.dataset.index = i;
-            dot.addEventListener('click', () => {
-                goToCard(i);
+            dot.addEventListener('click', function() {
+                scrollToCard(parseInt(this.dataset.index));
                 pauseAutoPlay(5000);
             });
             dotsContainer.appendChild(dot);
@@ -1159,29 +1152,69 @@
 
         const dots = dotsContainer.querySelectorAll('.dot');
 
-        // Function to scroll to a specific card index
-        function goToCard(index) {
-            const card = cardElements[index];
-            if (!card) return;
-            const scrollLeft = card.offsetLeft - (cardsScroll.offsetWidth - card.offsetWidth) / 2;
-            cardsScroll.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-            updateDots(index);
-            currentIndex = index;
+        // --- Carousel update: scales based on distance from center ---
+        let rafId = null;
+
+        function updateCarousel() {
+            const container = cardsScroll;
+            const containerRect = container.getBoundingClientRect();
+            const containerCenter = containerRect.left + containerRect.width / 2;
+
+            let closestIndex = 0;
+            let closestDist = Infinity;
+
+            cardElements.forEach((card, i) => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.left + rect.width / 2;
+                const dist = Math.abs(containerCenter - cardCenter);
+                // Normalize distance relative to half the container width
+                const maxDist = containerRect.width / 2;
+                const normalized = Math.min(dist / maxDist, 1);
+                // Scale from 0.7 to 1.0
+                const scale = 1 - normalized * 0.3;
+                const zIndex = Math.round(scale * 10);
+                // Apply transform
+                card.style.transform = 'scale(' + scale + ')';
+                card.style.zIndex = zIndex;
+                // Track closest
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closestIndex = i;
+                }
+            });
+
+            // Update dots and currentIndex if changed
+            if (closestIndex !== currentIndex) {
+                currentIndex = closestIndex;
+                updateDots(currentIndex);
+            }
         }
 
-        // Update dots
         function updateDots(activeIndex) {
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === activeIndex);
             });
         }
 
-        // Auto-play: move to next card every 3 seconds
+        // Scroll to a specific card (center it)
+        function scrollToCard(index) {
+            const card = cardElements[index];
+            if (!card) return;
+            const container = cardsScroll;
+            const cardLeft = card.offsetLeft;
+            const cardWidth = card.offsetWidth;
+            const containerWidth = container.clientWidth;
+            const scrollTarget = cardLeft - (containerWidth - cardWidth) / 2;
+            container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+            // The scroll event will trigger updateCarousel and dots
+        }
+
+        // --- Auto-play ---
         function startAutoPlay() {
             if (autoPlayInterval) clearInterval(autoPlayInterval);
             autoPlayInterval = setInterval(() => {
                 const next = (currentIndex + 1) % cardElements.length;
-                goToCard(next);
+                scrollToCard(next);
             }, 3500);
         }
 
@@ -1195,37 +1228,28 @@
             }
         }
 
-        // Detect when user manually scrolls – update dots and currentIndex
-        cardsScroll.addEventListener('scroll', () => {
-            // Find the card closest to the center
-            const containerRect = cardsScroll.getBoundingClientRect();
-            const containerCenter = containerRect.left + containerRect.width / 2;
-            let closestIndex = 0;
-            let closestDist = Infinity;
-            cardElements.forEach((card, i) => {
-                const rect = card.getBoundingClientRect();
-                const cardCenter = rect.left + rect.width / 2;
-                const dist = Math.abs(containerCenter - cardCenter);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closestIndex = i;
-                }
-            });
-            if (closestIndex !== currentIndex) {
-                currentIndex = closestIndex;
-                updateDots(currentIndex);
-                // reset auto-play timer on manual scroll
-                pauseAutoPlay(5000);
-            }
+        // --- Scroll listener ---
+        cardsScroll.addEventListener('scroll', function() {
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(updateCarousel);
         });
 
-        // Initialize: go to first card after a tiny delay
-        setTimeout(() => {
-            goToCard(0);
-            startAutoPlay();
-        }, 300);
+        // Also on resize
+        window.addEventListener('resize', function() {
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(updateCarousel);
+        });
 
-        // --- Dropdown logic (unchanged) ---
+        // Initial setup after a short delay
+        setTimeout(() => {
+            // Center first card
+            scrollToCard(0);
+            startAutoPlay();
+        }, 400);
+
+        // ------------------------------------------------------------------
+        // --- DROPDOWN LOGIC (unchanged) ---
+        // ------------------------------------------------------------------
         const trigger = document.getElementById('logoTrigger');
         const dropdown = document.getElementById('dropdownMenu');
 
