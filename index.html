@@ -6,7 +6,6 @@
     <title>DEPLOMAT · Immersive Experience</title>
 
     <style>
-        /* ----- RESET & BASE ----- */
         * {
             margin: 0;
             padding: 0;
@@ -24,16 +23,16 @@
             color: #fff;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            user-select: none;
         }
 
-        /* ----- FLOATING LOGO (top-left) ----- */
+        /* ----- FLOATING LOGO ----- */
         .header {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 999;
             display: inline-block;
-            transition: transform 0.2s ease;
         }
 
         .trigger-wrapper {
@@ -59,7 +58,7 @@
             transform: scale(0.92);
         }
 
-        /* ----- DROPDOWN — glass, no border, left-aligned ----- */
+        /* ----- DROPDOWN ----- */
         .epic-dropdown {
             display: none;
             position: absolute;
@@ -238,12 +237,8 @@
         }
 
         @keyframes floatOrb {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-            100% {
-                transform: translate(40px, -40px) scale(1.3);
-            }
+            0% { transform: translate(0px, 0px) scale(1); }
+            100% { transform: translate(40px, -40px) scale(1.3); }
         }
 
         .hero-center {
@@ -316,18 +311,12 @@
         }
 
         @keyframes pulseExplore {
-            0%, 100% {
-                opacity: 0.3;
-                transform: translateY(0);
-            }
-            50% {
-                opacity: 0.7;
-                transform: translateY(-4px);
-            }
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.7; transform: translateY(-4px); }
         }
 
         /* ==================================================== */
-        /* SECTION 2: EXPLORE (clean carousel)                  */
+        /* SECTION 2: EXPLORE – BIG CARDS + DRAG                */
         /* ==================================================== */
         .explore-section {
             position: relative;
@@ -360,11 +349,16 @@
             padding: 16px 0 8px 0;
             margin: 8px 0;
             overflow: hidden;
+            cursor: grab;
+        }
+
+        .cards-scroll-wrapper:active {
+            cursor: grabbing;
         }
 
         .cards-scroll {
             display: flex;
-            gap: 16px; /* standard gap */
+            gap: 20px;
             padding: 12px 20px 20px 20px;
             overflow-x: auto;
             overflow-y: visible;
@@ -373,7 +367,6 @@
             scroll-behavior: smooth;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            /* remove mask to avoid issues; we'll keep it minimal */
             mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
         }
@@ -382,24 +375,26 @@
             display: none;
         }
 
+        /* ─── BIG CARDS (Epic Games style) ─── */
         .event-card {
-            flex: 0 0 240px;
-            height: 340px;
+            flex: 0 0 300px;
+            height: 420px;
             background: linear-gradient(145deg, #16161f, #0c0c12);
-            border-radius: 24px;
+            border-radius: 28px;
             border: 1px solid rgba(255, 255, 255, 0.06);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 20px 16px;
+            padding: 24px 20px;
             scroll-snap-align: center;
             transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
             position: relative;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
             cursor: pointer;
             will-change: transform;
-            transform: scale(0.85); /* default scale, will be overridden by JS */
+            transform: scale(0.92);
+            touch-action: none;
         }
 
         .event-card:active {
@@ -426,13 +421,13 @@
             position: relative;
             z-index: 2;
             background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
-            margin: 0 -16px -20px -16px;
-            padding: 32px 16px 20px 16px;
-            border-radius: 0 0 24px 24px;
+            margin: 0 -20px -24px -20px;
+            padding: 40px 20px 24px 20px;
+            border-radius: 0 0 28px 28px;
         }
 
         .event-card .card-name {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
@@ -440,7 +435,7 @@
         }
 
         .event-card .card-sub {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             letter-spacing: 2.5px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.3);
@@ -448,17 +443,17 @@
 
         .event-card .card-explore-badge {
             position: absolute;
-            bottom: 16px;
-            right: 16px;
+            bottom: 20px;
+            right: 20px;
             z-index: 3;
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             letter-spacing: 2.5px;
             text-transform: uppercase;
             color: #00d4ff;
             opacity: 0;
             transition: 0.3s ease;
             background: rgba(0, 0, 0, 0.6);
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 40px;
             backdrop-filter: blur(4px);
             border: 1px solid rgba(0, 212, 255, 0.15);
@@ -469,7 +464,6 @@
             opacity: 1;
         }
 
-        /* Card Gradients */
         .card-1 .card-image { background: linear-gradient(145deg, #2d1b3d, #6b2a5c); }
         .card-2 .card-image { background: linear-gradient(145deg, #1b2f3d, #0f5c6b); }
         .card-3 .card-image { background: linear-gradient(145deg, #3d1b1b, #8a2a2a); }
@@ -480,12 +474,12 @@
         .card-8 .card-image { background: linear-gradient(145deg, #1b3d3d, #1a7a7a); }
         .card-9 .card-image { background: linear-gradient(145deg, #2a1b3d, #6a2a8a); }
 
-        /* ----- DOTS INDICATOR ----- */
+        /* ----- DOTS ----- */
         .dots-container {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 16px;
             padding: 6px 0;
         }
 
@@ -859,7 +853,7 @@
         }
 
         /* ==================================================== */
-        /* RESPONSIVE                                           */
+        /* RESPONSIVE – BIG on mobile too                       */
         /* ==================================================== */
         @media (max-width: 768px) {
             .header {
@@ -905,45 +899,49 @@
             }
 
             .cards-scroll {
-                gap: 12px;
-                padding: 8px 12px 16px 12px;
+                gap: 14px;
+                padding: 8px 10px 16px 10px;
                 mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
                 -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
             }
 
+            /* BIG cards on mobile – Epic Games style */
             .event-card {
-                flex: 0 0 200px;
-                height: 280px;
-                padding: 16px 12px;
-                border-radius: 20px;
+                flex: 0 0 72vw;
+                height: 55vh;
+                padding: 20px 16px;
+                border-radius: 24px;
             }
             .event-card .card-content {
-                margin: 0 -12px -16px -12px;
-                padding: 24px 12px 16px 12px;
-                border-radius: 0 0 20px 20px;
+                margin: 0 -16px -20px -16px;
+                padding: 32px 16px 20px 16px;
+                border-radius: 0 0 24px 24px;
             }
             .event-card .card-name {
-                font-size: 1rem;
+                font-size: 1.3rem;
             }
             .event-card .card-sub {
-                font-size: 0.55rem;
+                font-size: 0.65rem;
             }
             .event-card .card-explore-badge {
-                font-size: 0.5rem;
-                padding: 3px 10px;
-                bottom: 12px;
-                right: 12px;
+                font-size: 0.55rem;
+                padding: 3px 12px;
+                bottom: 16px;
+                right: 16px;
             }
         }
 
         @media (max-width: 480px) {
             .event-card {
-                flex: 0 0 180px;
-                height: 250px;
-                border-radius: 18px;
+                flex: 0 0 76vw;
+                height: 48vh;
+                border-radius: 20px;
             }
             .event-card .card-name {
-                font-size: 0.9rem;
+                font-size: 1.1rem;
+            }
+            .event-card .card-sub {
+                font-size: 0.6rem;
             }
         }
     </style>
@@ -1008,7 +1006,7 @@
         <div class="explore-header">
             <h2>EXPLORE</h2>
         </div>
-        <div class="cards-scroll-wrapper">
+        <div class="cards-scroll-wrapper" id="scrollWrapper">
             <div class="cards-scroll" id="cardsScroll"></div>
         </div>
         <div class="dots-container" id="dotsContainer"></div>
@@ -1102,24 +1100,26 @@
         // ─── DOM REFS ───────────────────────────────────────────────────
         const scrollContainer = document.getElementById('cardsScroll');
         const dotsContainer = document.getElementById('dotsContainer');
+        const wrapper = document.getElementById('scrollWrapper');
 
-        let currentIndex = 0;        // 0‑based original index
+        let currentIndex = 0;
         let autoPlayTimer = null;
         let isUserInteracting = false;
-        let resizeTimeout = null;
+        let interactionTimeout = null;
 
-        // ─── BUILD CARDS (with clones for infinite scroll) ──────────
+        // ─── DRAG STATE ────────────────────────────────────────────────
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+        let scrollLeftStart = 0;
+        let isDraggingScroll = false;
+
+        // ─── BUILD CARDS (with clones for infinite loop) ──────────────
         function buildCarousel() {
-            // Clear existing
             scrollContainer.innerHTML = '';
             dotsContainer.innerHTML = '';
 
-            const cloneCount = 2; // number of clones on each side
-
-            // Create original cards
-            const originalCards = events.map((evt, idx) => createCard(evt, idx));
-
-            // Build card array: [clones of last N, originals, clones of first N]
+            const cloneCount = 3;
             const total = events.length;
             const allCards = [];
 
@@ -1129,11 +1129,14 @@
                 clone.dataset.clone = 'left';
                 allCards.push(clone);
             }
-            // Append originals
-            originalCards.forEach((card, idx) => {
+
+            // Originals
+            events.forEach((evt, idx) => {
+                const card = createCard(evt, idx, false);
                 card.dataset.originalIndex = idx;
                 allCards.push(card);
             });
+
             // Append clones of first N
             for (let i = 0; i < cloneCount; i++) {
                 const clone = createCard(events[i], i, true);
@@ -1141,10 +1144,9 @@
                 allCards.push(clone);
             }
 
-            // Add all to container
             allCards.forEach(card => scrollContainer.appendChild(card));
 
-            // Create dots (only for original cards)
+            // Dots
             events.forEach((_, i) => {
                 const dot = document.createElement('div');
                 dot.className = 'dot';
@@ -1156,13 +1158,13 @@
                 dotsContainer.appendChild(dot);
             });
 
-            // Update dots initial
             updateDots(0);
         }
 
         function createCard(evt, index, isClone = false) {
             const card = document.createElement('div');
-            card.className = 'event-card card-' + ((index % events.length) + 1);
+            const cls = 'event-card card-' + ((index % events.length) + 1);
+            card.className = cls;
             card.dataset.originalIndex = (isClone) ? index % events.length : index;
             card.innerHTML = `
                 <div class="card-image"></div>
@@ -1172,45 +1174,43 @@
                 </div>
                 <div class="card-explore-badge">Explore →</div>
             `;
-            // Click to scroll to this card (original index)
             card.addEventListener('click', (e) => {
-                const originalIdx = parseInt(card.dataset.originalIndex);
-                scrollToCard(originalIdx);
+                const origIdx = parseInt(card.dataset.originalIndex);
+                scrollToCard(origIdx);
                 pauseAutoPlay(4000);
             });
             return card;
         }
 
-        // ─── SCROLL & SCALE LOGIC ──────────────────────────────────────
+        // ─── SCROLL & SCALE ─────────────────────────────────────────────
         function updateCarousel() {
-            const container = scrollContainer;
-            const containerRect = container.getBoundingClientRect();
-            const centerX = containerRect.left + containerRect.width / 2;
+            const rect = scrollContainer.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
 
-            let closestCard = null;
+            const cards = scrollContainer.querySelectorAll('.event-card');
+            let closest = null;
             let closestDist = Infinity;
 
-            const cards = container.querySelectorAll('.event-card');
             cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const cardCenter = rect.left + rect.width / 2;
-                const dist = Math.abs(centerX - cardCenter);
-                const maxDist = containerRect.width / 2;
-                const normalized = Math.min(dist / maxDist, 1);
-                const scale = 1 - normalized * 0.2; // scale from 1.0 (center) to 0.8 (edges)
+                const r = card.getBoundingClientRect();
+                const cCenter = r.left + r.width / 2;
+                const dist = Math.abs(centerX - cCenter);
+                const maxDist = rect.width / 2;
+                const norm = Math.min(dist / maxDist, 1);
+                const scale = 1 - norm * 0.18;
                 card.style.transform = `scale(${scale})`;
                 card.style.zIndex = Math.round(scale * 10);
 
                 if (dist < closestDist) {
                     closestDist = dist;
-                    closestCard = card;
+                    closest = card;
                 }
             });
 
-            if (closestCard) {
-                const newIndex = parseInt(closestCard.dataset.originalIndex);
-                if (newIndex !== currentIndex) {
-                    currentIndex = newIndex;
+            if (closest) {
+                const newIdx = parseInt(closest.dataset.originalIndex);
+                if (newIdx !== currentIndex) {
+                    currentIndex = newIdx;
                     updateDots(currentIndex);
                 }
             }
@@ -1223,9 +1223,8 @@
             });
         }
 
-        // ─── SCROLL TO SPECIFIC CARD (original index) ────────────────
+        // ─── SCROLL TO CARD ─────────────────────────────────────────────
         function scrollToCard(index) {
-            // Find a card with that originalIndex (prefer the first one)
             const cards = scrollContainer.querySelectorAll('.event-card');
             let target = null;
             for (const card of cards) {
@@ -1244,56 +1243,111 @@
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // ─── INFINITE LOOP: detect when near clones and jump ──────────
+        // ─── INFINITE LOOP CHECK ───────────────────────────────────────
         function checkInfiniteLoop() {
             const container = scrollContainer;
             const scrollLeft = container.scrollLeft;
             const maxScroll = container.scrollWidth - container.clientWidth;
+            const threshold = 80;
 
-            const threshold = 50; // pixels from edge
+            const originals = container.querySelectorAll('.event-card:not([data-clone])');
 
-            if (scrollLeft < threshold) {
-                // Scrolled near left edge → we are at clones of last items
-                // Jump to the corresponding original positions
-                const firstOriginal = container.querySelector('.event-card[data-clone]');
-                // Actually, we need to jump to the first original card (index 0)
-                // But we have clones on left, so we need to find the first original card.
-                const originals = container.querySelectorAll('.event-card:not([data-clone])');
-                if (originals.length > 0) {
-                    const firstOriginal = originals[0];
-                    const targetLeft = firstOriginal.offsetLeft;
-                    const containerWidth = container.clientWidth;
-                    const cardWidth = firstOriginal.offsetWidth;
-                    const targetScroll = targetLeft - (containerWidth - cardWidth) / 2;
-                    container.scrollTo({ left: targetScroll, behavior: 'auto' });
-                }
-            } else if (scrollLeft > maxScroll - threshold) {
-                // Scrolled near right edge → clones of first items
-                // Jump to the last original card
-                const originals = container.querySelectorAll('.event-card:not([data-clone])');
-                if (originals.length > 0) {
-                    const lastOriginal = originals[originals.length - 1];
-                    const targetLeft = lastOriginal.offsetLeft;
-                    const containerWidth = container.clientWidth;
-                    const cardWidth = lastOriginal.offsetWidth;
-                    const targetScroll = targetLeft - (containerWidth - cardWidth) / 2;
-                    container.scrollTo({ left: targetScroll, behavior: 'auto' });
-                }
+            if (scrollLeft < threshold && originals.length > 0) {
+                const firstOrig = originals[0];
+                const targetLeft = firstOrig.offsetLeft;
+                const cw = container.clientWidth;
+                const tw = firstOrig.offsetWidth;
+                const target = targetLeft - (cw - tw) / 2;
+                container.scrollTo({ left: target, behavior: 'auto' });
+            } else if (scrollLeft > maxScroll - threshold && originals.length > 0) {
+                const lastOrig = originals[originals.length - 1];
+                const targetLeft = lastOrig.offsetLeft;
+                const cw = container.clientWidth;
+                const tw = lastOrig.offsetWidth;
+                const target = targetLeft - (cw - tw) / 2;
+                container.scrollTo({ left: target, behavior: 'auto' });
             }
         }
 
-        // ─── SCROLL EVENT ──────────────────────────────────────────────
-        let scrollTimeout = null;
-        scrollContainer.addEventListener('scroll', () => {
-            // Update carousel scales on scroll (throttled)
-            if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
-            scrollTimeout = requestAnimationFrame(() => {
+        // ─── DRAG / SWIPE (mouse + touch) ──────────────────────────────
+        function startDrag(e) {
+            const pageX = e.type === 'touchstart' ? e.touches[0].pageX : e.pageX;
+            isDragging = true;
+            isDraggingScroll = false;
+            startX = pageX;
+            scrollLeftStart = scrollContainer.scrollLeft;
+            wrapper.style.cursor = 'grabbing';
+            pauseAutoPlay(6000);
+        }
+
+        function moveDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            const pageX = e.type === 'touchmove' ? e.touches[0].pageX : e.pageX;
+            const delta = (startX - pageX) * 1.2;
+            scrollContainer.scrollLeft = scrollLeftStart + delta;
+            isDraggingScroll = true;
+
+            // Update scales during drag
+            if (!scrollContainer._raf) {
+                scrollContainer._raf = requestAnimationFrame(() => {
+                    updateCarousel();
+                    scrollContainer._raf = null;
+                });
+            }
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            wrapper.style.cursor = 'grab';
+            // Snap after drag ends
+            setTimeout(() => {
                 updateCarousel();
-                // Also check for infinite loop – but we want to avoid interfering with smooth scroll, so do it after scroll ends
-                clearTimeout(scrollContainer._loopTimeout);
-                scrollContainer._loopTimeout = setTimeout(() => {
-                    checkInfiniteLoop();
-                }, 200);
+                // Find closest card and snap to it
+                const rect = scrollContainer.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const cards = scrollContainer.querySelectorAll('.event-card');
+                let closest = null;
+                let closestDist = Infinity;
+                cards.forEach(card => {
+                    const r = card.getBoundingClientRect();
+                    const cCenter = r.left + r.width / 2;
+                    const dist = Math.abs(centerX - cCenter);
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        closest = card;
+                    }
+                });
+                if (closest) {
+                    const idx = parseInt(closest.dataset.originalIndex);
+                    // Only snap if we moved significantly, otherwise stay
+                    if (isDraggingScroll) {
+                        scrollToCard(idx);
+                    }
+                }
+                isDraggingScroll = false;
+            }, 100);
+        }
+
+        // Mouse events
+        wrapper.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', moveDrag);
+        document.addEventListener('mouseup', endDrag);
+
+        // Touch events
+        wrapper.addEventListener('touchstart', startDrag, { passive: false });
+        document.addEventListener('touchmove', moveDrag, { passive: false });
+        document.addEventListener('touchend', endDrag, { passive: false });
+
+        // ─── SCROLL EVENT (for auto-update) ────────────────────────────
+        let scrollRaf = null;
+        scrollContainer.addEventListener('scroll', () => {
+            if (scrollRaf) cancelAnimationFrame(scrollRaf);
+            scrollRaf = requestAnimationFrame(() => {
+                updateCarousel();
+                clearTimeout(scrollContainer._loopCheck);
+                scrollContainer._loopCheck = setTimeout(checkInfiniteLoop, 150);
             });
         });
 
@@ -1301,9 +1355,11 @@
         function startAutoPlay() {
             if (autoPlayTimer) clearInterval(autoPlayTimer);
             autoPlayTimer = setInterval(() => {
-                const next = (currentIndex + 1) % events.length;
-                scrollToCard(next);
-            }, 3500);
+                if (!isDragging) {
+                    const next = (currentIndex + 1) % events.length;
+                    scrollToCard(next);
+                }
+            }, 3800);
         }
 
         function pauseAutoPlay(duration = 4000) {
@@ -1316,38 +1372,25 @@
             }
         }
 
-        // ─── USER INTERACTION – pause auto on any interaction ──────────
-        function onUserInteraction() {
-            pauseAutoPlay(4000);
-        }
-
-        // Listen for touch/mouse events on the carousel
-        scrollContainer.addEventListener('mousedown', onUserInteraction);
-        scrollContainer.addEventListener('touchstart', onUserInteraction);
-
-        // ─── RESIZE HANDLER ─────────────────────────────────────────────
+        // ─── RESIZE ──────────────────────────────────────────────────────
+        let resizeTimer = null;
         window.addEventListener('resize', () => {
-            if (resizeTimeout) clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                updateCarousel();
-            }, 200);
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(updateCarousel, 200);
         });
 
         // ─── INIT ──────────────────────────────────────────────────────
         buildCarousel();
 
-        // Wait for layout, then set initial position and start auto-play
         setTimeout(() => {
-            // Center the first card (index 0)
             scrollToCard(0);
-            // Update scales after a tiny delay
             setTimeout(() => {
                 updateCarousel();
                 startAutoPlay();
             }, 300);
         }, 400);
 
-        // ─── DROPDOWN LOGIC (unchanged) ──────────────────────────────
+        // ─── DROPDOWN ──────────────────────────────────────────────────
         const trigger = document.getElementById('logoTrigger');
         const dropdown = document.getElementById('dropdownMenu');
 
@@ -1365,6 +1408,7 @@
             }
         });
 
+        // ─── LOGIN ──────────────────────────────────────────────────────
         const loginOverlay = document.getElementById('loginOverlay');
         const modalClose = document.getElementById('modalClose');
         const loginForm = document.getElementById('loginForm');
@@ -1373,7 +1417,6 @@
         function openLogin() {
             loginOverlay.classList.add('open');
         }
-
         function closeLogin() {
             loginOverlay.classList.remove('open');
         }
@@ -1391,9 +1434,7 @@
             closeLogin();
         });
 
-        forgotLink.addEventListener('click', (e) => {
-            e.preventDefault();
-        });
+        forgotLink.addEventListener('click', (e) => e.preventDefault());
 
         dropdown.querySelectorAll('.dropdown-item').forEach(link => {
             link.addEventListener('click', (e) => {
@@ -1416,7 +1457,7 @@
             });
         });
 
-        // ─── PROMO CTA ──────────────────────────────────────────────────
+        // ─── PROMO ──────────────────────────────────────────────────────
         document.getElementById('promoCta').addEventListener('click', () => {});
 
         // ─── COUNTDOWN ──────────────────────────────────────────────────
@@ -1425,14 +1466,10 @@
             const now = new Date();
             let diff = promoTarget - now;
             if (diff < 0) diff = 0;
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            document.getElementById('pDays').textContent = String(d).padStart(2, '0');
-            document.getElementById('pHours').textContent = String(h).padStart(2, '0');
-            document.getElementById('pMins').textContent = String(m).padStart(2, '0');
-            document.getElementById('pSecs').textContent = String(s).padStart(2, '0');
+            document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+            document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+            document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
         }
         updatePromoCountdown();
         setInterval(updatePromoCountdown, 1000);
