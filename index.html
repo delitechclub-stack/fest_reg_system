@@ -1347,23 +1347,8 @@
         });
 
         // ─── AUTO-PLAY ──────────────────────────────────────────────────
-        function startAutoPlay() {
-            if (autoPlayTimer) clearInterval(autoPlayTimer);
-            autoPlayTimer = setInterval(() => {
-                if (!isPointerDown) {
-                    const next = (currentIndex + 1) % events.length;
-                    scrollToCard(next);
-                }
-            }, 3800);
-        }
-
-        function pauseAutoPlay(duration = 4000) {
-            if (autoPlayTimer) {
-                clearInterval(autoPlayTimer);
-                autoPlayTimer = null;
-                setTimeout(startAutoPlay, duration);
-            }
-        }
+        // Auto-play is disabled. The startAutoPlay() function is not called.
+        // Users can still manually swipe or click dots to navigate.
 
         // ─── RESIZE ──────────────────────────────────────────────────────
         let resizeTimer = null;
@@ -1379,7 +1364,7 @@
             scrollToCard(0);
             setTimeout(() => {
                 updateCarousel();
-                startAutoPlay();
+                // Auto-play is DISABLED - startAutoPlay() is NOT called
             }, 300);
         }, 400);
 
