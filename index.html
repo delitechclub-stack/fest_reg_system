@@ -983,8 +983,8 @@
     <!-- SECTION 1: HERO -->
     <section class="hero-section" id="hero">
         <div class="video-container">
-            <video autoplay muted loop playsinline webkit-playsinline>
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+            <video autoplay muted loop playsinline webkit-playsinline preload="auto">
+                <source src="/videos/hero-bg.mp4" type="video/mp4" />
                 Your browser does not support HTML5 video.
             </video>
         </div>
@@ -1115,25 +1115,22 @@
             scrollContainer.innerHTML = '';
             dotsContainer.innerHTML = '';
 
-            const cloneCount = 4; // 4 clones on each side = longer runway
+            const cloneCount = 4;
             const total = events.length;
             const allCards = [];
 
-            // Prepended clones (last 4 cards)
             for (let i = total - cloneCount; i < total; i++) {
                 const clone = createCard(events[i], i);
                 clone.dataset.clone = 'left';
                 allCards.push(clone);
             }
 
-            // Original cards
             events.forEach((evt, idx) => {
                 const card = createCard(evt, idx);
                 card.dataset.originalIndex = idx;
                 allCards.push(card);
             });
 
-            // Appended clones (first 4 cards)
             for (let i = 0; i < cloneCount; i++) {
                 const clone = createCard(events[i], i);
                 clone.dataset.clone = 'right';
@@ -1142,7 +1139,6 @@
 
             allCards.forEach(card => scrollContainer.appendChild(card));
 
-            // Dots
             events.forEach((_, i) => {
                 const dot = document.createElement('div');
                 dot.className = 'dot';
@@ -1179,7 +1175,6 @@
             return card;
         }
 
-        // ─── UPDATE CAROUSEL (scaling) ────────────────────────────────
         function updateCarousel() {
             const rect = scrollContainer.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -1220,9 +1215,7 @@
             });
         }
 
-        // ─── SCROLL TO CARD ─────────────────────────────────────────────
         function scrollToCard(index) {
-            // Find a card with this original index (prefer first occurrence)
             const cards = scrollContainer.querySelectorAll('.event-card');
             let target = null;
             for (const card of cards) {
@@ -1241,7 +1234,6 @@
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // ─── INFINITE LOOP – INSTANT JUMP (no animation) ──────────────
         function checkInfiniteLoop() {
             const container = scrollContainer;
             const scrollLeft = container.scrollLeft;
@@ -1257,7 +1249,6 @@
                 const tw = firstOrig.offsetWidth;
                 const target = targetLeft - (cw - tw) / 2;
                 container.scrollTo({ left: target, behavior: 'auto' });
-                // Force update after jump
                 requestAnimationFrame(() => updateCarousel());
             } else if (scrollLeft > maxScroll - threshold && originals.length > 0) {
                 const lastOrig = originals[originals.length - 1];
@@ -1270,7 +1261,6 @@
             }
         }
 
-        // ─── POINTER EVENTS (unified touch + mouse) ──────────────────
         let pointerStartX = 0;
         let pointerStartY = 0;
         let pointerScrollLeftStart = 0;
@@ -1308,7 +1298,6 @@
             isPointerDown = false;
 
             if (isSwiping) {
-                // Snap to nearest card
                 setTimeout(() => {
                     const rect = scrollContainer.getBoundingClientRect();
                     const centerX = rect.left + rect.width / 2;
@@ -1331,11 +1320,9 @@
                 }, 100);
             }
             wrapper.releasePointerCapture(e.pointerId);
-            // Reset swipe flag after a moment
             setTimeout(() => { isSwiping = false; }, 300);
         });
 
-        // ─── SCROLL EVENT ──────────────────────────────────────────────
         let scrollRaf = null;
         scrollContainer.addEventListener('scroll', () => {
             if (scrollRaf) cancelAnimationFrame(scrollRaf);
@@ -1346,11 +1333,9 @@
             });
         });
 
-        // ─── AUTO-PLAY ──────────────────────────────────────────────────
-        // Auto-play is disabled. The startAutoPlay() function is not called.
-        // Users can still manually swipe or click dots to navigate.
+        // ─── AUTO-PLAY IS DISABLED ──────────────────────────────────────
+        // The startAutoPlay() function is not called.
 
-        // ─── RESIZE ──────────────────────────────────────────────────────
         let resizeTimer = null;
         window.addEventListener('resize', () => {
             if (resizeTimer) clearTimeout(resizeTimer);
@@ -1364,7 +1349,6 @@
             scrollToCard(0);
             setTimeout(() => {
                 updateCarousel();
-                // Auto-play is DISABLED - startAutoPlay() is NOT called
             }, 300);
         }, 400);
 
