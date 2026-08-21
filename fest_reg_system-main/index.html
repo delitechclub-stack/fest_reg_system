@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>DEPLOMAT · Immersive Experience</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overscroll-behavior: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
+
+        /* ----- FLOATING LOGO ----- */
+        .header {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 999;
+            display: inline-block;
+        }
+
+        .trigger-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .logo-emblem {
+            display: block;
+            width: 44px;
+            height: 44px;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
+        }
+
+        .trigger-wrapper:hover .logo-emblem {
+            transform: scale(1.06);
+        }
+        .trigger-wrapper:active .logo-emblem {
+            transform: scale(0.92);
+        }
+
+        /* ----- DROPDOWN ----- */
+        .epic-dropdown {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 56px;
+            min-width: 200px;
+            width: max-content;
+            padding: 8px 0;
+            border-radius: 20px;
+            background: rgba(16, 16, 26, 0.74);
+            backdrop-filter: blur(32px) saturate(1.2);
+            -webkit-backdrop-filter: blur(32px) saturate(1.2);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.03);
+            z-index: 100;
+            flex-direction: column;
+            gap: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.92) translateY(-8px);
+            transform-origin: top left;
+            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.3s;
+            border: none;
+        }
+
+        .epic-dropdown.open {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0px);
+        }
+
+        .dropdown-section-title {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            padding: 8px 22px 4px 22px;
+            margin-top: 2px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 4px 16px;
+            border: none;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 9px 22px;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            transition: 0.2s ease;
+            border-left: 2px solid transparent;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.04);
+            border-left-color: #00d4ff;
+        }
+
+        .dropdown-item:active {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(0.98);
+        }
+
+        .dropdown-item .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 50%;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+
+        .dropdown-item:hover .icon {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+        }
+
+        .dropdown-item.login-item {
+            color: #ff7a9e;
+        }
+        .dropdown-item.login-item:hover {
+            color: #ff2a6d;
+            border-left-color: #ff2a6d;
+            background: rgba(255, 42, 109, 0.04);
+        }
+        .dropdown-item.login-item:hover .icon {
+            background: rgba(255, 42, 109, 0.1);
+            color: #ff2a6d;
+        }
+
+        /* ==================================================== */
+        /* SECTION 1: HERO                                      */
+        /* ==================================================== */
+        .hero-section {
+            position: relative;
+            height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 1;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            z-index: 1;
+            pointer-events: none;
+            animation: floatOrb 16s ease-in-out infinite alternate;
+        }
+        .orb1 {
+            width: 400px;
+            height: 400px;
+            background: #ff2a6d;
+            top: 10%;
+            left: -5%;
+        }
+        .orb2 {
+            width: 500px;
+            height: 500px;
+            background: #00d4ff;
+            bottom: 10%;
+            right: -10%;
+            animation-duration: 22s;
+        }
+        .orb3 {
+            width: 300px;
+            height: 300px;
+            background: #b000ff;
+            top: 50%;
+            left: 40%;
+            animation-duration: 14s;
+            opacity: 0.15;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0px, 0px) scale(1); }
+            100% { transform: translate(40px, -40px) scale(1.3); }
+        }
+
+        .hero-center {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            text-align: center;
+            padding: 0 20px;
+            pointer-events: none;
+        }
+
+        .hero-center h1 {
+            font-size: clamp(4.5rem, 18vw, 10rem);
+            font-weight: 900;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .hero-center .subtle-tag {
+            font-size: 0.8rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: 300;
+            margin-top: -5px;
+        }
+
+        .explore-cta {
+            position: absolute;
+            bottom: 45px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 5;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.4;
+            animation: pulseExplore 3s ease-in-out infinite;
+        }
+        .explore-cta span {
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #fff;
+            font-weight: 300;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+        .explore-cta .mouse-line {
+            width: 1px;
+            height: 30px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent);
+            margin-top: 4px;
+        }
+
+        @keyframes pulseExplore {
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.7; transform: translateY(-4px); }
+        }
+
+        /* ==================================================== */
+        /* SECTION 2: EXPLORE – INFINITE CAROUSEL               */
+        /* ==================================================== */
+        .explore-section {
+            position: relative;
+            z-index: 2;
+            background: #0a0a0f;
+            min-height: 100dvh;
+            padding: 120px 0 60px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .explore-header {
+            padding: 0 40px 20px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .explore-header h2 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.06);
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            line-height: 1;
+        }
+
+        .cards-scroll-wrapper {
+            position: relative;
+            padding: 16px 0 8px 0;
+            margin: 8px 0;
+            overflow: hidden;
+            cursor: grab;
+            touch-action: pan-y;
+        }
+
+        .cards-scroll-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .cards-scroll {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px 20px 16px;
+            overflow-x: auto;
+            overflow-y: visible;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
+        }
+
+        .cards-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .event-card {
+            flex: 0 0 300px;
+            height: 420px;
+            background: linear-gradient(145deg, #16161f, #0c0c12);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 24px 20px;
+            scroll-snap-align: center;
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
+            position: relative;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+            will-change: transform;
+            transform: scale(0.92);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .event-card:active {
+            transition-duration: 0.1s;
+        }
+
+        .event-card .card-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+            transition: 0.6s ease;
+        }
+
+        .event-card:hover .card-image {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .event-card .card-content {
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
+            margin: 0 -20px -24px -20px;
+            padding: 40px 20px 24px 20px;
+            border-radius: 0 0 28px 28px;
+        }
+
+        .event-card .card-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .event-card .card-sub {
+            font-size: 0.7rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .event-card .card-explore-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 3;
+            font-size: 0.6rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #00d4ff;
+            opacity: 0;
+            transition: 0.3s ease;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 14px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            pointer-events: none;
+        }
+
+        .event-card:hover .card-explore-badge {
+            opacity: 1;
+        }
+
+        .card-1 .card-image { background: linear-gradient(145deg, #2d1b3d, #6b2a5c); }
+        .card-2 .card-image { background: linear-gradient(145deg, #1b2f3d, #0f5c6b); }
+        .card-3 .card-image { background: linear-gradient(145deg, #3d1b1b, #8a2a2a); }
+        .card-4 .card-image { background: linear-gradient(145deg, #1b3d2a, #1b7a4a); }
+        .card-5 .card-image { background: linear-gradient(145deg, #3d2a1b, #8a5a2a); }
+        .card-6 .card-image { background: linear-gradient(145deg, #1b1b3d, #3a3a8a); }
+        .card-7 .card-image { background: linear-gradient(145deg, #3d1b3d, #8a2a7a); }
+        .card-8 .card-image { background: linear-gradient(145deg, #1b3d3d, #1a7a7a); }
+        .card-9 .card-image { background: linear-gradient(145deg, #2a1b3d, #6a2a8a); }
+
+        /* ----- DOTS ----- */
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 6px 0;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #00d4ff;
+            width: 24px;
+            border-radius: 6px;
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+        }
+
+        /* ==================================================== */
+        /* SECTION 3: PROMO                                     */
+        /* ==================================================== */
+        .promo-section {
+            position: relative;
+            height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+            z-index: 2;
+            background: #0a0a0f;
+        }
+
+        .promo-section .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .promo-section .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vignette-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .vignette-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20%;
+            height: 100%;
+            background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .vignette-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 45%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92), transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .promo-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .promo-countdown {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .promo-countdown .cd-item {
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 16px 28px;
+            border-radius: 16px;
+            min-width: 80px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+            transition: 0.3s ease;
+        }
+
+        .promo-countdown .cd-item span {
+            display: block;
+            font-family: 'Courier New', monospace;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+            line-height: 1.2;
+        }
+
+        .promo-countdown .cd-item small {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 4px;
+            display: block;
+        }
+
+        .promo-countdown .cd-item.accent {
+            border-color: rgba(0, 212, 255, 0.15);
+        }
+        .promo-countdown .cd-item.accent span {
+            color: #00d4ff;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+        }
+
+        .promo-cta {
+            font-size: 0.85rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 300;
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            transition: 0.3s ease;
+            cursor: pointer;
+            pointer-events: auto;
+            padding: 14px 32px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .promo-cta:hover {
+            color: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 212, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+            transform: scale(1.02);
+        }
+
+        .promo-cta:active {
+            transform: scale(0.96);
+        }
+
+        .promo-cta .arrow-link {
+            display: inline-block;
+            margin-left: 10px;
+            transition: 0.3s;
+        }
+        .promo-cta:hover .arrow-link {
+            transform: translateX(6px);
+            color: #00d4ff;
+        }
+
+        .promo-credits {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 4;
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.1);
+            font-weight: 300;
+            padding: 0 20px;
+            pointer-events: none;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .promo-credits span {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        .promo-credits .divider {
+            opacity: 0.2;
+        }
+
+        /* ==================================================== */
+        /* LOGIN MODAL                                           */
+        /* ==================================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .login-modal {
+            width: 90%;
+            max-width: 360px;
+            background: rgba(16, 16, 26, 0.82);
+            backdrop-filter: blur(32px) saturate(1.2);
+            -webkit-backdrop-filter: blur(32px) saturate(1.2);
+            border-radius: 24px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.04);
+            padding: 36px 30px 30px 30px;
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.open .login-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .login-modal h3 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 6px;
+            background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-modal .modal-sub {
+            text-align: center;
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            margin-bottom: 28px;
+        }
+
+        .login-field {
+            margin-bottom: 16px;
+        }
+
+        .login-field label {
+            display: block;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 6px;
+        }
+
+        .login-field input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: #fff;
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .login-field input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .login-field input:focus {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.04);
+        }
+
+        .login-submit {
+            width: 100%;
+            margin-top: 8px;
+            padding: 13px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #00d4ff, #ff2a6d);
+            color: #0a0a0f;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .login-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .login-submit:active {
+            transform: scale(0.97);
+        }
+
+        .forgot-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: #00d4ff;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 42, 109, 0.1);
+            color: #ff2a6d;
+        }
+
+        /* ==================================================== */
+        /* RESPONSIVE                                           */
+        /* ==================================================== */
+        @media (max-width: 768px) {
+            .header {
+                top: 18px;
+                left: 18px;
+            }
+            .logo-emblem {
+                width: 38px;
+                height: 38px;
+            }
+            .epic-dropdown {
+                top: 48px;
+                min-width: 160px;
+                max-width: calc(100vw - 40px);
+                padding: 6px 0;
+            }
+            .dropdown-item {
+                font-size: 12px;
+                padding: 8px 18px;
+            }
+            .dropdown-item .icon {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+            .dropdown-section-title {
+                font-size: 8px;
+                padding: 6px 18px 2px 18px;
+            }
+
+            .hero-center h1 {
+                letter-spacing: 6px;
+            }
+            .orb1, .orb2, .orb3 {
+                display: none;
+            }
+
+            .explore-section {
+                padding: 100px 0 40px 0;
+            }
+            .explore-header {
+                padding: 0 20px 15px 20px;
+            }
+
+            .cards-scroll {
+                gap: 8px;
+                padding: 8px 8px 16px 8px;
+                mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
+            }
+
+            .event-card {
+                flex: 0 0 72vw;
+                height: 55vh;
+                padding: 20px 16px;
+                border-radius: 24px;
+            }
+            .event-card .card-content {
+                margin: 0 -16px -20px -16px;
+                padding: 32px 16px 20px 16px;
+                border-radius: 0 0 24px 24px;
+            }
+            .event-card .card-name {
+                font-size: 1.3rem;
+            }
+            .event-card .card-sub {
+                font-size: 0.65rem;
+            }
+            .event-card .card-explore-badge {
+                font-size: 0.55rem;
+                padding: 3px 12px;
+                bottom: 16px;
+                right: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .event-card {
+                flex: 0 0 76vw;
+                height: 48vh;
+                border-radius: 20px;
+            }
+            .event-card .card-name {
+                font-size: 1.1rem;
+            }
+            .event-card .card-sub {
+                font-size: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FLOATING LOGO -->
+    <header class="header">
+        <div class="trigger-wrapper" id="logoTrigger">
+            <svg class="logo-emblem" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="22" cy="22" r="20" fill="#0d0d14" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
+                <path d="M13 12H31M13 12V32M13 22H26M13 32H31"
+                stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M31 12L13 32" stroke="url(#grad1)" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+                <defs>
+                    <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#00d4ff" />
+                        <stop offset="100%" stop-color="#ff2a6d" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <div class="epic-dropdown" id="dropdownMenu">
+                <div class="dropdown-section-title">✦ Explore</div>
+                <a class="dropdown-item" data-action="home"><span class="icon">⌂</span> Home</a>
+                <a class="dropdown-item" data-action="redirect" data-url="/about.html"><span class="icon">◈</span> About us</a>
+                <a class="dropdown-item" data-action="redirect" data-url="/connect.html"><span class="icon">✦</span> Connect</a>
+                <a class="dropdown-item" data-action="redirect" data-url="/legacy.html"><span class="icon">⚜</span> Legacy</a>
+                <hr class="dropdown-divider" />
+                <div class="dropdown-section-title">⟡ Access</div>
+                <a class="dropdown-item login-item" data-action="login"><span class="icon">⟡</span> Login</a>
+                <a class="dropdown-item" data-action="explore-event"><span class="icon">▸</span> Explore Event</a>
+                <a class="dropdown-item" data-action="redirect" data-url="campus.html"><span class="icon">◈</span> Explore Campus</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 1: HERO -->
+    <section class="hero-section" id="hero">
+        <div class="video-container">
+            <video autoplay muted loop playsinline webkit-playsinline>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+        <div class="overlay"></div>
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+        <div class="hero-center">
+            <h1>DEPLOMAT</h1>
+            <div class="subtle-tag">— FEST 2026 —</div>
+        </div>
+        <div class="explore-cta">
+            <span>Explore</span>
+            <div class="mouse-line"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: EXPLORE (INFINITE CAROUSEL) -->
+    <section class="explore-section" id="explore">
+        <div class="explore-header">
+            <h2>EXPLORE</h2>
+        </div>
+        <div class="cards-scroll-wrapper" id="scrollWrapper">
+            <div class="cards-scroll" id="cardsScroll"></div>
+        </div>
+        <div class="dots-container" id="dotsContainer"></div>
+    </section>
+
+    <!-- SECTION 3: PROMO -->
+    <section class="promo-section" id="promo">
+        <div class="video-container">
+            <video autoplay muted loop playsinline webkit-playsinline>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+
+        <div class="vignette-left"></div>
+        <div class="vignette-right"></div>
+        <div class="vignette-bottom"></div>
+
+        <div class="promo-content">
+            <div class="promo-countdown" id="promoCountdown">
+                <div class="cd-item accent">
+                    <span id="pDays">00</span>
+                    <small>Days</small>
+                </div>
+                <div class="cd-item">
+                    <span id="pHours">00</span>
+                    <small>Hours</small>
+                </div>
+                <div class="cd-item">
+                    <span id="pMins">00</span>
+                    <small>Mins</small>
+                </div>
+                <div class="cd-item">
+                    <span id="pSecs">00</span>
+                    <small>Secs</small>
+                </div>
+            </div>
+
+            <div class="promo-cta" id="promoCta">
+                tap the link to watch promo video
+                <span class="arrow-link">→</span>
+            </div>
+        </div>
+
+        <div class="promo-credits">
+            <span>Directed by DEPLOMAT Studios</span>
+            <span class="divider">·</span>
+            <span>Produced by Fest Collective</span>
+            <span class="divider">·</span>
+            <span>Music by Ambient Waves</span>
+            <span class="divider">·</span>
+            <span>2026</span>
+        </div>
+    </section>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+            <h3>DEPLOMAT</h3>
+            <div class="modal-sub">Access your portal</div>
+            <form id="loginForm">
+                <div class="login-field">
+                    <label for="loginUser">Username / Email</label>
+                    <input type="text" id="loginUser" placeholder="you@deplo.mat" autocomplete="username" required />
+                </div>
+                <div class="login-field">
+                    <label for="loginPass">Password</label>
+                    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required />
+                </div>
+                <button type="submit" class="login-submit">Login</button>
+                <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ─── EVENT DATA ───────────────────────────────────────────────
+        const events = [
+            { name: "Treasure Hunt", sub: "Adventure · Team" },
+            { name: "Culturals", sub: "Dance · Music · Art" },
+            { name: "Singing", sub: "Solo · Band" },
+            { name: "Football", sub: "Tournament · 5v5" },
+            { name: "Dance Battle", sub: "Hip-Hop · Freestyle" },
+            { name: "Coding Marathon", sub: "Hackathon · AI" },
+            { name: "Food Fest", sub: "Tasting · Street Food" },
+            { name: "Art Expo", sub: "Gallery · Live Paint" },
+            { name: "Gaming Arena", sub: "Esports · VR" }
+        ];
+
+        // ─── DOM REFS ───────────────────────────────────────────────────
+        const scrollContainer = document.getElementById('cardsScroll');
+        const dotsContainer = document.getElementById('dotsContainer');
+        const wrapper = document.getElementById('scrollWrapper');
+
+        let currentIndex = 0;
+        let autoPlayTimer = null;
+        let isPointerDown = false;
+        let isSwiping = false;
+
+        // ─── BUILD INFINITE CAROUSEL ──────────────────────────────────
+        function buildCarousel() {
+            scrollContainer.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            const cloneCount = 4; // 4 clones on each side = longer runway
+            const total = events.length;
+            const allCards = [];
+
+            // Prepended clones (last 4 cards)
+            for (let i = total - cloneCount; i < total; i++) {
+                const clone = createCard(events[i], i);
+                clone.dataset.clone = 'left';
+                allCards.push(clone);
+            }
+
+            // Original cards
+            events.forEach((evt, idx) => {
+                const card = createCard(evt, idx);
+                card.dataset.originalIndex = idx;
+                allCards.push(card);
+            });
+
+            // Appended clones (first 4 cards)
+            for (let i = 0; i < cloneCount; i++) {
+                const clone = createCard(events[i], i);
+                clone.dataset.clone = 'right';
+                allCards.push(clone);
+            }
+
+            allCards.forEach(card => scrollContainer.appendChild(card));
+
+            // Dots
+            events.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.dataset.index = i;
+                dot.addEventListener('click', () => {
+                    scrollToCard(i);
+                    pauseAutoPlay(5000);
+                });
+                dotsContainer.appendChild(dot);
+            });
+
+            updateDots(0);
+        }
+
+        function createCard(evt, index) {
+            const card = document.createElement('div');
+            const cls = 'event-card card-' + ((index % events.length) + 1);
+            card.className = cls;
+            card.dataset.originalIndex = index % events.length;
+            card.innerHTML = `
+                <div class="card-image"></div>
+                <div class="card-content">
+                    <div class="card-name">${evt.name}</div>
+                    <div class="card-sub">${evt.sub}</div>
+                </div>
+                <div class="card-explore-badge">Explore →</div>
+            `;
+            card.addEventListener('click', (e) => {
+                if (isSwiping) return;
+                const origIdx = parseInt(card.dataset.originalIndex);
+                scrollToCard(origIdx);
+                pauseAutoPlay(4000);
+            });
+            return card;
+        }
+
+        // ─── UPDATE CAROUSEL (scaling) ────────────────────────────────
+        function updateCarousel() {
+            const rect = scrollContainer.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+
+            const cards = scrollContainer.querySelectorAll('.event-card');
+            let closest = null;
+            let closestDist = Infinity;
+
+            cards.forEach(card => {
+                const r = card.getBoundingClientRect();
+                const cCenter = r.left + r.width / 2;
+                const dist = Math.abs(centerX - cCenter);
+                const maxDist = rect.width / 2;
+                const norm = Math.min(dist / maxDist, 1);
+                const scale = 1 - norm * 0.18;
+                card.style.transform = `scale(${scale})`;
+                card.style.zIndex = Math.round(scale * 10);
+
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closest = card;
+                }
+            });
+
+            if (closest) {
+                const newIdx = parseInt(closest.dataset.originalIndex);
+                if (newIdx !== currentIndex) {
+                    currentIndex = newIdx;
+                    updateDots(currentIndex);
+                }
+            }
+        }
+
+        function updateDots(index) {
+            const dots = dotsContainer.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        // ─── SCROLL TO CARD ─────────────────────────────────────────────
+        function scrollToCard(index) {
+            // Find a card with this original index (prefer first occurrence)
+            const cards = scrollContainer.querySelectorAll('.event-card');
+            let target = null;
+            for (const card of cards) {
+                if (parseInt(card.dataset.originalIndex) === index) {
+                    target = card;
+                    break;
+                }
+            }
+            if (!target) return;
+
+            const container = scrollContainer;
+            const targetLeft = target.offsetLeft;
+            const targetWidth = target.offsetWidth;
+            const containerWidth = container.clientWidth;
+            const scrollTarget = targetLeft - (containerWidth - targetWidth) / 2;
+            container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+        }
+
+        // ─── INFINITE LOOP – INSTANT JUMP (no animation) ──────────────
+        function checkInfiniteLoop() {
+            const container = scrollContainer;
+            const scrollLeft = container.scrollLeft;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            const threshold = 120;
+
+            const originals = container.querySelectorAll('.event-card:not([data-clone])');
+
+            if (scrollLeft < threshold && originals.length > 0) {
+                const firstOrig = originals[0];
+                const targetLeft = firstOrig.offsetLeft;
+                const cw = container.clientWidth;
+                const tw = firstOrig.offsetWidth;
+                const target = targetLeft - (cw - tw) / 2;
+                container.scrollTo({ left: target, behavior: 'auto' });
+                // Force update after jump
+                requestAnimationFrame(() => updateCarousel());
+            } else if (scrollLeft > maxScroll - threshold && originals.length > 0) {
+                const lastOrig = originals[originals.length - 1];
+                const targetLeft = lastOrig.offsetLeft;
+                const cw = container.clientWidth;
+                const tw = lastOrig.offsetWidth;
+                const target = targetLeft - (cw - tw) / 2;
+                container.scrollTo({ left: target, behavior: 'auto' });
+                requestAnimationFrame(() => updateCarousel());
+            }
+        }
+
+        // ─── POINTER EVENTS (unified touch + mouse) ──────────────────
+        let pointerStartX = 0;
+        let pointerStartY = 0;
+        let pointerScrollLeftStart = 0;
+
+        wrapper.addEventListener('pointerdown', (e) => {
+            isPointerDown = true;
+            isSwiping = false;
+            pointerStartX = e.clientX;
+            pointerStartY = e.clientY;
+            pointerScrollLeftStart = scrollContainer.scrollLeft;
+            wrapper.setPointerCapture(e.pointerId);
+            pauseAutoPlay(6000);
+        });
+
+        document.addEventListener('pointermove', (e) => {
+            if (!isPointerDown) return;
+            const deltaX = e.clientX - pointerStartX;
+            const deltaY = e.clientY - pointerStartY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+                isSwiping = true;
+                e.preventDefault();
+                scrollContainer.scrollLeft = pointerScrollLeftStart - deltaX * 1.2;
+                if (!scrollContainer._raf) {
+                    scrollContainer._raf = requestAnimationFrame(() => {
+                        updateCarousel();
+                        scrollContainer._raf = null;
+                    });
+                }
+            }
+        });
+
+        document.addEventListener('pointerup', (e) => {
+            if (!isPointerDown) return;
+            isPointerDown = false;
+
+            if (isSwiping) {
+                // Snap to nearest card
+                setTimeout(() => {
+                    const rect = scrollContainer.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const cards = scrollContainer.querySelectorAll('.event-card');
+                    let closest = null;
+                    let closestDist = Infinity;
+                    cards.forEach(card => {
+                        const r = card.getBoundingClientRect();
+                        const cCenter = r.left + r.width / 2;
+                        const dist = Math.abs(centerX - cCenter);
+                        if (dist < closestDist) {
+                            closestDist = dist;
+                            closest = card;
+                        }
+                    });
+                    if (closest) {
+                        const idx = parseInt(closest.dataset.originalIndex);
+                        scrollToCard(idx);
+                    }
+                }, 100);
+            }
+            wrapper.releasePointerCapture(e.pointerId);
+            // Reset swipe flag after a moment
+            setTimeout(() => { isSwiping = false; }, 300);
+        });
+
+        // ─── SCROLL EVENT ──────────────────────────────────────────────
+        let scrollRaf = null;
+        scrollContainer.addEventListener('scroll', () => {
+            if (scrollRaf) cancelAnimationFrame(scrollRaf);
+            scrollRaf = requestAnimationFrame(() => {
+                updateCarousel();
+                clearTimeout(scrollContainer._loopCheck);
+                scrollContainer._loopCheck = setTimeout(checkInfiniteLoop, 150);
+            });
+        });
+
+        // ─── AUTO-PLAY ──────────────────────────────────────────────────
+        function startAutoPlay() {
+            if (autoPlayTimer) clearInterval(autoPlayTimer);
+            autoPlayTimer = setInterval(() => {
+                if (!isPointerDown) {
+                    const next = (currentIndex + 1) % events.length;
+                    scrollToCard(next);
+                }
+            }, 3800);
+        }
+
+        function pauseAutoPlay(duration = 4000) {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+                setTimeout(startAutoPlay, duration);
+            }
+        }
+
+        // ─── RESIZE ──────────────────────────────────────────────────────
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(updateCarousel, 200);
+        });
+
+        // ─── INIT ──────────────────────────────────────────────────────
+        buildCarousel();
+
+        setTimeout(() => {
+            scrollToCard(0);
+            setTimeout(() => {
+                updateCarousel();
+                startAutoPlay();
+            }, 300);
+        }, 400);
+
+        // ─── DROPDOWN ──────────────────────────────────────────────────
+        const trigger = document.getElementById('logoTrigger');
+        const dropdown = document.getElementById('dropdownMenu');
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+            trigger.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            const header = document.querySelector('.header');
+            if (!header.contains(e.target)) {
+                dropdown.classList.remove('open');
+                trigger.classList.remove('active');
+            }
+        });
+
+        // ─── LOGIN ──────────────────────────────────────────────────────
+        const loginOverlay = document.getElementById('loginOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const loginForm = document.getElementById('loginForm');
+        const forgotLink = document.getElementById('forgotLink');
+
+        function openLogin() {
+            loginOverlay.classList.add('open');
+        }
+        function closeLogin() {
+            loginOverlay.classList.remove('open');
+        }
+
+        modalClose.addEventListener('click', closeLogin);
+        loginOverlay.addEventListener('click', (e) => {
+            if (e.target === loginOverlay) closeLogin();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLogin();
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            closeLogin();
+        });
+
+        forgotLink.addEventListener('click', (e) => e.preventDefault());
+
+        dropdown.querySelectorAll('.dropdown-item').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = link.getAttribute('data-action');
+                const url = link.getAttribute('data-url');
+
+                dropdown.classList.remove('open');
+                trigger.classList.remove('active');
+
+                if (action === 'home') {
+                    document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+                } else if (action === 'redirect' && url) {
+                    window.location.href = url;
+                } else if (action === 'login') {
+                    openLogin();
+                } else if (action === 'explore-event') {
+                    document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ─── PROMO ──────────────────────────────────────────────────────
+        document.getElementById('promoCta').addEventListener('click', () => {});
+
+        // ─── COUNTDOWN ──────────────────────────────────────────────────
+        const promoTarget = new Date('2026-12-31T23:59:59');
+        function updatePromoCountdown() {
+            const now = new Date();
+            let diff = promoTarget - now;
+            if (diff < 0) diff = 0;
+            document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+            document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+            document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+        }
+        updatePromoCountdown();
+        setInterval(updatePromoCountdown, 1000);
+    </script>
+</body>
+</html>
