@@ -316,7 +316,7 @@
         }
 
         /* ==================================================== */
-        /* SECTION 2: EXPLORE – PERFECT CAROUSEL               */
+        /* SECTION 2: EXPLORE – INFINITE CAROUSEL               */
         /* ==================================================== */
         .explore-section {
             position: relative;
@@ -350,7 +350,7 @@
             margin: 8px 0;
             overflow: hidden;
             cursor: grab;
-            touch-action: pan-y; /* Allows vertical scroll, prevents horizontal page scroll */
+            touch-action: pan-y;
         }
 
         .cards-scroll-wrapper:active {
@@ -1000,7 +1000,7 @@
         </div>
     </section>
 
-    <!-- SECTION 2: EXPLORE (CAROUSEL) -->
+    <!-- SECTION 2: EXPLORE (INFINITE CAROUSEL) -->
     <section class="explore-section" id="explore">
         <div class="explore-header">
             <h2>EXPLORE</h2>
@@ -1103,34 +1103,35 @@
 
         let currentIndex = 0;
         let autoPlayTimer = null;
-        let isUserInteracting = false;
+        let isPointerDown = false;
+        let isSwiping = false;
 
-        // ─── BUILD CARDS (with clones) ────────────────────────────────
+        // ─── BUILD INFINITE CAROUSEL ──────────────────────────────────
         function buildCarousel() {
             scrollContainer.innerHTML = '';
             dotsContainer.innerHTML = '';
 
-            const cloneCount = 3;
+            const cloneCount = 4; // 4 clones on each side = longer runway
             const total = events.length;
             const allCards = [];
 
-            // Prepend clones of last N
+            // Prepended clones (last 4 cards)
             for (let i = total - cloneCount; i < total; i++) {
-                const clone = createCard(events[i], i, true);
+                const clone = createCard(events[i], i);
                 clone.dataset.clone = 'left';
                 allCards.push(clone);
             }
 
-            // Originals
+            // Original cards
             events.forEach((evt, idx) => {
-                const card = createCard(evt, idx, false);
+                const card = createCard(evt, idx);
                 card.dataset.originalIndex = idx;
                 allCards.push(card);
             });
 
-            // Append clones of first N
+            // Appended clones (first 4 cards)
             for (let i = 0; i < cloneCount; i++) {
-                const clone = createCard(events[i], i, true);
+                const clone = createCard(events[i], i);
                 clone.dataset.clone = 'right';
                 allCards.push(clone);
             }
@@ -1152,11 +1153,11 @@
             updateDots(0);
         }
 
-        function createCard(evt, index, isClone = false) {
+        function createCard(evt, index) {
             const card = document.createElement('div');
             const cls = 'event-card card-' + ((index % events.length) + 1);
             card.className = cls;
-            card.dataset.originalIndex = (isClone) ? index % events.length : index;
+            card.dataset.originalIndex = index % events.length;
             card.innerHTML = `
                 <div class="card-image"></div>
                 <div class="card-content">
@@ -1166,7 +1167,7 @@
                 <div class="card-explore-badge">Explore →</div>
             `;
             card.addEventListener('click', (e) => {
-                if (isUserInteracting) return;
+                if (isSwiping) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
                 scrollToCard(origIdx);
                 pauseAutoPlay(4000);
@@ -1174,7 +1175,7 @@
             return card;
         }
 
-        // ─── SCROLL & SCALE ─────────────────────────────────────────────
+        // ─── UPDATE CAROUSEL (scaling) ────────────────────────────────
         function updateCarousel() {
             const rect = scrollContainer.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -1217,6 +1218,7 @@
 
         // ─── SCROLL TO CARD ─────────────────────────────────────────────
         function scrollToCard(index) {
+            // Find a card with this original index (prefer first occurrence)
             const cards = scrollContainer.querySelectorAll('.event-card');
             let target = null;
             for (const card of cards) {
@@ -1235,12 +1237,12 @@
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // ─── INFINITE LOOP – SMOOTH (no abrupt jumps) ─────────────────
+        // ─── INFINITE LOOP – INSTANT JUMP (no animation) ──────────────
         function checkInfiniteLoop() {
             const container = scrollContainer;
             const scrollLeft = container.scrollLeft;
             const maxScroll = container.scrollWidth - container.clientWidth;
-            const threshold = 100;
+            const threshold = 120;
 
             const originals = container.querySelectorAll('.event-card:not([data-clone])');
 
@@ -1251,8 +1253,8 @@
                 const tw = firstOrig.offsetWidth;
                 const target = targetLeft - (cw - tw) / 2;
                 container.scrollTo({ left: target, behavior: 'auto' });
-                // Update dots after jump
-                setTimeout(() => updateCarousel(), 50);
+                // Force update after jump
+                requestAnimationFrame(() => updateCarousel());
             } else if (scrollLeft > maxScroll - threshold && originals.length > 0) {
                 const lastOrig = originals[originals.length - 1];
                 const targetLeft = lastOrig.offsetLeft;
@@ -1260,16 +1262,14 @@
                 const tw = lastOrig.offsetWidth;
                 const target = targetLeft - (cw - tw) / 2;
                 container.scrollTo({ left: target, behavior: 'auto' });
-                setTimeout(() => updateCarousel(), 50);
+                requestAnimationFrame(() => updateCarousel());
             }
         }
 
-        // ─── POINTER EVENTS (touch + mouse unified) ──────────────────
+        // ─── POINTER EVENTS (unified touch + mouse) ──────────────────
         let pointerStartX = 0;
         let pointerStartY = 0;
         let pointerScrollLeftStart = 0;
-        let isPointerDown = false;
-        let isSwiping = false;
 
         wrapper.addEventListener('pointerdown', (e) => {
             isPointerDown = true;
@@ -1286,32 +1286,25 @@
             const deltaX = e.clientX - pointerStartX;
             const deltaY = e.clientY - pointerStartY;
 
-            // Detect horizontal swipe (more X movement than Y)
             if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
                 isSwiping = true;
-                // Prevent default only for horizontal swipes
                 e.preventDefault();
                 scrollContainer.scrollLeft = pointerScrollLeftStart - deltaX * 1.2;
-                // Update scales during drag
                 if (!scrollContainer._raf) {
                     scrollContainer._raf = requestAnimationFrame(() => {
                         updateCarousel();
                         scrollContainer._raf = null;
                     });
                 }
-            } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) {
-                // Vertical swipe – allow page scroll, do nothing
-                // But we need to prevent the carousel from moving horizontally
             }
         });
 
         document.addEventListener('pointerup', (e) => {
             if (!isPointerDown) return;
             isPointerDown = false;
-            isSwiping = false;
 
             if (isSwiping) {
-                // Snap to nearest card after swipe ends
+                // Snap to nearest card
                 setTimeout(() => {
                     const rect = scrollContainer.getBoundingClientRect();
                     const centerX = rect.left + rect.width / 2;
@@ -1333,8 +1326,9 @@
                     }
                 }, 100);
             }
-            // Reset pointer capture
             wrapper.releasePointerCapture(e.pointerId);
+            // Reset swipe flag after a moment
+            setTimeout(() => { isSwiping = false; }, 300);
         });
 
         // ─── SCROLL EVENT ──────────────────────────────────────────────
@@ -1344,7 +1338,7 @@
             scrollRaf = requestAnimationFrame(() => {
                 updateCarousel();
                 clearTimeout(scrollContainer._loopCheck);
-                scrollContainer._loopCheck = setTimeout(checkInfiniteLoop, 200);
+                scrollContainer._loopCheck = setTimeout(checkInfiniteLoop, 150);
             });
         });
 
@@ -1363,9 +1357,7 @@
             if (autoPlayTimer) {
                 clearInterval(autoPlayTimer);
                 autoPlayTimer = null;
-                setTimeout(() => {
-                    startAutoPlay();
-                }, duration);
+                setTimeout(startAutoPlay, duration);
             }
         }
 
