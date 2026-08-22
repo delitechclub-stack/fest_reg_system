@@ -1122,6 +1122,7 @@
         const CARD_GAP = 12;
         let cardWidthWithGap = 0;
         let isDragging = false; // flag to prevent infinite loop during drag
+        let isSnapping = false; // flag to prevent infinite loop during smooth snap
 
         // ─── HELPERS ────────────────────────────────────────────────────
         function createCardElement(evt, index) {
@@ -1213,12 +1214,12 @@
 
         // ─── INFINITE LOOP (shift cards) ──────────────────────────────
         function handleInfiniteScroll() {
-            if (isDragging || !cardElements.length) return;
+            if (isDragging || isSnapping || !cardElements.length) return; // ← added isSnapping check
             const container = scrollContainer;
             const scrollLeft = container.scrollLeft;
             const containerWidth = container.clientWidth;
             const maxScroll = container.scrollWidth - containerWidth;
-            const threshold = cardWidthWithGap * 0.4;
+            const threshold = cardWidthWithGap * 0.25; // reduced from 0.4
 
             if (scrollLeft < threshold) {
                 const lastCard = cardElements.pop();
@@ -1300,9 +1301,19 @@
             const targetWidth = target.offsetWidth;
             const containerWidth = container.clientWidth;
             const scrollTarget = targetLeft - (containerWidth - targetWidth) / 2;
+
+            // Set snapping flag and clear any previous timeout
+            isSnapping = true;
+            clearTimeout(window._snapTimeout);
+
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
             currentIndex = index;
             updateDots(index);
+
+            // Reset snapping after animation duration (450ms)
+            window._snapTimeout = setTimeout(() => {
+                isSnapping = false;
+            }, 450);
         }
 
         // ─── POINTER DRAG WITH ONE-CARD SNAP ──────────────────────────
@@ -1315,6 +1326,8 @@
         let dragDelta = 0;
 
         wrapper.addEventListener('pointerdown', (e) => {
+            clearTimeout(window._snapTimeout);   // clear snapping flag on new drag
+            isSnapping = false;
             isPointerDown = true;
             isSwiping = false;
             isDragging = true; // prevent infinite loop during drag
@@ -1394,7 +1407,7 @@
             scrollRaf = requestAnimationFrame(() => {
                 updateCarousel();
                 clearTimeout(loopTimer);
-                loopTimer = setTimeout(handleInfiniteScroll, 120);
+                loopTimer = setTimeout(handleInfiniteScroll, 350); // increased from 120
             });
         });
 
