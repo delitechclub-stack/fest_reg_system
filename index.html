@@ -296,6 +296,7 @@
             touch-action: none;
             cursor: grab;
             will-change: contents;
+            contain: layout style;
         }
 
         .carousel-stage:active {
@@ -331,6 +332,7 @@
                 opacity 0.25s ease;
             -webkit-tap-highlight-color: transparent;
             flex-shrink: 0;
+            contain: layout style;
         }
 
         .carousel-track .event-card:active {
@@ -1046,7 +1048,7 @@
 
         // currentIndex always points to a card in the middle copy: [N, 2N-1]
         let currentIndex = N;
-        // offset is a fractional value: 0 = centered, positive = moved left, negative = moved right
+        // offset is a fractional value: 0 = centered, positive = shifted left, negative = shifted right
         let offset = 0;
 
         // drag state
@@ -1061,6 +1063,9 @@
         // snap animation flag
         let isSnapping = false;
         let snapTimer = null;
+
+        // RAF scheduling
+        let rafId = null;
 
         // ─── BUILD CARDS ───────────────────────────────────────────────
         function createCardElement(evt, idx, globalIdx) {
@@ -1124,36 +1129,37 @@
             });
         }
 
-        // ─── UPDATE CAROUSEL (render only, never modifies state) ──────
+        // ─── UPDATE CAROUSEL (pure math, no layout reads) ────────────
         function updateCarousel(animate = true) {
             const cards = track.querySelectorAll('.event-card');
             if (!cards.length) return;
 
             const stageWidth = stage.clientWidth;
-            const centerOffset = (stageWidth - cardWidth) / 2;
+            const halfStage = stageWidth / 2;
+            const halfCard = cardWidth / 2;
 
-            // Compute transform: -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + centerOffset
-            const pos = -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + centerOffset;
+            // Compute the track's base translation (center of the current card)
+            const basePos = -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + (stageWidth - cardWidth) / 2;
 
-            // Apply transition
+            // Apply transition for snapping
             if (animate) {
                 track.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             } else {
                 track.style.transition = 'none';
             }
-            track.style.transform = `translateX(${pos}px)`;
+            track.style.transform = `translateX(${basePos}px)`;
 
-            // Update scales, opacities, and dots
-            const stageRect = stage.getBoundingClientRect();
-            const centerX = stageRect.left + stageRect.width / 2;
+            // Now compute scale/opacity for each card using its position relative to center
             let closestOrigIdx = 0;
             let closestDist = Infinity;
 
-            cards.forEach((card) => {
-                const rect = card.getBoundingClientRect();
-                const cardCenter = rect.left + rect.width / 2;
-                const dist = Math.abs(centerX - cardCenter);
-                const maxDist = stageRect.width / 2 + cardWidth;
+            cards.forEach((card, i) => {
+                // Card's left edge in the track: i * cardWidthWithGap (because of flex gap)
+                // Its center relative to track: i * cardWidthWithGap + halfCard
+                // Its viewport position: basePos + i * cardWidthWithGap + halfCard
+                const cardCenter = basePos + i * cardWidthWithGap + halfCard;
+                const dist = Math.abs(cardCenter - halfStage);
+                const maxDist = stageWidth / 2 + cardWidth;
                 const norm = Math.min(dist / maxDist, 1);
                 const scale = 1 - norm * 0.18;
                 const opacity = 1 - norm * 0.3;
@@ -1222,6 +1228,12 @@
             lastMoveX = e.clientX;
             lastMoveTime = performance.now();
 
+            // Cancel any pending RAF
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+
             track.style.transition = 'none';
             stage.setPointerCapture(e.pointerId);
             e.preventDefault();
@@ -1236,19 +1248,15 @@
             }
             if (!isDragging) return;
 
-            // Compute new offset: moving left (positive deltaX) means offset decreases (cards move left)
-            // moving right (negative deltaX) means offset increases (cards move right)
+            // Compute new offset
             const deltaCards = -deltaX / cardWidthWithGap;
             let newOffset = dragStartOffset + deltaCards;
-
-            // Clamp to prevent overshoot
             const maxOffset = 1.2;
             if (newOffset > maxOffset) newOffset = maxOffset;
             if (newOffset < -maxOffset) newOffset = -maxOffset;
-
             offset = newOffset;
 
-            // Velocity tracking
+            // Velocity
             const now = performance.now();
             const dt = now - lastMoveTime;
             if (dt > 0) {
@@ -1258,31 +1266,40 @@
             lastMoveTime = now;
             lastMoveX = e.clientX;
 
-            updateCarousel(false);
+            // Schedule a single RAF update
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+            rafId = requestAnimationFrame(() => {
+                updateCarousel(false);
+                rafId = null;
+            });
         });
 
         document.addEventListener('pointerup', (e) => {
             if (!isPointerDown) return;
             isPointerDown = false;
 
+            // Cancel any pending RAF
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+
             if (isDragging) {
-                // Determine snap target based on offset and velocity
                 const threshold = 0.25;
                 const velocityThreshold = 0.3;
                 let targetIndex = currentIndex;
 
                 if (offset < -threshold || velocity < -velocityThreshold) {
-                    // Swipe left → move to next card
                     targetIndex = currentIndex + 1;
                 } else if (offset > threshold || velocity > velocityThreshold) {
-                    // Swipe right → move to previous card
                     targetIndex = currentIndex - 1;
                 } else {
-                    // Snap back to current card
                     targetIndex = currentIndex;
                 }
 
-                // Ensure we stay in the middle copy range
                 const totalCards = 3 * N;
                 if (targetIndex < N) targetIndex = N;
                 if (targetIndex >= 2 * N) targetIndex = 2 * N - 1;
@@ -1292,7 +1309,6 @@
                 snapToIndex(targetIndex, true);
                 isDragging = false;
             } else {
-                // Click without drag: snap to current
                 snapToIndex(currentIndex, true);
             }
 
