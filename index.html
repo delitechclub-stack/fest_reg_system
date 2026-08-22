@@ -1097,12 +1097,11 @@
                         <div class="card-name">${evt.name}</div>
                         <div class="card-sub">${evt.sub}</div>
                     </div>
-                    <div class="card-explore-badge">Explore →</div>
                 `;
             card.addEventListener('click', (e) => {
                 if (isSwiping) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
-                scrollToCard(origIdx);
+                window.location.href = '/event.html?id=' + origIdx;
             });
             return card;
         }
