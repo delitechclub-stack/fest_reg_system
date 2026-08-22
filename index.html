@@ -1140,7 +1140,7 @@
             card.addEventListener('click', (e) => {
                 if (isDragging) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
-                window.location.href = '/event.html?id=' + origIdx;
+                window.location.href = 'event-' + origIdx + '.html';
             });
             return card;
         }
