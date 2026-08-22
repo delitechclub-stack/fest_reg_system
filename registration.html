@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DEPLOMAT · Registration</title>
 
+    <!-- ═══ SUPABASE CLIENT ═══ -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         /* ─── RESET & BASE ─────────────────────────────────────────── */
         * {
@@ -1030,6 +1033,30 @@
         .text-aqua {
             color: #65d8ff;
         }
+
+        /* ─── LOADING SPINNER ────────────────────────────────────────── */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-top: 2px solid #65d8ff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -1228,10 +1255,10 @@
                         <!-- ─── UTR SECTION ─────────────────────────────── -->
                         <div class="utr-section" id="utrArea">
                             <div class="form-group" style="margin-bottom:0">
-                                <label style="color: #65d8ff;">Transaction ID / UTR Number</label>
+                                <label style="color: #65d8ff;">Transaction ID / UTR Number <span class="required">*</span></label>
                                 <input class="f-control" id="txnInput" placeholder="Paste 12-digit UTR here" />
                             </div>
-                            <button onclick="submitRegistration()" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:15px;padding:16px;">
+                            <button type="button" onclick="submitRegistration()" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:15px;padding:16px;" id="submitBtn">
                                 Confirm Registration 🔱
                             </button>
                         </div>
@@ -1266,6 +1293,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
+        // ═══════════════════════════════════════════════════════════════════
+        //  🔐 SUPABASE CONFIG — EDIT THESE WITH YOUR OWN CREDENTIALS
+        // ═══════════════════════════════════════════════════════════════════
+
+        const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+
+        // ═══════════════════════════════════════════════════════════════════
+
+        // ─── INIT SUPABASE ──────────────────────────────────────────────
+        let supabase;
+
+        try {
+            const { createClient } = supabaseJs;
+            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase client initialized.');
+        } catch (err) {
+            console.error('❌ Failed to init Supabase:', err);
+            alert(
+                '⚠️ Supabase connection error. Please check your URL and anon key.\n\n' +
+                'Open the HTML file and update SUPABASE_URL and SUPABASE_ANON_KEY.'
+            );
+        }
+
         // ─── EVENT DATA WITH LIMITS ───────────────────────────────────
         const EVENT_FEE = 250;
         const UPI_ID = "depaul.deplo@okaxis"; // Replace with your actual UPI ID
@@ -1323,6 +1374,7 @@
         const utrArea = document.getElementById('utrArea');
         const txnInput = document.getElementById('txnInput');
         const step4Back = document.getElementById('step4Back');
+        const submitBtn = document.getElementById('submitBtn');
 
         // Banner
         const eventBanner = document.getElementById('eventBanner');
@@ -1650,8 +1702,8 @@
             utrArea.classList.add('active');
         }
 
-        // ─── SUBMIT REGISTRATION ──────────────────────────────────────
-        function submitRegistration() {
+        // ─── SUBMIT REGISTRATION → SUPABASE ──────────────────────────
+        async function submitRegistration() {
             const txn = txnInput.value.trim();
             if (!txn) {
                 alert("⚠️ Please enter your Transaction ID / UTR number to confirm.");
@@ -1661,6 +1713,7 @@
             const entries = playersContainer.querySelectorAll('.player-entry');
             const total = entries.length * EVENT_FEE;
 
+            // ── Gather cross-check data ──
             const crossCheckEntries = crossCheckContainer.querySelectorAll('.cross-check-entry');
             const crossCheckData = [];
             crossCheckEntries.forEach(entry => {
@@ -1672,65 +1725,106 @@
                 });
             });
 
-            const registrationData = {
-                event: selectedEvent ? selectedEvent.name : 'Unknown',
-                college: collegeInput.value.trim(),
-                teamLeader: teamLeaderInput.value.trim(),
-                email: emailInput.value.trim(),
-                phone: phoneInput.value.trim(),
-                participants: [],
-                crossCheck: crossCheckData,
-                totalAmount: total,
-                txn: txn,
-                registeredAt: new Date().toISOString()
-            };
-
+            // ── Build payload ──
+            const participants = [];
             entries.forEach((entry, index) => {
                 const name = entry.querySelector('.player-name').value.trim();
                 const phone = entry.querySelector('.player-phone').value.trim() || 'N/A';
                 const otherEvent = crossCheckData[index] && crossCheckData[index].checked ?
                     EVENTS.find(e => e.id === parseInt(crossCheckData[index].eventId))?.name || 'Yes' :
                     'No';
-                registrationData.participants.push({ name, phone, otherEvent });
+                participants.push({ name, phone, otherEvent });
             });
 
-            console.log('📦 Registration Data:', registrationData);
+            const registrationData = {
+                event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+                event_sub: selectedEvent ? selectedEvent.sub : '',
+                college: collegeInput.value.trim(),
+                team_leader: teamLeaderInput.value.trim(),
+                email: emailInput.value.trim(),
+                phone: phoneInput.value.trim(),
+                total_amount: total,
+                txn: txn,
+                participants: participants,
+                cross_check: crossCheckData,
+                registered_at: new Date().toISOString()
+            };
 
-            // Save to localStorage
-            const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-            db.push({
-                email: registrationData.email,
-                teamLeader: registrationData.teamLeader,
-                college: registrationData.college,
-                phone: registrationData.phone,
-                event: registrationData.event,
-                heads: registrationData.participants.length,
-                amount: registrationData.totalAmount,
-                txn: registrationData.txn,
-                participants: registrationData.participants.map(p => p.name).join(', '),
-                otherEvents: registrationData.participants.filter(p => p.otherEvent !== 'No').map(p => p.otherEvent).join(
-                    ', ') || 'None'
-            });
-            localStorage.setItem('deplomat_db', JSON.stringify(db));
+            // ── Show loading state ──
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+            submitBtn.classList.add('btn-loading');
 
-            // Show success
-            goToStep(5);
-            updateSuccessDetails(registrationData);
+            try {
+                if (!supabase) {
+                    throw new Error('Supabase client not initialized. Check your credentials.');
+                }
+
+                const { data, error } = await supabase
+                    .from('registrations')
+                    .insert([registrationData])
+                    .select();
+
+                if (error) {
+                    console.error('❌ Supabase insert error:', error);
+                    throw new Error(error.message || 'Database insert failed.');
+                }
+
+                console.log('✅ Registration saved to Supabase:', data);
+
+                // ── Also save to localStorage as fallback/backup ──
+                try {
+                    const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                    db.push({
+                        email: registrationData.email,
+                        teamLeader: registrationData.team_leader,
+                        college: registrationData.college,
+                        phone: registrationData.phone,
+                        event: registrationData.event_name,
+                        heads: participants.length,
+                        amount: registrationData.total_amount,
+                        txn: registrationData.txn,
+                        participants: participants.map(p => p.name).join(', '),
+                        otherEvents: participants.filter(p => p.otherEvent !== 'No').map(p => p.otherEvent).join(', ') ||
+                            'None'
+                    });
+                    localStorage.setItem('deplomat_db', JSON.stringify(db));
+                } catch (localErr) {
+                    console.warn('⚠️ localStorage fallback failed:', localErr);
+                }
+
+                // ── Show success ──
+                goToStep(5);
+                updateSuccessDetails(registrationData, participants);
+
+            } catch (err) {
+                console.error('❌ Submission error:', err);
+                alert(
+                    `❌ Failed to save registration.\n\n` +
+                    `Error: ${err.message}\n\n` +
+                    `Please try again or contact support if the issue persists.`
+                );
+            } finally {
+                // ── Reset button ──
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Confirm Registration 🔱';
+                submitBtn.classList.remove('btn-loading');
+            }
         }
 
-        function updateSuccessDetails(data) {
+        function updateSuccessDetails(data, participants) {
             const details = document.getElementById('successDetails');
             details.innerHTML = `
-                    <p><strong>Event:</strong> ${data.event}</p>
+                    <p><strong>Event:</strong> ${data.event_name}</p>
                     <p><strong>College:</strong> ${data.college}</p>
-                    <p><strong>Team Leader:</strong> ${data.teamLeader}</p>
+                    <p><strong>Team Leader:</strong> ${data.team_leader}</p>
                     <p><strong>Email:</strong> ${data.email}</p>
-                    <p><strong>Participants:</strong> ${data.participants.length}</p>
-                    <p><strong>Total Paid:</strong> ₹${data.totalAmount}</p>
+                    <p><strong>Participants:</strong> ${participants ? participants.length : 0}</p>
+                    <p><strong>Total Paid:</strong> ₹${data.total_amount}</p>
                     <p><strong>UTR:</strong> ${data.txn}</p>
                     <hr style="border-color: rgba(255,255,255,0.05); margin: 10px 0;" />
                     <p style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">
-                        A confirmation email has been sent to ${data.email}
+                        ✅ Data saved to Supabase · A confirmation email has been sent to ${data.email}
                     </p>
                 `;
         }
@@ -1743,14 +1837,11 @@
             if (eventIndex !== null && eventIndex !== '') {
                 const select = document.getElementById('eventSelect');
                 if (select) {
-                    // Check if the event ID exists in the dropdown
                     const optionExists = Array.from(select.options).some(opt => opt.value === eventIndex);
                     if (optionExists) {
                         select.value = eventIndex;
-                        // Trigger change to update UI
                         select.dispatchEvent(new Event('change'));
 
-                        // Show the banner
                         const event = EVENTS.find(e => e.id === parseInt(eventIndex));
                         if (event) {
                             bannerEventName.textContent = event.name;
@@ -1758,7 +1849,6 @@
                             eventBanner.classList.add('show');
                             autoSelectedEventId = eventIndex;
 
-                            // Scroll to the registration card after a slight delay
                             setTimeout(() => {
                                 document.querySelector('.register-card').scrollIntoView({
                                     behavior: 'smooth',
@@ -1800,7 +1890,6 @@
                 }
                 updateAddButtonState();
             }
-            // Update banner if manual selection happens
             const val = eventSelect.value;
             if (val) {
                 const event = EVENTS.find(e => e.id === parseInt(val));
@@ -1844,10 +1933,10 @@
 
         // ─── INIT ──────────────────────────────────────────────────────
 
-        // First, auto-select event from URL
+        // Auto-select event from URL
         autoSelectEventFromURL();
 
-        // Then initialize players
+        // Initialize players
         setTimeout(() => {
             if (playersContainer.children.length === 0) {
                 for (let i = 0; i < currentMin; i++) {
@@ -1861,22 +1950,13 @@
             updateQR(EVENT_FEE);
         }, 200);
 
-        console.log('🎯 DEPLOMAT Registration ready!');
+        console.log('🎯 DEPLOMAT Registration ready (Supabase enabled)!');
         console.log('📋 UPI ID:', UPI_ID);
         console.log('📋 Events with limits:', EVENTS.length);
-        console.log('📋 Event limits:', EVENTS.map(e => `${e.name}: ${e.min}-${e.max}`).join(', '));
         console.log('📋 Auto-selected event:', autoSelectedEventId !== null ? EVENTS.find(e => e.id === parseInt(
             autoSelectedEventId))?.name || 'Unknown' : 'None');
-// Auto-select event from URL
-const params = new URLSearchParams(window.location.search);
-const eventIndex = params.get('event');
-if (eventIndex !== null) {
-    const select = document.getElementById('eventSelect');
-    if (select) {
-        select.value = eventIndex;
-        select.dispatchEvent(new Event('change'));
-    }
-}    
-        </script>
+        console.log('🔐 Supabase URL:', SUPABASE_URL);
+        console.log('🔐 Supabase key:', SUPABASE_ANON_KEY ? '✓ Set' : '✗ Missing');
+    </script>
 </body>
 </html>
