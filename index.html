@@ -198,11 +198,52 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.35); /* Reduced intensity */
+            background: rgba(0, 0, 0, 0.55);
             z-index: 1;
         }
 
-        /* Removed .orb and @keyframes floatOrb – no more colorful gradients */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            z-index: 1;
+            pointer-events: none;
+            animation: floatOrb 16s ease-in-out infinite alternate;
+        }
+        .orb1 {
+            width: 400px;
+            height: 400px;
+            background: #ff2a6d;
+            top: 10%;
+            left: -5%;
+        }
+        .orb2 {
+            width: 500px;
+            height: 500px;
+            background: #00d4ff;
+            bottom: 10%;
+            right: -10%;
+            animation-duration: 22s;
+        }
+        .orb3 {
+            width: 300px;
+            height: 300px;
+            background: #b000ff;
+            top: 50%;
+            left: 40%;
+            animation-duration: 14s;
+            opacity: 0.15;
+        }
+
+        @keyframes floatOrb {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+            100% {
+                transform: translate(40px, -40px) scale(1.3);
+            }
+        }
 
         .hero-center {
             position: absolute;
@@ -219,8 +260,6 @@
             padding: 0 20px;
             pointer-events: none;
         }
-
-        /* Removed h1 and subtle-tag styling – no text shown */
 
         .explore-cta {
             position: absolute;
@@ -299,7 +338,7 @@
             margin: 8px 0;
             overflow: hidden;
             cursor: grab;
-            touch-action: pan-y;
+            touch-action: none; /* Prevent default touch scrolling */
         }
 
         .cards-scroll-wrapper:active {
@@ -319,6 +358,7 @@
             -ms-overflow-style: none;
             mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
+            will-change: scroll-position; /* hint for smoother scrolling */
         }
 
         .cards-scroll::-webkit-scrollbar {
@@ -860,7 +900,11 @@
             .hero-center h1 {
                 letter-spacing: 6px;
             }
-            /* Removed orb display rules – no longer needed */
+            .orb1,
+            .orb2,
+            .orb3 {
+                display: none;
+            }
 
             .explore-section {
                 padding: 100px 0 40px 0;
@@ -957,9 +1001,11 @@
             </video>
         </div>
         <div class="overlay"></div>
-        <!-- Removed .orb elements (colorful gradient blobs) -->
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
         <div class="hero-center">
-            <!-- Removed DEPLOMAT and FEST 2026 text; only background gradient remains -->
+            <!-- No text, only gradient -->
         </div>
         <div class="explore-cta">
             <span>Explore</span>
@@ -1052,18 +1098,17 @@
     <script>
         // ─── EVENT DATA ───────────────────────────────────────────────
         const events = [
-            { name: "THE ATLANTEAN TRIALS", sub: ".escape room" },
-            { name: "THE LOST RELIC", sub: ".treasure hunt" },
-            { name: "THE TRIDENT WAR", sub: ".free fire" },
-            { name: "COURT OF THE DEEP", sub: ".moot court" },
-            { name: "THE SIREN'S ACT", sub: ".reels making" },
-            { name: "ECHOS OF ATLANTIS", sub: ".solo singing" },
-            { name: "THE MERMAID'S WALTZ", sub: ".solo dance" },
-            { name: "TIDES OF RYTHM", sub: ".group dance" },
-            { name: "RUNWAY OF REALMS", sub: ".rampwalk" },
-            { name: "THE KRAKEN'S PITCH", sub: ".cricket(for U/G boys)" },
-            { name: "POSEIDON'S CUP", sub: ".football(for P.U boys)" },
-            { name: "TIDAL THROWDOWN", sub: ".throwball for P.U girls" }
+            { name: "Treasure Hunt", sub: "Adventure · Team" },
+            { name: "Culturals", sub: "Dance · Music · Art" },
+            { name: "Singing", sub: "Solo · Band" },
+            { name: "Football", sub: "Tournament · 5v5" },
+            { name: "Dance Battle", sub: "Hip-Hop · Freestyle" },
+            { name: "Coding Marathon", sub: "Hackathon · AI" },
+            { name: "Food Fest", sub: "Tasting · Street Food" },
+            { name: "Art Expo", sub: "Gallery · Live Paint" },
+            { name: "Gaming Arena", sub: "Esports · VR" },
+            { name: "Hockey", sub: "Team · Tournament" },
+            { name: "Badminton", sub: "Singles · Doubles" }
         ];
 
         // ─── DOM REFS ───────────────────────────────────────────────────
@@ -1072,20 +1117,12 @@
         const wrapper = document.getElementById('scrollWrapper');
 
         let currentIndex = 0;
-        let isPointerDown = false;
-        let isSwiping = false;
-
-        // We'll manage the list of cards in an array, with one extra copy at each end.
-        // The DOM order will be: [rightCopy? maybe not needed] Actually we use a circular buffer.
-        // We'll have a list of card elements in order, and we'll move the first to last or last to first.
-        // We'll keep a reference to the original event data for each card.
-        // We'll build the initial set: original order, then prepend a copy of the last, and append a copy of the first.
-        // Actually to avoid jumps, we need at least one extra on each side. We'll use 2 copies for smoothness.
-
         let cardElements = [];
-        const CARD_GAP = 12; // gap in px, from CSS
-        let cardWidthWithGap = 0; // will be set after render
+        const CARD_GAP = 12;
+        let cardWidthWithGap = 0;
+        let isDragging = false; // flag to prevent infinite loop during drag
 
+        // ─── HELPERS ────────────────────────────────────────────────────
         function createCardElement(evt, index) {
             const card = document.createElement('div');
             const cls = 'event-card card-' + ((index % events.length) + 1);
@@ -1097,33 +1134,29 @@
                         <div class="card-name">${evt.name}</div>
                         <div class="card-sub">${evt.sub}</div>
                     </div>
+                    <div class="card-explore-badge">Explore →</div>
                 `;
             card.addEventListener('click', (e) => {
-                if (isSwiping) return;
+                if (isDragging) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
-                window.location.href = '/event.html?id=' + origIdx;
+                scrollToCard(origIdx);
             });
             return card;
         }
 
-        // Build initial DOM: we'll have 2 extra copies on each side.
+        // ─── BUILD CAROUSEL ────────────────────────────────────────────
         function buildCarousel() {
             scrollContainer.innerHTML = '';
             dotsContainer.innerHTML = '';
-
-            // Clear cardElements
             cardElements = [];
 
-            // Create original cards
             const originals = events.map((evt, idx) => {
                 const card = createCardElement(evt, idx);
                 card.dataset.isOriginal = 'true';
                 return card;
             });
 
-            // We'll have two copies on left and two on right for smooth infinite
             const copyCount = 2;
-            // Left copies: last 'copyCount' events in reverse order (or just repeat)
             const leftCopies = [];
             for (let i = events.length - copyCount; i < events.length; i++) {
                 const idx = i % events.length;
@@ -1131,7 +1164,6 @@
                 card.dataset.isOriginal = 'false';
                 leftCopies.push(card);
             }
-            // Right copies: first 'copyCount' events
             const rightCopies = [];
             for (let i = 0; i < copyCount; i++) {
                 const idx = i % events.length;
@@ -1140,15 +1172,19 @@
                 rightCopies.push(card);
             }
 
-            // Order: leftCopies + originals + rightCopies
             const allCards = [...leftCopies, ...originals, ...rightCopies];
             allCards.forEach(card => {
                 scrollContainer.appendChild(card);
                 cardElements.push(card);
             });
 
-            // Set initial scroll position to the first original
-            // We need to scroll to the first original (index = leftCopies.length)
+            // Compute card width
+            const firstCard = cardElements[0];
+            if (firstCard) {
+                cardWidthWithGap = firstCard.offsetWidth + CARD_GAP;
+            }
+
+            // Scroll to first original
             setTimeout(() => {
                 const firstOrig = originals[0];
                 if (firstOrig) {
@@ -1175,61 +1211,32 @@
             updateDots(0);
         }
 
-        // ─── INFINITE LOOP: shift cards when near edges ──────────────
+        // ─── INFINITE LOOP (shift cards) ──────────────────────────────
         function handleInfiniteScroll() {
-            if (!cardElements.length) return;
-
+            if (isDragging || !cardElements.length) return;
             const container = scrollContainer;
             const scrollLeft = container.scrollLeft;
             const containerWidth = container.clientWidth;
-            // We need the total width of the scroll container (sum of widths + gaps)
-            const totalWidth = container.scrollWidth;
-            const maxScroll = totalWidth - containerWidth;
+            const maxScroll = container.scrollWidth - containerWidth;
+            const threshold = cardWidthWithGap * 0.4;
 
-            // Get the width of one card (including gap)
-            // We'll compute from the first card
-            const firstCard = cardElements[0];
-            if (!firstCard) return;
-            const cardWidth = firstCard.offsetWidth + CARD_GAP; // approximate, but we have gap in CSS
-
-            // Determine threshold (half card width or more)
-            const threshold = cardWidth * 0.4;
-
-            // If we are near the left edge (scrollLeft < threshold)
             if (scrollLeft < threshold) {
-                // Move the last card to the front
                 const lastCard = cardElements.pop();
-                // Remove from DOM and prepend
                 scrollContainer.removeChild(lastCard);
                 scrollContainer.prepend(lastCard);
-                // Update array
                 cardElements.unshift(lastCard);
-
-                // Adjust scrollLeft by cardWidth (so the visual position remains same)
-                // We need to add cardWidth to scrollLeft to compensate for the shift
-                container.scrollLeft = scrollLeft + cardWidth;
-                // Update currentIndex? We'll update after carousel update.
+                container.scrollLeft = scrollLeft + cardWidthWithGap;
+            } else if (scrollLeft > maxScroll - threshold) {
+                const firstCard = cardElements.shift();
+                scrollContainer.removeChild(firstCard);
+                scrollContainer.appendChild(firstCard);
+                cardElements.push(firstCard);
+                container.scrollLeft = scrollLeft - cardWidthWithGap;
             }
-
-            // If we are near the right edge (scrollLeft > maxScroll - threshold)
-            if (scrollLeft > maxScroll - threshold) {
-                // Move the first card to the back
-                const firstCard2 = cardElements.shift();
-                // Remove from DOM and append
-                scrollContainer.removeChild(firstCard2);
-                scrollContainer.appendChild(firstCard2);
-                // Update array
-                cardElements.push(firstCard2);
-
-                // Adjust scrollLeft by subtracting cardWidth
-                container.scrollLeft = scrollLeft - cardWidth;
-            }
-
-            // Update carousel and dots after shift
             updateCarousel();
         }
 
-        // ─── UPDATE CAROUSEL (scale and dot) ──────────────────────────
+        // ─── UPDATE CAROUSEL (scale & dots) ──────────────────────────
         function updateCarousel() {
             const rect = scrollContainer.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -1271,7 +1278,6 @@
         }
 
         function scrollToCard(index) {
-            // Find a card with that originalIndex, prefer original (not copy)
             let target = null;
             for (const card of cardElements) {
                 if (parseInt(card.dataset.originalIndex) === index && card.dataset.isOriginal === 'true') {
@@ -1280,7 +1286,6 @@
                 }
             }
             if (!target) {
-                // fallback: find any card with that index
                 for (const card of cardElements) {
                     if (parseInt(card.dataset.originalIndex) === index) {
                         target = card;
@@ -1296,33 +1301,30 @@
             const containerWidth = container.clientWidth;
             const scrollTarget = targetLeft - (containerWidth - targetWidth) / 2;
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+            currentIndex = index;
+            updateDots(index);
         }
 
-        // ─── SCROLL EVENT ──────────────────────────────────────────────
-        let scrollRaf = null;
-        let loopTimer = null;
-
-        scrollContainer.addEventListener('scroll', () => {
-            if (scrollRaf) cancelAnimationFrame(scrollRaf);
-            scrollRaf = requestAnimationFrame(() => {
-                updateCarousel();
-                // Debounce infinite check
-                clearTimeout(loopTimer);
-                loopTimer = setTimeout(handleInfiniteScroll, 50);
-            });
-        });
-
-        // ─── POINTER DRAG ──────────────────────────────────────────────
+        // ─── POINTER DRAG WITH ONE-CARD SNAP ──────────────────────────
+        let isPointerDown = false;
+        let isSwiping = false;
         let pointerStartX = 0;
         let pointerStartY = 0;
         let pointerScrollLeftStart = 0;
+        let startIndex = 0;
+        let dragDelta = 0;
 
         wrapper.addEventListener('pointerdown', (e) => {
             isPointerDown = true;
             isSwiping = false;
+            isDragging = true; // prevent infinite loop during drag
             pointerStartX = e.clientX;
             pointerStartY = e.clientY;
             pointerScrollLeftStart = scrollContainer.scrollLeft;
+            startIndex = currentIndex;
+            dragDelta = 0;
+            // Temporarily disable smooth scroll to avoid fighting
+            scrollContainer.style.scrollBehavior = 'auto';
             wrapper.setPointerCapture(e.pointerId);
         });
 
@@ -1334,7 +1336,15 @@
             if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
                 isSwiping = true;
                 e.preventDefault();
-                scrollContainer.scrollLeft = pointerScrollLeftStart - deltaX * 1.2;
+
+                // Clamp to one card width
+                const maxDelta = cardWidthWithGap;
+                const clampedDelta = Math.min(Math.max(deltaX, -maxDelta), maxDelta);
+                dragDelta = clampedDelta;
+
+                scrollContainer.scrollLeft = pointerScrollLeftStart - clampedDelta;
+
+                // Update scaling in real time
                 if (!scrollContainer._raf) {
                     scrollContainer._raf = requestAnimationFrame(() => {
                         updateCarousel();
@@ -1347,38 +1357,58 @@
         document.addEventListener('pointerup', (e) => {
             if (!isPointerDown) return;
             isPointerDown = false;
+            isDragging = false; // re-enable infinite loop
 
             if (isSwiping) {
-                setTimeout(() => {
-                    const rect = scrollContainer.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const cards = scrollContainer.querySelectorAll('.event-card');
-                    let closest = null;
-                    let closestDist = Infinity;
-                    cards.forEach(card => {
-                        const r = card.getBoundingClientRect();
-                        const cCenter = r.left + r.width / 2;
-                        const dist = Math.abs(centerX - cCenter);
-                        if (dist < closestDist) {
-                            closestDist = dist;
-                            closest = card;
-                        }
-                    });
-                    if (closest) {
-                        const idx = parseInt(closest.dataset.originalIndex);
-                        scrollToCard(idx);
-                    }
-                }, 100);
+                const threshold = cardWidthWithGap * 0.3;
+                let newIndex = startIndex;
+
+                if (dragDelta < -threshold) {
+                    newIndex = (startIndex + 1) % events.length;
+                } else if (dragDelta > threshold) {
+                    newIndex = (startIndex - 1 + events.length) % events.length;
+                }
+
+                if (newIndex !== startIndex) {
+                    scrollToCard(newIndex);
+                } else {
+                    scrollToCard(startIndex);
+                }
+            } else {
+                // tap – keep current
+                scrollToCard(currentIndex);
             }
+
+            // Restore smooth scroll behavior
+            scrollContainer.style.scrollBehavior = 'smooth';
             wrapper.releasePointerCapture(e.pointerId);
             setTimeout(() => { isSwiping = false; }, 300);
+        });
+
+        // ─── SCROLL EVENT (throttled) ──────────────────────────────────
+        let scrollRaf = null;
+        let loopTimer = null;
+
+        scrollContainer.addEventListener('scroll', () => {
+            if (scrollRaf) cancelAnimationFrame(scrollRaf);
+            scrollRaf = requestAnimationFrame(() => {
+                updateCarousel();
+                clearTimeout(loopTimer);
+                loopTimer = setTimeout(handleInfiniteScroll, 120);
+            });
         });
 
         // ─── RESIZE ──────────────────────────────────────────────────────
         let resizeTimer = null;
         window.addEventListener('resize', () => {
             if (resizeTimer) clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(updateCarousel, 200);
+            resizeTimer = setTimeout(() => {
+                const firstCard = cardElements[0];
+                if (firstCard) {
+                    cardWidthWithGap = firstCard.offsetWidth + CARD_GAP;
+                }
+                updateCarousel();
+            }, 200);
         });
 
         // ─── INIT ──────────────────────────────────────────────────────
