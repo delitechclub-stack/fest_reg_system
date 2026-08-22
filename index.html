@@ -1039,23 +1039,35 @@
         const dotsContainer = document.getElementById('dotsContainer');
 
         // ─── STATE ──────────────────────────────────────────────────────
+        const N = events.length;
         let cardWidth = 300;
         const gap = 12;
         let cardWidthWithGap = 312;
-        let currentIndex = 0;
+
+        // currentIndex always points to a card in the middle copy: [N, 2N-1]
+        let currentIndex = N;
+        // offset is a fractional value: 0 = centered, positive = moved left, negative = moved right
         let offset = 0;
+
+        // drag state
+        let isPointerDown = false;
         let isDragging = false;
-        let startPointerX = 0;
-        let startOffset = 0;
-        let animationFrame = null;
-        let isAnimating = false;
+        let dragStartX = 0;
+        let dragStartOffset = 0;
+        let velocity = 0;
+        let lastMoveX = 0;
+        let lastMoveTime = 0;
+
+        // snap animation flag
+        let isSnapping = false;
+        let snapTimer = null;
 
         // ─── BUILD CARDS ───────────────────────────────────────────────
         function createCardElement(evt, idx, globalIdx) {
             const card = document.createElement('div');
-            const cls = 'event-card card-' + ((idx % events.length) + 1);
+            const cls = 'event-card card-' + ((idx % N) + 1);
             card.className = cls;
-            card.dataset.originalIndex = idx % events.length;
+            card.dataset.originalIndex = idx % N;
             card.dataset.globalIndex = globalIdx;
             card.innerHTML = `
                     <div class="card-image"></div>
@@ -1066,7 +1078,7 @@
                     <div class="card-explore-badge">Explore →</div>
                 `;
             card.addEventListener('click', (e) => {
-                if (isDragging) return;
+                if (isDragging || isSnapping) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
                 window.location.href = 'event-' + origIdx + '.html';
             });
@@ -1077,9 +1089,8 @@
         function buildCarousel() {
             track.innerHTML = '';
             dotsContainer.innerHTML = '';
-            const N = events.length;
-            const totalCopies = 3;
 
+            const totalCopies = 3;
             for (let copy = 0; copy < totalCopies; copy++) {
                 events.forEach((evt, idx) => {
                     const globalIdx = copy * N + idx;
@@ -1094,48 +1105,26 @@
                 dot.className = 'dot' + (i === 0 ? ' active' : '');
                 dot.dataset.index = i;
                 dot.addEventListener('click', () => {
-                    snapToIndex(i + N); // snap to middle copy
+                    if (isSnapping) return;
+                    snapToIndex(i + N);
                 });
                 dotsContainer.appendChild(dot);
             }
 
-            // Measure card width
-            const firstCard = track.querySelector('.event-card');
-            if (firstCard) {
-                cardWidth = firstCard.offsetWidth || 300;
-                cardWidthWithGap = cardWidth + gap;
-            }
-
-            currentIndex = N; // start at first card of middle copy
-            offset = 0;
-            updateCarousel(false);
+            // Measure card width after layout
+            requestAnimationFrame(() => {
+                const firstCard = track.querySelector('.event-card');
+                if (firstCard) {
+                    cardWidth = firstCard.offsetWidth || 300;
+                    cardWidthWithGap = cardWidth + gap;
+                }
+                currentIndex = N;
+                offset = 0;
+                updateCarousel(false);
+            });
         }
 
-        // ─── SNAP TO INDEX ─────────────────────────────────────────────
-        function snapToIndex(index, animate = true) {
-            const N = events.length;
-            const totalCards = 3 * N;
-
-            if (index < 0) index = 0;
-            if (index >= totalCards) index = totalCards - 1;
-
-            // Invisible teleport to middle copy if near edges
-            if (index < N) {
-                index += N;
-                animate = false;
-            } else if (index >= 2 * N) {
-                index -= N;
-                animate = false;
-            }
-
-            currentIndex = index;
-            offset = 0;
-            isAnimating = true;
-            updateCarousel(animate);
-            setTimeout(() => { isAnimating = false; }, 600);
-        }
-
-        // ─── UPDATE CAROUSEL ──────────────────────────────────────────
+        // ─── UPDATE CAROUSEL (render only, never modifies state) ──────
         function updateCarousel(animate = true) {
             const cards = track.querySelectorAll('.event-card');
             if (!cards.length) return;
@@ -1143,8 +1132,10 @@
             const stageWidth = stage.clientWidth;
             const centerOffset = (stageWidth - cardWidth) / 2;
 
-            let pos = -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + centerOffset;
+            // Compute transform: -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + centerOffset
+            const pos = -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + centerOffset;
 
+            // Apply transition
             if (animate) {
                 track.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             } else {
@@ -1152,11 +1143,11 @@
             }
             track.style.transform = `translateX(${pos}px)`;
 
-            // Scale & opacity
+            // Update scales, opacities, and dots
             const stageRect = stage.getBoundingClientRect();
             const centerX = stageRect.left + stageRect.width / 2;
-            let closestDist = Infinity;
             let closestOrigIdx = 0;
+            let closestDist = Infinity;
 
             cards.forEach((card) => {
                 const rect = card.getBoundingClientRect();
@@ -1182,48 +1173,54 @@
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === closestOrigIdx);
             });
+        }
 
-            // Keep currentIndex in the middle range
-            if (!isAnimating) {
-                let closestGlobalIdx = 0;
-                let minDist = Infinity;
-                cards.forEach((card) => {
-                    const rect = card.getBoundingClientRect();
-                    const cardCenter = rect.left + rect.width / 2;
-                    const dist = Math.abs(centerX - cardCenter);
-                    if (dist < minDist) {
-                        minDist = dist;
-                        closestGlobalIdx = parseInt(card.dataset.globalIndex);
-                    }
-                });
-                if (Math.abs(closestGlobalIdx - currentIndex) < 2) {
-                    currentIndex = closestGlobalIdx;
-                }
+        // ─── SNAP TO INDEX ─────────────────────────────────────────────
+        function snapToIndex(index, animate = true) {
+            const totalCards = 3 * N;
+
+            // Clamp and wrap to middle copy
+            if (index < N) {
+                index += N;
+                animate = false;
+            } else if (index >= 2 * N) {
+                index -= N;
+                animate = false;
             }
+            if (index < 0) index = 0;
+            if (index >= totalCards) index = totalCards - 1;
+
+            // Ensure we stay in the middle copy
+            if (index < N) index = N;
+            if (index >= 2 * N) index = 2 * N - 1;
+
+            currentIndex = index;
+            offset = 0;
+            isSnapping = true;
+
+            if (snapTimer) {
+                clearTimeout(snapTimer);
+                snapTimer = null;
+            }
+
+            updateCarousel(animate);
+
+            snapTimer = setTimeout(() => {
+                isSnapping = false;
+                snapTimer = null;
+            }, animate ? 700 : 50);
         }
 
         // ─── POINTER DRAG ──────────────────────────────────────────────
-        let dragStartIndex = 0;
-        let dragStartOffset = 0;
-        let dragStartX = 0;
-        let isPointerDown = false;
-        let velocity = 0;
-        let lastMoveTime = 0;
-        let lastMoveX = 0;
-        let isSwiping = false;
-
         stage.addEventListener('pointerdown', (e) => {
+            if (isSnapping) return;
             isPointerDown = true;
-            isDragging = true;
-            isSwiping = false;
-            isAnimating = false;
-            startPointerX = e.clientX;
+            isDragging = false;
             dragStartX = e.clientX;
-            dragStartIndex = currentIndex;
             dragStartOffset = offset;
             velocity = 0;
-            lastMoveTime = performance.now();
             lastMoveX = e.clientX;
+            lastMoveTime = performance.now();
 
             track.style.transition = 'none';
             stage.setPointerCapture(e.pointerId);
@@ -1233,70 +1230,73 @@
         document.addEventListener('pointermove', (e) => {
             if (!isPointerDown) return;
 
-            const deltaX = e.clientX - startPointerX;
-            if (Math.abs(deltaX) > 8) {
-                isSwiping = true;
+            const deltaX = e.clientX - dragStartX;
+            if (Math.abs(deltaX) > 4) {
+                isDragging = true;
             }
-            if (!isSwiping) return;
+            if (!isDragging) return;
 
+            // Compute new offset: moving left (positive deltaX) means offset decreases (cards move left)
+            // moving right (negative deltaX) means offset increases (cards move right)
             const deltaCards = -deltaX / cardWidthWithGap;
             let newOffset = dragStartOffset + deltaCards;
-            const maxOffset = 0.8;
+
+            // Clamp to prevent overshoot
+            const maxOffset = 1.2;
             if (newOffset > maxOffset) newOffset = maxOffset;
             if (newOffset < -maxOffset) newOffset = -maxOffset;
+
             offset = newOffset;
 
+            // Velocity tracking
             const now = performance.now();
             const dt = now - lastMoveTime;
             if (dt > 0) {
                 const v = (e.clientX - lastMoveX) / dt;
-                velocity = velocity * 0.6 + v * 0.4;
+                velocity = velocity * 0.5 + v * 0.5;
             }
             lastMoveTime = now;
             lastMoveX = e.clientX;
 
             updateCarousel(false);
-
-            if (animationFrame) {
-                cancelAnimationFrame(animationFrame);
-                animationFrame = null;
-            }
-            animationFrame = requestAnimationFrame(() => {
-                updateCarousel(false);
-                animationFrame = null;
-            });
         });
 
         document.addEventListener('pointerup', (e) => {
             if (!isPointerDown) return;
             isPointerDown = false;
-            isDragging = false;
 
-            if (isSwiping) {
-                let snapIndex = currentIndex;
+            if (isDragging) {
+                // Determine snap target based on offset and velocity
                 const threshold = 0.25;
-                const velocityThreshold = 0.2;
+                const velocityThreshold = 0.3;
+                let targetIndex = currentIndex;
 
-                if (Math.abs(offset) > threshold || Math.abs(velocity) > velocityThreshold) {
-                    if (offset < -threshold || velocity < -velocityThreshold) {
-                        snapIndex = currentIndex + 1;
-                    } else if (offset > threshold || velocity > velocityThreshold) {
-                        snapIndex = currentIndex - 1;
-                    }
+                if (offset < -threshold || velocity < -velocityThreshold) {
+                    // Swipe left → move to next card
+                    targetIndex = currentIndex + 1;
+                } else if (offset > threshold || velocity > velocityThreshold) {
+                    // Swipe right → move to previous card
+                    targetIndex = currentIndex - 1;
+                } else {
+                    // Snap back to current card
+                    targetIndex = currentIndex;
                 }
 
-                const N = events.length;
+                // Ensure we stay in the middle copy range
                 const totalCards = 3 * N;
-                if (snapIndex < 0) snapIndex = 0;
-                if (snapIndex >= totalCards) snapIndex = totalCards - 1;
+                if (targetIndex < N) targetIndex = N;
+                if (targetIndex >= 2 * N) targetIndex = 2 * N - 1;
+                if (targetIndex < 0) targetIndex = 0;
+                if (targetIndex >= totalCards) targetIndex = totalCards - 1;
 
-                snapToIndex(snapIndex, true);
+                snapToIndex(targetIndex, true);
+                isDragging = false;
             } else {
+                // Click without drag: snap to current
                 snapToIndex(currentIndex, true);
             }
 
             velocity = 0;
-            isSwiping = false;
             stage.releasePointerCapture(e.pointerId);
         });
 
@@ -1317,7 +1317,7 @@
         // ─── WHEEL ──────────────────────────────────────────────────────
         let wheelTimeout = null;
         stage.addEventListener('wheel', (e) => {
-            if (isDragging) return;
+            if (isDragging || isSnapping) return;
             e.preventDefault();
 
             const delta = e.deltaX || e.deltaY;
@@ -1329,9 +1329,10 @@
             }
 
             wheelTimeout = setTimeout(() => {
-                const N = events.length;
-                const totalCards = 3 * N;
                 let newIndex = currentIndex + direction;
+                const totalCards = 3 * N;
+                if (newIndex < N) newIndex = N;
+                if (newIndex >= 2 * N) newIndex = 2 * N - 1;
                 if (newIndex < 0) newIndex = 0;
                 if (newIndex >= totalCards) newIndex = totalCards - 1;
                 snapToIndex(newIndex, true);
@@ -1342,16 +1343,18 @@
         // ─── KEYBOARD ────────────────────────────────────────────────────
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return;
-            const N = events.length;
+            if (isSnapping) return;
             const totalCards = 3 * N;
             if (e.key === 'ArrowLeft') {
                 e.preventDefault();
                 let newIndex = currentIndex - 1;
+                if (newIndex < N) newIndex = N;
                 if (newIndex < 0) newIndex = 0;
                 snapToIndex(newIndex, true);
             } else if (e.key === 'ArrowRight') {
                 e.preventDefault();
                 let newIndex = currentIndex + 1;
+                if (newIndex >= 2 * N) newIndex = 2 * N - 1;
                 if (newIndex >= totalCards) newIndex = totalCards - 1;
                 snapToIndex(newIndex, true);
             }
@@ -1435,7 +1438,8 @@
             let diff = promoTarget - now;
             if (diff < 0) diff = 0;
             document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
-            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,
+            '0');
             document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
             document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
         }
