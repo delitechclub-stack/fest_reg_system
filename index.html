@@ -1143,52 +1143,18 @@
         let isPointerDown = false;
         let isSwiping = false;
 
-        // ─── BUILD INFINITE CAROUSEL ──────────────────────────────────
-        function buildCarousel() {
-            scrollContainer.innerHTML = '';
-            dotsContainer.innerHTML = '';
+        // We'll manage the list of cards in an array, with one extra copy at each end.
+        // The DOM order will be: [rightCopy? maybe not needed] Actually we use a circular buffer.
+        // We'll have a list of card elements in order, and we'll move the first to last or last to first.
+        // We'll keep a reference to the original event data for each card.
+        // We'll build the initial set: original order, then prepend a copy of the last, and append a copy of the first.
+        // Actually to avoid jumps, we need at least one extra on each side. We'll use 2 copies for smoothness.
 
-            const cloneCount = 4;
-            const total = events.length;
-            const allCards = [];
+        let cardElements = [];
+        const CARD_GAP = 12; // gap in px, from CSS
+        let cardWidthWithGap = 0; // will be set after render
 
-            // Left clones (end of the list)
-            for (let i = total - cloneCount; i < total; i++) {
-                const clone = createCard(events[i], i);
-                clone.dataset.clone = 'left';
-                allCards.push(clone);
-            }
-
-            // Originals
-            events.forEach((evt, idx) => {
-                const card = createCard(evt, idx);
-                card.dataset.originalIndex = idx;
-                allCards.push(card);
-            });
-
-            // Right clones (start of the list)
-            for (let i = 0; i < cloneCount; i++) {
-                const clone = createCard(events[i], i);
-                clone.dataset.clone = 'right';
-                allCards.push(clone);
-            }
-
-            allCards.forEach(card => scrollContainer.appendChild(card));
-
-            events.forEach((_, i) => {
-                const dot = document.createElement('div');
-                dot.className = 'dot';
-                dot.dataset.index = i;
-                dot.addEventListener('click', () => {
-                    scrollToCard(i);
-                });
-                dotsContainer.appendChild(dot);
-            });
-
-            updateDots(0);
-        }
-
-        function createCard(evt, index) {
+        function createCardElement(evt, index) {
             const card = document.createElement('div');
             const cls = 'event-card card-' + ((index % events.length) + 1);
             card.className = cls;
@@ -1209,6 +1175,130 @@
             return card;
         }
 
+        // Build initial DOM: we'll have 2 extra copies on each side.
+        function buildCarousel() {
+            scrollContainer.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            // Clear cardElements
+            cardElements = [];
+
+            // Create original cards
+            const originals = events.map((evt, idx) => {
+                const card = createCardElement(evt, idx);
+                card.dataset.isOriginal = 'true';
+                return card;
+            });
+
+            // We'll have two copies on left and two on right for smooth infinite
+            const copyCount = 2;
+            // Left copies: last 'copyCount' events in reverse order (or just repeat)
+            const leftCopies = [];
+            for (let i = events.length - copyCount; i < events.length; i++) {
+                const idx = i % events.length;
+                const card = createCardElement(events[idx], idx);
+                card.dataset.isOriginal = 'false';
+                leftCopies.push(card);
+            }
+            // Right copies: first 'copyCount' events
+            const rightCopies = [];
+            for (let i = 0; i < copyCount; i++) {
+                const idx = i % events.length;
+                const card = createCardElement(events[idx], idx);
+                card.dataset.isOriginal = 'false';
+                rightCopies.push(card);
+            }
+
+            // Order: leftCopies + originals + rightCopies
+            const allCards = [...leftCopies, ...originals, ...rightCopies];
+            allCards.forEach(card => {
+                scrollContainer.appendChild(card);
+                cardElements.push(card);
+            });
+
+            // Set initial scroll position to the first original
+            // We need to scroll to the first original (index = leftCopies.length)
+            setTimeout(() => {
+                const firstOrig = originals[0];
+                if (firstOrig) {
+                    const container = scrollContainer;
+                    const targetLeft = firstOrig.offsetLeft;
+                    const cw = container.clientWidth;
+                    const tw = firstOrig.offsetWidth;
+                    const target = targetLeft - (cw - tw) / 2;
+                    container.scrollTo({ left: target, behavior: 'auto' });
+                }
+                updateCarousel();
+            }, 100);
+
+            // Dots
+            events.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.dataset.index = i;
+                dot.addEventListener('click', () => {
+                    scrollToCard(i);
+                });
+                dotsContainer.appendChild(dot);
+            });
+            updateDots(0);
+        }
+
+        // ─── INFINITE LOOP: shift cards when near edges ──────────────
+        function handleInfiniteScroll() {
+            if (!cardElements.length) return;
+
+            const container = scrollContainer;
+            const scrollLeft = container.scrollLeft;
+            const containerWidth = container.clientWidth;
+            // We need the total width of the scroll container (sum of widths + gaps)
+            const totalWidth = container.scrollWidth;
+            const maxScroll = totalWidth - containerWidth;
+
+            // Get the width of one card (including gap)
+            // We'll compute from the first card
+            const firstCard = cardElements[0];
+            if (!firstCard) return;
+            const cardWidth = firstCard.offsetWidth + CARD_GAP; // approximate, but we have gap in CSS
+
+            // Determine threshold (half card width or more)
+            const threshold = cardWidth * 0.4;
+
+            // If we are near the left edge (scrollLeft < threshold)
+            if (scrollLeft < threshold) {
+                // Move the last card to the front
+                const lastCard = cardElements.pop();
+                // Remove from DOM and prepend
+                scrollContainer.removeChild(lastCard);
+                scrollContainer.prepend(lastCard);
+                // Update array
+                cardElements.unshift(lastCard);
+
+                // Adjust scrollLeft by cardWidth (so the visual position remains same)
+                // We need to add cardWidth to scrollLeft to compensate for the shift
+                container.scrollLeft = scrollLeft + cardWidth;
+                // Update currentIndex? We'll update after carousel update.
+            }
+
+            // If we are near the right edge (scrollLeft > maxScroll - threshold)
+            if (scrollLeft > maxScroll - threshold) {
+                // Move the first card to the back
+                const firstCard2 = cardElements.shift();
+                // Remove from DOM and append
+                scrollContainer.removeChild(firstCard2);
+                scrollContainer.appendChild(firstCard2);
+                // Update array
+                cardElements.push(firstCard2);
+
+                // Adjust scrollLeft by subtracting cardWidth
+                container.scrollLeft = scrollLeft - cardWidth;
+            }
+
+            // Update carousel and dots after shift
+            updateCarousel();
+        }
+
+        // ─── UPDATE CAROUSEL (scale and dot) ──────────────────────────
         function updateCarousel() {
             const rect = scrollContainer.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -1250,12 +1340,21 @@
         }
 
         function scrollToCard(index) {
-            const cards = scrollContainer.querySelectorAll('.event-card');
+            // Find a card with that originalIndex, prefer original (not copy)
             let target = null;
-            for (const card of cards) {
-                if (parseInt(card.dataset.originalIndex) === index) {
+            for (const card of cardElements) {
+                if (parseInt(card.dataset.originalIndex) === index && card.dataset.isOriginal === 'true') {
                     target = card;
                     break;
+                }
+            }
+            if (!target) {
+                // fallback: find any card with that index
+                for (const card of cardElements) {
+                    if (parseInt(card.dataset.originalIndex) === index) {
+                        target = card;
+                        break;
+                    }
                 }
             }
             if (!target) return;
@@ -1268,90 +1367,19 @@
             container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
         }
 
-        // ─── FIXED INFINITE LOOP — no more early jumps ──────────────
-        function checkInfiniteLoop() {
-            const container = scrollContainer;
-            const originals = container.querySelectorAll('.event-card:not([data-clone])');
-            if (originals.length === 0) return;
+        // ─── SCROLL EVENT ──────────────────────────────────────────────
+        let scrollRaf = null;
+        let loopTimer = null;
 
-            const containerRect = container.getBoundingClientRect();
-            const containerCenter = containerRect.left + containerRect.width / 2;
-
-            // Find the card closest to center among ALL cards
-            const allCards = container.querySelectorAll('.event-card');
-            let closestCard = null;
-            let closestDist = Infinity;
-            allCards.forEach(card => {
-                const r = card.getBoundingClientRect();
-                const cCenter = r.left + r.width / 2;
-                const d = Math.abs(containerCenter - cCenter);
-                if (d < closestDist) {
-                    closestDist = d;
-                    closestCard = card;
-                }
+        scrollContainer.addEventListener('scroll', () => {
+            if (scrollRaf) cancelAnimationFrame(scrollRaf);
+            scrollRaf = requestAnimationFrame(() => {
+                updateCarousel();
+                // Debounce infinite check
+                clearTimeout(loopTimer);
+                loopTimer = setTimeout(handleInfiniteScroll, 50);
             });
-
-            if (!closestCard) return;
-
-            const cloneType = closestCard.dataset.clone;
-
-            // If we've reached a right clone, jump to the left clone side
-            if (cloneType === 'right') {
-                const firstOrig = originals[0];
-                const targetLeft = firstOrig.offsetLeft;
-                const cw = container.clientWidth;
-                const tw = firstOrig.offsetWidth;
-                const target = targetLeft - (cw - tw) / 2;
-                container.scrollTo({ left: target, behavior: 'auto' });
-                requestAnimationFrame(() => updateCarousel());
-                return;
-            }
-
-            // If we've reached a left clone, jump to the right clone side
-            if (cloneType === 'left') {
-                const lastOrig = originals[originals.length - 1];
-                const targetLeft = lastOrig.offsetLeft;
-                const cw = container.clientWidth;
-                const tw = lastOrig.offsetWidth;
-                const target = targetLeft - (cw - tw) / 2;
-                container.scrollTo({ left: target, behavior: 'auto' });
-                requestAnimationFrame(() => updateCarousel());
-                return;
-            }
-
-            // If we're on an original card but near the right edge, check if we should loop
-            // Only loop if the last original card is near the right edge of the container
-            const lastOrig = originals[originals.length - 1];
-            const lastRect = lastOrig.getBoundingClientRect();
-            const rightThreshold = 120;
-
-            if (lastRect.right - containerRect.right < rightThreshold && lastRect.right > containerRect.left) {
-                // We're at the end of originals – jump to the left clones
-                const firstOrig = originals[0];
-                const targetLeft = firstOrig.offsetLeft;
-                const cw = container.clientWidth;
-                const tw = firstOrig.offsetWidth;
-                const target = targetLeft - (cw - tw) / 2;
-                container.scrollTo({ left: target, behavior: 'auto' });
-                requestAnimationFrame(() => updateCarousel());
-                return;
-            }
-
-            // Left edge: if first original is near the left edge, jump to right clones
-            const firstOrig = originals[0];
-            const firstRect = firstOrig.getBoundingClientRect();
-            const leftThreshold = 120;
-
-            if (containerRect.left - firstRect.left < leftThreshold && firstRect.left < containerRect.right) {
-                const lastOrig2 = originals[originals.length - 1];
-                const targetLeft = lastOrig2.offsetLeft;
-                const cw = container.clientWidth;
-                const tw = lastOrig2.offsetWidth;
-                const target = targetLeft - (cw - tw) / 2;
-                container.scrollTo({ left: target, behavior: 'auto' });
-                requestAnimationFrame(() => updateCarousel());
-            }
-        }
+        });
 
         // ─── POINTER DRAG ──────────────────────────────────────────────
         let pointerStartX = 0;
@@ -1415,19 +1443,6 @@
             setTimeout(() => { isSwiping = false; }, 300);
         });
 
-        // ─── SCROLL HANDLER ─────────────────────────────────────────────
-        let scrollRaf = null;
-        let loopCheckTimer = null;
-
-        scrollContainer.addEventListener('scroll', () => {
-            if (scrollRaf) cancelAnimationFrame(scrollRaf);
-            scrollRaf = requestAnimationFrame(() => {
-                updateCarousel();
-                clearTimeout(loopCheckTimer);
-                loopCheckTimer = setTimeout(checkInfiniteLoop, 80);
-            });
-        });
-
         // ─── RESIZE ──────────────────────────────────────────────────────
         let resizeTimer = null;
         window.addEventListener('resize', () => {
@@ -1437,13 +1452,6 @@
 
         // ─── INIT ──────────────────────────────────────────────────────
         buildCarousel();
-
-        setTimeout(() => {
-            scrollToCard(0);
-            setTimeout(() => {
-                updateCarousel();
-            }, 300);
-        }, 400);
 
         // ─── DROPDOWN ──────────────────────────────────────────────────
         const trigger = document.getElementById('logoTrigger');
