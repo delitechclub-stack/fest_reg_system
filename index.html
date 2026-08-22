@@ -322,6 +322,8 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 24px 20px;
+            color: inherit;
+            text-decoration: none;
             position: relative;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
             cursor: pointer;
@@ -1069,9 +1071,10 @@
 
         // ─── BUILD CARDS ───────────────────────────────────────────────
         function createCardElement(evt, idx, globalIdx) {
-            const card = document.createElement('div');
+            const card = document.createElement('a');
             const cls = 'event-card card-' + ((idx % N) + 1);
             card.className = cls;
+            card.href = 'event-' + (idx % N) + '.html';
             card.dataset.originalIndex = idx % N;
             card.dataset.globalIndex = globalIdx;
             card.innerHTML = `
@@ -1083,9 +1086,9 @@
                     <div class="card-explore-badge">Explore →</div>
                 `;
             card.addEventListener('click', (e) => {
-                if (isDragging || isSnapping) return;
-                const origIdx = parseInt(card.dataset.originalIndex);
-                window.location.href = 'event-' + origIdx + '.html';
+                if (isDragging) {
+                    e.preventDefault();
+                }
             });
             return card;
         }
@@ -1308,8 +1311,6 @@
 
                 snapToIndex(targetIndex, true);
                 isDragging = false;
-            } else {
-                snapToIndex(currentIndex, true);
             }
 
             velocity = 0;
