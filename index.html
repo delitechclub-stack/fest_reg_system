@@ -6,6 +6,7 @@
     <title>DEPLOMAT · Immersive Experience</title>
 
     <style>
+        /* ─── RESET & BASE ─────────────────────────────────────────── */
         * {
             margin: 0;
             padding: 0;
@@ -26,7 +27,7 @@
             user-select: none;
         }
 
-        /* ----- FLOATING LOGO ----- */
+        /* ─── FLOATING LOGO ────────────────────────────────────────── */
         .header {
             position: fixed;
             top: 24px;
@@ -58,7 +59,7 @@
             transform: scale(0.92);
         }
 
-        /* ----- DROPDOWN ----- */
+        /* ─── DROPDOWN ─────────────────────────────────────────────── */
         .epic-dropdown {
             display: none;
             position: absolute;
@@ -167,9 +168,7 @@
             color: #ff2a6d;
         }
 
-        /* ==================================================== */
-        /* SECTION 1: HERO                                      */
-        /* ==================================================== */
+        /* ─── HERO ──────────────────────────────────────────────────── */
         .hero-section {
             position: relative;
             height: 100dvh;
@@ -260,9 +259,7 @@
             }
         }
 
-        /* ==================================================== */
-        /* SECTION 2: EXPLORE – INFINITE CAROUSEL               */
-        /* ==================================================== */
+        /* ─── EXPLORE SECTION ──────────────────────────────────────── */
         .explore-section {
             position: relative;
             z-index: 2;
@@ -272,6 +269,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow: hidden;
         }
 
         .explore-header {
@@ -289,40 +287,31 @@
             line-height: 1;
         }
 
-        .cards-scroll-wrapper {
+        /* ─── CAROUSEL (transform-based) ───────────────────────────── */
+        .carousel-stage {
             position: relative;
-            padding: 16px 0 8px 0;
-            margin: 8px 0;
+            width: 100%;
+            padding: 20px 0 10px 0;
             overflow: hidden;
-            cursor: grab;
             touch-action: none;
+            cursor: grab;
+            will-change: contents;
         }
 
-        .cards-scroll-wrapper:active {
+        .carousel-stage:active {
             cursor: grabbing;
         }
 
-        .cards-scroll {
+        .carousel-track {
             display: flex;
             gap: 12px;
-            padding: 12px 16px 20px 16px;
-            overflow-x: auto;
-            overflow-y: visible;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
-            will-change: scroll-position;
+            will-change: transform;
+            transition: none;
+            padding: 0 8px;
+            /* flex items will be sized by JS */;
         }
 
-        .cards-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .event-card {
+        .carousel-track .event-card {
             flex: 0 0 300px;
             height: 420px;
             background: linear-gradient(145deg, #16161f, #0c0c12);
@@ -333,21 +322,23 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 24px 20px;
-            scroll-snap-align: center;
-            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
             position: relative;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.9);
             cursor: pointer;
-            will-change: transform;
+            will-change: transform, opacity;
             transform: scale(0.92);
+            transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+                box-shadow 0.3s ease,
+                opacity 0.25s ease;
             -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
         }
 
-        .event-card:active {
-            transition-duration: 0.1s;
+        .carousel-track .event-card:active {
+            transition-duration: 0.08s;
         }
 
-        .event-card .card-image {
+        .carousel-track .event-card .card-image {
             position: absolute;
             top: 0;
             left: 0;
@@ -358,12 +349,12 @@
             transition: 0.6s ease;
         }
 
-        .event-card:hover .card-image {
+        .carousel-track .event-card:hover .card-image {
             opacity: 0.9;
             transform: scale(1.05);
         }
 
-        .event-card .card-content {
+        .carousel-track .event-card .card-content {
             position: relative;
             z-index: 2;
             background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
@@ -372,7 +363,7 @@
             border-radius: 0 0 28px 28px;
         }
 
-        .event-card .card-name {
+        .carousel-track .event-card .card-name {
             font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: 1.5px;
@@ -380,14 +371,14 @@
             margin-bottom: 4px;
         }
 
-        .event-card .card-sub {
+        .carousel-track .event-card .card-sub {
             font-size: 0.7rem;
             letter-spacing: 2.5px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.3);
         }
 
-        .event-card .card-explore-badge {
+        .carousel-track .event-card .card-explore-badge {
             position: absolute;
             bottom: 20px;
             right: 20px;
@@ -406,10 +397,11 @@
             pointer-events: none;
         }
 
-        .event-card:hover .card-explore-badge {
+        .carousel-track .event-card:hover .card-explore-badge {
             opacity: 1;
         }
 
+        /* card background gradients */
         .card-1 .card-image {
             background: linear-gradient(145deg, #2d1b3d, #6b2a5c);
         }
@@ -444,7 +436,7 @@
             background: linear-gradient(145deg, #3d1b2a, #8a2a5a);
         }
 
-        /* ----- DOTS ----- */
+        /* ─── DOTS ──────────────────────────────────────────────────── */
         .dots-container {
             display: flex;
             justify-content: center;
@@ -469,9 +461,7 @@
             box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
         }
 
-        /* ==================================================== */
-        /* SECTION 3: PROMO                                     */
-        /* ==================================================== */
+        /* ─── PROMO ──────────────────────────────────────────────────── */
         .promo-section {
             position: relative;
             height: 100dvh;
@@ -658,9 +648,7 @@
             opacity: 0.2;
         }
 
-        /* ==================================================== */
-        /* LOGIN MODAL                                           */
-        /* ==================================================== */
+        /* ─── LOGIN MODAL ───────────────────────────────────────────── */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -822,9 +810,7 @@
             color: #ff2a6d;
         }
 
-        /* ==================================================== */
-        /* RESPONSIVE                                           */
-        /* ==================================================== */
+        /* ─── RESPONSIVE ────────────────────────────────────────────── */
         @media (max-width: 768px) {
             .header {
                 top: 18px;
@@ -854,10 +840,6 @@
                 padding: 6px 18px 2px 18px;
             }
 
-            .hero-center h1 {
-                letter-spacing: 6px;
-            }
-
             .explore-section {
                 padding: 100px 0 40px 0;
             }
@@ -865,31 +847,24 @@
                 padding: 0 20px 15px 20px;
             }
 
-            .cards-scroll {
-                gap: 8px;
-                padding: 8px 8px 16px 8px;
-                mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2% 98%, transparent 100%);
-            }
-
-            .event-card {
+            .carousel-track .event-card {
                 flex: 0 0 72vw;
                 height: 55vh;
                 padding: 20px 16px;
                 border-radius: 24px;
             }
-            .event-card .card-content {
+            .carousel-track .event-card .card-content {
                 margin: 0 -16px -20px -16px;
                 padding: 32px 16px 20px 16px;
                 border-radius: 0 0 24px 24px;
             }
-            .event-card .card-name {
+            .carousel-track .event-card .card-name {
                 font-size: 1.3rem;
             }
-            .event-card .card-sub {
+            .carousel-track .event-card .card-sub {
                 font-size: 0.65rem;
             }
-            .event-card .card-explore-badge {
+            .carousel-track .event-card .card-explore-badge {
                 font-size: 0.55rem;
                 padding: 3px 12px;
                 bottom: 16px;
@@ -898,15 +873,15 @@
         }
 
         @media (max-width: 480px) {
-            .event-card {
+            .carousel-track .event-card {
                 flex: 0 0 76vw;
                 height: 48vh;
                 border-radius: 20px;
             }
-            .event-card .card-name {
+            .carousel-track .event-card .card-name {
                 font-size: 1.1rem;
             }
-            .event-card .card-sub {
+            .carousel-track .event-card .card-sub {
                 font-size: 0.6rem;
             }
         }
@@ -914,7 +889,7 @@
 </head>
 <body>
 
-    <!-- FLOATING LOGO -->
+    <!-- ─── FLOATING LOGO ─────────────────────────────────────────── -->
     <header class="header">
         <div class="trigger-wrapper" id="logoTrigger">
             <svg class="logo-emblem" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -944,41 +919,39 @@
         </div>
     </header>
 
-    <!-- SECTION 1: HERO (orbs removed) -->
+    <!-- ─── HERO ───────────────────────────────────────────────────── -->
     <section class="hero-section" id="hero">
         <div class="video-container">
             <video autoplay muted loop playsinline webkit-playsinline preload="auto">
                 <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1787309801/hero-bg.mp4.mp4" />
-                Your browser does not support HTML5 video.
             </video>
         </div>
         <div class="overlay"></div>
-        <div class="hero-center">
-            <!-- No text, only gradient -->
-        </div>
+        <div class="hero-center"></div>
         <div class="explore-cta">
             <span>Explore</span>
             <div class="mouse-line"></div>
         </div>
     </section>
 
-    <!-- SECTION 2: EXPLORE (INFINITE CAROUSEL) -->
+    <!-- ─── EXPLORE (transform-based infinite carousel) ──────────── -->
     <section class="explore-section" id="explore">
         <div class="explore-header">
             <h2>EXPLORE</h2>
         </div>
-        <div class="cards-scroll-wrapper" id="scrollWrapper">
-            <div class="cards-scroll" id="cardsScroll"></div>
+
+        <div class="carousel-stage" id="carouselStage">
+            <div class="carousel-track" id="carouselTrack"></div>
         </div>
+
         <div class="dots-container" id="dotsContainer"></div>
     </section>
 
-    <!-- SECTION 3: PROMO -->
+    <!-- ─── PROMO ───────────────────────────────────────────────────── -->
     <section class="promo-section" id="promo">
         <div class="video-container">
             <video autoplay muted loop playsinline webkit-playsinline>
                 <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-                Your browser does not support HTML5 video.
             </video>
         </div>
 
@@ -1023,7 +996,7 @@
         </div>
     </section>
 
-    <!-- LOGIN MODAL -->
+    <!-- ─── LOGIN MODAL ────────────────────────────────────────────── -->
     <div class="modal-overlay" id="loginOverlay">
         <div class="login-modal">
             <button class="modal-close" id="modalClose" aria-label="Close">×</button>
@@ -1062,29 +1035,36 @@
         ];
 
         // ─── DOM REFS ───────────────────────────────────────────────────
-        const scrollContainer = document.getElementById('cardsScroll');
+        const track = document.getElementById('carouselTrack');
+        const stage = document.getElementById('carouselStage');
         const dotsContainer = document.getElementById('dotsContainer');
-        const wrapper = document.getElementById('scrollWrapper');
 
-        let currentIndex = 0;
-        let cardElements = [];
-        const CARD_GAP = 12;
-        let cardWidthWithGap = 0;
+        // ─── STATE ──────────────────────────────────────────────────────
+        let cardWidth = 300; // will be updated on resize
+        const gap = 12;
+        let cardWidthWithGap = 312; // cardWidth + gap
+        let totalCards = events.length;
+        let currentIndex = 0; // which original card is centered
+        let offset = 0; // fractional offset from currentIndex (in card units)
         let isDragging = false;
-        let isSnapping = false;
+        let startPointerX = 0;
+        let startOffset = 0;
+        let animationFrame = null;
+        let isAnimating = false;
 
-        // ─── HELPERS ────────────────────────────────────────────────────
-        function createCardElement(evt, index) {
+        // ─── BUILD CARDS ───────────────────────────────────────────────
+        function createCardElement(evt, idx) {
             const card = document.createElement('div');
-            const cls = 'event-card card-' + ((index % events.length) + 1);
+            const cls = 'event-card card-' + ((idx % events.length) + 1);
             card.className = cls;
-            card.dataset.originalIndex = index % events.length;
+            card.dataset.originalIndex = idx % events.length;
             card.innerHTML = `
                     <div class="card-image"></div>
                     <div class="card-content">
                         <div class="card-name">${evt.name}</div>
                         <div class="card-sub">${evt.sub}</div>
                     </div>
+                    <div class="card-explore-badge">Explore →</div>
                 `;
             card.addEventListener('click', (e) => {
                 if (isDragging) return;
@@ -1094,218 +1074,226 @@
             return card;
         }
 
-        // ─── BUILD CAROUSEL ────────────────────────────────────────────
+        // We'll build a circular buffer: render all cards in order, but we'll
+        // use transform to position them. For infinite scrolling, we just
+        // keep the cards in a fixed order and wrap the index.
         function buildCarousel() {
-            scrollContainer.innerHTML = '';
+            track.innerHTML = '';
             dotsContainer.innerHTML = '';
-            cardElements = [];
 
-            const originals = events.map((evt, idx) => {
+            // Create all cards in order
+            events.forEach((evt, idx) => {
                 const card = createCardElement(evt, idx);
-                card.dataset.isOriginal = 'true';
-                return card;
+                track.appendChild(card);
             });
 
-            const copyCount = 2;
-            const leftCopies = [];
-            for (let i = events.length - copyCount; i < events.length; i++) {
-                const idx = i % events.length;
-                const card = createCardElement(events[idx], idx);
-                card.dataset.isOriginal = 'false';
-                leftCopies.push(card);
-            }
-            const rightCopies = [];
-            for (let i = 0; i < copyCount; i++) {
-                const idx = i % events.length;
-                const card = createCardElement(events[idx], idx);
-                card.dataset.isOriginal = 'false';
-                rightCopies.push(card);
-            }
-
-            const allCards = [...leftCopies, ...originals, ...rightCopies];
-            allCards.forEach(card => {
-                scrollContainer.appendChild(card);
-                cardElements.push(card);
-            });
-
-            const firstCard = cardElements[0];
-            if (firstCard) {
-                cardWidthWithGap = firstCard.offsetWidth + CARD_GAP;
-            }
-
-            setTimeout(() => {
-                const firstOrig = originals[0];
-                if (firstOrig) {
-                    const container = scrollContainer;
-                    const targetLeft = firstOrig.offsetLeft;
-                    const cw = container.clientWidth;
-                    const tw = firstOrig.offsetWidth;
-                    const target = targetLeft - (cw - tw) / 2;
-                    container.scrollTo({ left: target, behavior: 'auto' });
-                }
-                updateCarousel();
-            }, 100);
-
+            // Create dots
             events.forEach((_, i) => {
                 const dot = document.createElement('div');
-                dot.className = 'dot';
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
                 dot.dataset.index = i;
                 dot.addEventListener('click', () => {
-                    scrollToCard(i);
+                    snapToIndex(i);
                 });
                 dotsContainer.appendChild(dot);
             });
-            updateDots(0);
-        }
 
-        // ─── INFINITE LOOP (shift cards) ──────────────────────────────
-        function handleInfiniteScroll() {
-            if (isDragging || isSnapping || !cardElements.length) return;
-            const container = scrollContainer;
-            const scrollLeft = container.scrollLeft;
-            const containerWidth = container.clientWidth;
-            const maxScroll = container.scrollWidth - containerWidth;
-            const threshold = cardWidthWithGap * 0.25;
-
-            if (scrollLeft < threshold) {
-                const lastCard = cardElements.pop();
-                scrollContainer.removeChild(lastCard);
-                scrollContainer.prepend(lastCard);
-                cardElements.unshift(lastCard);
-                container.scrollLeft = scrollLeft + cardWidthWithGap;
-            } else if (scrollLeft > maxScroll - threshold) {
-                const firstCard = cardElements.shift();
-                scrollContainer.removeChild(firstCard);
-                scrollContainer.appendChild(firstCard);
-                cardElements.push(firstCard);
-                container.scrollLeft = scrollLeft - cardWidthWithGap;
+            // Measure first card
+            const firstCard = track.querySelector('.event-card');
+            if (firstCard) {
+                cardWidth = firstCard.offsetWidth || 300;
+                cardWidthWithGap = cardWidth + gap;
             }
-            updateCarousel();
+
+            // Set initial position: center on first card
+            currentIndex = 0;
+            offset = 0;
+            updateCarousel(false);
         }
 
-        // ─── UPDATE CAROUSEL (scale & dots) ──────────────────────────
-        function updateCarousel() {
-            const rect = scrollContainer.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
+        // ─── UPDATE CAROUSEL (transform + scale + dots) ──────────────
+        function updateCarousel(animate = true) {
+            const cards = track.querySelectorAll('.event-card');
+            if (!cards.length) return;
 
-            const cards = scrollContainer.querySelectorAll('.event-card');
-            let closest = null;
+            // The total width of all cards
+            const totalWidth = cards.length * cardWidthWithGap - gap;
+
+            // Compute the target position: center the current card
+            // We want the current card to be centered in the viewport
+            const stageWidth = stage.clientWidth;
+            const cardMid = cardWidth / 2;
+            const centerOffset = (stageWidth - cardWidth) / 2;
+
+            // The position of the current card in the track
+            // currentIndex * cardWidthWithGap gives the left edge of the card
+            // We add cardMid to get the center, then subtract centerOffset to center it
+            let pos = -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + centerOffset;
+
+            // Apply transform
+            if (animate) {
+                track.style.transition = 'transform 0.45s cubic-bezier(0.23, 1, 0.32, 1)';
+            } else {
+                track.style.transition = 'none';
+            }
+            track.style.transform = `translateX(${pos}px)`;
+
+            // Update scale and opacity for each card based on distance from center
+            const trackRect = track.getBoundingClientRect();
+            const stageRect = stage.getBoundingClientRect();
+            const centerX = stageRect.left + stageRect.width / 2;
+
             let closestDist = Infinity;
+            let closestIdx = 0;
 
-            cards.forEach(card => {
-                const r = card.getBoundingClientRect();
-                const cCenter = r.left + r.width / 2;
-                const dist = Math.abs(centerX - cCenter);
-                const maxDist = rect.width / 2;
+            cards.forEach((card, i) => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.left + rect.width / 2;
+                const dist = Math.abs(centerX - cardCenter);
+                const maxDist = stageRect.width / 2 + cardWidth;
                 const norm = Math.min(dist / maxDist, 1);
                 const scale = 1 - norm * 0.18;
+                const opacity = 1 - norm * 0.3;
+
                 card.style.transform = `scale(${scale})`;
+                card.style.opacity = Math.max(0.5, opacity);
                 card.style.zIndex = Math.round(scale * 10);
 
                 if (dist < closestDist) {
                     closestDist = dist;
-                    closest = card;
+                    closestIdx = i;
                 }
             });
 
-            if (closest) {
-                const newIdx = parseInt(closest.dataset.originalIndex);
-                if (newIdx !== currentIndex) {
-                    currentIndex = newIdx;
-                    updateDots(currentIndex);
-                }
-            }
-        }
-
-        function updateDots(index) {
+            // Update dots
+            const origIdx = parseInt(cards[closestIdx]?.dataset.originalIndex ?? 0);
             const dots = dotsContainer.querySelectorAll('.dot');
             dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
+                dot.classList.toggle('active', i === origIdx);
             });
+
+            // Update currentIndex to match the closest card's original index
+            // but only if we're not animating (to avoid fighting the snap)
+            if (!isAnimating) {
+                const newIdx = parseInt(cards[closestIdx]?.dataset.originalIndex ?? 0);
+                if (newIdx !== currentIndex) {
+                    // Update currentIndex but keep offset in sync
+                    const offsetDelta = (newIdx - currentIndex);
+                    currentIndex = newIdx;
+                    offset = 0;
+                }
+            }
+
+            // Store the current index for the next update
+            currentIndex = parseInt(cards[closestIdx]?.dataset.originalIndex ?? 0);
         }
 
-        function scrollToCard(index) {
-            let target = null;
-            for (const card of cardElements) {
-                if (parseInt(card.dataset.originalIndex) === index && card.dataset.isOriginal === 'true') {
-                    target = card;
-                    break;
-                }
-            }
-            if (!target) {
-                for (const card of cardElements) {
-                    if (parseInt(card.dataset.originalIndex) === index) {
-                        target = card;
-                        break;
-                    }
-                }
-            }
-            if (!target) return;
-
-            const container = scrollContainer;
-            const targetLeft = target.offsetLeft;
-            const targetWidth = target.offsetWidth;
-            const containerWidth = container.clientWidth;
-            const scrollTarget = targetLeft - (containerWidth - targetWidth) / 2;
-
-            isSnapping = true;
-            clearTimeout(window._snapTimeout);
-
-            container.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+        // ─── SNAP TO INDEX ─────────────────────────────────────────────
+        function snapToIndex(index, animate = true) {
+            if (index < 0) index = events.length - 1;
+            if (index >= events.length) index = 0;
             currentIndex = index;
-            updateDots(index);
-
-            window._snapTimeout = setTimeout(() => {
-                isSnapping = false;
-            }, 450);
+            offset = 0;
+            isAnimating = true;
+            updateCarousel(animate);
+            setTimeout(() => {
+                isAnimating = false;
+            }, 500);
         }
 
-        // ─── POINTER DRAG WITH ONE-CARD SNAP ──────────────────────────
-        let isPointerDown = false;
-        let isSwiping = false;
-        let pointerStartX = 0;
-        let pointerStartY = 0;
-        let pointerScrollLeftStart = 0;
-        let startIndex = 0;
-        let dragDelta = 0;
+        // ─── INFINITE WRAP (circular) ──────────────────────────────────
+        // Since we keep all cards in order and just wrap the index,
+        // we need to handle the case where the user drags past the ends.
+        function wrapIndex(index) {
+            while (index < 0) index += events.length;
+            while (index >= events.length) index -= events.length;
+            return index;
+        }
 
-        wrapper.addEventListener('pointerdown', (e) => {
-            clearTimeout(window._snapTimeout);
-            isSnapping = false;
+        // ─── POINTER DRAG ──────────────────────────────────────────────
+        let dragStartIndex = 0;
+        let dragStartOffset = 0;
+        let dragStartX = 0;
+        let isPointerDown = false;
+        let velocity = 0;
+        let lastMoveTime = 0;
+        let lastMoveX = 0;
+        let isSwiping = false;
+
+        stage.addEventListener('pointerdown', (e) => {
+            // ignore if clicking on a card (let the card handle click)
+            if (e.target.closest('.event-card') && !e.target.closest('.card-explore-badge')) {
+                // still allow drag from card, but we need to track
+            }
+
             isPointerDown = true;
-            isSwiping = false;
             isDragging = true;
-            pointerStartX = e.clientX;
-            pointerStartY = e.clientY;
-            pointerScrollLeftStart = scrollContainer.scrollLeft;
-            startIndex = currentIndex;
-            dragDelta = 0;
-            scrollContainer.style.scrollBehavior = 'auto';
-            wrapper.setPointerCapture(e.pointerId);
+            isSwiping = false;
+            isAnimating = false;
+            startPointerX = e.clientX;
+            dragStartX = e.clientX;
+            dragStartIndex = currentIndex;
+            dragStartOffset = offset;
+            velocity = 0;
+            lastMoveTime = performance.now();
+            lastMoveX = e.clientX;
+
+            // Disable transition during drag
+            track.style.transition = 'none';
+            stage.setPointerCapture(e.pointerId);
+
+            // Prevent text selection
+            e.preventDefault();
         });
 
         document.addEventListener('pointermove', (e) => {
             if (!isPointerDown) return;
-            const deltaX = e.clientX - pointerStartX;
-            const deltaY = e.clientY - pointerStartY;
 
-            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+            const deltaX = e.clientX - startPointerX;
+            const absDelta = Math.abs(deltaX);
+
+            // Determine if this is a swipe or a click
+            if (absDelta > 8) {
                 isSwiping = true;
-                e.preventDefault();
-
-                const maxDelta = cardWidthWithGap;
-                const clampedDelta = Math.min(Math.max(deltaX, -maxDelta), maxDelta);
-                dragDelta = clampedDelta;
-
-                scrollContainer.scrollLeft = pointerScrollLeftStart - clampedDelta;
-
-                if (!scrollContainer._raf) {
-                    scrollContainer._raf = requestAnimationFrame(() => {
-                        updateCarousel();
-                        scrollContainer._raf = null;
-                    });
-                }
             }
+
+            if (!isSwiping) return;
+
+            // Calculate the offset in card units
+            const deltaCards = -deltaX / cardWidthWithGap;
+            let newOffset = dragStartOffset + deltaCards;
+
+            // Clamp offset to prevent going too far
+            const maxOffset = 0.8;
+            if (newOffset > maxOffset) newOffset = maxOffset;
+            if (newOffset < -maxOffset) newOffset = -maxOffset;
+
+            offset = newOffset;
+
+            // Update velocity
+            const now = performance.now();
+            const dt = now - lastMoveTime;
+            if (dt > 0) {
+                const v = (e.clientX - lastMoveX) / dt;
+                velocity = velocity * 0.6 + v * 0.4;
+            }
+            lastMoveTime = now;
+            lastMoveX = e.clientX;
+
+            // Update the carousel position without animation
+            updateCarousel(false);
+
+            // Cancel any pending animation frame
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+
+            // Schedule a follow-up update for smoothness
+            animationFrame = requestAnimationFrame(() => {
+                updateCarousel(false);
+                animationFrame = null;
+            });
         });
 
         document.addEventListener('pointerup', (e) => {
@@ -1314,53 +1302,107 @@
             isDragging = false;
 
             if (isSwiping) {
-                const threshold = cardWidthWithGap * 0.3;
-                let newIndex = startIndex;
+                // Determine the snap target
+                let snapIndex = currentIndex;
+                let snapOffset = 0;
 
-                if (dragDelta < -threshold) {
-                    newIndex = (startIndex + 1) % events.length;
-                } else if (dragDelta > threshold) {
-                    newIndex = (startIndex - 1 + events.length) % events.length;
-                }
+                // If the offset is significant, move to the next/prev card
+                const threshold = 0.25;
+                const velocityThreshold = 0.3;
 
-                if (newIndex !== startIndex) {
-                    scrollToCard(newIndex);
+                if (Math.abs(offset) > threshold || Math.abs(velocity) > velocityThreshold) {
+                    if (offset < -threshold || velocity < -velocityThreshold) {
+                        snapIndex = wrapIndex(currentIndex + 1);
+                    } else if (offset > threshold || velocity > velocityThreshold) {
+                        snapIndex = wrapIndex(currentIndex - 1);
+                    } else {
+                        snapIndex = currentIndex;
+                    }
                 } else {
-                    scrollToCard(startIndex);
+                    snapIndex = currentIndex;
                 }
+
+                // Snap to the target
+                snapIndex = wrapIndex(snapIndex);
+                currentIndex = snapIndex;
+                offset = 0;
+                isAnimating = true;
+
+                // Apply snap with animation
+                updateCarousel(true);
+
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 500);
+
+                // Update dots after snap
+                const dots = dotsContainer.querySelectorAll('.dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === snapIndex);
+                });
+
             } else {
-                scrollToCard(currentIndex);
+                // Just a click, snap back
+                currentIndex = dragStartIndex;
+                offset = 0;
+                updateCarousel(true);
             }
 
-            scrollContainer.style.scrollBehavior = 'smooth';
-            wrapper.releasePointerCapture(e.pointerId);
-            setTimeout(() => { isSwiping = false; }, 300);
-        });
+            // Reset velocity
+            velocity = 0;
+            isSwiping = false;
 
-        // ─── SCROLL EVENT (throttled) ──────────────────────────────────
-        let scrollRaf = null;
-        let loopTimer = null;
-
-        scrollContainer.addEventListener('scroll', () => {
-            if (scrollRaf) cancelAnimationFrame(scrollRaf);
-            scrollRaf = requestAnimationFrame(() => {
-                updateCarousel();
-                clearTimeout(loopTimer);
-                loopTimer = setTimeout(handleInfiniteScroll, 350);
-            });
+            // Release pointer capture
+            stage.releasePointerCapture(e.pointerId);
         });
 
         // ─── RESIZE ──────────────────────────────────────────────────────
-        let resizeTimer = null;
+        let resizeTimeout = null;
         window.addEventListener('resize', () => {
-            if (resizeTimer) clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                const firstCard = cardElements[0];
+            if (resizeTimeout) clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const firstCard = track.querySelector('.event-card');
                 if (firstCard) {
-                    cardWidthWithGap = firstCard.offsetWidth + CARD_GAP;
+                    cardWidth = firstCard.offsetWidth || 300;
+                    cardWidthWithGap = cardWidth + gap;
                 }
-                updateCarousel();
+                updateCarousel(false);
             }, 200);
+        });
+
+        // ─── WHEEL / TOUCHPAD SUPPORT ──────────────────────────────────
+        // Allow scroll wheel to navigate the carousel
+        let wheelTimeout = null;
+        stage.addEventListener('wheel', (e) => {
+            if (isDragging) return;
+            e.preventDefault();
+
+            const delta = e.deltaX || e.deltaY;
+            const direction = delta > 0 ? 1 : -1;
+
+            if (wheelTimeout) {
+                clearTimeout(wheelTimeout);
+                wheelTimeout = null;
+            }
+
+            // Debounce wheel events
+            wheelTimeout = setTimeout(() => {
+                const newIndex = wrapIndex(currentIndex + direction);
+                snapToIndex(newIndex, true);
+                wheelTimeout = null;
+            }, 80);
+        }, { passive: false });
+
+        // ─── KEYBOARD ────────────────────────────────────────────────────
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                snapToIndex(wrapIndex(currentIndex - 1), true);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                snapToIndex(wrapIndex(currentIndex + 1), true);
+            }
         });
 
         // ─── INIT ──────────────────────────────────────────────────────
@@ -1390,13 +1432,9 @@
         const loginForm = document.getElementById('loginForm');
         const forgotLink = document.getElementById('forgotLink');
 
-        function openLogin() {
-            loginOverlay.classList.add('open');
-        }
+        function openLogin() { loginOverlay.classList.add('open'); }
 
-        function closeLogin() {
-            loginOverlay.classList.remove('open');
-        }
+        function closeLogin() { loginOverlay.classList.remove('open'); }
 
         modalClose.addEventListener('click', closeLogin);
         loginOverlay.addEventListener('click', (e) => {
