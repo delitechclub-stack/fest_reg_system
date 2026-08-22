@@ -198,52 +198,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.35); /* Reduced intensity */
             z-index: 1;
         }
 
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.25;
-            z-index: 1;
-            pointer-events: none;
-            animation: floatOrb 16s ease-in-out infinite alternate;
-        }
-        .orb1 {
-            width: 400px;
-            height: 400px;
-            background: #ff2a6d;
-            top: 10%;
-            left: -5%;
-        }
-        .orb2 {
-            width: 500px;
-            height: 500px;
-            background: #00d4ff;
-            bottom: 10%;
-            right: -10%;
-            animation-duration: 22s;
-        }
-        .orb3 {
-            width: 300px;
-            height: 300px;
-            background: #b000ff;
-            top: 50%;
-            left: 40%;
-            animation-duration: 14s;
-            opacity: 0.15;
-        }
-
-        @keyframes floatOrb {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-            100% {
-                transform: translate(40px, -40px) scale(1.3);
-            }
-        }
+        /* Removed .orb and @keyframes floatOrb – no more colorful gradients */
 
         .hero-center {
             position: absolute;
@@ -901,11 +860,7 @@
             .hero-center h1 {
                 letter-spacing: 6px;
             }
-            .orb1,
-            .orb2,
-            .orb3 {
-                display: none;
-            }
+            /* Removed orb display rules – no longer needed */
 
             .explore-section {
                 padding: 100px 0 40px 0;
@@ -1002,9 +957,7 @@
             </video>
         </div>
         <div class="overlay"></div>
-        <div class="orb orb1"></div>
-        <div class="orb orb2"></div>
-        <div class="orb orb3"></div>
+        <!-- Removed .orb elements (colorful gradient blobs) -->
         <div class="hero-center">
             <!-- Removed DEPLOMAT and FEST 2026 text; only background gradient remains -->
         </div>
