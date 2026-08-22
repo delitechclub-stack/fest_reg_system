@@ -379,7 +379,6 @@
             color: rgba(255, 255, 255, 0.3);
         }
 
-        /* ─── FIX: EXPLORE BADGE — always visible & tappable ────── */
         .carousel-track .event-card .card-explore-badge {
             position: absolute;
             bottom: 20px;
@@ -827,6 +826,16 @@
         }
 
         /* ─── RESPONSIVE ────────────────────────────────────────────── */
+
+        /* tablets & small laptops */
+        @media (max-width: 1024px) {
+            .carousel-track .event-card {
+                flex: 0 0 280px;
+                height: 380px;
+            }
+        }
+
+        /* phones */
         @media (max-width: 768px) {
             .header {
                 top: 18px;
@@ -866,6 +875,7 @@
             .carousel-track .event-card {
                 flex: 0 0 72vw;
                 height: 55vh;
+                min-height: 320px;
                 padding: 20px 16px;
                 border-radius: 24px;
             }
@@ -893,6 +903,7 @@
             .carousel-track .event-card {
                 flex: 0 0 76vw;
                 height: 48vh;
+                min-height: 280px;
                 border-radius: 20px;
             }
             .carousel-track .event-card .card-name {
@@ -906,6 +917,74 @@
                 padding: 4px 10px;
                 bottom: 12px;
                 right: 12px;
+            }
+
+            .promo-countdown {
+                gap: 10px;
+            }
+            .promo-countdown .cd-item {
+                padding: 12px 16px;
+                min-width: 60px;
+            }
+            .promo-countdown .cd-item span {
+                font-size: 2rem;
+            }
+            .promo-countdown .cd-item small {
+                font-size: 0.5rem;
+            }
+        }
+
+        /* Windows / desktop with small viewport or scaling issues */
+        @media (max-width: 600px) and (min-width: 481px) {
+            .carousel-track .event-card {
+                flex: 0 0 60vw;
+                height: 50vh;
+                min-height: 300px;
+            }
+        }
+
+        /* prevent card overlap on very narrow windows */
+        @media (max-width: 400px) {
+            .carousel-track .event-card {
+                flex: 0 0 82vw;
+                height: 44vh;
+                min-height: 240px;
+                padding: 16px 12px;
+                border-radius: 16px;
+            }
+            .carousel-track .event-card .card-content {
+                margin: 0 -12px -16px -12px;
+                padding: 24px 12px 16px 12px;
+                border-radius: 0 0 16px 16px;
+            }
+            .carousel-track .event-card .card-name {
+                font-size: 0.95rem;
+                letter-spacing: 1px;
+            }
+            .carousel-track .event-card .card-sub {
+                font-size: 0.5rem;
+                letter-spacing: 1.5px;
+            }
+            .carousel-track .event-card .card-explore-badge {
+                font-size: 0.45rem;
+                padding: 3px 8px;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Windows high-DPI / small tabs: ensure cards don't stretch */
+        @media (min-width: 769px) and (max-width: 1200px) {
+            .carousel-track .event-card {
+                flex: 0 0 260px;
+                height: 380px;
+            }
+        }
+
+        @media (min-width: 1201px) {
+            .carousel-track .event-card {
+                flex: 0 0 300px;
+                height: 420px;
             }
         }
     </style>
@@ -1070,7 +1149,7 @@
 
         let currentIndex = N;
         let offset = 0;
-        let activeOrigIdx = 0; // track the currently centered card's original index
+        let activeOrigIdx = 0;
 
         // drag state
         let isPointerDown = false;
@@ -1087,6 +1166,7 @@
 
         // RAF scheduling
         let rafId = null;
+        let resizeTimeout = null;
 
         // ─── BUILD CARDS ───────────────────────────────────────────────
         function createCardElement(evt, idx, globalIdx) {
@@ -1104,10 +1184,9 @@
                     <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
                 `;
 
-            // ── FIX: click handler on the badge itself ──
             const badge = card.querySelector('.card-explore-badge');
             badge.addEventListener('click', (e) => {
-                e.stopPropagation(); // prevent card click from firing too
+                e.stopPropagation();
                 if (isDragging || isSnapping) return;
                 const origIdx = parseInt(badge.dataset.originalIndex);
                 if (!isNaN(origIdx)) {
@@ -1115,9 +1194,7 @@
                 }
             });
 
-            // ── card click (fallback for desktop, but we now use pointerup for touch) ──
             card.addEventListener('click', (e) => {
-                // if the click came from the badge, it's already handled above
                 if (e.target.closest('.card-explore-badge')) return;
                 if (isDragging || isSnapping) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
@@ -1143,7 +1220,6 @@
                 });
             }
 
-            // Build dots
             for (let i = 0; i < N; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'dot' + (i === 0 ? ' active' : '');
@@ -1155,7 +1231,6 @@
                 dotsContainer.appendChild(dot);
             }
 
-            // Measure card width after layout
             requestAnimationFrame(() => {
                 const firstCard = track.querySelector('.event-card');
                 if (firstCard) {
@@ -1168,7 +1243,7 @@
             });
         }
 
-        // ─── UPDATE CAROUSEL (pure math, no layout reads) ────────────
+        // ─── UPDATE CAROUSEL ───────────────────────────────────────────
         function updateCarousel(animate = true) {
             const cards = track.querySelectorAll('.event-card');
             if (!cards.length) return;
@@ -1209,28 +1284,37 @@
 
             activeOrigIdx = closestOrigIdx;
 
-            // Update dots
             const dots = dotsContainer.querySelectorAll('.dot');
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === closestOrigIdx);
             });
         }
 
-        // ─── SNAP TO INDEX ─────────────────────────────────────────────
+        // ─── SNAP TO INDEX (FIXED: proper wrap + no lock) ────────────
         function snapToIndex(index, animate = true) {
+            // Prevent overlapping snap operations
+            if (isSnapping) return;
+
             const totalCards = 3 * N;
 
+            // ── FIX: wrap instead of clamp ──
+            // When going backward past the first card of the middle copy
             if (index < N) {
-                index += N;
-                animate = false;
-            } else if (index >= 2 * N) {
-                index -= N;
+                // Jump to the last card of the middle copy
+                index = 2 * N - 1;
+                // Disable animation for the jump so it's seamless
                 animate = false;
             }
+            // When going forward past the last card of the middle copy
+            else if (index >= 2 * N) {
+                // Jump to the first card of the middle copy
+                index = N;
+                animate = false;
+            }
+
+            // Safety clamp (should never hit if wrap logic is correct)
             if (index < 0) index = 0;
             if (index >= totalCards) index = totalCards - 1;
-            if (index < N) index = N;
-            if (index >= 2 * N) index = 2 * N - 1;
 
             currentIndex = index;
             offset = 0;
@@ -1243,18 +1327,18 @@
 
             updateCarousel(animate);
 
+            const delay = animate ? 700 : 50;
             snapTimer = setTimeout(() => {
                 isSnapping = false;
                 snapTimer = null;
-            }, animate ? 700 : 50);
+            }, delay);
         }
 
-        // ─── HELPER: find the card under pointer ──────────────────────
+        // ─── FIND CARD UNDER POINTER ──────────────────────────────────
         function findCardAtPoint(clientX, clientY) {
             const el = document.elementFromPoint(clientX, clientY);
             if (!el) return null;
-            const card = el.closest('.event-card');
-            return card;
+            return el.closest('.event-card');
         }
 
         // ─── POINTER DRAG ──────────────────────────────────────────────
@@ -1275,8 +1359,6 @@
 
             track.style.transition = 'none';
             stage.setPointerCapture(e.pointerId);
-            // Do NOT preventDefault here — we want click events to fire on desktop
-            // but we also need to handle touch via pointerup
         });
 
         document.addEventListener('pointermove', (e) => {
@@ -1323,9 +1405,8 @@
                 rafId = null;
             }
 
-            // ── FIX: if no drag, treat as tap and redirect ──
+            // ── FIX: tap → redirect ──
             if (!isDragging) {
-                // Find which card was tapped
                 const card = findCardAtPoint(e.clientX, e.clientY);
                 if (card) {
                     const origIdx = parseInt(card.dataset.originalIndex);
@@ -1335,19 +1416,17 @@
                         return;
                     }
                 }
-                // fallback: redirect to the currently centered card
                 if (activeOrigIdx !== undefined && !isNaN(activeOrigIdx)) {
                     window.location.href = 'event-' + activeOrigIdx + '.html';
                     stage.releasePointerCapture(e.pointerId);
                     return;
                 }
-                // if all else fails, just snap
                 snapToIndex(currentIndex, true);
                 stage.releasePointerCapture(e.pointerId);
                 return;
             }
 
-            // ── Drag handling ──
+            // ── Drag: snap with wrap ──
             const threshold = 0.25;
             const velocityThreshold = 0.3;
             let targetIndex = currentIndex;
@@ -1360,28 +1439,26 @@
                 targetIndex = currentIndex;
             }
 
-            const totalCards = 3 * N;
-            if (targetIndex < N) targetIndex = N;
-            if (targetIndex >= 2 * N) targetIndex = 2 * N - 1;
-            if (targetIndex < 0) targetIndex = 0;
-            if (targetIndex >= totalCards) targetIndex = totalCards - 1;
-
+            // The snapToIndex function now handles wrapping internally
             snapToIndex(targetIndex, true);
             isDragging = false;
             velocity = 0;
             stage.releasePointerCapture(e.pointerId);
         });
 
-        // ─── RESIZE ──────────────────────────────────────────────────────
-        let resizeTimeout = null;
+        // ─── RESIZE (debounced + recalc card width) ──────────────────
         window.addEventListener('resize', () => {
             if (resizeTimeout) clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 const firstCard = track.querySelector('.event-card');
                 if (firstCard) {
-                    cardWidth = firstCard.offsetWidth || 300;
-                    cardWidthWithGap = cardWidth + gap;
+                    const newWidth = firstCard.offsetWidth || 300;
+                    if (newWidth !== cardWidth) {
+                        cardWidth = newWidth;
+                        cardWidthWithGap = cardWidth + gap;
+                    }
                 }
+                // Force update to re-center
                 updateCarousel(false);
             }, 200);
         });
@@ -1402,11 +1479,6 @@
 
             wheelTimeout = setTimeout(() => {
                 let newIndex = currentIndex + direction;
-                const totalCards = 3 * N;
-                if (newIndex < N) newIndex = N;
-                if (newIndex >= 2 * N) newIndex = 2 * N - 1;
-                if (newIndex < 0) newIndex = 0;
-                if (newIndex >= totalCards) newIndex = totalCards - 1;
                 snapToIndex(newIndex, true);
                 wheelTimeout = null;
             }, 80);
@@ -1416,19 +1488,12 @@
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return;
             if (isSnapping) return;
-            const totalCards = 3 * N;
             if (e.key === 'ArrowLeft') {
                 e.preventDefault();
-                let newIndex = currentIndex - 1;
-                if (newIndex < N) newIndex = N;
-                if (newIndex < 0) newIndex = 0;
-                snapToIndex(newIndex, true);
+                snapToIndex(currentIndex - 1, true);
             } else if (e.key === 'ArrowRight') {
                 e.preventDefault();
-                let newIndex = currentIndex + 1;
-                if (newIndex >= 2 * N) newIndex = 2 * N - 1;
-                if (newIndex >= totalCards) newIndex = totalCards - 1;
-                snapToIndex(newIndex, true);
+                snapToIndex(currentIndex + 1, true);
             }
         });
 
