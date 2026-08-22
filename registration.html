@@ -1867,6 +1867,16 @@
         console.log('📋 Event limits:', EVENTS.map(e => `${e.name}: ${e.min}-${e.max}`).join(', '));
         console.log('📋 Auto-selected event:', autoSelectedEventId !== null ? EVENTS.find(e => e.id === parseInt(
             autoSelectedEventId))?.name || 'Unknown' : 'None');
-    </script>
+// Auto-select event from URL
+const params = new URLSearchParams(window.location.search);
+const eventIndex = params.get('event');
+if (eventIndex !== null) {
+    const select = document.getElementById('eventSelect');
+    if (select) {
+        select.value = eventIndex;
+        select.dispatchEvent(new Event('change'));
+    }
+}    
+        </script>
 </body>
 </html>
