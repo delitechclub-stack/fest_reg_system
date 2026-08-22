@@ -6,7 +6,8 @@
     <title>DEPLOMAT · Registration</title>
 
     <!-- ═══ SUPABASE CLIENT ═══ -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
 
     <style>
         /* ─── RESET & BASE ─────────────────────────────────────────── */
@@ -1297,24 +1298,30 @@
         //  🔐 SUPABASE CONFIG — EDIT THESE WITH YOUR OWN CREDENTIALS
         // ═══════════════════════════════════════════════════════════════════
 
-        const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+        const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
 
         // ═══════════════════════════════════════════════════════════════════
 
-        // ─── INIT SUPABASE ──────────────────────────────────────────────
+        // ─── INIT SUPABASE (FIXED: use `supabase` global, not `supabaseJs`) ──
         let supabase;
 
         try {
-            const { createClient } = supabaseJs;
-            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('✅ Supabase client initialized.');
+            // The CDN script exposes `supabase` as a global
+            if (typeof supabase !== 'undefined' && supabase.createClient) {
+                supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized.');
+            } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized (window.supabase).');
+            } else {
+                throw new Error('Supabase library not loaded. Check CDN script.');
+            }
         } catch (err) {
             console.error('❌ Failed to init Supabase:', err);
-            alert(
-                '⚠️ Supabase connection error. Please check your URL and anon key.\n\n' +
-                'Open the HTML file and update SUPABASE_URL and SUPABASE_ANON_KEY.'
-            );
+            // Show a non-blocking warning – the form still works with localStorage fallback
+            console.warn('⚠️ Supabase unavailable. Registrations will be saved to localStorage only.');
+            // We'll still allow the form to work with localStorage fallback
         }
 
         // ─── EVENT DATA WITH LIMITS ───────────────────────────────────
@@ -1452,13 +1459,23 @@
 
         // ─── STEP MANAGEMENT ──────────────────────────────────────────
         function goToStep(step) {
+            // Validate current step before moving forward
             if (step > currentStep) {
                 if (!validateStep(currentStep)) return;
             }
 
-            steps.forEach(s => s.classList.remove('active'));
-            document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+            // Find the target step element
+            const targetStep = document.querySelector(`.form-step[data-step="${step}"]`);
+            if (!targetStep) {
+                console.error(`❌ Step ${step} not found in DOM`);
+                return;
+            }
 
+            // Update step visibility
+            steps.forEach(s => s.classList.remove('active'));
+            targetStep.classList.add('active');
+
+            // Update dots
             dots.forEach((dot, index) => {
                 const num = index + 1;
                 dot.classList.remove('active', 'done');
@@ -1467,14 +1484,26 @@
             });
 
             currentStep = step;
-            document.querySelector('.register-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+            // Scroll to top of card
+            const card = document.querySelector('.register-card');
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // Step-specific initialization
             if (step === 2) {
                 initializePlayers();
                 updateEventLimitInfo();
             }
-            if (step === 3) initializeCrossCheck();
-            if (step === 4) updatePaymentSummary();
+            if (step === 3) {
+                initializeCrossCheck();
+            }
+            if (step === 4) {
+                updatePaymentSummary();
+                // Auto-show UTR section since payment is required
+                utrArea.classList.add('active');
+            }
         }
 
         // ─── VALIDATION ──────────────────────────────────────────────
@@ -1489,10 +1518,22 @@
                 if (!college) { alert('Please enter your college name.'); return false; }
                 if (!teamLeader) { alert('Please enter the team leader name.'); return false; }
                 if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return false; }
-                if (!phone || phone.length < 10) { alert('Please enter a valid phone number.'); return false; }
+
+                // Improved phone validation: strip non-digits, check length
+                const phoneDigits = phone.replace(/\D/g, '');
+                if (!phone || phoneDigits.length < 10) {
+                    alert('Please enter a valid 10-digit phone number.');
+                    return false;
+                }
+
                 if (!eventVal) { alert('Please select an event.'); return false; }
 
                 selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
+                if (!selectedEvent) {
+                    alert('Please select a valid event.');
+                    return false;
+                }
+
                 return true;
             }
 
@@ -1521,11 +1562,14 @@
 
                 if (!allValid) return false;
 
+                // Update players array
                 players = [];
                 playerInputs.forEach(entry => {
                     const nameInput = entry.querySelector('.player-name');
+                    const phoneInputField = entry.querySelector('.player-phone');
                     players.push({
-                        name: nameInput ? nameInput.value.trim() : ''
+                        name: nameInput ? nameInput.value.trim() : '',
+                        phone: phoneInputField ? phoneInputField.value.trim() : 'N/A'
                     });
                 });
 
@@ -1538,7 +1582,8 @@
         // ─── PLAYER MANAGEMENT ────────────────────────────────────────
         function initializePlayers() {
             if (playersContainer.children.length === 0) {
-                for (let i = 0; i < currentMin; i++) {
+                const initialCount = Math.max(1, currentMin);
+                for (let i = 0; i < initialCount; i++) {
                     addPlayer();
                 }
             }
@@ -1590,7 +1635,7 @@
             updateAddButtonState();
         }
 
-        // ─── CROSS-CHECK WITH DROPDOWN ───────────────────────────────
+        // ─── CROSS-CHECK ───────────────────────────────────────────────
         function initializeCrossCheck() {
             crossCheckContainer.innerHTML = '';
             const entries = playersContainer.querySelectorAll('.player-entry');
@@ -1671,7 +1716,6 @@
             if (qrVisible) {
                 const total = getTotalAmount();
                 updateQR(total);
-                utrArea.classList.add('active');
             }
         }
 
@@ -1756,23 +1800,30 @@
             submitBtn.classList.add('btn-loading');
 
             try {
-                if (!supabase) {
-                    throw new Error('Supabase client not initialized. Check your credentials.');
+                // ── Save to Supabase (if available) ──
+                let supabaseSuccess = false;
+                if (supabase) {
+                    try {
+                        const { data, error } = await supabase
+                            .from('registrations')
+                            .insert([registrationData])
+                            .select();
+
+                        if (error) {
+                            console.error('❌ Supabase insert error:', error);
+                            throw new Error(error.message || 'Database insert failed.');
+                        }
+
+                        console.log('✅ Registration saved to Supabase:', data);
+                        supabaseSuccess = true;
+                    } catch (supabaseErr) {
+                        console.warn('⚠️ Supabase save failed, falling back to localStorage:', supabaseErr.message);
+                    }
+                } else {
+                    console.warn('⚠️ Supabase client not available, using localStorage fallback.');
                 }
 
-                const { data, error } = await supabase
-                    .from('registrations')
-                    .insert([registrationData])
-                    .select();
-
-                if (error) {
-                    console.error('❌ Supabase insert error:', error);
-                    throw new Error(error.message || 'Database insert failed.');
-                }
-
-                console.log('✅ Registration saved to Supabase:', data);
-
-                // ── Also save to localStorage as fallback/backup ──
+                // ── Always save to localStorage as backup ──
                 try {
                     const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                     db.push({
@@ -1789,6 +1840,7 @@
                             'None'
                     });
                     localStorage.setItem('deplomat_db', JSON.stringify(db));
+                    console.log('✅ Registration saved to localStorage (backup).');
                 } catch (localErr) {
                     console.warn('⚠️ localStorage fallback failed:', localErr);
                 }
@@ -1824,47 +1876,54 @@
                     <p><strong>UTR:</strong> ${data.txn}</p>
                     <hr style="border-color: rgba(255,255,255,0.05); margin: 10px 0;" />
                     <p style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">
-                        ✅ Data saved to Supabase · A confirmation email has been sent to ${data.email}
+                        ✅ Registration saved · A confirmation email has been sent to ${data.email}
                     </p>
                 `;
         }
 
         // ─── AUTO-SELECT EVENT FROM URL ───────────────────────────────
         function autoSelectEventFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            const eventIndex = params.get('event');
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const eventIndex = params.get('event');
 
-            if (eventIndex !== null && eventIndex !== '') {
-                const select = document.getElementById('eventSelect');
-                if (select) {
-                    const optionExists = Array.from(select.options).some(opt => opt.value === eventIndex);
-                    if (optionExists) {
-                        select.value = eventIndex;
-                        select.dispatchEvent(new Event('change'));
+                if (eventIndex !== null && eventIndex !== '') {
+                    const select = document.getElementById('eventSelect');
+                    if (select) {
+                        const optionExists = Array.from(select.options).some(opt => opt.value === eventIndex);
+                        if (optionExists) {
+                            select.value = eventIndex;
+                            select.dispatchEvent(new Event('change'));
 
-                        const event = EVENTS.find(e => e.id === parseInt(eventIndex));
-                        if (event) {
-                            bannerEventName.textContent = event.name;
-                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
-                            eventBanner.classList.add('show');
-                            autoSelectedEventId = eventIndex;
+                            const event = EVENTS.find(e => e.id === parseInt(eventIndex));
+                            if (event) {
+                                bannerEventName.textContent = event.name;
+                                bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                                eventBanner.classList.add('show');
+                                autoSelectedEventId = eventIndex;
 
-                            setTimeout(() => {
-                                document.querySelector('.register-card').scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'start'
-                                });
-                            }, 400);
+                                setTimeout(() => {
+                                    const card = document.querySelector('.register-card');
+                                    if (card) {
+                                        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                    }
+                                }, 400);
+                            }
                         }
                     }
                 }
+            } catch (e) {
+                console.warn('⚠️ Auto-select from URL failed:', e);
             }
         }
 
         // ─── EVENT LISTENERS ──────────────────────────────────────────
 
         // Step 1 → Step 2
-        step1Next.addEventListener('click', () => goToStep(2));
+        step1Next.addEventListener('click', function(e) {
+            e.preventDefault();
+            goToStep(2);
+        });
 
         // Step 2 navigation
         step2Back.addEventListener('click', () => goToStep(1));
@@ -1881,22 +1940,24 @@
         step4Back.addEventListener('click', () => goToStep(3));
 
         // ─── EVENT SELECT CHANGE ──────────────────────────────────────
-        eventSelect.addEventListener('change', () => {
-            if (currentStep === 2) {
-                updateEventLimitInfo();
-                playersContainer.innerHTML = '';
-                for (let i = 0; i < currentMin; i++) {
-                    addPlayer();
-                }
-                updateAddButtonState();
-            }
-            const val = eventSelect.value;
+        eventSelect.addEventListener('change', function() {
+            const val = this.value;
             if (val) {
                 const event = EVENTS.find(e => e.id === parseInt(val));
                 if (event) {
                     bannerEventName.textContent = event.name;
                     bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
                     eventBanner.classList.add('show');
+                }
+                // If on step 2, update limits
+                if (currentStep === 2) {
+                    updateEventLimitInfo();
+                    // Reset players
+                    playersContainer.innerHTML = '';
+                    for (let i = 0; i < currentMin; i++) {
+                        addPlayer();
+                    }
+                    updateAddButtonState();
                 }
             } else {
                 eventBanner.classList.remove('show');
@@ -1912,23 +1973,12 @@
                     if (step === 1) step1Next.click();
                     else if (step === 2) step2Next.click();
                     else if (step === 3) step3Next.click();
-                }
-            }
-        });
-
-        document.querySelectorAll('input, select').forEach(el => {
-            el.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const activeStep = document.querySelector('.form-step.active');
-                    if (activeStep) {
-                        const step = parseInt(activeStep.dataset.step);
-                        if (step === 1) step1Next.click();
-                        else if (step === 2) step2Next.click();
-                        else if (step === 3) step3Next.click();
+                    else if (step === 4) {
+                        // Don't auto-submit on Enter in step 4 (payment)
+                        // User should manually click Confirm
                     }
                 }
-            });
+            }
         });
 
         // ─── INIT ──────────────────────────────────────────────────────
@@ -1936,27 +1986,28 @@
         // Auto-select event from URL
         autoSelectEventFromURL();
 
-        // Initialize players
+        // Initialize players after a short delay
         setTimeout(() => {
             if (playersContainer.children.length === 0) {
-                for (let i = 0; i < currentMin; i++) {
+                const initialCount = Math.max(1, currentMin);
+                for (let i = 0; i < initialCount; i++) {
                     addPlayer();
                 }
             }
             updateEventLimitInfo();
+            updateAddButtonState();
         }, 100);
 
+        // Update QR code
         setTimeout(() => {
             updateQR(EVENT_FEE);
         }, 200);
 
-        console.log('🎯 DEPLOMAT Registration ready (Supabase enabled)!');
+        console.log('🎯 DEPLOMAT Registration ready!');
         console.log('📋 UPI ID:', UPI_ID);
-        console.log('📋 Events with limits:', EVENTS.length);
-        console.log('📋 Auto-selected event:', autoSelectedEventId !== null ? EVENTS.find(e => e.id === parseInt(
-            autoSelectedEventId))?.name || 'Unknown' : 'None');
-        console.log('🔐 Supabase URL:', SUPABASE_URL);
-        console.log('🔐 Supabase key:', SUPABASE_ANON_KEY ? '✓ Set' : '✗ Missing');
+        console.log('📋 Events loaded:', EVENTS.length);
+        console.log('🔐 Supabase available:', !!supabase);
+        console.log('💾 localStorage fallback: enabled');
     </script>
 </body>
 </html>
