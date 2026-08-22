@@ -248,8 +248,15 @@
         }
 
         @keyframes pulseExplore {
-            0%, 100% { opacity: 0.3; transform: translateY(0); }
-            50% { opacity: 0.7; transform: translateY(-4px); }
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+            50% {
+                opacity: 0.7;
+                transform: translateY(-4px);
+            }
         }
 
         /* ─── EXPLORE SECTION ──────────────────────────────────────── */
@@ -280,7 +287,7 @@
             line-height: 1;
         }
 
-        /* ─── CAROUSEL ──────────────────────────────────────────────── */
+        /* ─── CAROUSEL (transform-based) ───────────────────────────── */
         .carousel-stage {
             position: relative;
             width: 100%;
@@ -321,8 +328,8 @@
             will-change: transform, opacity;
             transform: scale(0.92);
             transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
-                        box-shadow 0.3s ease,
-                        opacity 0.25s ease;
+                box-shadow 0.3s ease,
+                opacity 0.25s ease;
             -webkit-tap-highlight-color: transparent;
             flex-shrink: 0;
             contain: layout style;
@@ -351,7 +358,7 @@
         .carousel-track .event-card .card-content {
             position: relative;
             z-index: 2;
-            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.25) 60%, transparent 100%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
             margin: 0 -20px -24px -20px;
             padding: 40px 20px 24px 20px;
             border-radius: 0 0 28px 28px;
@@ -383,11 +390,11 @@
             color: #00d4ff;
             opacity: 0;
             transition: 0.3s ease;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             padding: 4px 14px;
             border-radius: 40px;
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(0,212,255,0.15);
+            border: 1px solid rgba(0, 212, 255, 0.15);
             pointer-events: none;
         }
 
@@ -396,17 +403,39 @@
         }
 
         /* card background gradients */
-        .card-1 .card-image { background: linear-gradient(145deg, #2d1b3d, #6b2a5c); }
-        .card-2 .card-image { background: linear-gradient(145deg, #1b2f3d, #0f5c6b); }
-        .card-3 .card-image { background: linear-gradient(145deg, #3d1b1b, #8a2a2a); }
-        .card-4 .card-image { background: linear-gradient(145deg, #1b3d2a, #1b7a4a); }
-        .card-5 .card-image { background: linear-gradient(145deg, #3d2a1b, #8a5a2a); }
-        .card-6 .card-image { background: linear-gradient(145deg, #1b1b3d, #3a3a8a); }
-        .card-7 .card-image { background: linear-gradient(145deg, #3d1b3d, #8a2a7a); }
-        .card-8 .card-image { background: linear-gradient(145deg, #1b3d3d, #1a7a7a); }
-        .card-9 .card-image { background: linear-gradient(145deg, #2a1b3d, #6a2a8a); }
-        .card-10 .card-image { background: linear-gradient(145deg, #1b3d2a, #2d8a4a); }
-        .card-11 .card-image { background: linear-gradient(145deg, #3d1b2a, #8a2a5a); }
+        .card-1 .card-image {
+            background: linear-gradient(145deg, #2d1b3d, #6b2a5c);
+        }
+        .card-2 .card-image {
+            background: linear-gradient(145deg, #1b2f3d, #0f5c6b);
+        }
+        .card-3 .card-image {
+            background: linear-gradient(145deg, #3d1b1b, #8a2a2a);
+        }
+        .card-4 .card-image {
+            background: linear-gradient(145deg, #1b3d2a, #1b7a4a);
+        }
+        .card-5 .card-image {
+            background: linear-gradient(145deg, #3d2a1b, #8a5a2a);
+        }
+        .card-6 .card-image {
+            background: linear-gradient(145deg, #1b1b3d, #3a3a8a);
+        }
+        .card-7 .card-image {
+            background: linear-gradient(145deg, #3d1b3d, #8a2a7a);
+        }
+        .card-8 .card-image {
+            background: linear-gradient(145deg, #1b3d3d, #1a7a7a);
+        }
+        .card-9 .card-image {
+            background: linear-gradient(145deg, #2a1b3d, #6a2a8a);
+        }
+        .card-10 .card-image {
+            background: linear-gradient(145deg, #1b3d2a, #2d8a4a);
+        }
+        .card-11 .card-image {
+            background: linear-gradient(145deg, #3d1b2a, #8a2a5a);
+        }
 
         /* ─── DOTS ──────────────────────────────────────────────────── */
         .dots-container {
@@ -421,7 +450,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
             cursor: pointer;
         }
@@ -430,7 +459,7 @@
             background: #00d4ff;
             width: 24px;
             border-radius: 6px;
-            box-shadow: 0 0 12px rgba(0,212,255,0.3);
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
         }
 
         /* ─── PROMO ──────────────────────────────────────────────────── */
@@ -464,7 +493,7 @@
             left: 0;
             width: 20%;
             height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.8), transparent);
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
             z-index: 1;
             pointer-events: none;
         }
@@ -475,7 +504,7 @@
             right: 0;
             width: 20%;
             height: 100%;
-            background: linear-gradient(to left, rgba(0,0,0,0.8), transparent);
+            background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
             z-index: 1;
             pointer-events: none;
         }
@@ -486,7 +515,7 @@
             left: 0;
             width: 100%;
             height: 45%;
-            background: linear-gradient(to top, rgba(0,0,0,0.92), transparent 70%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92), transparent 70%);
             z-index: 1;
             pointer-events: none;
         }
@@ -516,14 +545,14 @@
         }
 
         .promo-countdown .cd-item {
-            background: rgba(0,0,0,0.35);
+            background: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             padding: 16px 28px;
             border-radius: 16px;
             min-width: 80px;
-            border: 1px solid rgba(255,255,255,0.04);
-            box-shadow: 0 0 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
             transition: 0.3s ease;
         }
 
@@ -533,7 +562,7 @@
             font-size: 2.8rem;
             font-weight: 700;
             color: #fff;
-            text-shadow: 0 0 30px rgba(255,255,255,0.05);
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
             line-height: 1.2;
         }
 
@@ -541,33 +570,33 @@
             font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: rgba(255,255,255,0.3);
+            color: rgba(255, 255, 255, 0.3);
             margin-top: 4px;
             display: block;
         }
 
         .promo-countdown .cd-item.accent {
-            border-color: rgba(0,212,255,0.15);
+            border-color: rgba(0, 212, 255, 0.15);
         }
         .promo-countdown .cd-item.accent span {
             color: #00d4ff;
-            text-shadow: 0 0 30px rgba(0,212,255,0.15);
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
         }
 
         .promo-cta {
             font-size: 0.85rem;
             letter-spacing: 6px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255, 255, 255, 0.4);
             font-weight: 300;
-            text-shadow: 0 0 30px rgba(0,0,0,0.8);
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
             transition: 0.3s ease;
             cursor: pointer;
             pointer-events: auto;
             padding: 14px 32px;
             border-radius: 60px;
-            border: 1px solid rgba(255,255,255,0.04);
-            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(0, 0, 0, 0.25);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             -webkit-tap-highlight-color: transparent;
@@ -575,9 +604,9 @@
         }
 
         .promo-cta:hover {
-            color: rgba(255,255,255,0.8);
-            border-color: rgba(0,212,255,0.15);
-            background: rgba(0,0,0,0.4);
+            color: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 212, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
             transform: scale(1.02);
         }
 
@@ -605,11 +634,11 @@
             font-size: 0.65rem;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.1);
+            color: rgba(255, 255, 255, 0.1);
             font-weight: 300;
             padding: 0 20px;
             pointer-events: none;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
         }
 
         .promo-credits span {
@@ -624,7 +653,7 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             z-index: 1000;
@@ -644,11 +673,11 @@
         .login-modal {
             width: 90%;
             max-width: 360px;
-            background: rgba(16,16,26,0.82);
+            background: rgba(16, 16, 26, 0.82);
             backdrop-filter: blur(32px) saturate(1.2);
             -webkit-backdrop-filter: blur(32px) saturate(1.2);
             border-radius: 24px;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.04);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.04);
             padding: 36px 30px 30px 30px;
             transform: scale(0.9) translateY(20px);
             opacity: 0;
@@ -678,7 +707,7 @@
             font-size: 0.65rem;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.25);
+            color: rgba(255, 255, 255, 0.25);
             margin-bottom: 28px;
         }
 
@@ -691,14 +720,14 @@
             font-size: 0.6rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.3);
+            color: rgba(255, 255, 255, 0.3);
             margin-bottom: 6px;
         }
 
         .login-field input {
             width: 100%;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 12px;
             padding: 12px 14px;
             color: #fff;
@@ -709,12 +738,12 @@
         }
 
         .login-field input::placeholder {
-            color: rgba(255,255,255,0.2);
+            color: rgba(255, 255, 255, 0.2);
         }
 
         .login-field input:focus {
-            border-color: rgba(0,212,255,0.3);
-            background: rgba(0,212,255,0.04);
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.04);
         }
 
         .login-submit {
@@ -736,7 +765,7 @@
 
         .login-submit:hover {
             transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(0,212,255,0.2);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
         }
 
         .login-submit:active {
@@ -749,7 +778,7 @@
             margin-top: 18px;
             font-size: 0.65rem;
             letter-spacing: 1.5px;
-            color: rgba(255,255,255,0.3);
+            color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
             transition: 0.2s;
         }
@@ -765,9 +794,9 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: none;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255, 255, 255, 0.4);
             font-size: 16px;
             cursor: pointer;
             display: flex;
@@ -778,21 +807,46 @@
         }
 
         .modal-close:hover {
-            background: rgba(255,42,109,0.1);
+            background: rgba(255, 42, 109, 0.1);
             color: #ff2a6d;
         }
 
         /* ─── RESPONSIVE ────────────────────────────────────────────── */
         @media (max-width: 768px) {
-            .header { top: 18px; left: 18px; }
-            .logo-emblem { width: 38px; height: 38px; }
-            .epic-dropdown { top: 48px; min-width: 160px; max-width: calc(100vw - 40px); padding: 6px 0; }
-            .dropdown-item { font-size: 12px; padding: 8px 18px; }
-            .dropdown-item .icon { width: 20px; height: 20px; font-size: 10px; }
-            .dropdown-section-title { font-size: 8px; padding: 6px 18px 2px 18px; }
+            .header {
+                top: 18px;
+                left: 18px;
+            }
+            .logo-emblem {
+                width: 38px;
+                height: 38px;
+            }
+            .epic-dropdown {
+                top: 48px;
+                min-width: 160px;
+                max-width: calc(100vw - 40px);
+                padding: 6px 0;
+            }
+            .dropdown-item {
+                font-size: 12px;
+                padding: 8px 18px;
+            }
+            .dropdown-item .icon {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+            .dropdown-section-title {
+                font-size: 8px;
+                padding: 6px 18px 2px 18px;
+            }
 
-            .explore-section { padding: 100px 0 40px 0; }
-            .explore-header { padding: 0 20px 15px 20px; }
+            .explore-section {
+                padding: 100px 0 40px 0;
+            }
+            .explore-header {
+                padding: 0 20px 15px 20px;
+            }
 
             .carousel-track .event-card {
                 flex: 0 0 72vw;
@@ -805,8 +859,12 @@
                 padding: 32px 16px 20px 16px;
                 border-radius: 0 0 24px 24px;
             }
-            .carousel-track .event-card .card-name { font-size: 1.3rem; }
-            .carousel-track .event-card .card-sub { font-size: 0.65rem; }
+            .carousel-track .event-card .card-name {
+                font-size: 1.3rem;
+            }
+            .carousel-track .event-card .card-sub {
+                font-size: 0.65rem;
+            }
             .carousel-track .event-card .card-explore-badge {
                 font-size: 0.55rem;
                 padding: 3px 12px;
@@ -821,8 +879,12 @@
                 height: 48vh;
                 border-radius: 20px;
             }
-            .carousel-track .event-card .card-name { font-size: 1.1rem; }
-            .carousel-track .event-card .card-sub { font-size: 0.6rem; }
+            .carousel-track .event-card .card-name {
+                font-size: 1.1rem;
+            }
+            .carousel-track .event-card .card-sub {
+                font-size: 0.6rem;
+            }
         }
     </style>
 </head>
@@ -984,17 +1046,16 @@
         const gap = 12;
         let cardWidthWithGap = 312;
 
-        // We'll use a floating "position" representing the current card index.
-        // Example: 0.0 = first card, 1.0 = second, 0.5 = halfway between.
-        // To keep infinite scrolling, we'll keep position in a wide range and
-        // periodically normalize it to the middle copy.
-        let position = N; // start at first card of the middle copy
+        // currentIndex always points to a card in the middle copy: [N, 2N-1]
+        let currentIndex = N;
+        // offset is a fractional value: 0 = centered, positive = shifted left, negative = shifted right
+        let offset = 0;
 
         // drag state
         let isPointerDown = false;
         let isDragging = false;
         let dragStartX = 0;
-        let dragStartPos = 0; // position at drag start
+        let dragStartOffset = 0;
         let velocity = 0;
         let lastMoveX = 0;
         let lastMoveTime = 0;
@@ -1062,24 +1123,10 @@
                     cardWidth = firstCard.offsetWidth || 300;
                     cardWidthWithGap = cardWidth + gap;
                 }
-                position = N;
+                currentIndex = N;
+                offset = 0;
                 updateCarousel(false);
             });
-        }
-
-        // ─── NORMALIZE POSITION (keep in middle copy) ────────────────
-        function normalizePosition() {
-            // Ensure position stays within [N, 2N-1] (middle copy)
-            const lower = N;
-            const upper = 2 * N - 0.5; // allow .5 margin for smooth transitions
-            if (position < lower) {
-                position += N;
-            } else if (position > upper) {
-                position -= N;
-            }
-            // After adjustment, clamp to safe range
-            if (position < N) position = N;
-            if (position > 2 * N - 0.5) position = 2 * N - 0.5;
         }
 
         // ─── UPDATE CAROUSEL (pure math, no layout reads) ────────────
@@ -1091,11 +1138,8 @@
             const halfStage = stageWidth / 2;
             const halfCard = cardWidth / 2;
 
-            // Compute the track's base translation so that the card at 'position' is centered.
-            // The card at index 0 is at left edge of track: 0*cardWidthWithGap
-            // The center of card at index 'pos' is at pos * cardWidthWithGap + halfCard
-            // We want that center to be at halfStage.
-            const basePos = halfStage - (position * cardWidthWithGap + halfCard);
+            // Compute the track's base translation (center of the current card)
+            const basePos = -(currentIndex * cardWidthWithGap + offset * cardWidthWithGap) + (stageWidth - cardWidth) / 2;
 
             // Apply transition for snapping
             if (animate) {
@@ -1110,8 +1154,9 @@
             let closestDist = Infinity;
 
             cards.forEach((card, i) => {
-                // Card's center in the track: i * cardWidthWithGap + halfCard
-                // Its viewport center: basePos + i * cardWidthWithGap + halfCard
+                // Card's left edge in the track: i * cardWidthWithGap (because of flex gap)
+                // Its center relative to track: i * cardWidthWithGap + halfCard
+                // Its viewport position: basePos + i * cardWidthWithGap + halfCard
                 const cardCenter = basePos + i * cardWidthWithGap + halfCard;
                 const dist = Math.abs(cardCenter - halfStage);
                 const maxDist = stageWidth / 2 + cardWidth;
@@ -1138,14 +1183,25 @@
 
         // ─── SNAP TO INDEX ─────────────────────────────────────────────
         function snapToIndex(index, animate = true) {
-            // Ensure index is within the middle copy range
+            const totalCards = 3 * N;
+
+            // Clamp and wrap to middle copy
+            if (index < N) {
+                index += N;
+                animate = false;
+            } else if (index >= 2 * N) {
+                index -= N;
+                animate = false;
+            }
+            if (index < 0) index = 0;
+            if (index >= totalCards) index = totalCards - 1;
+
+            // Ensure we stay in the middle copy
             if (index < N) index = N;
             if (index >= 2 * N) index = 2 * N - 1;
-            if (index < 0) index = 0;
-            if (index >= 3 * N) index = 3 * N - 1;
 
-            position = index;
-            normalizePosition(); // keep in middle
+            currentIndex = index;
+            offset = 0;
             isSnapping = true;
 
             if (snapTimer) {
@@ -1167,11 +1223,12 @@
             isPointerDown = true;
             isDragging = false;
             dragStartX = e.clientX;
-            dragStartPos = position;
+            dragStartOffset = offset;
             velocity = 0;
             lastMoveX = e.clientX;
             lastMoveTime = performance.now();
 
+            // Cancel any pending RAF
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
@@ -1191,13 +1248,13 @@
             }
             if (!isDragging) return;
 
-            // Compute new position: moving left (deltaX positive) means position increases (next card)
-            const deltaPos = deltaX / cardWidthWithGap;
-            let newPos = dragStartPos + deltaPos;
-            position = newPos;
-
-            // Normalize to keep in middle copy (adjust by N if needed)
-            normalizePosition();
+            // Compute new offset
+            const deltaCards = -deltaX / cardWidthWithGap;
+            let newOffset = dragStartOffset + deltaCards;
+            const maxOffset = 1.2;
+            if (newOffset > maxOffset) newOffset = maxOffset;
+            if (newOffset < -maxOffset) newOffset = -maxOffset;
+            offset = newOffset;
 
             // Velocity
             const now = performance.now();
@@ -1209,7 +1266,7 @@
             lastMoveTime = now;
             lastMoveX = e.clientX;
 
-            // Schedule RAF update
+            // Schedule a single RAF update
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
@@ -1224,31 +1281,35 @@
             if (!isPointerDown) return;
             isPointerDown = false;
 
+            // Cancel any pending RAF
             if (rafId) {
                 cancelAnimationFrame(rafId);
                 rafId = null;
             }
 
             if (isDragging) {
-                // Determine snap target: nearest integer index with momentum
-                const threshold = 0.2;
+                const threshold = 0.25;
                 const velocityThreshold = 0.3;
-                let targetIndex = Math.round(position);
+                let targetIndex = currentIndex;
 
-                // If velocity is strong, nudge one more in that direction
-                if (velocity > velocityThreshold) {
-                    targetIndex = Math.floor(position) + 1;
-                } else if (velocity < -velocityThreshold) {
-                    targetIndex = Math.ceil(position) - 1;
+                if (offset < -threshold || velocity < -velocityThreshold) {
+                    targetIndex = currentIndex + 1;
+                } else if (offset > threshold || velocity > velocityThreshold) {
+                    targetIndex = currentIndex - 1;
+                } else {
+                    targetIndex = currentIndex;
                 }
 
-                // Ensure within middle copy
+                const totalCards = 3 * N;
                 if (targetIndex < N) targetIndex = N;
                 if (targetIndex >= 2 * N) targetIndex = 2 * N - 1;
+                if (targetIndex < 0) targetIndex = 0;
+                if (targetIndex >= totalCards) targetIndex = totalCards - 1;
+
                 snapToIndex(targetIndex, true);
                 isDragging = false;
             } else {
-                snapToIndex(Math.round(position), true);
+                snapToIndex(currentIndex, true);
             }
 
             velocity = 0;
@@ -1284,7 +1345,7 @@
             }
 
             wheelTimeout = setTimeout(() => {
-                let newIndex = Math.round(position) + direction;
+                let newIndex = currentIndex + direction;
                 const totalCards = 3 * N;
                 if (newIndex < N) newIndex = N;
                 if (newIndex >= 2 * N) newIndex = 2 * N - 1;
@@ -1299,15 +1360,18 @@
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return;
             if (isSnapping) return;
+            const totalCards = 3 * N;
             if (e.key === 'ArrowLeft') {
                 e.preventDefault();
-                let newIndex = Math.round(position) - 1;
+                let newIndex = currentIndex - 1;
                 if (newIndex < N) newIndex = N;
+                if (newIndex < 0) newIndex = 0;
                 snapToIndex(newIndex, true);
             } else if (e.key === 'ArrowRight') {
                 e.preventDefault();
-                let newIndex = Math.round(position) + 1;
+                let newIndex = currentIndex + 1;
                 if (newIndex >= 2 * N) newIndex = 2 * N - 1;
+                if (newIndex >= totalCards) newIndex = totalCards - 1;
                 snapToIndex(newIndex, true);
             }
         });
@@ -1340,6 +1404,7 @@
         const forgotLink = document.getElementById('forgotLink');
 
         function openLogin() { loginOverlay.classList.add('open'); }
+
         function closeLogin() { loginOverlay.classList.remove('open'); }
 
         modalClose.addEventListener('click', closeLogin);
@@ -1389,7 +1454,8 @@
             let diff = promoTarget - now;
             if (diff < 0) diff = 0;
             document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
-            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,
+            '0');
             document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
             document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
         }
