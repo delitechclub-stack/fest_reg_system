@@ -1507,30 +1507,72 @@
         }
 
         // ─── VALIDATION ──────────────────────────────────────────────
-        function validateStep(step) {
+       function validateStep(step) {
     if (step === 1) {
-        // ... all checks ...
+        const college = collegeInput.value.trim();
+        const teamLeader = teamLeaderInput.value.trim();
+        const email = emailInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const eventVal = eventSelect.value;
+
         if (!college) { alert('Please enter your college name.'); return false; }
         if (!teamLeader) { alert('Please enter the team leader name.'); return false; }
         if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return false; }
+
         const phoneDigits = phone.replace(/\D/g, '');
         if (!phone || phoneDigits.length < 10) {
             alert('Please enter a valid 10-digit phone number.');
             return false;
         }
+
         if (!eventVal) { alert('Please select an event.'); return false; }
+
         selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
         if (!selectedEvent) {
             alert('Please select a valid event.');
             return false;
         }
-        return true; // ✅ Add this line
+
+        // ✅ THIS IS THE MISSING LINE – ADD IT
+        return true;
     }
 
     if (step === 2) {
-        // ... your existing player validation ...
-        // make sure to return true at the end of this block as well
-        return true; // ✅ Add this line
+        const playerInputs = playersContainer.querySelectorAll('.player-entry');
+        const currentCount = playerInputs.length;
+
+        if (currentCount < currentMin) {
+            alert(`This event requires at least ${currentMin} participant${currentMin > 1 ? 's' : ''}. Please add more players.`);
+            return false;
+        }
+
+        if (currentCount > currentMax) {
+            alert(`This event allows maximum ${currentMax} participant${currentMax > 1 ? 's' : ''}. Please remove extra players.`);
+            return false;
+        }
+
+        let allValid = true;
+        playerInputs.forEach((entry, index) => {
+            const nameInput = entry.querySelector('.player-name');
+            if (!nameInput || !nameInput.value.trim()) {
+                alert(`Please enter name for Player ${index + 1}.`);
+                allValid = false;
+            }
+        });
+
+        if (!allValid) return false;
+
+        players = [];
+        playerInputs.forEach(entry => {
+            const nameInput = entry.querySelector('.player-name');
+            const phoneInputField = entry.querySelector('.player-phone');
+            players.push({
+                name: nameInput ? nameInput.value.trim() : '',
+                phone: phoneInputField ? phoneInputField.value.trim() : 'N/A'
+            });
+        });
+
+        return true; // this was already there
     }
 
     return true;
