@@ -2002,6 +2002,46 @@ if (supabaseClient) {
         console.log('📋 Events loaded:', EVENTS.length);
         console.log('🔐 Supabase available:', !!supabase);
         console.log('💾 localStorage fallback: enabled');
+
+        // ─── CHECK STATUS MODE ─────────────────────────────────────────────
+function handleStatusCheck() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('status') === 'check') {
+        // Go directly to step 5 (success)
+        goToStep(5);
+        // Override the success details with a status-check message
+        const details = document.getElementById('successDetails');
+        details.innerHTML = `
+            <p style="color: rgba(255,255,255,0.6);">
+                🔍 Enter your registered email or UTR below to check your registration status.
+            </p>
+            <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; justify-content: center;">
+                <input type="email" id="statusEmail" placeholder="Your email" style="flex:1; min-width:200px; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color:#fff;">
+                <button id="checkStatusBtn" class="btn btn-primary" style="padding:12px 28px;">Check Status</button>
+            </div>
+            <div id="statusResult" style="margin-top: 16px; font-size:0.9rem; color: #65d8ff;"></div>
+        `;
+        // Optional: add event listener for the check button
+        document.getElementById('checkStatusBtn').addEventListener('click', function() {
+            const email = document.getElementById('statusEmail').value.trim();
+            if (!email) {
+                alert('Please enter your email.');
+                return;
+            }
+            // Here you would query Supabase/localStorage to find registration
+            // For demo, show a mock result
+            document.getElementById('statusResult').innerHTML = `
+                <span style="background: rgba(101,216,255,0.1); padding:10px 20px; border-radius:8px; display:inline-block;">
+                    ✅ Registration found for <strong>${email}</strong>. Check your inbox for confirmation.
+                </span>
+            `;
+        });
+    }
+}
+
+// ─── RUN AFTER INIT ────────────────────────────────────────────────
+// Call this after the existing initialisation code
+handleStatusCheck();
     </script>
 </body>
 </html>
