@@ -1295,34 +1295,29 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════════
-        //  🔐 SUPABASE CONFIG — EDIT THESE WITH YOUR OWN CREDENTIALS
-        // ═══════════════════════════════════════════════════════════════════
+//  🔐 SUPABASE CONFIG — EDIT THESE WITH YOUR OWN CREDENTIALS
+// ═══════════════════════════════════════════════════════════════════
 
-        const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
+const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
 
-        // ═══════════════════════════════════════════════════════════════════
-
-        // ─── INIT SUPABASE (FIXED: use `supabase` global, not `supabaseJs`) ──
-        let supabase;
-
-        try {
-            // The CDN script exposes `supabase` as a global
-            if (typeof supabase !== 'undefined' && supabase.createClient) {
-                supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase client initialized.');
-            } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase client initialized (window.supabase).');
-            } else {
-                throw new Error('Supabase library not loaded. Check CDN script.');
-            }
-        } catch (err) {
-            console.error('❌ Failed to init Supabase:', err);
-            // Show a non-blocking warning – the form still works with localStorage fallback
-            console.warn('⚠️ Supabase unavailable. Registrations will be saved to localStorage only.');
-            // We'll still allow the form to work with localStorage fallback
-        }
+// ─── INIT SUPABASE ─────────────────────────────────────────────────
+let supabaseClient = null;
+try {
+    // The CDN script exposes `supabase` as a global
+    if (typeof supabase !== 'undefined' && supabase.createClient) {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized.');
+    } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase client initialized (window.supabase).');
+    } else {
+        console.warn('⚠️ Supabase library not loaded. Registrations will be saved to localStorage only.');
+    }
+} catch (err) {
+    console.error('❌ Failed to init Supabase:', err);
+    // supabaseClient remains null
+}
 
         // ─── EVENT DATA WITH LIMITS ───────────────────────────────────
         const EVENT_FEE = 250;
@@ -1800,27 +1795,27 @@
 
             try {
                 // ── Save to Supabase (if available) ──
-                let supabaseSuccess = false;
-                if (supabase) {
-                    try {
-                        const { data, error } = await supabase
-                            .from('registrations')
-                            .insert([registrationData])
-                            .select();
+let supabaseSuccess = false;
+if (supabaseClient) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('registrations')
+            .insert([registrationData])
+            .select();
 
-                        if (error) {
-                            console.error('❌ Supabase insert error:', error);
-                            throw new Error(error.message || 'Database insert failed.');
-                        }
+        if (error) {
+            console.error('❌ Supabase insert error:', error);
+            throw new Error(error.message || 'Database insert failed.');
+        }
 
-                        console.log('✅ Registration saved to Supabase:', data);
-                        supabaseSuccess = true;
-                    } catch (supabaseErr) {
-                        console.warn('⚠️ Supabase save failed, falling back to localStorage:', supabaseErr.message);
-                    }
-                } else {
-                    console.warn('⚠️ Supabase client not available, using localStorage fallback.');
-                }
+        console.log('✅ Registration saved to Supabase:', data);
+        supabaseSuccess = true;
+    } catch (supabaseErr) {
+        console.warn('⚠️ Supabase save failed, falling back to localStorage:', supabaseErr.message);
+    }
+} else {
+    console.warn('⚠️ Supabase client not available, using localStorage fallback.');
+}
 
                 // ── Always save to localStorage as backup ──
                 try {
