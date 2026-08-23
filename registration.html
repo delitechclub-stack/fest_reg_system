@@ -379,6 +379,54 @@
             gap: 16px;
         }
 
+        /* ─── UG/PU RADIO GROUP ─────────────────────────────────────── */
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            padding: 6px 0;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            text-transform: none;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-weight: 500;
+            padding: 8px 18px 8px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            transition: 0.25s ease;
+        }
+
+        .radio-group label:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .radio-group label input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #65d8ff;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+            appearance: radio;
+            -webkit-appearance: radio;
+            background: transparent;
+        }
+
+        .radio-group label:has(input:checked) {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.06);
+            color: #fff;
+        }
+
         /* ─── PLAYER FIELDS ─────────────────────────────────────────── */
         .player-entry {
             background: rgba(255, 255, 255, 0.02);
@@ -408,6 +456,10 @@
             font-weight: 600;
         }
 
+        .player-entry .player-number.leader {
+            color: #65d8ff;
+        }
+
         .player-entry .remove-btn {
             background: none;
             border: none;
@@ -427,13 +479,66 @@
 
         .player-entry .player-fields {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 12px;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .player-entry .player-fields.leader-fields {
+            grid-template-columns: 1fr 1fr;
         }
 
         .player-entry .player-fields input {
             padding: 10px 14px;
             font-size: 0.85rem;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-family: inherit;
+            transition: 0.25s ease;
+            outline: none;
+        }
+
+        .player-entry .player-fields input:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+
+        .player-entry .player-fields input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .player-entry .player-fields .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .player-entry .player-fields .field-group label {
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+        }
+
+        .player-entry .player-fields .field-group label .required {
+            color: #ff2a6d;
+        }
+
+        .leader-badge {
+            display: inline-block;
+            background: rgba(101, 216, 255, 0.12);
+            color: #65d8ff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+            margin-left: 8px;
         }
 
         /* ─── CROSS-CHECK STYLES ────────────────────────────────────── */
@@ -905,9 +1010,8 @@
                 gap: 0;
             }
 
-            .player-entry .player-fields {
+            .player-entry .player-fields.leader-fields {
                 grid-template-columns: 1fr;
-                gap: 10px;
             }
 
             .cross-check-row {
@@ -952,6 +1056,14 @@
             }
             .event-banner .badge {
                 font-size: 0.6rem;
+            }
+
+            .radio-group {
+                gap: 12px;
+            }
+            .radio-group label {
+                padding: 6px 14px 6px 10px;
+                font-size: 0.8rem;
             }
         }
 
@@ -1124,19 +1236,22 @@
                             <input type="text" id="college" placeholder="Enter your college name" required />
                         </div>
 
+                        <!-- ─── UG / PU SELECTION ─────────────────────── -->
                         <div class="form-group">
-                            <label>Team Leader Name <span class="required">*</span></label>
-                            <input type="text" id="teamLeader" placeholder="Enter team leader's full name" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label>Email Address <span class="required">*</span></label>
-                            <input type="email" id="email" placeholder="you@example.com" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label>Phone Number <span class="required">*</span></label>
-                            <input type="tel" id="phone" placeholder="+91 98765 43210" required />
+                            <label>Select Category <span class="required">*</span></label>
+                            <div class="radio-group" id="ugPuGroup">
+                                <label>
+                                    <input type="radio" name="ug_pu" value="UG" />
+                                    <span>UG</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="ug_pu" value="PU" />
+                                    <span>PU</span>
+                                </label>
+                            </div>
+                            <small style="color: rgba(255,255,255,0.25); font-size: 0.7rem; display: block; margin-top: 4px;">
+                                ⚡ Please select UG (Under Graduate) or PU (Post Graduate)
+                            </small>
                         </div>
 
                         <div class="form-group">
@@ -1152,9 +1267,9 @@
                                 <option value="6">THE MERMAID'S WALTZ · Solo Dance</option>
                                 <option value="7">TIDES OF RYTHM · Group Dance</option>
                                 <option value="8">RUNWAY OF REALMS · Rampwalk</option>
-                                <option value="9">THE KRAKEN'S PITCH · Cricket (U/G Boys)</option>
+                                <option value="9">THE KRAKEN'S PITCH · Cricket (PU/UG Boys)</option>
                                 <option value="10">POSEIDON'S CUP · Football (P.U Boys)</option>
-                                <option value="11">TIDAL THROWDOWN · Throwball (P.U Girls)</option>
+                                <option value="11">TIDAL THROWDOWN · Throwball (UG Girls)</option>
                             </select>
                         </div>
 
@@ -1172,6 +1287,7 @@
 
                         <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-bottom: 16px; letter-spacing: 0.05em;">
                             ⚡ Enter all participants for this event. Per person fee: <strong style="color: #65d8ff;">₹250</strong>
+                            <br /><span style="color: rgba(255,255,255,0.2); font-size: 0.7rem;">The first participant is the <strong style="color: #65d8ff;">Team Leader</strong>.</span>
                         </p>
 
                         <div id="playersContainer">
@@ -1212,6 +1328,10 @@
                             <div class="summary-row">
                                 <span>Team Leader</span>
                                 <span id="payTeamLeader">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Category</span>
+                                <span id="payUgPu">—</span>
                             </div>
                             <div class="summary-row">
                                 <span>Number of Participants</span>
@@ -1295,29 +1415,27 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════════
-//  🔐 SUPABASE CONFIG — EDIT THESE WITH YOUR OWN CREDENTIALS
-// ═══════════════════════════════════════════════════════════════════
+        //  🔐 SUPABASE CONFIG — EDIT THESE WITH YOUR OWN CREDENTIALS
+        // ═══════════════════════════════════════════════════════════════════
 
-const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
+        const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
 
-// ─── INIT SUPABASE ─────────────────────────────────────────────────
-let supabaseClient = null;
-try {
-    // The CDN script exposes `supabase` as a global
-    if (typeof supabase !== 'undefined' && supabase.createClient) {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase client initialized.');
-    } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase client initialized (window.supabase).');
-    } else {
-        console.warn('⚠️ Supabase library not loaded. Registrations will be saved to localStorage only.');
-    }
-} catch (err) {
-    console.error('❌ Failed to init Supabase:', err);
-    // supabaseClient remains null
-}
+        // ─── INIT SUPABASE ─────────────────────────────────────────────────
+        let supabaseClient = null;
+        try {
+            if (typeof supabase !== 'undefined' && supabase.createClient) {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized.');
+            } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized (window.supabase).');
+            } else {
+                console.warn('⚠️ Supabase library not loaded. Registrations will be saved to localStorage only.');
+            }
+        } catch (err) {
+            console.error('❌ Failed to init Supabase:', err);
+        }
 
         // ─── EVENT DATA WITH LIMITS ───────────────────────────────────
         const EVENT_FEE = 250;
@@ -1334,9 +1452,9 @@ try {
             { id: 6, name: "THE MERMAID'S WALTZ", sub: "Solo Dance", min: 1, max: 1 },
             { id: 7, name: "TIDES OF RYTHM", sub: "Group Dance", min: 6, max: 12 },
             { id: 8, name: "RUNWAY OF REALMS", sub: "Rampwalk", min: 10, max: 12 },
-            { id: 9, name: "THE KRAKEN'S PITCH", sub: "Cricket (U/G Boys)", min: 11, max: 11 },
+            { id: 9, name: "THE KRAKEN'S PITCH", sub: "Cricket (PU/UG Boys)", min: 11, max: 11 },
             { id: 10, name: "POSEIDON'S CUP", sub: "Football (P.U Boys)", min: 11, max: 11 },
-            { id: 11, name: "TIDAL THROWDOWN", sub: "Throwball (P.U Girls)", min: 9, max: 9 }
+            { id: 11, name: "TIDAL THROWDOWN", sub: "Throwball (UG Girls)", min: 9, max: 9 }
         ];
 
         // ─── DOM REFS ─────────────────────────────────────────────────
@@ -1346,11 +1464,9 @@ try {
 
         // Step 1
         const collegeInput = document.getElementById('college');
-        const teamLeaderInput = document.getElementById('teamLeader');
-        const emailInput = document.getElementById('email');
-        const phoneInput = document.getElementById('phone');
         const eventSelect = document.getElementById('eventSelect');
         const step1Next = document.getElementById('step1Next');
+        const ugPuRadios = document.querySelectorAll('input[name="ug_pu"]');
 
         // Step 2
         const playersContainer = document.getElementById('playersContainer');
@@ -1368,6 +1484,7 @@ try {
         // Step 4 - Payment
         const payEventName = document.getElementById('payEventName');
         const payTeamLeader = document.getElementById('payTeamLeader');
+        const payUgPu = document.getElementById('payUgPu');
         const payPlayerCount = document.getElementById('payPlayerCount');
         const payTotal = document.getElementById('payTotal');
         const payhead = document.getElementById('payhead');
@@ -1391,6 +1508,7 @@ try {
         let currentMin = 1;
         let currentMax = 12;
         let autoSelectedEventId = null;
+        let teamLeaderData = null; // { name, email, phone }
 
         // ─── EVENT LIMIT FUNCTIONS ────────────────────────────────────
         function getEventLimits(eventId) {
@@ -1416,12 +1534,12 @@ try {
             if (limits.min === limits.max) {
                 limitText.innerHTML = `
                         <strong>${limits.name}</strong> · ${limits.sub}<br>
-                        📌 Fixed team size: <strong>${limits.min}</strong> participants
+                        📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)
                     `;
             } else {
                 limitText.innerHTML = `
                         <strong>${limits.name}</strong> · ${limits.sub}<br>
-                        📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed
+                        📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed (including Team Leader)
                     `;
             }
 
@@ -1496,95 +1614,133 @@ try {
             }
             if (step === 4) {
                 updatePaymentSummary();
-                // Auto-show UTR section since payment is required
                 utrArea.classList.add('active');
             }
         }
 
         // ─── VALIDATION ──────────────────────────────────────────────
-       function validateStep(step) {
-    if (step === 1) {
-        const college = collegeInput.value.trim();
-        const teamLeader = teamLeaderInput.value.trim();
-        const email = emailInput.value.trim();
-        const phone = phoneInput.value.trim();
-        const eventVal = eventSelect.value;
+        function validateStep(step) {
+            if (step === 1) {
+                const college = collegeInput.value.trim();
+                const eventVal = eventSelect.value;
 
-        if (!college) { alert('Please enter your college name.'); return false; }
-        if (!teamLeader) { alert('Please enter the team leader name.'); return false; }
-        if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return false; }
+                if (!college) { alert('Please enter your college name.'); return false; }
 
-        const phoneDigits = phone.replace(/\D/g, '');
-        if (!phone || phoneDigits.length < 10) {
-            alert('Please enter a valid 10-digit phone number.');
-            return false;
-        }
+                // Check UG/PU selection
+                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+                if (!ugPuSelected) {
+                    alert('⚠️ Please select either UG or PU category.');
+                    return false;
+                }
 
-        if (!eventVal) { alert('Please select an event.'); return false; }
+                if (!eventVal) { alert('Please select an event.'); return false; }
 
-        selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
-        if (!selectedEvent) {
-            alert('Please select a valid event.');
-            return false;
-        }
+                selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
+                if (!selectedEvent) {
+                    alert('Please select a valid event.');
+                    return false;
+                }
 
-        // ✅ THIS IS THE MISSING LINE – ADD IT
-        return true;
-    }
-
-    if (step === 2) {
-        const playerInputs = playersContainer.querySelectorAll('.player-entry');
-        const currentCount = playerInputs.length;
-
-        if (currentCount < currentMin) {
-            alert(`This event requires at least ${currentMin} participant${currentMin > 1 ? 's' : ''}. Please add more players.`);
-            return false;
-        }
-
-        if (currentCount > currentMax) {
-            alert(`This event allows maximum ${currentMax} participant${currentMax > 1 ? 's' : ''}. Please remove extra players.`);
-            return false;
-        }
-
-        let allValid = true;
-        playerInputs.forEach((entry, index) => {
-            const nameInput = entry.querySelector('.player-name');
-            if (!nameInput || !nameInput.value.trim()) {
-                alert(`Please enter name for Player ${index + 1}.`);
-                allValid = false;
+                return true;
             }
-        });
 
-        if (!allValid) return false;
+            if (step === 2) {
+                const playerInputs = playersContainer.querySelectorAll('.player-entry');
+                const currentCount = playerInputs.length;
 
-        players = [];
-        playerInputs.forEach(entry => {
-            const nameInput = entry.querySelector('.player-name');
-            const phoneInputField = entry.querySelector('.player-phone');
-            players.push({
-                name: nameInput ? nameInput.value.trim() : '',
-                phone: phoneInputField ? phoneInputField.value.trim() : 'N/A'
-            });
-        });
+                if (currentCount < currentMin) {
+                    alert(
+                        `This event requires at least ${currentMin} participant${currentMin > 1 ? 's' : ''} (including Team Leader). Please add more players.`);
+                    return false;
+                }
 
-        return true; // this was already there
-    }
+                if (currentCount > currentMax) {
+                    alert(
+                        `This event allows maximum ${currentMax} participant${currentMax > 1 ? 's' : ''}. Please remove extra players.`
+                        );
+                    return false;
+                }
 
-    return true;
-}
+                // Validate Team Leader (first player)
+                const leaderEntry = playerInputs[0];
+                const leaderName = leaderEntry.querySelector('.player-name');
+                const leaderEmail = leaderEntry.querySelector('.player-email');
+                const leaderPhone = leaderEntry.querySelector('.player-phone');
+
+                if (!leaderName || !leaderName.value.trim()) {
+                    alert('Please enter the Team Leader\'s full name.');
+                    return false;
+                }
+                if (!leaderEmail || !leaderEmail.value.trim() || !leaderEmail.value.includes('@')) {
+                    alert('Please enter a valid email address for the Team Leader.');
+                    return false;
+                }
+                const phoneDigits = leaderPhone ? leaderPhone.value.replace(/\D/g, '') : '';
+                if (!leaderPhone || !leaderPhone.value.trim() || phoneDigits.length < 10) {
+                    alert('Please enter a valid 10-digit phone number for the Team Leader.');
+                    return false;
+                }
+
+                // Store team leader data for later use
+                teamLeaderData = {
+                    name: leaderName.value.trim(),
+                    email: leaderEmail.value.trim(),
+                    phone: leaderPhone.value.trim()
+                };
+
+                // Validate other players (just name)
+                let allValid = true;
+                playerInputs.forEach((entry, index) => {
+                    if (index === 0) return; // skip team leader, already validated
+                    const nameInput = entry.querySelector('.player-name');
+                    if (!nameInput || !nameInput.value.trim()) {
+                        alert(`Please enter name for Player ${index + 1}.`);
+                        allValid = false;
+                    }
+                });
+
+                if (!allValid) return false;
+
+                // Build players array
+                players = [];
+                playerInputs.forEach((entry, index) => {
+                    const nameInput = entry.querySelector('.player-name');
+                    const isLeader = index === 0;
+                    if (isLeader) {
+                        const emailInput = entry.querySelector('.player-email');
+                        const phoneInput = entry.querySelector('.player-phone');
+                        players.push({
+                            name: nameInput ? nameInput.value.trim() : '',
+                            email: emailInput ? emailInput.value.trim() : '',
+                            phone: phoneInput ? phoneInput.value.trim() : 'N/A',
+                            isLeader: true
+                        });
+                    } else {
+                        players.push({
+                            name: nameInput ? nameInput.value.trim() : '',
+                            isLeader: false
+                        });
+                    }
+                });
+
+                return true;
+            }
+
+            return true;
+        }
 
         // ─── PLAYER MANAGEMENT ────────────────────────────────────────
         function initializePlayers() {
             if (playersContainer.children.length === 0) {
                 const initialCount = Math.max(1, currentMin);
                 for (let i = 0; i < initialCount; i++) {
-                    addPlayer();
+                    addPlayer(i === 0); // first is team leader
                 }
             }
             updateAddButtonState();
         }
 
-        function addPlayer() {
+        function addPlayer(isLeader = false) {
             const currentCount = playersContainer.children.length;
             if (currentCount >= currentMax) {
                 alert(`Maximum ${currentMax} players allowed for this event.`);
@@ -1594,27 +1750,65 @@ try {
             const index = currentCount + 1;
             const div = document.createElement('div');
             div.className = 'player-entry';
-            div.innerHTML = `
+
+            const isFirst = currentCount === 0;
+
+            let headerHtml = `
                     <div class="player-header">
-                        <span class="player-number">Player ${index}</span>
-                        <button type="button" class="remove-btn" title="Remove player">✕</button>
-                    </div>
-                    <div class="player-fields">
-                        <input type="text" class="player-name" placeholder="Full name" />
-                        <input type="text" class="player-phone" placeholder="Phone (optional)" />
+                        <span class="player-number ${isFirst ? 'leader' : ''}">
+                            ${isFirst ? '👑 Team Leader' : `Player ${index}`}
+                            ${isFirst ? '<span class="leader-badge">Leader</span>' : ''}
+                        </span>
+                        ${!isFirst ? `<button type="button" class="remove-btn" title="Remove player">✕</button>` : ''}
                     </div>
                 `;
 
-            div.querySelector('.remove-btn').addEventListener('click', () => {
-                const currentCount = playersContainer.children.length;
-                if (currentCount > currentMin) {
-                    div.remove();
-                    updatePlayerNumbers();
-                    updateAddButtonState();
-                } else {
-                    alert(`Minimum ${currentMin} participant${currentMin > 1 ? 's' : ''} required for this event.`);
-                }
-            });
+            let fieldsHtml = '';
+            if (isFirst) {
+                // Team Leader: name, email, phone
+                fieldsHtml = `
+                        <div class="player-fields leader-fields">
+                            <div class="field-group">
+                                <label>Full Name <span class="required">*</span></label>
+                                <input type="text" class="player-name" placeholder="Team Leader full name" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Email <span class="required">*</span></label>
+                                <input type="email" class="player-email" placeholder="leader@example.com" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Phone <span class="required">*</span></label>
+                                <input type="tel" class="player-phone" placeholder="+91 98765 43210" required />
+                            </div>
+                        </div>
+                    `;
+            } else {
+                // Regular player: just name
+                fieldsHtml = `
+                        <div class="player-fields">
+                            <div class="field-group">
+                                <label>Full Name <span class="required">*</span></label>
+                                <input type="text" class="player-name" placeholder="Player ${index} full name" required />
+                            </div>
+                        </div>
+                    `;
+            }
+
+            div.innerHTML = headerHtml + fieldsHtml;
+
+            // Remove button for non-leader players
+            if (!isFirst) {
+                div.querySelector('.remove-btn').addEventListener('click', () => {
+                    const currentCount = playersContainer.children.length;
+                    if (currentCount > currentMin) {
+                        div.remove();
+                        updatePlayerNumbers();
+                        updateAddButtonState();
+                    } else {
+                        alert(`Minimum ${currentMin} participant${currentMin > 1 ? 's' : ''} required for this event.`);
+                    }
+                });
+            }
 
             playersContainer.appendChild(div);
             updatePlayerNumbers();
@@ -1624,7 +1818,28 @@ try {
         function updatePlayerNumbers() {
             const entries = playersContainer.querySelectorAll('.player-entry');
             entries.forEach((entry, index) => {
-                entry.querySelector('.player-number').textContent = `Player ${index + 1}`;
+                const isFirst = index === 0;
+                const numSpan = entry.querySelector('.player-number');
+                if (numSpan) {
+                    if (isFirst) {
+                        numSpan.innerHTML =
+                            '👑 Team Leader <span class="leader-badge">Leader</span>';
+                        numSpan.className = 'player-number leader';
+                    } else {
+                        numSpan.textContent = `Player ${index + 1}`;
+                        numSpan.className = 'player-number';
+                    }
+                }
+
+                // Ensure remove button visibility
+                const removeBtn = entry.querySelector('.remove-btn');
+                if (removeBtn) {
+                    if (isFirst) {
+                        removeBtn.style.display = 'none';
+                    } else {
+                        removeBtn.style.display = 'block';
+                    }
+                }
             });
             updateAddButtonState();
         }
@@ -1647,12 +1862,19 @@ try {
             const currentEventId = selectedEvent ? selectedEvent.id : -1;
 
             entries.forEach((entry, index) => {
-                const name = entry.querySelector('.player-name').value.trim() || `Player ${index + 1}`;
+                const nameInput = entry.querySelector('.player-name');
+                const displayName = nameInput ? nameInput.value.trim() || `Player ${index + 1}` :
+                `Player ${index + 1}`;
+                const isLeader = index === 0;
+
                 const div = document.createElement('div');
                 div.className = 'cross-check-entry';
                 div.innerHTML = `
                         <div class="player-header">
-                            <span class="player-number">${name}</span>
+                            <span class="player-number">
+                                ${isLeader ? '👑 ' : ''}${displayName}
+                                ${isLeader ? '<span class="leader-badge">Leader</span>' : ''}
+                            </span>
                             <span class="event-badge">${selectedEvent ? selectedEvent.name : 'Current Event'}</span>
                         </div>
                         <div class="cross-check-row">
@@ -1688,10 +1910,24 @@ try {
             const entries = playersContainer.querySelectorAll('.player-entry');
             const count = entries.length;
             const total = count * EVENT_FEE;
-            const teamLeader = teamLeaderInput.value.trim() || 'Not specified';
+
+            // Get team leader name from the first player entry
+            let leaderName = 'Not specified';
+            const firstEntry = entries[0];
+            if (firstEntry) {
+                const nameInput = firstEntry.querySelector('.player-name');
+                if (nameInput && nameInput.value.trim()) {
+                    leaderName = nameInput.value.trim();
+                }
+            }
+
+            // Get UG/PU selection
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '—';
 
             payEventName.textContent = selectedEvent ? `${selectedEvent.name} · ${selectedEvent.sub}` : '—';
-            payTeamLeader.textContent = teamLeader;
+            payTeamLeader.textContent = leaderName;
+            payUgPu.textContent = ugPuValue;
             payPlayerCount.textContent = count;
             payTotal.textContent = `₹${total}`;
             payhead.textContent = `PAY ₹${total}`;
@@ -1714,12 +1950,26 @@ try {
         }
 
         function openPaymentApp(app) {
-            const teamLeader = teamLeaderInput.value.trim();
             const college = collegeInput.value.trim();
-            const phone = phoneInput.value.trim();
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
 
-            if (!college || !teamLeader || !phone) {
-                alert("⚠️ Please fill in your College, Team Leader Name, and Phone number before proceeding to payment.");
+            if (!college) { alert('⚠️ Please fill in your college name.'); return; }
+            if (!ugPuSelected) { alert('⚠️ Please select UG or PU category.'); return; }
+            if (!selectedEvent) { alert('⚠️ Please select an event.'); return; }
+
+            // Get team leader name from the first player
+            const firstEntry = playersContainer.querySelector('.player-entry');
+            let leaderName = 'Team Leader';
+            if (firstEntry) {
+                const nameInput = firstEntry.querySelector('.player-name');
+                if (nameInput && nameInput.value.trim()) {
+                    leaderName = nameInput.value.trim();
+                } else {
+                    alert('⚠️ Please enter the Team Leader\'s name in the Team section.');
+                    return;
+                }
+            } else {
+                alert('⚠️ Please add at least one participant (Team Leader) in the Team section.');
                 return;
             }
 
@@ -1763,24 +2013,53 @@ try {
                 });
             });
 
-            // ── Build payload ──
+            // ── Gather participants ──
             const participants = [];
             entries.forEach((entry, index) => {
-                const name = entry.querySelector('.player-name').value.trim();
-                const phone = entry.querySelector('.player-phone').value.trim() || 'N/A';
-                const otherEvent = crossCheckData[index] && crossCheckData[index].checked ?
-                    EVENTS.find(e => e.id === parseInt(crossCheckData[index].eventId))?.name || 'Yes' :
-                    'No';
-                participants.push({ name, phone, otherEvent });
+                const nameInput = entry.querySelector('.player-name');
+                const isLeader = index === 0;
+                let participant = {
+                    name: nameInput ? nameInput.value.trim() : '',
+                    isLeader: isLeader
+                };
+
+                if (isLeader) {
+                    const emailInput = entry.querySelector('.player-email');
+                    const phoneInput = entry.querySelector('.player-phone');
+                    participant.email = emailInput ? emailInput.value.trim() : '';
+                    participant.phone = phoneInput ? phoneInput.value.trim() : 'N/A';
+                }
+
+                // Add cross-check info
+                if (crossCheckData[index]) {
+                    participant.otherEvent = crossCheckData[index].checked ?
+                        EVENTS.find(e => e.id === parseInt(crossCheckData[index].eventId))?.name || 'Yes' :
+                        'No';
+                } else {
+                    participant.otherEvent = 'No';
+                }
+
+                participants.push(participant);
             });
+
+            // Get UG/PU value
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+
+            // Get team leader data from the first participant
+            const leader = participants[0] || {};
+            const leaderName = leader.name || '';
+            const leaderEmail = leader.email || '';
+            const leaderPhone = leader.phone || '';
 
             const registrationData = {
                 event_name: selectedEvent ? selectedEvent.name : 'Unknown',
                 event_sub: selectedEvent ? selectedEvent.sub : '',
                 college: collegeInput.value.trim(),
-                team_leader: teamLeaderInput.value.trim(),
-                email: emailInput.value.trim(),
-                phone: phoneInput.value.trim(),
+                ug_pu: ugPuValue,
+                team_leader: leaderName,
+                email: leaderEmail,
+                phone: leaderPhone,
                 total_amount: total,
                 txn: txn,
                 participants: participants,
@@ -1794,44 +2073,44 @@ try {
             submitBtn.classList.add('btn-loading');
 
             try {
-                // ── Save to Supabase (if available) ──
-let supabaseSuccess = false;
-if (supabaseClient) {
-    try {
-        const { data, error } = await supabaseClient
-            .from('registrations')
-            .insert([registrationData])
-            .select();
+                let supabaseSuccess = false;
+                if (supabaseClient) {
+                    try {
+                        const { data, error } = await supabaseClient
+                            .from('registrations')
+                            .insert([registrationData])
+                            .select();
 
-        if (error) {
-            console.error('❌ Supabase insert error:', error);
-            throw new Error(error.message || 'Database insert failed.');
-        }
+                        if (error) {
+                            console.error('❌ Supabase insert error:', error);
+                            throw new Error(error.message || 'Database insert failed.');
+                        }
 
-        console.log('✅ Registration saved to Supabase:', data);
-        supabaseSuccess = true;
-    } catch (supabaseErr) {
-        console.warn('⚠️ Supabase save failed, falling back to localStorage:', supabaseErr.message);
-    }
-} else {
-    console.warn('⚠️ Supabase client not available, using localStorage fallback.');
-}
+                        console.log('✅ Registration saved to Supabase:', data);
+                        supabaseSuccess = true;
+                    } catch (supabaseErr) {
+                        console.warn('⚠️ Supabase save failed, falling back to localStorage:', supabaseErr.message);
+                    }
+                } else {
+                    console.warn('⚠️ Supabase client not available, using localStorage fallback.');
+                }
 
                 // ── Always save to localStorage as backup ──
                 try {
                     const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                     db.push({
-                        email: registrationData.email,
-                        teamLeader: registrationData.team_leader,
+                        email: leaderEmail,
+                        teamLeader: leaderName,
                         college: registrationData.college,
-                        phone: registrationData.phone,
+                        ug_pu: ugPuValue,
+                        phone: leaderPhone,
                         event: registrationData.event_name,
                         heads: participants.length,
                         amount: registrationData.total_amount,
                         txn: registrationData.txn,
                         participants: participants.map(p => p.name).join(', '),
-                        otherEvents: participants.filter(p => p.otherEvent !== 'No').map(p => p.otherEvent).join(', ') ||
-                            'None'
+                        otherEvents: participants.filter(p => p.otherEvent && p.otherEvent !== 'No').map(p => p
+                            .otherEvent).join(', ') || 'None'
                     });
                     localStorage.setItem('deplomat_db', JSON.stringify(db));
                     console.log('✅ Registration saved to localStorage (backup).');
@@ -1851,7 +2130,6 @@ if (supabaseClient) {
                     `Please try again or contact support if the issue persists.`
                 );
             } finally {
-                // ── Reset button ──
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Confirm Registration 🔱';
                 submitBtn.classList.remove('btn-loading');
@@ -1860,17 +2138,19 @@ if (supabaseClient) {
 
         function updateSuccessDetails(data, participants) {
             const details = document.getElementById('successDetails');
+            const leader = participants ? participants.find(p => p.isLeader) || participants[0] || {} : {};
             details.innerHTML = `
                     <p><strong>Event:</strong> ${data.event_name}</p>
                     <p><strong>College:</strong> ${data.college}</p>
-                    <p><strong>Team Leader:</strong> ${data.team_leader}</p>
-                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Category:</strong> ${data.ug_pu || '—'}</p>
+                    <p><strong>Team Leader:</strong> ${leader.name || data.team_leader || '—'}</p>
+                    <p><strong>Leader Email:</strong> ${leader.email || data.email || '—'}</p>
                     <p><strong>Participants:</strong> ${participants ? participants.length : 0}</p>
                     <p><strong>Total Paid:</strong> ₹${data.total_amount}</p>
                     <p><strong>UTR:</strong> ${data.txn}</p>
                     <hr style="border-color: rgba(255,255,255,0.05); margin: 10px 0;" />
                     <p style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">
-                        ✅ Registration saved · A confirmation email has been sent to ${data.email}
+                        ✅ Registration saved · A confirmation email has been sent to ${leader.email || data.email || 'your email'}
                     </p>
                 `;
         }
@@ -1924,7 +2204,7 @@ if (supabaseClient) {
         step2Next.addEventListener('click', () => goToStep(3));
 
         // Add player
-        addPlayerBtn.addEventListener('click', addPlayer);
+        addPlayerBtn.addEventListener('click', () => addPlayer(false));
 
         // Step 3 navigation
         step3Back.addEventListener('click', () => goToStep(2));
@@ -1943,13 +2223,12 @@ if (supabaseClient) {
                     bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
                     eventBanner.classList.add('show');
                 }
-                // If on step 2, update limits
                 if (currentStep === 2) {
                     updateEventLimitInfo();
-                    // Reset players
                     playersContainer.innerHTML = '';
+                    // Add team leader + min-1 players
                     for (let i = 0; i < currentMin; i++) {
-                        addPlayer();
+                        addPlayer(i === 0);
                     }
                     updateAddButtonState();
                 }
@@ -1967,10 +2246,6 @@ if (supabaseClient) {
                     if (step === 1) step1Next.click();
                     else if (step === 2) step2Next.click();
                     else if (step === 3) step3Next.click();
-                    else if (step === 4) {
-                        // Don't auto-submit on Enter in step 4 (payment)
-                        // User should manually click Confirm
-                    }
                 }
             }
         });
@@ -1985,7 +2260,7 @@ if (supabaseClient) {
             if (playersContainer.children.length === 0) {
                 const initialCount = Math.max(1, currentMin);
                 for (let i = 0; i < initialCount; i++) {
-                    addPlayer();
+                    addPlayer(i === 0);
                 }
             }
             updateEventLimitInfo();
@@ -2004,44 +2279,37 @@ if (supabaseClient) {
         console.log('💾 localStorage fallback: enabled');
 
         // ─── CHECK STATUS MODE ─────────────────────────────────────────────
-function handleStatusCheck() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('status') === 'check') {
-        // Go directly to step 5 (success)
-        goToStep(5);
-        // Override the success details with a status-check message
-        const details = document.getElementById('successDetails');
-        details.innerHTML = `
-            <p style="color: rgba(255,255,255,0.6);">
-                🔍 Enter your registered email or UTR below to check your registration status.
-            </p>
-            <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; justify-content: center;">
-                <input type="email" id="statusEmail" placeholder="Your email" style="flex:1; min-width:200px; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color:#fff;">
-                <button id="checkStatusBtn" class="btn btn-primary" style="padding:12px 28px;">Check Status</button>
-            </div>
-            <div id="statusResult" style="margin-top: 16px; font-size:0.9rem; color: #65d8ff;"></div>
-        `;
-        // Optional: add event listener for the check button
-        document.getElementById('checkStatusBtn').addEventListener('click', function() {
-            const email = document.getElementById('statusEmail').value.trim();
-            if (!email) {
-                alert('Please enter your email.');
-                return;
+        function handleStatusCheck() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('status') === 'check') {
+                goToStep(5);
+                const details = document.getElementById('successDetails');
+                details.innerHTML = `
+                        <p style="color: rgba(255,255,255,0.6);">
+                            🔍 Enter your registered email or UTR below to check your registration status.
+                        </p>
+                        <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; justify-content: center;">
+                            <input type="email" id="statusEmail" placeholder="Your email" style="flex:1; min-width:200px; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color:#fff;">
+                            <button id="checkStatusBtn" class="btn btn-primary" style="padding:12px 28px;">Check Status</button>
+                        </div>
+                        <div id="statusResult" style="margin-top: 16px; font-size:0.9rem; color: #65d8ff;"></div>
+                    `;
+                document.getElementById('checkStatusBtn').addEventListener('click', function() {
+                    const email = document.getElementById('statusEmail').value.trim();
+                    if (!email) {
+                        alert('Please enter your email.');
+                        return;
+                    }
+                    document.getElementById('statusResult').innerHTML = `
+                            <span style="background: rgba(101,216,255,0.1); padding:10px 20px; border-radius:8px; display:inline-block;">
+                                ✅ Registration found for <strong>${email}</strong>. Check your inbox for confirmation.
+                            </span>
+                        `;
+                });
             }
-            // Here you would query Supabase/localStorage to find registration
-            // For demo, show a mock result
-            document.getElementById('statusResult').innerHTML = `
-                <span style="background: rgba(101,216,255,0.1); padding:10px 20px; border-radius:8px; display:inline-block;">
-                    ✅ Registration found for <strong>${email}</strong>. Check your inbox for confirmation.
-                </span>
-            `;
-        });
-    }
-}
+        }
 
-// ─── RUN AFTER INIT ────────────────────────────────────────────────
-// Call this after the existing initialisation code
-handleStatusCheck();
+        handleStatusCheck();
     </script>
 </body>
 </html>
