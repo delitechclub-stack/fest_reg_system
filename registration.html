@@ -242,6 +242,35 @@
             white-space: nowrap;
         }
 
+        /* ─── BLOCK NOTIFICATION ────────────────────────────────────── */
+        .block-notice {
+            display: none;
+            background: rgba(255, 42, 109, 0.12);
+            border: 1px solid rgba(255, 42, 109, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 12px;
+            animation: fadeStep 0.35s ease both;
+            color: #ff6b8a;
+        }
+        .block-notice.show {
+            display: flex;
+        }
+        .block-notice .icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .block-notice .msg {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .block-notice .msg strong {
+            color: #fff;
+        }
+
         /* ─── STEP INDICATOR ────────────────────────────────────────── */
         .step-indicator {
             display: flex;
@@ -1203,6 +1232,12 @@
                     <span class="badge">Pre‑selected</span>
                 </div>
 
+                <!-- ─── BLOCK NOTICE ───────────────────────────────────── -->
+                <div class="block-notice" id="blockNotice">
+                    <span class="icon">⛔</span>
+                    <span class="msg" id="blockMsg">This event is not available for your category.</span>
+                </div>
+
                 <!-- ─── STEP INDICATOR ─────────────────────────────────── -->
                 <div class="step-indicator">
                     <div class="step-dot active" data-step="1">
@@ -1437,24 +1472,26 @@
             console.error('❌ Failed to init Supabase:', err);
         }
 
-        // ─── EVENT DATA WITH LIMITS ───────────────────────────────────
+        // ─── EVENT DATA WITH LIMITS & CATEGORY RESTRICTIONS ──────────
         const EVENT_FEE = 250;
-        const UPI_ID = "baijuacm@okicici"; // Replace with your actual UPI ID
+        const UPI_ID = "baijuacm@okicici";
         const PAYEE_NAME = "DEPLOMAT";
 
+        // ─── EVENT CATEGORIES ─────────────────────────────────────────
+        // 'both' = open to UG & PU   |   'pu' = PU only   |   'ug' = UG only
         const EVENTS = [
-            { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3 },
-            { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5 },
-            { id: 2, name: "THE TRIDENT WAR", sub: "Free Fire", min: 4, max: 4 },
-            { id: 3, name: "COURT OF THE DEEP", sub: "Moot Court", min: 2, max: 3 },
-            { id: 4, name: "THE SIREN'S ACT", sub: "Reels Making", min: 1, max: 3 },
-            { id: 5, name: "ECHOS OF ATLANTIS", sub: "Solo Singing", min: 1, max: 1 },
-            { id: 6, name: "THE MERMAID'S WALTZ", sub: "Solo Dance", min: 1, max: 1 },
-            { id: 7, name: "TIDES OF RYTHM", sub: "Group Dance", min: 6, max: 12 },
-            { id: 8, name: "RUNWAY OF REALMS", sub: "Rampwalk", min: 10, max: 12 },
-            { id: 9, name: "THE KRAKEN'S PITCH", sub: "Cricket (PU/UG Boys)", min: 11, max: 11 },
-            { id: 10, name: "POSEIDON'S CUP", sub: "Football (P.U Boys)", min: 11, max: 11 },
-            { id: 11, name: "TIDAL THROWDOWN", sub: "Throwball (UG Girls)", min: 9, max: 9 }
+            { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both' },
+            { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5, category: 'both' },
+            { id: 2, name: "THE TRIDENT WAR", sub: "Free Fire", min: 4, max: 4, category: 'both' },
+            { id: 3, name: "COURT OF THE DEEP", sub: "Moot Court", min: 2, max: 3, category: 'both' },
+            { id: 4, name: "THE SIREN'S ACT", sub: "Reels Making", min: 1, max: 3, category: 'both' },
+            { id: 5, name: "ECHOS OF ATLANTIS", sub: "Solo Singing", min: 1, max: 1, category: 'both' },
+            { id: 6, name: "THE MERMAID'S WALTZ", sub: "Solo Dance", min: 1, max: 1, category: 'both' },
+            { id: 7, name: "TIDES OF RYTHM", sub: "Group Dance", min: 6, max: 12, category: 'both' },
+            { id: 8, name: "RUNWAY OF REALMS", sub: "Rampwalk", min: 10, max: 12, category: 'both' },
+            { id: 9, name: "THE KRAKEN'S PITCH", sub: "Cricket (PU/UG Boys)", min: 11, max: 11, category: 'both' },
+            { id: 10, name: "POSEIDON'S CUP", sub: "Football (P.U Boys)", min: 11, max: 11, category: 'pu' },
+            { id: 11, name: "TIDAL THROWDOWN", sub: "Throwball (UG Girls)", min: 9, max: 9, category: 'ug' }
         ];
 
         // ─── DOM REFS ─────────────────────────────────────────────────
@@ -1495,28 +1532,115 @@
         const step4Back = document.getElementById('step4Back');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Banner
+        // Banner & Block
         const eventBanner = document.getElementById('eventBanner');
         const bannerEventName = document.getElementById('bannerEventName');
         const bannerEventSub = document.getElementById('bannerEventSub');
+        const blockNotice = document.getElementById('blockNotice');
+        const blockMsg = document.getElementById('blockMsg');
 
         // ─── STATE ─────────────────────────────────────────────────────
         let currentStep = 1;
         let players = [];
         let selectedEvent = null;
-        let qrVisible = false;
         let currentMin = 1;
         let currentMax = 12;
         let autoSelectedEventId = null;
-        let teamLeaderData = null; // { name, email, phone }
+        let teamLeaderData = null;
+        let selectedCategory = null; // 'UG' or 'PU'
+
+        // ─── CATEGORY VALIDATION ──────────────────────────────────────
+
+        /**
+         * Check if a given category ('UG' or 'PU') is compatible with an event ID.
+         * Returns { valid: boolean, message: string }
+         */
+        function checkCategoryEventCompatibility(category, eventId) {
+            if (!category || !eventId) {
+                return { valid: true, message: '' };
+            }
+
+            const event = EVENTS.find(e => e.id === parseInt(eventId));
+            if (!event) {
+                return { valid: true, message: '' };
+            }
+
+            // 'both' → always compatible
+            if (event.category === 'both') {
+                return { valid: true, message: '' };
+            }
+
+            const cat = category.toUpperCase();
+            if (cat === 'UG' && event.category === 'pu') {
+                return {
+                    valid: false,
+                    message: `⛔ "${event.name} · ${event.sub}" is for <strong>PU</strong> students only. UG students cannot register for this event.`
+                };
+            }
+            if (cat === 'PU' && event.category === 'ug') {
+                return {
+                    valid: false,
+                    message: `⛔ "${event.name} · ${event.sub}" is for <strong>UG</strong> students only. PU students cannot register for this event.`
+                };
+            }
+
+            return { valid: true, message: '' };
+        }
+
+        /**
+         * Show or hide the block notice.
+         */
+        function showBlockNotice(message) {
+            if (message) {
+                blockMsg.innerHTML = message;
+                blockNotice.classList.add('show');
+            } else {
+                blockNotice.classList.remove('show');
+            }
+        }
+
+        /**
+         * Validate current category + event selection and show/hide block notice.
+         * Returns true if valid, false if blocked.
+         */
+        function validateCategoryEventPair(showAlert = false) {
+            const cat = getSelectedCategory();
+            const eventVal = eventSelect.value;
+
+            // If either is missing, hide notice and allow (but don't block)
+            if (!cat || !eventVal) {
+                showBlockNotice('');
+                return true;
+            }
+
+            const result = checkCategoryEventCompatibility(cat, eventVal);
+            if (!result.valid) {
+                showBlockNotice(result.message);
+                if (showAlert) {
+                    // Show a more prominent alert as well
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}`);
+                }
+                return false;
+            } else {
+                showBlockNotice('');
+                return true;
+            }
+        }
+
+        function getSelectedCategory() {
+            const checked = document.querySelector('input[name="ug_pu"]:checked');
+            return checked ? checked.value : null;
+        }
 
         // ─── EVENT LIMIT FUNCTIONS ────────────────────────────────────
+
         function getEventLimits(eventId) {
             const event = EVENTS.find(e => e.id === parseInt(eventId));
             if (event) {
-                return { min: event.min, max: event.max, name: event.name, sub: event.sub };
+                return { min: event.min, max: event.max, name: event.name, sub: event.sub, category: event.category };
             }
-            return { min: 1, max: 12, name: 'Unknown', sub: '' };
+            return { min: 1, max: 12, name: 'Unknown', sub: '', category: 'both' };
         }
 
         function updateEventLimitInfo() {
@@ -1531,19 +1655,24 @@
             currentMin = limits.min;
             currentMax = limits.max;
 
+            let catLabel = '';
+            if (limits.category === 'pu') catLabel = '🔵 PU Only';
+            else if (limits.category === 'ug') catLabel = '🟣 UG Only';
+            else catLabel = '🟢 UG + PU';
+
             if (limits.min === limits.max) {
                 limitText.innerHTML = `
-                        <strong>${limits.name}</strong> · ${limits.sub}<br>
+                        <strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>
                         📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)
                     `;
             } else {
                 limitText.innerHTML = `
-                        <strong>${limits.name}</strong> · ${limits.sub}<br>
+                        <strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>
                         📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed (including Team Leader)
                     `;
             }
 
-            // Update player count if current players exceed max
+            // Trim players if exceeding max
             const currentCount = playersContainer.children.length;
             if (currentCount > currentMax) {
                 while (playersContainer.children.length > currentMax) {
@@ -1571,24 +1700,22 @@
         }
 
         // ─── STEP MANAGEMENT ──────────────────────────────────────────
+
         function goToStep(step) {
             // Validate current step before moving forward
             if (step > currentStep) {
                 if (!validateStep(currentStep)) return;
             }
 
-            // Find the target step element
             const targetStep = document.querySelector(`.form-step[data-step="${step}"]`);
             if (!targetStep) {
                 console.error(`❌ Step ${step} not found in DOM`);
                 return;
             }
 
-            // Update step visibility
             steps.forEach(s => s.classList.remove('active'));
             targetStep.classList.add('active');
 
-            // Update dots
             dots.forEach((dot, index) => {
                 const num = index + 1;
                 dot.classList.remove('active', 'done');
@@ -1598,16 +1725,16 @@
 
             currentStep = step;
 
-            // Scroll to top of card
             const card = document.querySelector('.register-card');
             if (card) {
                 card.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
 
-            // Step-specific initialization
             if (step === 2) {
                 initializePlayers();
                 updateEventLimitInfo();
+                // Re-check category compatibility when entering step 2
+                validateCategoryEventPair(false);
             }
             if (step === 3) {
                 initializeCrossCheck();
@@ -1619,6 +1746,7 @@
         }
 
         // ─── VALIDATION ──────────────────────────────────────────────
+
         function validateStep(step) {
             if (step === 1) {
                 const college = collegeInput.value.trim();
@@ -1626,7 +1754,6 @@
 
                 if (!college) { alert('Please enter your college name.'); return false; }
 
-                // Check UG/PU selection
                 const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
                 if (!ugPuSelected) {
                     alert('⚠️ Please select either UG or PU category.');
@@ -1635,11 +1762,26 @@
 
                 if (!eventVal) { alert('Please select an event.'); return false; }
 
+                // ── 🔥 CATEGORY BLOCK: validate UG/PU vs Event ──
+                const cat = ugPuSelected.value;
+                const result = checkCategoryEventCompatibility(cat, eventVal);
+                if (!result.valid) {
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}`);
+                    // Highlight the block notice
+                    showBlockNotice(result.message);
+                    return false;
+                }
+                showBlockNotice('');
+
                 selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
                 if (!selectedEvent) {
                     alert('Please select a valid event.');
                     return false;
                 }
+
+                // Store category
+                selectedCategory = cat;
 
                 return true;
             }
@@ -1661,7 +1803,6 @@
                     return false;
                 }
 
-                // Validate Team Leader (first player)
                 const leaderEntry = playerInputs[0];
                 const leaderName = leaderEntry.querySelector('.player-name');
                 const leaderEmail = leaderEntry.querySelector('.player-email');
@@ -1681,17 +1822,15 @@
                     return false;
                 }
 
-                // Store team leader data for later use
                 teamLeaderData = {
                     name: leaderName.value.trim(),
                     email: leaderEmail.value.trim(),
                     phone: leaderPhone.value.trim()
                 };
 
-                // Validate other players (just name)
                 let allValid = true;
                 playerInputs.forEach((entry, index) => {
-                    if (index === 0) return; // skip team leader, already validated
+                    if (index === 0) return;
                     const nameInput = entry.querySelector('.player-name');
                     if (!nameInput || !nameInput.value.trim()) {
                         alert(`Please enter name for Player ${index + 1}.`);
@@ -1701,7 +1840,6 @@
 
                 if (!allValid) return false;
 
-                // Build players array
                 players = [];
                 playerInputs.forEach((entry, index) => {
                     const nameInput = entry.querySelector('.player-name');
@@ -1730,11 +1868,12 @@
         }
 
         // ─── PLAYER MANAGEMENT ────────────────────────────────────────
+
         function initializePlayers() {
             if (playersContainer.children.length === 0) {
                 const initialCount = Math.max(1, currentMin);
                 for (let i = 0; i < initialCount; i++) {
-                    addPlayer(i === 0); // first is team leader
+                    addPlayer(i === 0);
                 }
             }
             updateAddButtonState();
@@ -1765,7 +1904,6 @@
 
             let fieldsHtml = '';
             if (isFirst) {
-                // Team Leader: name, email, phone
                 fieldsHtml = `
                         <div class="player-fields leader-fields">
                             <div class="field-group">
@@ -1783,7 +1921,6 @@
                         </div>
                     `;
             } else {
-                // Regular player: just name
                 fieldsHtml = `
                         <div class="player-fields">
                             <div class="field-group">
@@ -1796,7 +1933,6 @@
 
             div.innerHTML = headerHtml + fieldsHtml;
 
-            // Remove button for non-leader players
             if (!isFirst) {
                 div.querySelector('.remove-btn').addEventListener('click', () => {
                     const currentCount = playersContainer.children.length;
@@ -1831,7 +1967,6 @@
                     }
                 }
 
-                // Ensure remove button visibility
                 const removeBtn = entry.querySelector('.remove-btn');
                 if (removeBtn) {
                     if (isFirst) {
@@ -1845,6 +1980,7 @@
         }
 
         // ─── CROSS-CHECK ───────────────────────────────────────────────
+
         function initializeCrossCheck() {
             crossCheckContainer.innerHTML = '';
             const entries = playersContainer.querySelectorAll('.player-entry');
@@ -1864,7 +2000,7 @@
             entries.forEach((entry, index) => {
                 const nameInput = entry.querySelector('.player-name');
                 const displayName = nameInput ? nameInput.value.trim() || `Player ${index + 1}` :
-                `Player ${index + 1}`;
+                    `Player ${index + 1}`;
                 const isLeader = index === 0;
 
                 const div = document.createElement('div');
@@ -1901,6 +2037,7 @@
         }
 
         // ─── PAYMENT FUNCTIONS ────────────────────────────────────────
+
         function getTotalAmount() {
             const entries = playersContainer.querySelectorAll('.player-entry');
             return entries.length * EVENT_FEE;
@@ -1911,7 +2048,6 @@
             const count = entries.length;
             const total = count * EVENT_FEE;
 
-            // Get team leader name from the first player entry
             let leaderName = 'Not specified';
             const firstEntry = entries[0];
             if (firstEntry) {
@@ -1921,7 +2057,6 @@
                 }
             }
 
-            // Get UG/PU selection
             const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
             const ugPuValue = ugPuSelected ? ugPuSelected.value : '—';
 
@@ -1949,6 +2084,8 @@
             }
         }
 
+        let qrVisible = false;
+
         function openPaymentApp(app) {
             const college = collegeInput.value.trim();
             const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
@@ -1957,7 +2094,6 @@
             if (!ugPuSelected) { alert('⚠️ Please select UG or PU category.'); return; }
             if (!selectedEvent) { alert('⚠️ Please select an event.'); return; }
 
-            // Get team leader name from the first player
             const firstEntry = playersContainer.querySelector('.player-entry');
             let leaderName = 'Team Leader';
             if (firstEntry) {
@@ -1991,6 +2127,7 @@
         }
 
         // ─── SUBMIT REGISTRATION → SUPABASE ──────────────────────────
+
         async function submitRegistration() {
             const txn = txnInput.value.trim();
             if (!txn) {
@@ -2001,7 +2138,6 @@
             const entries = playersContainer.querySelectorAll('.player-entry');
             const total = entries.length * EVENT_FEE;
 
-            // ── Gather cross-check data ──
             const crossCheckEntries = crossCheckContainer.querySelectorAll('.cross-check-entry');
             const crossCheckData = [];
             crossCheckEntries.forEach(entry => {
@@ -2013,7 +2149,6 @@
                 });
             });
 
-            // ── Gather participants ──
             const participants = [];
             entries.forEach((entry, index) => {
                 const nameInput = entry.querySelector('.player-name');
@@ -2030,7 +2165,6 @@
                     participant.phone = phoneInput ? phoneInput.value.trim() : 'N/A';
                 }
 
-                // Add cross-check info
                 if (crossCheckData[index]) {
                     participant.otherEvent = crossCheckData[index].checked ?
                         EVENTS.find(e => e.id === parseInt(crossCheckData[index].eventId))?.name || 'Yes' :
@@ -2042,11 +2176,9 @@
                 participants.push(participant);
             });
 
-            // Get UG/PU value
             const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
             const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
 
-            // Get team leader data from the first participant
             const leader = participants[0] || {};
             const leaderName = leader.name || '';
             const leaderEmail = leader.email || '';
@@ -2067,7 +2199,6 @@
                 registered_at: new Date().toISOString()
             };
 
-            // ── Show loading state ──
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
             submitBtn.classList.add('btn-loading');
@@ -2095,7 +2226,6 @@
                     console.warn('⚠️ Supabase client not available, using localStorage fallback.');
                 }
 
-                // ── Always save to localStorage as backup ──
                 try {
                     const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                     db.push({
@@ -2118,7 +2248,6 @@
                     console.warn('⚠️ localStorage fallback failed:', localErr);
                 }
 
-                // ── Show success ──
                 goToStep(5);
                 updateSuccessDetails(registrationData, participants);
 
@@ -2156,6 +2285,7 @@
         }
 
         // ─── AUTO-SELECT EVENT FROM URL ───────────────────────────────
+
         function autoSelectEventFromURL() {
             try {
                 const params = new URLSearchParams(window.location.search);
@@ -2193,51 +2323,134 @@
 
         // ─── EVENT LISTENERS ──────────────────────────────────────────
 
-        // Step 1 → Step 2
-        step1Next.addEventListener('click', function(e) {
-            e.preventDefault();
-            goToStep(2);
+        // ── UG/PU change: re-validate event compatibility ──
+        ugPuRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const cat = this.value;
+                const eventVal = eventSelect.value;
+                if (cat && eventVal) {
+                    const result = checkCategoryEventCompatibility(cat, eventVal);
+                    if (!result.valid) {
+                        showBlockNotice(result.message);
+                        // Auto-clear the event selection
+                        eventSelect.value = '';
+                        // Also clear the banner
+                        eventBanner.classList.remove('show');
+                        // Show an alert
+                        const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                        alert(`⛔ ${cleanMsg}\n\nYour event selection has been cleared. Please select a compatible event.`);
+                    } else {
+                        showBlockNotice('');
+                        // If compatible, update banner
+                        const event = EVENTS.find(e => e.id === parseInt(eventVal));
+                        if (event) {
+                            bannerEventName.textContent = event.name;
+                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                            eventBanner.classList.add('show');
+                        }
+                    }
+                } else {
+                    showBlockNotice('');
+                }
+                // Re-run validation for step 1
+                validateCategoryEventPair(false);
+            });
         });
 
-        // Step 2 navigation
-        step2Back.addEventListener('click', () => goToStep(1));
-        step2Next.addEventListener('click', () => goToStep(3));
-
-        // Add player
-        addPlayerBtn.addEventListener('click', () => addPlayer(false));
-
-        // Step 3 navigation
-        step3Back.addEventListener('click', () => goToStep(2));
-        step3Next.addEventListener('click', () => goToStep(4));
-
-        // Step 4 back
-        step4Back.addEventListener('click', () => goToStep(3));
-
-        // ─── EVENT SELECT CHANGE ──────────────────────────────────────
+        // ── Event select change: re-validate category compatibility ──
         eventSelect.addEventListener('change', function() {
             const val = this.value;
-            if (val) {
+            const cat = getSelectedCategory();
+
+            if (val && cat) {
+                const result = checkCategoryEventCompatibility(cat, val);
+                if (!result.valid) {
+                    showBlockNotice(result.message);
+                    // Auto-clear the event selection
+                    this.value = '';
+                    eventBanner.classList.remove('show');
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}\n\nYour event selection has been cleared. Please select a compatible event.`);
+                    return;
+                } else {
+                    showBlockNotice('');
+                    const event = EVENTS.find(e => e.id === parseInt(val));
+                    if (event) {
+                        bannerEventName.textContent = event.name;
+                        bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                        eventBanner.classList.add('show');
+                        selectedEvent = event;
+                        if (currentStep === 2) {
+                            updateEventLimitInfo();
+                            playersContainer.innerHTML = '';
+                            for (let i = 0; i < currentMin; i++) {
+                                addPlayer(i === 0);
+                            }
+                            updateAddButtonState();
+                        }
+                    }
+                }
+            } else if (val) {
+                // Category not selected yet, just show event info
                 const event = EVENTS.find(e => e.id === parseInt(val));
                 if (event) {
                     bannerEventName.textContent = event.name;
                     bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
                     eventBanner.classList.add('show');
-                }
-                if (currentStep === 2) {
-                    updateEventLimitInfo();
-                    playersContainer.innerHTML = '';
-                    // Add team leader + min-1 players
-                    for (let i = 0; i < currentMin; i++) {
-                        addPlayer(i === 0);
+                    selectedEvent = event;
+                    if (currentStep === 2) {
+                        updateEventLimitInfo();
+                        playersContainer.innerHTML = '';
+                        for (let i = 0; i < currentMin; i++) {
+                            addPlayer(i === 0);
+                        }
+                        updateAddButtonState();
                     }
-                    updateAddButtonState();
                 }
             } else {
                 eventBanner.classList.remove('show');
+                showBlockNotice('');
             }
+
+            // Also validate the pair
+            validateCategoryEventPair(false);
         });
 
+        // ── Step 1 → Step 2 ──
+        step1Next.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Double-check validation with alert
+            const cat = getSelectedCategory();
+            const eventVal = eventSelect.value;
+            if (cat && eventVal) {
+                const result = checkCategoryEventCompatibility(cat, eventVal);
+                if (!result.valid) {
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}`);
+                    showBlockNotice(result.message);
+                    return;
+                }
+                showBlockNotice('');
+            }
+            goToStep(2);
+        });
+
+        // ── Step 2 navigation ──
+        step2Back.addEventListener('click', () => goToStep(1));
+        step2Next.addEventListener('click', () => goToStep(3));
+
+        // ── Add player ──
+        addPlayerBtn.addEventListener('click', () => addPlayer(false));
+
+        // ── Step 3 navigation ──
+        step3Back.addEventListener('click', () => goToStep(2));
+        step3Next.addEventListener('click', () => goToStep(4));
+
+        // ── Step 4 back ──
+        step4Back.addEventListener('click', () => goToStep(3));
+
         // ─── KEYBOARD SHORTCUTS ───────────────────────────────────────
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const activeStep = document.querySelector('.form-step.active');
@@ -2252,10 +2465,8 @@
 
         // ─── INIT ──────────────────────────────────────────────────────
 
-        // Auto-select event from URL
         autoSelectEventFromURL();
 
-        // Initialize players after a short delay
         setTimeout(() => {
             if (playersContainer.children.length === 0) {
                 const initialCount = Math.max(1, currentMin);
@@ -2265,9 +2476,10 @@
             }
             updateEventLimitInfo();
             updateAddButtonState();
+            // Initial category validation
+            validateCategoryEventPair(false);
         }, 100);
 
-        // Update QR code
         setTimeout(() => {
             updateQR(EVENT_FEE);
         }, 200);
@@ -2277,8 +2489,10 @@
         console.log('📋 Events loaded:', EVENTS.length);
         console.log('🔐 Supabase available:', !!supabase);
         console.log('💾 localStorage fallback: enabled');
+        console.log('🔒 Category block mechanism active: UG/PU validation in place.');
 
         // ─── CHECK STATUS MODE ─────────────────────────────────────────────
+
         function handleStatusCheck() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('status') === 'check') {
