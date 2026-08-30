@@ -5,26 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DEPLOMAT · Atlantis Immersive</title>
 
-    <!-- ─── GOOGLE FONTS ─────────────────────────────────────────────── -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
 
     <style>
-        /* ═══════════════════════════════════════════════════════════════
-           RESET & BASE
-           ═══════════════════════════════════════════════════════════════ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            overscroll-behavior: none;
-        }
-
+        /* ─── RESET & BASE ─────────────────────────────────────────────── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; overscroll-behavior: none; }
         body {
             font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
             background: #041217;
@@ -34,9 +23,7 @@
             user-select: none;
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           ATLANTIS COLOR TOKENS
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── ATLANTIS COLOR TOKENS ────────────────────────────────────── */
         :root {
             --abyss: #041217;
             --abyss-light: #061A20;
@@ -57,17 +44,13 @@
             --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.85);
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           SCROLLBAR
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── SCROLLBAR ────────────────────────────────────────────────── */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--abyss); }
         ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-        /* ═══════════════════════════════════════════════════════════════
-           FLOATING LOGO — ATLANTEAN SEAL
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── FLOATING LOGO ───────────────────────────────────────────── */
         .header {
             position: fixed;
             top: 24px;
@@ -75,7 +58,6 @@
             z-index: 999;
             display: inline-block;
         }
-
         .trigger-wrapper {
             position: relative;
             display: flex;
@@ -83,7 +65,6 @@
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
-
         .logo-emblem {
             display: block;
             width: 48px;
@@ -96,7 +77,6 @@
             background: rgba(4, 18, 23, 0.7);
             backdrop-filter: blur(4px);
         }
-
         .trigger-wrapper:hover .logo-emblem {
             transform: scale(1.08);
             border-color: var(--gold);
@@ -104,7 +84,7 @@
         }
         .trigger-wrapper:active .logo-emblem { transform: scale(0.92); }
 
-        /* ─── DROPDOWN ───────────────────────────────────────────────── */
+        /* ─── DROPDOWN ────────────────────────────────────────────────── */
         .epic-dropdown {
             display: none;
             position: absolute;
@@ -128,7 +108,6 @@
             transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.35s;
             border: 1px solid rgba(169, 132, 69, 0.12);
         }
-
         .epic-dropdown::before {
             content: '';
             position: absolute;
@@ -142,14 +121,12 @@
             mask-composite: exclude;
             pointer-events: none;
         }
-
         .epic-dropdown.open {
             display: flex;
             opacity: 1;
             visibility: visible;
             transform: scale(1) translateY(0px) rotateX(0deg);
         }
-
         .dropdown-section-title {
             font-family: 'Cinzel', serif;
             font-size: 8px;
@@ -160,14 +137,12 @@
             padding: 6px 24px 2px 24px;
             margin-top: 2px;
         }
-
         .dropdown-divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.25), transparent);
             margin: 4px 18px;
             border: none;
         }
-
         .dropdown-item {
             display: flex;
             align-items: center;
@@ -185,18 +160,15 @@
             cursor: pointer;
             font-family: 'Cinzel', serif;
         }
-
         .dropdown-item:hover {
             color: var(--ivory);
             background: rgba(169, 132, 69, 0.08);
             border-left-color: var(--gold);
         }
-
         .dropdown-item:active {
             background: rgba(169, 132, 69, 0.12);
             transform: scale(0.98);
         }
-
         .dropdown-item .icon {
             display: inline-flex;
             align-items: center;
@@ -211,12 +183,10 @@
             transition: 0.25s;
             font-style: normal;
         }
-
         .dropdown-item:hover .icon {
             background: rgba(169, 132, 69, 0.15);
             color: var(--gold-light);
         }
-
         .dropdown-item.login-item { color: rgba(232, 217, 184, 0.9); }
         .dropdown-item.login-item:hover {
             color: var(--gold-bright);
@@ -224,9 +194,16 @@
             background: rgba(169, 132, 69, 0.08);
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           HERO — DESCEND INTO ATLANTIS (ENHANCED)
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── SCROLL CONTAINER (2D LAYER) ────────────────────────────── */
+        .scroll-container {
+            position: relative;
+            z-index: 1;
+            transform-origin: center top;
+            will-change: transform, opacity;
+            transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+        }
+
+        /* ─── HERO SECTION ────────────────────────────────────────────── */
         .hero-section {
             position: relative;
             height: 100dvh;
@@ -236,7 +213,6 @@
             transform-origin: center top;
             will-change: transform, opacity;
         }
-
         .hero-section .video-container {
             position: absolute;
             top: 0;
@@ -249,9 +225,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            pointer-events: none; /* Prevents video from blocking mouse interactions */
+            pointer-events: none;
         }
-
         .hero-section .overlay {
             position: absolute;
             top: 0;
@@ -271,7 +246,7 @@
             z-index: 2;
             pointer-events: none;
             overflow: hidden;
-            opacity: 0.25; /* Increased slightly for better immersion */
+            opacity: 0.25;
             will-change: transform;
         }
         .light-rays .ray {
@@ -330,7 +305,7 @@
             100% { transform: translate(calc(var(--x, 10%) * 0.6), calc(var(--y, 10%) * -0.4)) scale(1.8); opacity: 0.1; }
         }
 
-        /* ─── HERO CONTENT (RICH ROYAL GOLD ENHANCED) ─────────────────── */
+        /* ─── HERO CONTENT ─────────────────────────────────────────────── */
         .hero-center {
             position: absolute;
             top: 0;
@@ -347,24 +322,20 @@
             pointer-events: none;
             will-change: transform;
         }
-
         .hero-title {
             font-family: 'Cinzel', serif;
             font-weight: 900;
             font-size: clamp(2.8rem, 10vw, 6.5rem);
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            /* Rich Royal Gold Gradient */
             background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            /* Deep metallic shadow for 2D/3D pop */
             filter: drop-shadow(0 4px 12px rgba(169, 132, 69, 0.4)) drop-shadow(0 0 50px rgba(192, 154, 82, 0.2));
             line-height: 1.05;
             margin-bottom: 8px;
         }
-
         .hero-title .accent {
             font-weight: 400;
             letter-spacing: 0.3em;
@@ -377,23 +348,17 @@
             background-clip: text;
             filter: drop-shadow(0 2px 10px rgba(169, 132, 69, 0.3));
         }
-
         .hero-subtitle {
             font-family: 'Cormorant Garamond', serif;
             font-weight: 600;
             font-size: clamp(0.9rem, 2.2vw, 1.5rem);
             letter-spacing: 0.35em;
             text-transform: uppercase;
-            color: rgba(232, 217, 184, 0.85); /* FIXED: Was 0.6, now highly readable */
+            color: rgba(232, 217, 184, 0.85);
             text-shadow: 0 2px 40px rgba(0, 0, 0, 0.8);
             margin-top: 4px;
         }
-
-        .hero-subtitle .gold {
-            color: var(--gold-bright);
-            font-weight: 700;
-        }
-
+        .hero-subtitle .gold { color: var(--gold-bright); font-weight: 700; }
         .hero-subtitle .divider {
             display: inline-block;
             width: 1px;
@@ -402,25 +367,18 @@
             margin: 0 14px;
             vertical-align: middle;
         }
-
         .hero-tagline {
             font-family: 'Cinzel', serif;
             font-weight: 400;
             font-size: clamp(0.55rem, 1vw, 0.8rem);
             letter-spacing: 0.5em;
             text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.6); /* FIXED: Increased from 0.3 */
+            color: rgba(192, 154, 82, 0.6);
             margin-top: 18px;
             text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
         }
+        .hero-tagline .ornament { display: inline-block; margin: 0 10px; opacity: 0.5; }
 
-        .hero-tagline .ornament {
-            display: inline-block;
-            margin: 0 10px;
-            opacity: 0.5;
-        }
-
-        /* ─── DESCEND CTA ────────────────────────────────────────────────── */
         .explore-cta {
             position: absolute;
             bottom: 45px;
@@ -451,15 +409,12 @@
             background: linear-gradient(180deg, rgba(192, 154, 82, 0.6), transparent);
             margin-top: 2px;
         }
-
         @keyframes pulseDescend {
             0%, 100% { opacity: 0.4; transform: translateY(0); }
             50% { opacity: 0.8; transform: translateY(-4px); }
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           EXPLORE SECTION — "DISCOVER THE KINGDOM"
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── EXPLORE SECTION ──────────────────────────────────────────── */
         .explore-section {
             position: relative;
             z-index: 2;
@@ -473,7 +428,6 @@
             will-change: transform, opacity;
             transform-origin: center bottom;
         }
-
         .explore-section::before {
             content: '';
             position: absolute;
@@ -484,14 +438,12 @@
             background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.3), transparent);
             z-index: 0;
         }
-
         .explore-header {
             padding: 0 40px 16px 40px;
             border-bottom: 1px solid rgba(169, 132, 69, 0.1);
             position: relative;
             z-index: 1;
         }
-
         .explore-header .section-label {
             font-family: 'Cinzel', serif;
             font-size: 0.6rem;
@@ -500,21 +452,17 @@
             color: rgba(192, 154, 82, 0.5);
             margin-bottom: 4px;
         }
-
         .explore-header h2 {
             font-family: 'Cinzel', serif;
             font-size: clamp(1.8rem, 5vw, 3.6rem);
             font-weight: 700;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: rgba(232, 217, 184, 0.15); /* FIXED: Was 0.06 (invisible) */
+            color: rgba(232, 217, 184, 0.15);
             line-height: 1;
             position: relative;
         }
-
-        .explore-header h2 .gold-text {
-            color: rgba(192, 154, 82, 0.85); /* FIXED: Was 0.08 (invisible) */
-        }
+        .explore-header h2 .gold-text { color: rgba(192, 154, 82, 0.85); }
 
         /* ─── CAROUSEL ──────────────────────────────────────────────────── */
         .carousel-stage {
@@ -522,15 +470,13 @@
             width: 100%;
             padding: 20px 0 10px 0;
             overflow: hidden;
-            touch-action: pan-y; /* FIXED: Allows vertical scroll, captures horizontal swipe */
+            touch-action: pan-y;
             cursor: grab;
             will-change: transform;
             contain: layout style;
             z-index: 1;
         }
-
         .carousel-stage:active { cursor: grabbing; }
-
         .carousel-track {
             display: flex;
             gap: 12px;
@@ -538,8 +484,6 @@
             transition: none;
             padding: 0 8px;
         }
-
-        /* ─── EVENT CARD ────────────────────────────────────────────────── */
         .carousel-track .event-card {
             flex: 0 0 clamp(220px, 38vw, 310px);
             aspect-ratio: 5 / 7;
@@ -563,7 +507,6 @@
             flex-shrink: 0;
             contain: layout style;
         }
-
         .carousel-track .event-card::before {
             content: '';
             position: absolute;
@@ -574,7 +517,6 @@
             z-index: 3;
             transition: border-color 0.4s ease;
         }
-
         .carousel-track .event-card::after {
             content: '✦';
             position: absolute;
@@ -584,10 +526,8 @@
             color: rgba(169, 132, 69, 0.15);
             z-index: 4;
             pointer-events: none;
-            letter-spacing: 0;
             transition: color 0.4s ease;
         }
-
         .carousel-track .event-card .card-image {
             position: absolute;
             top: 0;
@@ -603,14 +543,12 @@
             justify-content: center;
             overflow: hidden;
         }
-
         .carousel-track .event-card .card-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* FIXED: Changed from contain to cover for better card fill */
+            object-fit: cover;
             background: var(--abyss);
         }
-
         .carousel-track .event-card .card-image .img-placeholder {
             position: absolute;
             inset: 0;
@@ -621,18 +559,15 @@
             border-radius: 16px;
             pointer-events: none;
         }
-
         .carousel-track .event-card .card-image img.loaded ~ .img-placeholder {
             opacity: 0;
             animation: none;
             transition: opacity 0.5s ease;
         }
-
         @keyframes shimmerAtlantis {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-
         .carousel-track .event-card .card-content {
             position: relative;
             z-index: 2;
@@ -641,7 +576,6 @@
             padding: 40px 20px 22px 20px;
             border-radius: 0 0 16px 16px;
         }
-
         .carousel-track .event-card .card-name {
             font-family: 'Cinzel', serif;
             font-size: clamp(0.85rem, 1.8vw, 1.3rem);
@@ -652,16 +586,14 @@
             color: var(--ivory);
             text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
         }
-
         .carousel-track .event-card .card-sub {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(0.55rem, 0.9vw, 0.75rem);
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.8); /* FIXED: Was 0.4, now clearly readable */
+            color: rgba(192, 154, 82, 0.8);
             font-weight: 600;
         }
-
         .carousel-track .event-card .card-explore-badge {
             position: absolute;
             bottom: 18px;
@@ -687,7 +619,6 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-
         .carousel-track .event-card .card-explore-badge:hover {
             opacity: 1;
             background: rgba(169, 132, 69, 0.12);
@@ -696,20 +627,16 @@
             box-shadow: 0 0 30px rgba(169, 132, 69, 0.1);
             color: var(--gold-bright);
         }
-
         .carousel-track .event-card .card-explore-badge:active { transform: scale(0.92); }
-
         .carousel-track .event-card.active-card {
             border-color: rgba(169, 132, 69, 0.3);
             box-shadow: 0 30px 70px -12px rgba(0, 0, 0, 0.95), 0 0 60px rgba(169, 132, 69, 0.05), inset 0 0 80px rgba(169, 132, 69, 0.02);
         }
-
         .carousel-track .event-card.active-card::before { border-color: rgba(169, 132, 69, 0.15); }
         .carousel-track .event-card.active-card::after { color: rgba(169, 132, 69, 0.25); }
         .carousel-track .event-card.active-card .card-image { opacity: 0.8; }
         .carousel-track .event-card.active-card .card-explore-badge { opacity: 0.9; border-color: rgba(169, 132, 69, 0.25); }
 
-        /* ─── DOTS ──────────────────────────────────────────────────────── */
         .dots-container {
             display: flex;
             justify-content: center;
@@ -719,7 +646,6 @@
             z-index: 2;
             position: relative;
         }
-
         .dot {
             width: 6px;
             height: 6px;
@@ -729,7 +655,6 @@
             cursor: pointer;
             border: 1px solid rgba(169, 132, 69, 0.05);
         }
-
         .dot.active {
             background: var(--gold-light);
             width: 20px;
@@ -738,9 +663,7 @@
             border-color: rgba(169, 132, 69, 0.2);
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           PROMO SECTION — ANCIENT CHAMBER
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── PROMO COUNTDOWN SECTION ──────────────────────────────────── */
         .promo-section {
             position: relative;
             height: 100dvh;
@@ -748,8 +671,9 @@
             overflow: hidden;
             z-index: 2;
             background: var(--abyss);
+            transform-origin: center top;
+            will-change: transform, opacity;
         }
-
         .promo-section .video-container {
             position: absolute;
             top: 0;
@@ -764,7 +688,6 @@
             object-fit: cover;
             pointer-events: none;
         }
-
         .promo-section .vignette-left {
             position: absolute;
             top: 0;
@@ -795,7 +718,6 @@
             z-index: 1;
             pointer-events: none;
         }
-
         .promo-section .gold-ornament {
             position: absolute;
             top: 50%;
@@ -810,7 +732,6 @@
             pointer-events: none;
             box-shadow: inset 0 0 120px rgba(169, 132, 69, 0.02);
         }
-
         .promo-content {
             position: absolute;
             top: 0;
@@ -826,7 +747,6 @@
             text-align: center;
             pointer-events: none;
         }
-
         .event-date-display {
             font-family: 'Cinzel', serif;
             font-size: clamp(1rem, 3vw, 2.2rem);
@@ -846,7 +766,6 @@
             position: relative;
             filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.5));
         }
-
         .event-date-display::after {
             content: '';
             position: absolute;
@@ -858,13 +777,11 @@
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.3), transparent);
         }
-
         .event-date-display .accent-dot {
             color: var(--gold-light);
             -webkit-text-fill-color: var(--gold-light);
             background: none;
         }
-
         .promo-countdown {
             display: flex;
             gap: 16px;
@@ -872,7 +789,6 @@
             flex-wrap: wrap;
             margin-bottom: 36px;
         }
-
         .promo-countdown .cd-item {
             background: rgba(4, 18, 23, 0.6);
             backdrop-filter: blur(8px);
@@ -885,7 +801,6 @@
             transition: 0.3s ease;
             position: relative;
         }
-
         .promo-countdown .cd-item::before {
             content: '';
             position: absolute;
@@ -899,7 +814,6 @@
             mask-composite: exclude;
             pointer-events: none;
         }
-
         .promo-countdown .cd-item span {
             display: block;
             font-family: 'Cinzel', serif;
@@ -909,7 +823,6 @@
             text-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
             line-height: 1.1;
         }
-
         .promo-countdown .cd-item small {
             font-family: 'Cinzel', serif;
             font-size: 0.5rem;
@@ -919,13 +832,11 @@
             margin-top: 2px;
             display: block;
         }
-
         .promo-countdown .cd-item.accent { border-color: rgba(169, 132, 69, 0.15); }
         .promo-countdown .cd-item.accent span {
             color: var(--gold-light);
             text-shadow: 0 0 40px rgba(169, 132, 69, 0.1);
         }
-
         .promo-cta {
             font-family: 'Cinzel', serif;
             font-size: 0.7rem;
@@ -946,7 +857,6 @@
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
-
         .promo-cta:hover {
             color: var(--ivory);
             border-color: rgba(169, 132, 69, 0.2);
@@ -954,11 +864,9 @@
             transform: scale(1.02);
             box-shadow: 0 0 30px rgba(169, 132, 69, 0.05);
         }
-
         .promo-cta:active { transform: scale(0.96); }
         .promo-cta .arrow-link { display: inline-block; margin-left: 10px; transition: 0.3s; color: rgba(169, 132, 69, 0.4); }
         .promo-cta:hover .arrow-link { transform: translateX(6px); color: var(--gold-light); }
-
         .promo-credits {
             position: absolute;
             bottom: 28px;
@@ -976,13 +884,10 @@
             pointer-events: none;
             text-shadow: 0 2px 30px rgba(0, 0, 0, 0.8);
         }
-
         .promo-credits .credit-line { display: block; margin: 0 auto; font-weight: 400; letter-spacing: 0.3em; color: rgba(192, 154, 82, 0.4); }
         .promo-credits .credit-line .highlight { color: var(--gold-light); font-weight: 700; letter-spacing: 0.15em; }
 
-        /* ═══════════════════════════════════════════════════════════════
-           LOGIN MODAL — ATLANTEAN ACCESS CHAMBER
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── LOGIN MODAL ──────────────────────────────────────────────── */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -997,9 +902,7 @@
             visibility: hidden;
             transition: opacity 0.4s ease, visibility 0.4s;
         }
-
         .modal-overlay.open { opacity: 1; visibility: visible; }
-
         .login-modal {
             width: 90%;
             max-width: 400px;
@@ -1015,7 +918,6 @@
             position: relative;
             border: 1px solid rgba(169, 132, 69, 0.05);
         }
-
         .login-modal::before {
             content: '';
             position: absolute;
@@ -1029,9 +931,7 @@
             mask-composite: exclude;
             pointer-events: none;
         }
-
         .modal-overlay.open .login-modal { transform: scale(1) translateY(0); opacity: 1; }
-
         .login-modal h3 {
             font-family: 'Cinzel', serif;
             font-size: 2rem;
@@ -1046,7 +946,6 @@
             background-clip: text;
             line-height: 1.1;
         }
-
         .login-modal .modal-sub {
             text-align: center;
             font-family: 'Cormorant Garamond', serif;
@@ -1057,9 +956,7 @@
             margin-bottom: 22px;
             font-weight: 400;
         }
-
         .role-selector { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-
         .role-selector .role-btn {
             flex: 1;
             min-width: 70px;
@@ -1078,14 +975,11 @@
             text-align: center;
             -webkit-tap-highlight-color: transparent;
         }
-
         .role-selector .role-btn .role-icon { display: block; font-size: 1.1rem; margin-bottom: 2px; opacity: 0.4; transition: opacity 0.3s ease; }
         .role-selector .role-btn:hover { border-color: rgba(169, 132, 69, 0.1); background: rgba(169, 132, 69, 0.04); color: rgba(232, 217, 184, 0.6); }
-        
         .role-selector .role-btn.active { border-color: rgba(169, 132, 69, 0.2); background: rgba(169, 132, 69, 0.05); color: var(--gold-light); }
         .role-selector .role-btn.active .role-icon { opacity: 0.8; }
         .role-selector .role-btn.active.admin-active { color: var(--gold-bright); border-color: rgba(169, 132, 69, 0.25); }
-
         .login-field { margin-bottom: 16px; }
         .login-field label {
             display: block;
@@ -1096,7 +990,6 @@
             color: rgba(192, 154, 82, 0.4);
             margin-bottom: 4px;
         }
-
         .login-field input {
             width: 100%;
             background: rgba(4, 18, 23, 0.6);
@@ -1109,11 +1002,9 @@
             outline: none;
             transition: 0.3s ease;
         }
-
         .login-field input::placeholder { color: rgba(232, 217, 184, 0.15); }
         .login-field input:focus { border-color: rgba(169, 132, 69, 0.2); background: rgba(4, 18, 23, 0.8); box-shadow: 0 0 30px rgba(169, 132, 69, 0.02); }
         .login-field input.error { border-color: rgba(200, 100, 100, 0.3); background: rgba(200, 100, 100, 0.05); animation: shake 0.4s ease; }
-
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20% { transform: translateX(-6px); }
@@ -1121,7 +1012,6 @@
             60% { transform: translateX(-3px); }
             80% { transform: translateX(3px); }
         }
-
         .login-submit {
             width: 100%;
             margin-top: 6px;
@@ -1140,11 +1030,9 @@
             position: relative;
             overflow: hidden;
         }
-
         .login-submit:hover { border-color: rgba(169, 132, 69, 0.2); background: rgba(169, 132, 69, 0.08); color: var(--ivory); transform: scale(1.01); box-shadow: 0 0 40px rgba(169, 132, 69, 0.03); }
         .login-submit:active { transform: scale(0.97); }
         .login-submit:disabled { opacity: 0.3; transform: none !important; cursor: not-allowed; box-shadow: none !important; }
-
         .login-submit .spinner {
             display: none;
             width: 16px;
@@ -1157,9 +1045,7 @@
         }
         .login-submit.loading .spinner { display: block; }
         .login-submit.loading .btn-text { display: none; }
-
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .forgot-link {
             display: block;
             text-align: center;
@@ -1172,7 +1058,6 @@
             transition: 0.2s;
         }
         .forgot-link:hover { color: rgba(192, 154, 82, 0.6); }
-
         .modal-close {
             position: absolute;
             top: 14px;
@@ -1193,7 +1078,6 @@
             font-family: 'Segoe UI', sans-serif;
         }
         .modal-close:hover { background: rgba(169, 132, 69, 0.08); color: rgba(232, 217, 184, 0.4); }
-
         .login-error {
             background: rgba(200, 100, 100, 0.05);
             border: 1px solid rgba(200, 100, 100, 0.15);
@@ -1208,9 +1092,7 @@
             font-family: 'Segoe UI', sans-serif;
         }
         .login-error.show { display: block; animation: fadeIn 0.3s ease; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
         .login-toast {
             position: fixed;
             bottom: 30px;
@@ -1239,9 +1121,7 @@
         .login-toast.error { border-color: rgba(200, 100, 100, 0.2); color: rgba(232, 217, 184, 0.6); }
         .login-toast.info { border-color: rgba(169, 132, 69, 0.1); color: rgba(232, 217, 184, 0.5); }
 
-        /* ═══════════════════════════════════════════════════════════════
-           RESPONSIVE
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── RESPONSIVE ────────────────────────────────────────────────── */
         @media (max-width: 768px) {
             .header { top: 16px; left: 16px; }
             .logo-emblem { width: 40px; height: 40px; }
@@ -1272,7 +1152,6 @@
             .hero-title { font-size: clamp(2.2rem, 8vw, 4rem); }
             .hero-subtitle { font-size: clamp(0.7rem, 1.8vw, 1rem); letter-spacing: 0.25em; }
         }
-
         @media (max-width: 480px) {
             .carousel-track .event-card { flex: 0 0 clamp(170px, 60vw, 230px); aspect-ratio: 5 / 7; min-height: 200px; max-height: 360px; border-radius: 12px; padding: 14px 12px 12px 12px; }
             .carousel-track .event-card .card-content { margin: 0 -12px -12px -12px; padding: 24px 12px 12px 12px; border-radius: 0 0 12px 12px; }
@@ -1298,7 +1177,6 @@
             .promo-credits .credit-line { letter-spacing: 0.1em; }
             .explore-header h2 { font-size: clamp(1.4rem, 4vw, 2.2rem); letter-spacing: 0.1em; }
         }
-
         @media (max-width: 360px) {
             .carousel-track .event-card { flex: 0 0 clamp(150px, 70vw, 200px); aspect-ratio: 5 / 7; min-height: 180px; max-height: 300px; border-radius: 10px; padding: 10px 8px 8px 8px; }
             .carousel-track .event-card .card-content { margin: 0 -8px -8px -8px; padding: 18px 8px 8px 8px; border-radius: 0 0 10px 10px; }
@@ -1310,7 +1188,6 @@
             .hero-title { font-size: clamp(1.4rem, 6vw, 2.2rem); }
             .hero-subtitle { font-size: clamp(0.5rem, 1.2vw, 0.65rem); letter-spacing: 0.15em; }
         }
-
         @media (min-width: 1201px) {
             .carousel-track .event-card { flex: 0 0 clamp(260px, 22vw, 320px); aspect-ratio: 5 / 7; min-height: 320px; max-height: 500px; }
         }
@@ -1318,7 +1195,7 @@
 </head>
 <body>
 
-    <!-- FLOATING LOGO — ATLANTEAN SEAL -->
+    <!-- FLOATING LOGO -->
     <header class="header">
         <div class="trigger-wrapper" id="logoTrigger">
             <svg class="logo-emblem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1348,130 +1225,87 @@
         </div>
     </header>
 
-    <!-- HERO — DESCEND INTO ATLANTIS -->
-    <section class="hero-section" id="hero">
-        <div class="video-container">
-            <!-- FIXED: Removed double .mp4.mp4 extension -->
-            <video autoplay muted loop playsinline webkit-playsinline preload="auto">
-                <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1787309801/hero-bg.mp4" type="video/mp4" />
-            </video>
-        </div>
-        <div class="overlay"></div>
+    <!-- ─── SCROLL CONTAINER (2D LAYER) ────────────────────────────────── -->
+    <div class="scroll-container" id="scrollContainer">
 
-        <div class="light-rays">
-            <div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div>
-        </div>
-
-        <div class="particles">
-            <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
-            <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
-        </div>
-
-        <div class="hero-center">
-            <div class="hero-title">
-                DEPLOMAT
-                <span class="accent">2K26</span>
+        <!-- HERO -->
+        <section class="hero-section" id="hero">
+            <div class="video-container">
+                <video autoplay muted loop playsinline webkit-playsinline preload="auto">
+                    <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1787309801/hero-bg.mp4" type="video/mp4" />
+                </video>
             </div>
-            <div class="hero-subtitle">
-                DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span>
+            <div class="overlay"></div>
+            <div class="light-rays">
+                <div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div>
             </div>
-            <div class="hero-tagline">
-                <span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span>
+            <div class="particles">
+                <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
+                <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
             </div>
-        </div>
-
-        <div class="explore-cta">
-            <span>Descend</span>
-            <div class="mouse-line"></div>
-        </div>
-    </section>
-
-    <!-- EXPLORE — DISCOVER THE KINGDOM -->
-    <section class="explore-section" id="explore">
-        <div class="explore-header">
-            <div class="section-label">⟡ The Realms of Atlantis</div>
-            <h2>DISCOVER <span class="gold-text">THE KINGDOM</span></h2>
-        </div>
-
-        <div class="carousel-stage" id="carouselStage">
-            <div class="carousel-track" id="carouselTrack"></div>
-        </div>
-
-        <div class="dots-container" id="dotsContainer"></div>
-    </section>
-
-    <!-- PROMO — ANCIENT CHAMBER -->
-    <section class="promo-section" id="promo">
-        <div class="video-container">
-            <video autoplay muted loop playsinline webkit-playsinline>
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-            </video>
-        </div>
-
-        <div class="vignette-left"></div>
-        <div class="vignette-right"></div>
-        <div class="vignette-bottom"></div>
-        <div class="gold-ornament"></div>
-
-        <div class="promo-content">
-            <div class="event-date-display">
-                25TH – 26TH OF SEPTEMBER 2026 <span class="accent-dot">·</span> FRIDAY / SATURDAY
+            <div class="hero-center">
+                <div class="hero-title">DEPLOMAT<span class="accent">2K26</span></div>
+                <div class="hero-subtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
+                <div class="hero-tagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
             </div>
+            <div class="explore-cta"><span>Descend</span><div class="mouse-line"></div></div>
+        </section>
 
-            <div class="promo-countdown" id="promoCountdown">
-                <div class="cd-item accent"><span id="pDays">00</span><small>Days</small></div>
-                <div class="cd-item"><span id="pHours">00</span><small>Hours</small></div>
-                <div class="cd-item"><span id="pMins">00</span><small>Mins</small></div>
-                <div class="cd-item"><span id="pSecs">00</span><small>Secs</small></div>
+        <!-- EXPLORE -->
+        <section class="explore-section" id="explore">
+            <div class="explore-header">
+                <div class="section-label">⟡ The Realms of Atlantis</div>
+                <h2>DISCOVER <span class="gold-text">THE KINGDOM</span></h2>
             </div>
-
-            <div class="promo-cta" id="promoCta">
-                watch the prophecy
-                <span class="arrow-link">→</span>
+            <div class="carousel-stage" id="carouselStage">
+                <div class="carousel-track" id="carouselTrack"></div>
             </div>
-        </div>
+            <div class="dots-container" id="dotsContainer"></div>
+        </section>
 
-        <div class="promo-credits">
-            <span class="credit-line">
-                POWERED BY <span class="highlight">DELITECH I.T CLUB</span> · DE PAUL COLLEGE MYSORE
-            </span>
-        </div>
-    </section>
+        <!-- PROMO COUNTDOWN -->
+        <section class="promo-section" id="promo">
+            <div class="video-container">
+                <video autoplay muted loop playsinline webkit-playsinline>
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+                </video>
+            </div>
+            <div class="vignette-left"></div>
+            <div class="vignette-right"></div>
+            <div class="vignette-bottom"></div>
+            <div class="gold-ornament"></div>
+            <div class="promo-content">
+                <div class="event-date-display">25TH – 26TH OF SEPTEMBER 2026 <span class="accent-dot">·</span> FRIDAY / SATURDAY</div>
+                <div class="promo-countdown" id="promoCountdown">
+                    <div class="cd-item accent"><span id="pDays">00</span><small>Days</small></div>
+                    <div class="cd-item"><span id="pHours">00</span><small>Hours</small></div>
+                    <div class="cd-item"><span id="pMins">00</span><small>Mins</small></div>
+                    <div class="cd-item"><span id="pSecs">00</span><small>Secs</small></div>
+                </div>
+                <div class="promo-cta" id="promoCta">watch the prophecy <span class="arrow-link">→</span></div>
+            </div>
+            <div class="promo-credits">
+                <span class="credit-line">POWERED BY <span class="highlight">DELITECH I.T CLUB</span> · DE PAUL COLLEGE MYSORE</span>
+            </div>
+        </section>
+    </div>
 
-    <!-- LOGIN MODAL — ATLANTEAN ACCESS CHAMBER -->
+    <!-- LOGIN MODAL -->
     <div class="modal-overlay" id="loginOverlay">
         <div class="login-modal">
             <button class="modal-close" id="modalClose" aria-label="Close">×</button>
             <h3>DEPLOMAT</h3>
             <div class="modal-sub">Enter the chamber</div>
-
             <div class="role-selector" id="roleSelector">
-                <button class="role-btn admin-active" data-role="admin" id="roleAdmin">
-                    <span class="role-icon">🛡️</span>Admin
-                </button>
-                <button class="role-btn" data-role="student" id="roleStudent">
-                    <span class="role-icon">🎓</span>Student<br />Coordinator
-                </button>
-                <button class="role-btn" data-role="faculty" id="roleFaculty">
-                    <span class="role-icon">📚</span>Faculty<br />Coordinator
-                </button>
+                <button class="role-btn admin-active" data-role="admin" id="roleAdmin"><span class="role-icon">🛡️</span>Admin</button>
+                <button class="role-btn" data-role="student" id="roleStudent"><span class="role-icon">🎓</span>Student<br />Coordinator</button>
+                <button class="role-btn" data-role="faculty" id="roleFaculty"><span class="role-icon">📚</span>Faculty<br />Coordinator</button>
             </div>
-
             <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
-
             <form id="loginForm">
-                <div class="login-field">
-                    <label for="loginUser">Username / Email</label>
-                    <input type="text" id="loginUser" placeholder="you@deplo.mat" autocomplete="username" required />
-                </div>
-                <div class="login-field">
-                    <label for="loginPass">Password</label>
-                    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required />
-                </div>
-                <button type="submit" class="login-submit" id="loginSubmit">
-                    <span class="btn-text">Enter</span>
-                    <span class="spinner"></span>
-                </button>
+                <div class="login-field"><label for="loginUser">Username / Email</label><input type="text" id="loginUser" placeholder="you@deplo.mat" autocomplete="username" required /></div>
+                <div class="login-field"><label for="loginPass">Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required /></div>
+                <button type="submit" class="login-submit" id="loginSubmit"><span class="btn-text">Enter</span><span class="spinner"></span></button>
                 <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
             </form>
         </div>
@@ -1480,8 +1314,9 @@
     <!-- TOAST -->
     <div class="login-toast" id="loginToast"></div>
 
-    <!-- JAVASCRIPT -->
+    <!-- ─── JAVASCRIPT ──────────────────────────────────────────────────── -->
     <script>
+        // ─── EVENTS DATA ───────────────────────────────────────────────────
         const events = [
             { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://i.ibb.co/kVg16BJm/escape-room.png" },
             { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://i.ibb.co/hTrGXQK/treasure-hunt.png" },
@@ -1497,10 +1332,10 @@
             { name: "TIDAL THROWDOWN", sub: ".throwball for U.G girls", image: "https://i.ibb.co/Q3V3dxYj/Gemini-Generated-Image-konq2tkonq2tkonq.png" }
         ];
 
+        // ─── CAROUSEL ─────────────────────────────────────────────────────
         const track = document.getElementById('carouselTrack');
         const stage = document.getElementById('carouselStage');
         const dotsContainer = document.getElementById('dotsContainer');
-
         const N = events.length;
         const gap = 12;
         let cardWidthWithGap = 0;
@@ -1540,7 +1375,6 @@
             card.className = 'event-card card-' + ((idx % N) + 1);
             card.dataset.originalIndex = idx % N;
             card.dataset.globalIndex = globalIdx;
-
             card.innerHTML = `
                 <div class="card-image">
                     <img src="${evt.image}" alt="Event photo" loading="eager" fetchpriority="high" />
@@ -1552,11 +1386,9 @@
                 </div>
                 <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
             `;
-
             const img = card.querySelector('img');
             if (img.complete) img.classList.add('loaded');
             img.addEventListener('load', () => img.classList.add('loaded'));
-
             const badge = card.querySelector('.card-explore-badge');
             badge.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1564,14 +1396,12 @@
                 const origIdx = parseInt(badge.dataset.originalIndex);
                 if (!isNaN(origIdx)) window.location.href = 'event-' + origIdx + '.html';
             });
-
             card.addEventListener('click', (e) => {
                 if (e.target.closest('.card-explore-badge')) return;
                 if (isDragging || isSnapping) return;
                 const origIdx = parseInt(card.dataset.originalIndex);
                 if (!isNaN(origIdx)) window.location.href = 'event-' + origIdx + '.html';
             });
-
             return card;
         }
 
@@ -1606,18 +1436,14 @@
         function updateCarousel(animate = true) {
             const cards = track.querySelectorAll('.event-card');
             if (!cards.length || cardWidthWithGap === 0) return;
-
             const stageWidth = stage.clientWidth;
             const halfStage = stageWidth / 2;
             const halfCard = cardWidth / 2;
             const pos = -(index * cardWidthWithGap) + (stageWidth - cardWidth) / 2;
-
             track.style.transition = animate ? 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)' : 'none';
             track.style.transform = `translateX(${pos}px)`;
-
             let closestOrigIdx = 0;
             let closestDist = Infinity;
-
             cards.forEach((card, i) => {
                 const cardCenter = pos + i * cardWidthWithGap + halfCard;
                 const dist = Math.abs(cardCenter - halfStage);
@@ -1625,22 +1451,18 @@
                 const norm = Math.min(dist / maxDist, 1);
                 const scale = 1 - norm * 0.18;
                 const opacity = 1 - norm * 0.3;
-
                 card.style.transform = `scale(${scale})`;
                 card.style.opacity = Math.max(0.5, opacity);
                 card.style.zIndex = Math.round(scale * 10);
-
                 if (dist < closestDist) {
                     closestDist = dist;
                     closestOrigIdx = parseInt(card.dataset.originalIndex);
                 }
             });
-
             activeOrigIdx = closestOrigIdx;
             cards.forEach(card => {
                 card.classList.toggle('active-card', parseInt(card.dataset.originalIndex) === activeOrigIdx);
             });
-
             dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
                 dot.classList.toggle('active', i === closestOrigIdx);
             });
@@ -1681,14 +1503,11 @@
             if (!isDragging) return;
             const deltaX = e.clientX - dragStartX;
             let newIndex = dragStartIndex + (-deltaX / cardWidthWithGap);
-
             if (newIndex < N - 1.5) { newIndex += N; dragStartIndex += N; dragStartX = e.clientX; } 
             else if (newIndex >= 2 * N + 1.5) { newIndex -= N; dragStartIndex -= N; dragStartX = e.clientX; }
-
             if (newIndex < N - 2) newIndex = N - 2;
             if (newIndex >= 2 * N + 2) newIndex = 2 * N + 2;
             index = newIndex;
-
             const now = performance.now();
             const dt = now - lastMoveTime;
             if (dt > 0) {
@@ -1697,7 +1516,6 @@
             }
             lastMoveTime = now;
             lastMoveX = e.clientX;
-
             if (rafId) cancelAnimationFrame(rafId);
             rafId = requestAnimationFrame(() => { updateCarousel(false); rafId = null; });
         });
@@ -1706,7 +1524,6 @@
             if (!isDragging) return;
             isDragging = false;
             if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-
             const dist = Math.abs(e.clientX - dragStartX);
             if (dist < 10) {
                 const card = findCardAtPoint(e.clientX, e.clientY);
@@ -1723,11 +1540,9 @@
                 stage.releasePointerCapture(e.pointerId);
                 return;
             }
-
             let targetIdx = Math.round(index);
             if (index - Math.floor(index) > 0.25 || velocity < -0.3) targetIdx = Math.ceil(index);
             else if (Math.ceil(index) - index > 0.25 || velocity > 0.3) targetIdx = Math.floor(index);
-
             snapToIndex(targetIdx, true);
             velocity = 0;
             stage.releasePointerCapture(e.pointerId);
@@ -1765,7 +1580,7 @@
 
         buildCarousel();
 
-        // ─── INTERACTIVE HERO MOUSE PARALLAX ───────────────────────────
+        // ─── HERO MOUSE PARALLAX ─────────────────────────────────────────
         const heroSection = document.getElementById('hero');
         heroSection.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -1773,57 +1588,71 @@
             const rays = document.querySelector('.light-rays');
             const particles = document.querySelector('.particles');
             const heroCenter = document.querySelector('.hero-center');
-
             if (rays) rays.style.transform = `translate(${x * 15}px, ${y * 15}px)`;
             if (particles) particles.style.transform = `translate(${x * -10}px, ${y * -10}px)`;
             if (heroCenter) heroCenter.style.transform = `translate(${x * -5}px, ${y * -5}px)`;
         });
 
-        // ─── SCROLL ZOOM INTERACTION (HERO ZOOM OUT, EXPLORE ZOOM IN) ──
-        let ticking = false;
+        // ─── 2D SCROLL INTERACTION ──────────────────────────────────────
+        const scrollContainer = document.getElementById('scrollContainer');
+        const hero = document.getElementById('hero');
+        const explore = document.getElementById('explore');
+        const promo = document.getElementById('promo');
+
         window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    const scrollY = window.scrollY;
-                    const hero = document.getElementById('hero');
-                    const explore = document.getElementById('explore');
+            const scrollY = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
 
-                    // Hero zooms out and fades as you scroll down
-                    if (hero) {
-                        const scale = Math.max(0.92, 1 - scrollY * 0.0004);
-                        const opacity = Math.max(0, 1 - scrollY * 0.0015);
-                        hero.style.transform = `scale(${scale})`;
-                        hero.style.opacity = opacity;
-                    }
-
-                    // Explore section smoothly zooms in as it enters viewport
-                    if (explore) {
-                        const rect = explore.getBoundingClientRect();
-                        const viewHeight = window.innerHeight;
-                        if (rect.top < viewHeight && rect.bottom > 0) {
-                            const progress = 1 - (rect.top / viewHeight);
-                            const clamped = Math.min(Math.max(progress, 0), 1);
-                            const scale = 0.96 + (clamped * 0.04); // 0.96 to 1.0
-                            explore.style.transform = `scale(${scale})`;
-                            explore.style.opacity = 0.6 + (clamped * 0.4);
-                        }
-                    }
-                    ticking = false;
-                });
-                ticking = true;
+            // Hero zoom & fade
+            if (hero) {
+                const heroScale = Math.max(0.92, 1 - scrollY * 0.0004);
+                const heroOpacity = Math.max(0, 1 - scrollY * 0.0015);
+                hero.style.transform = `scale(${heroScale})`;
+                hero.style.opacity = heroOpacity;
             }
+
+            // Explore zoom in
+            if (explore) {
+                const rect = explore.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                if (rect.top < viewHeight && rect.bottom > 0) {
+                    const progressExp = 1 - (rect.top / viewHeight);
+                    const clamped = Math.min(Math.max(progressExp, 0), 1);
+                    const scale = 0.96 + (clamped * 0.04);
+                    explore.style.transform = `scale(${scale})`;
+                    explore.style.opacity = 0.6 + (clamped * 0.4);
+                }
+            }
+
+            // Promo zoom in
+            if (promo) {
+                const rect = promo.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                if (rect.top < viewHeight && rect.bottom > 0) {
+                    const progressPromo = 1 - (rect.top / viewHeight);
+                    const clamped = Math.min(Math.max(progressPromo, 0), 1);
+                    const scale = 0.96 + (clamped * 0.04);
+                    promo.style.transform = `scale(${scale})`;
+                    promo.style.opacity = 0.6 + (clamped * 0.4);
+                }
+            }
+
+            // subtle 2D layer tilt based on scroll
+            const tiltX = (progress - 0.5) * 4;
+            const tiltY = (progress - 0.5) * 2;
+            scrollContainer.style.transform = `perspective(800px) rotateX(${tiltX * 0.3}deg) rotateY(${tiltY * 0.2}deg)`;
+            scrollContainer.style.opacity = Math.min(1, 1 - (progress * 0.15));
         }, { passive: true });
 
-        // ─── DROPDOWN ──────────────────────────────────────────────────
+        // ─── DROPDOWN ──────────────────────────────────────────────────────
         const trigger = document.getElementById('logoTrigger');
         const dropdown = document.getElementById('dropdownMenu');
-
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdown.classList.toggle('open');
             trigger.classList.toggle('active');
         });
-
         document.addEventListener('click', (e) => {
             if (!document.querySelector('.header').contains(e.target)) {
                 dropdown.classList.remove('open');
@@ -1831,9 +1660,7 @@
             }
         });
 
-        document.getElementById('promoCta').addEventListener('click', () => {});
-
-        // ─── COUNTDOWN ─────────────────────────────────────────────────
+        // ─── COUNTDOWN ────────────────────────────────────────────────────
         const promoTarget = new Date('2026-09-25T00:00:00');
         function updatePromoCountdown() {
             const now = new Date();
@@ -1846,13 +1673,12 @@
         updatePromoCountdown();
         setInterval(updatePromoCountdown, 1000);
 
-        // ─── LOGIN SYSTEM ──────────────────────────────────────────────
+        // ─── LOGIN SYSTEM ────────────────────────────────────────────────
         const CREDENTIALS = {
             admin: { password: 'admin2026', dashboard: 'admindb.html', label: 'Admin' },
             student: { password: 'student2026', dashboard: 'studentdb.html', label: 'Student Coordinator' },
             faculty: { password: 'faculty2026', dashboard: 'facultydb.html', label: 'Faculty Coordinator' }
         };
-
         const loginOverlay = document.getElementById('loginOverlay');
         const modalClose = document.getElementById('modalClose');
         const loginForm = document.getElementById('loginForm');
@@ -1862,7 +1688,6 @@
         const loginError = document.getElementById('loginError');
         const forgotLink = document.getElementById('forgotLink');
         const loginToast = document.getElementById('loginToast');
-
         let selectedRole = 'admin';
         let toastTimer = null;
 
@@ -1884,7 +1709,6 @@
                 faculty: { el: document.getElementById('roleFaculty'), cls: 'faculty-active' }
             };
             if (map[role]) map[role].el.classList.add('active', map[role].cls);
-            
             loginPass.placeholder = 'Enter ' + CREDENTIALS[role].label + ' password';
             loginPass.value = '';
             loginError.classList.remove('show');
@@ -1919,7 +1743,6 @@
                 const url = link.getAttribute('data-url');
                 dropdown.classList.remove('open');
                 trigger.classList.remove('active');
-
                 if (action === 'home') document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
                 else if (action === 'redirect' && url) window.location.href = url;
                 else if (action === 'login') openLogin();
@@ -1936,18 +1759,14 @@
             e.preventDefault();
             const username = loginUser.value.trim();
             const password = loginPass.value.trim();
-
             if (!username) { loginError.textContent = 'Please enter your username or email.'; loginError.classList.add('show'); loginUser.focus(); return; }
             if (!password) { loginError.textContent = 'Please enter your password.'; loginError.classList.add('show'); loginPass.focus(); return; }
-
             const cred = CREDENTIALS[selectedRole];
             loginSubmit.disabled = true;
             loginSubmit.classList.add('loading');
             loginError.classList.remove('show');
             loginPass.classList.remove('error');
-
             await new Promise(resolve => setTimeout(resolve, 600));
-
             if (password === cred.password) {
                 loginSubmit.classList.remove('loading');
                 loginSubmit.disabled = false;
@@ -1970,7 +1789,7 @@
         loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginForm.dispatchEvent(new Event('submit')); });
 
         setRole('admin');
-        console.log('🔱 DEPLOMAT · Atlantis Immersive v2.1 (Optimized)');
+        console.log('🔱 DEPLOMAT · Atlantis Immersive v3.0 (2D Enhanced)');
     </script>
 </body>
 </html>
