@@ -2,507 +2,174 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Explore Campus · VR Tour</title>
-    
-    <!-- Pannellum 360 Viewer -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+
+    <!-- ⚡ PRELOAD OPTIMIZATIONS ⚡ -->
+    <!-- 1. DNS Prefetch – resolves the domain early -->
+    <link rel="dns-prefetch" href="https://share.google" />
+    <link rel="dns-prefetch" href="https://www.google.com" />
+    <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+
+    <!-- 2. Preconnect – establishes TLS handshake BEFORE the iframe loads -->
+    <link rel="preconnect" href="https://share.google" crossorigin />
+    <link rel="preconnect" href="https://www.google.com" crossorigin />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+
+    <!-- 3. Preload the iframe content (as document) – starts downloading immediately -->
+    <!-- Note: This works for same-origin, but Google might block it. We keep it anyway for best effort. -->
+    <link rel="preload" as="document" href="https://share.google/VW9zZQhOLe5Qg6l3J" />
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #041217;
-            color: #e8d9b8;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
-        :root {
-            --gold: #A98445;
-            --gold-light: #C09A52;
-            --gold-bright: #D0AF69;
-            --abyss: #041217;
-        }
-
-        /* Header Overlay */
-        .tour-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 20px 30px;
-            background: linear-gradient(180deg, rgba(4,18,23,0.9) 0%, rgba(4,18,23,0.4) 100%);
-            pointer-events: none;
-        }
-
-        .tour-title {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: #F4EBDD;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.8);
-            margin-bottom: 4px;
-        }
-
-        .tour-subtitle {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.9rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: rgba(232,217,184,0.8);
-        }
-
-        /* Logo */
-        .logo-wrapper {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 101;
-            cursor: pointer;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(169,132,69,0.3);
-            background: rgba(4,18,23,0.7);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-        }
-
-        .logo-icon:hover {
-            border-color: var(--gold);
-            transform: scale(1.08);
-            box-shadow: 0 0 30px rgba(169,132,69,0.3);
-        }
-
-        /* Bottom Controls */
-        .tour-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 20px;
-            background: linear-gradient(0deg, rgba(4,18,23,0.95) 0%, rgba(4,18,23,0.6) 70%, transparent 100%);
-        }
-
-        .panorama-list {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding: 10px 0;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .panorama-list::-webkit-scrollbar { display: none; }
-
-        .panorama-item {
-            flex: 0 0 auto;
-            width: 140px;
-            height: 90px;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: 0.3s;
-            position: relative;
-            background: rgba(169,132,69,0.1);
-        }
-
-        .panorama-item:hover {
-            border-color: var(--gold);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(169,132,69,0.2);
-        }
-
-        .panorama-item.active {
-            border-color: var(--gold-bright);
-            box-shadow: 0 0 20px rgba(192,154,82,0.4);
-        }
-
-        .panorama-item img {
+        body, html {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.7;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .panorama-item:hover img { opacity: 1; }
-
-        .panorama-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 6px 8px;
-            background: rgba(4,18,23,0.9);
-            font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            letter-spacing: 0.1em;
-            text-align: center;
-            color: rgba(232,217,184,0.9);
-        }
-
-        .control-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-            justify-content: center;
-        }
-
-        .ctrl-btn {
-            padding: 10px 24px;
-            border-radius: 8px;
-            border: 1px solid rgba(169,132,69,0.3);
-            background: rgba(6,26,32,0.8);
-            backdrop-filter: blur(8px);
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: rgba(232,217,184,0.9);
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .ctrl-btn:hover {
-            border-color: var(--gold);
-            background: rgba(169,132,69,0.15);
-            color: var(--gold-bright);
-            transform: translateY(-1px);
-        }
-
-        /* Audio Modal */
-        .audio-modal {
+        /* VR iframe – loads behind the overlay */
+        #vr-frame {
             position: fixed;
-            inset: 0;
-            z-index: 1000;
-            background: rgba(4,18,23,0.8);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.4s;
-        }
-
-        .audio-modal.show {
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            z-index: 1;
+            /* Force eager loading (default, but explicit) */
+            loading: eager;
+            /* Make sure it loads even if not visible yet */
             opacity: 1;
-            visibility: visible;
         }
 
-        .audio-content {
-            background: rgba(6,26,32,0.95);
-            border: 1px solid rgba(169,132,69,0.2);
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-        }
-
-        .audio-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
-            color: rgba(232,217,184,0.9);
-            margin-bottom: 24px;
-            letter-spacing: 0.1em;
-        }
-
-        .audio-buttons {
+        /* Overlay – black gradient + title */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            cursor: pointer;
+            background: radial-gradient(ellipse at 50% 80%,
+                        transparent 30%,
+                        rgba(0, 0, 0, 0.3) 55%,
+                        rgba(0, 0, 0, 0.7) 85%,
+                        rgba(0, 0, 0, 0.9) 100%);
+            transition: opacity 0.8s ease, transform 0.8s ease;
             display: flex;
-            gap: 16px;
-            justify-content: center;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 28px;
+        }
+        #overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.05);
         }
 
-        .audio-btn {
-            padding: 12px 32px;
-            border-radius: 8px;
-            border: 1px solid rgba(169,132,69,0.2);
-            background: rgba(4,18,23,0.6);
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
+        /* Title – top‑left */
+        #title {
+            color: #fff;
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 700;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+            user-select: none;
+        }
+        #title .sub {
+            display: block;
+            font-size: 0.4em;
+            font-weight: 300;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: rgba(232,217,184,0.8);
-            cursor: pointer;
-            transition: 0.3s;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        #overlay.hidden #title {
+            opacity: 0;
+            transform: translateY(-12px);
         }
 
-        .audio-btn:hover {
-            border-color: var(--gold);
-            background: rgba(169,132,69,0.1);
-            color: var(--gold-bright);
+        /* Hint at bottom */
+        #hint {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            font-weight: 300;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+            z-index: 11;
+            animation: pulseHint 2.4s ease-in-out infinite;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+        #overlay.hidden ~ #hint {
+            opacity: 0;
+            animation: none;
         }
 
-        .audio-btn.primary {
-            background: rgba(169,132,69,0.15);
-            border-color: rgba(169,132,69,0.3);
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.9; transform: translateX(-50%) scale(1.05); }
         }
 
-        /* Pannellum Customization */
-        .pnlm-ui { background: transparent !important; }
-        
-        .pnlm-controls {
-            background: rgba(4,18,23,0.8) !important;
-            border: 1px solid rgba(169,132,69,0.2) !important;
-            border-radius: 8px !important;
-        }
-
-        .pnlm-controls:hover {
-            border-color: rgba(169,132,69,0.4) !important;
-            background: rgba(4,18,23,0.9) !important;
-        }
-
-        .pnlm-zoom-controls, .pnlm-fullscreen-toggle-button, .pnlm-panorama-info {
-            background: rgba(4,18,23,0.8) !important;
-            color: var(--gold-light) !important;
-            border: 1px solid rgba(169,132,69,0.2) !important;
-        }
-
-        /* Social Sidebar */
-        .social-sidebar {
-            position: absolute;
-            left: 20px;
-            bottom: 150px;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(4,18,23,0.7);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(169,132,69,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-            color: rgba(232,217,184,0.6);
-            font-size: 1.1rem;
-        }
-
-        .social-icon:hover {
-            border-color: var(--gold);
-            color: var(--gold-bright);
-            transform: translateX(4px);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .tour-title { font-size: 1.4rem; }
-            .tour-subtitle { font-size: 0.7rem; }
-            .panorama-item { width: 110px; height: 70px; }
-            .social-sidebar { display: none; }
+        @media (max-width: 640px) {
+            #overlay { padding: 20px; }
+            #title { font-size: clamp(1.2rem, 6vw, 2rem); }
+            #hint { font-size: 0.7rem; bottom: 28px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Logo -->
-    <div class="logo-wrapper" onclick="window.location.href='index.html'">
-        <div class="logo-icon">
-            <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
-                <circle cx="24" cy="24" r="20" stroke="rgba(169,132,69,0.6)" stroke-width="1.5"/>
-                <path d="M24 12 L24 36 M18 20 L24 28 L30 20" stroke="rgba(169,132,69,0.8)" stroke-width="1.5"/>
-            </svg>
+    <!-- VR IFRAME – loads immediately behind the overlay -->
+    <iframe id="vr-frame"
+        src="https://share.google/VW9zZQhOLe5Qg6l3J"
+        allow="vr; gyroscope; accelerometer; fullscreen"
+        allowfullscreen
+        loading="eager">
+    </iframe>
+
+    <!-- Overlay -->
+    <div id="overlay" role="button" aria-label="Tap to explore campus">
+        <div id="title">
+            Explore Campus
+            <span class="sub">Virtual Tour</span>
         </div>
     </div>
 
-    <!-- Header -->
-    <div class="tour-header">
-        <div class="tour-title">Explore Campus</div>
-        <div class="tour-subtitle">Virtual Tour</div>
-    </div>
-
-    <!-- Social Sidebar -->
-    <div class="social-sidebar">
-        <div class="social-icon" onclick="showToast('WhatsApp')">📱</div>
-        <div class="social-icon" onclick="showToast('Facebook')">f</div>
-        <div class="social-icon" onclick="showToast('Twitter')"></div>
-        <div class="social-icon" onclick="showToast('LinkedIn')">in</div>
-    </div>
-
-    <!-- 360 Viewer Container -->
-    <div id="panorama" style="width:100%;height:100vh;"></div>
-
-    <!-- Bottom Controls -->
-    <div class="tour-controls">
-        <div class="panorama-list" id="panoramaList">
-            <div class="panorama-item active" data-scene="entrance">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 250'%3E%3Crect fill='%230B3A40' width='400' height='250'/%3E%3Ctext fill='%23C09A52' font-family='Arial' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EEntrance%3C/text%3E%3C/svg%3E" alt="Entrance"/>
-                <div class="panorama-label">Entrance</div>
-            </div>
-            <div class="panorama-item" data-scene="reception">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 250'%3E%3Crect fill='%2308252B' width='400' height='250'/%3E%3Ctext fill='%23C09A52' font-family='Arial' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EReception%3C/text%3E%3C/svg%3E" alt="Reception"/>
-                <div class="panorama-label">Reception</div>
-            </div>
-            <div class="panorama-item" data-scene="auditorium">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 250'%3E%3Crect fill='%23061A20' width='400' height='250'/%3E%3Ctext fill='%23C09A52' font-family='Arial' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EAuditorium%3C/text%3E%3C/svg%3E" alt="Auditorium"/>
-                <div class="panorama-label">Auditorium</div>
-            </div>
-            <div class="panorama-item" data-scene="lab">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 250'%3E%3Crect fill='%230B3A40' width='400' height='250'/%3E%3Ctext fill='%23C09A52' font-family='Arial' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EComputer Lab%3C/text%3E%3C/svg%3E" alt="Computer Lab"/>
-                <div class="panorama-label">Computer Lab</div>
-            </div>
-            <div class="panorama-item" data-scene="library">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 250'%3E%3Crect fill='%2308252B' width='400' height='250'/%3E%3Ctext fill='%23C09A52' font-family='Arial' font-size='18' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ELibrary%3C/text%3E%3C/svg%3E" alt="Library"/>
-                <div class="panorama-label">Library</div>
-            </div>
-        </div>
-        
-        <div class="control-buttons">
-            <button class="ctrl-btn" onclick="showToast('Panorama List')">Panorama List</button>
-            <button class="ctrl-btn" onclick="showToast('Contact')">Contact</button>
-        </div>
-    </div>
-
-    <!-- Audio Enable Modal -->
-    <div class="audio-modal show" id="audioModal">
-        <div class="audio-content">
-            <div class="audio-title">Enable audio?</div>
-            <div class="audio-buttons">
-                <button class="audio-btn" onclick="closeAudioModal(false)">No</button>
-                <button class="audio-btn primary" onclick="closeAudioModal(true)">Yes</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div id="toast" style="position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(6,26,32,0.95);padding:14px 28px;border-radius:12px;border:1px solid rgba(169,132,69,0.3);color:var(--gold-bright);font-family:'Cinzel',serif;font-size:0.85rem;opacity:0;pointer-events:none;transition:0.4s;z-index:2000;"></div>
+    <!-- Hint -->
+    <div id="hint">⟳ Tap anywhere to begin</div>
 
     <script>
-        // Initialize Pannellum Viewer
-        let viewer;
-        let audioEnabled = false;
+        const overlay = document.getElementById('overlay');
 
-        // Scene configuration (Replace with your actual 360° images)
-        const scenes = {
-            entrance: {
-                title: 'Entrance',
-                type: 'equirectangular',
-                panorama: 'https://your-domain.com/images/entrance.jpg', // Replace with actual 360 image
-                hotSpots: [
-                    {
-                        pitch: 0,
-                        yaw: 90,
-                        type: 'scene',
-                        text: 'Reception',
-                        sceneId: 'reception'
-                    }
-                ]
-            },
-            reception: {
-                title: 'Reception',
-                type: 'equirectangular',
-                panorama: 'https://your-domain.com/images/reception.jpg',
-                hotSpots: [
-                    {
-                        pitch: 0,
-                        yaw: -90,
-                        type: 'scene',
-                        text: 'Entrance',
-                        sceneId: 'entrance'
-                    }
-                ]
-            },
-            auditorium: {
-                title: 'Auditorium',
-                type: 'equirectangular',
-                panorama: 'https://your-domain.com/images/auditorium.jpg'
-            },
-            lab: {
-                title: 'Computer Lab',
-                type: 'equirectangular',
-                panorama: 'https://your-domain.com/images/lab.jpg'
-            },
-            library: {
-                title: 'Library',
-                type: 'equirectangular',
-                panorama: 'https://your-domain.com/images/library.jpg'
-            }
-        };
-
-        // Initialize viewer
-        function initViewer() {
-            viewer = pannellum.viewer('panorama', {
-                default: {
-                    firstScene: 'entrance',
-                    autoLoad: true,
-                    showZoomCtrl: true,
-                    showFullscreenCtrl: true,
-                    compass: false
-                },
-                scenes: scenes
-            });
-
-            // Update active thumbnail when scene changes
-            viewer.on('scenechange', function(sceneId) {
-                document.querySelectorAll('.panorama-item').forEach(item => {
-                    item.classList.toggle('active', item.dataset.scene === sceneId);
-                });
-            });
+        function dismissOverlay() {
+            if (overlay.classList.contains('hidden')) return;
+            overlay.classList.add('hidden');
         }
 
-        // Panorama item click
-        document.querySelectorAll('.panorama-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const scene = this.dataset.scene;
-                if (viewer) {
-                    viewer.loadScene(scene);
-                }
-            });
+        overlay.addEventListener('click', dismissOverlay);
+        overlay.addEventListener('touchstart', dismissOverlay, { passive: true });
+        overlay.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                dismissOverlay();
+            }
         });
-
-        // Audio modal
-        function closeAudioModal(enable) {
-            audioEnabled = enable;
-            document.getElementById('audioModal').classList.remove('show');
-            
-            if (enable) {
-                showToast('Audio enabled ');
-                // Initialize audio here if needed
-            } else {
-                showToast('Audio disabled 🔇');
-            }
-        }
-
-        // Toast notification
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.style.opacity = '1';
-            toast.style.transform = 'translateX(-50%) translateY(0)';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(-50%) translateY(20px)';
-            }, 3000);
-        }
-
-        // Initialize on load
-        window.addEventListener('load', initViewer);
     </script>
+
 </body>
 </html>
