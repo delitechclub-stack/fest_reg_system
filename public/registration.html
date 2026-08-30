@@ -5,561 +5,969 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DEPLOMAT · Registration</title>
 
-    <!-- ─── GOOGLE FONTS ─────────────────────────────────────────────── -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+    <!-- ═══ SUPABASE CLIENT ═══ -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
 
     <style>
-        /* ═══════════════════════════════════════════════════════════════
-           RESET & BASE
-           ═══════════════════════════════════════════════════════════════ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; overscroll-behavior: none; }
+        /* ─── RESET & BASE ─────────────────────────────────────────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overscroll-behavior: none;
+        }
+
         body {
             font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: #041217;
-            color: #e8d9b8;
+            background: #0a0a0f;
+            color: #fff;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            user-select: none;
             min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           ATLANTIS COLOR TOKENS
-           ═══════════════════════════════════════════════════════════════ */
-        :root {
-            --abyss: #041217;
-            --abyss-light: #061A20;
-            --abyss-mid: #08252B;
-            --ocean-teal: #0B3A40;
-            --gold: #A98445;
-            --gold-light: #C09A52;
-            --gold-bright: #D0AF69;
-            --gold-royal: #E6C875;
-            --bronze: #70552F;
-            --parchment: #E8D9B8;
-            --ivory: #F4EBDD;
-            --gold-glow: rgba(169, 132, 69, 0.25);
-            --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.85);
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           SCROLLBAR
-           ═══════════════════════════════════════════════════════════════ */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--abyss); }
-        ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
-
-        /* ═══════════════════════════════════════════════════════════════
-           FLOATING LOGO — ATLANTEAN SEAL
-           ═══════════════════════════════════════════════════════════════ */
-        .header {
+        /* ─── BACKGROUND EFFECTS ────────────────────────────────────── */
+        .page-bg-orb {
             position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 999;
-            display: inline-block;
-        }
-        .trigger-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .logo-emblem {
-            display: block;
-            width: 48px;
-            height: 48px;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.8));
             border-radius: 50%;
-            border: 1.5px solid rgba(169, 132, 69, 0.3);
-            padding: 4px;
-            background: rgba(4, 18, 23, 0.7);
-            backdrop-filter: blur(4px);
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
         }
-        .trigger-wrapper:hover .logo-emblem {
-            transform: scale(1.08);
-            border-color: var(--gold);
-            box-shadow: 0 0 40px var(--gold-glow);
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: #00d4ff;
+            top: -15%;
+            left: -15%;
+        }
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #b000ff;
+            bottom: -15%;
+            right: -15%;
+        }
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: #ff2a6d;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.06;
         }
 
-        .epic-dropdown {
-            display: none;
-            position: absolute;
-            left: 0;
-            top: 60px;
-            min-width: 180px;
-            padding: 10px 0;
-            border-radius: 12px;
-            background: rgba(6, 26, 32, 0.92);
-            backdrop-filter: blur(20px) saturate(1.1);
-            box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169, 132, 69, 0.15);
-            z-index: 100;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.92) translateY(-10px);
-            transform-origin: top left;
-            transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.35s;
-        }
-        .epic-dropdown.open {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1) translateY(0px);
-        }
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: rgba(232, 217, 184, 0.8);
-            text-decoration: none;
-            padding: 10px 20px;
-            font-size: 12px;
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.5px;
-            transition: 0.25s ease;
-            border-left: 2px solid transparent;
-        }
-        .dropdown-item:hover {
-            color: var(--ivory);
-            background: rgba(169, 132, 69, 0.08);
-            border-left-color: var(--gold);
-        }
-        .dropdown-item .icon { font-size: 14px; color: rgba(169, 132, 69, 0.6); }
-
-        /* ═══════════════════════════════════════════════════════════════
-           REGISTRATION BACKGROUND & PARTICLES
-           ═══════════════════════════════════════════════════════════════ */
-        .reg-background {
+        body::before {
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: radial-gradient(ellipse at 50% 30%, rgba(11, 58, 64, 0.15) 0%, rgba(4, 18, 23, 0.95) 70%, var(--abyss) 100%);
-            overflow: hidden;
-        }
-        .particles {
-            position: absolute;
-            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 46px 46px;
+            content: "";
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 85%);
             pointer-events: none;
-            will-change: transform;
-        }
-        .particles .part {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(192, 154, 82, 0.3);
-            border-radius: 50%;
-            animation: floatPart 20s ease-in-out infinite alternate;
-        }
-        .particles .part:nth-child(1) { left: 10%; top: 20%; animation-duration: 22s; width: 3px; height: 3px; }
-        .particles .part:nth-child(2) { left: 25%; top: 60%; animation-duration: 18s; }
-        .particles .part:nth-child(3) { left: 45%; top: 15%; animation-duration: 25s; width: 4px; height: 4px; }
-        .particles .part:nth-child(4) { left: 60%; top: 70%; animation-duration: 16s; }
-        .particles .part:nth-child(5) { left: 78%; top: 30%; animation-duration: 21s; width: 3px; height: 3px; }
-        .particles .part:nth-child(6) { left: 90%; top: 55%; animation-duration: 19s; }
-
-        @keyframes floatPart {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
-            50% { opacity: 0.4; }
-            100% { transform: translate(-20px, -30px) scale(1.5); opacity: 0.1; }
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           REGISTRATION CONTAINER & FORM
-           ═══════════════════════════════════════════════════════════════ */
-        .reg-container {
+        /* ─── HOME LINK ─────────────────────────────────────────────── */
+        .home-link {
+            position: fixed;
+            top: 28px;
+            left: 32px;
+            z-index: 20;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 60px;
+            background: rgba(16, 16, 26, 0.5);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+            transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .home-link:hover {
+            color: #00d4ff;
+            border-color: rgba(0, 212, 255, 0.2);
+            transform: translateX(-4px);
+            background: rgba(0, 212, 255, 0.06);
+        }
+        .home-link:active {
+            transform: scale(0.95);
+        }
+
+        /* ─── MAIN WRAPPER ──────────────────────────────────────────── */
+        .register-wrap {
             position: relative;
-            z-index: 1;
-            flex: 1;
+            z-index: 2;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 80px 20px 40px 20px;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
+            padding: 100px 24px 60px 24px;
         }
 
-        .reg-header {
+        .register-container {
+            width: min(100%, 720px);
+            animation: reveal 0.65s ease both;
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ─── REGISTRATION CARD ─────────────────────────────────────── */
+        .register-card {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(32px, 5vw, 56px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            background: rgba(17, 24, 38, 0.75);
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        .register-card::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #65d8ff, transparent);
+            content: "";
+            opacity: 0.8;
+        }
+
+        .register-header {
             text-align: center;
             margin-bottom: 32px;
-            will-change: transform;
         }
 
-        .reg-title {
-            font-family: 'Cinzel', serif;
-            font-weight: 900;
-            font-size: clamp(1.8rem, 5vw, 2.8rem);
-            letter-spacing: 0.15em;
+        .register-header .eyebrow {
+            color: #65d8ff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.28em;
             text-transform: uppercase;
-            background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 4px 12px rgba(169, 132, 69, 0.4));
             margin-bottom: 8px;
         }
 
-        .reg-subtitle {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        .register-header h1 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .register-header .sub {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: rgba(232, 217, 184, 0.8); /* FIXED: Readable opacity */
+            margin-top: 4px;
         }
 
-        .form-card {
-            width: 100%;
-            background: rgba(6, 26, 32, 0.85);
-            backdrop-filter: blur(24px) saturate(1.1);
-            -webkit-backdrop-filter: blur(24px) saturate(1.1);
-            border-radius: 20px;
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            box-shadow: var(--shadow-deep), inset 0 0 60px rgba(0, 0, 0, 0.2);
-            padding: 32px 28px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s ease, opacity 0.4s ease;
-        }
-
-        .form-card::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 21px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(169, 132, 69, 0.2), transparent 40%, transparent 60%, rgba(169, 132, 69, 0.1));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        /* ─── FORM STEPS ─────────────────────────────────────────────── */
-        .form-step {
+        /* ─── EVENT AUTO-SELECT BANNER ──────────────────────────────── */
+        .event-banner {
             display: none;
-            animation: fadeInStep 0.5s ease;
+            background: rgba(101, 216, 255, 0.06);
+            border: 1px solid rgba(101, 216, 255, 0.15);
+            border-radius: 14px;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            align-items: center;
+            gap: 14px;
+            animation: fadeStep 0.5s ease both;
         }
-        .form-step.active { display: block; }
-
-        @keyframes fadeInStep {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .event-banner.show {
+            display: flex;
+        }
+        .event-banner .icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+        .event-banner .info {
+            flex: 1;
+        }
+        .event-banner .info strong {
+            color: #65d8ff;
+            font-size: 1.05rem;
+            display: block;
+        }
+        .event-banner .info small {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        .event-banner .badge {
+            background: rgba(101, 216, 255, 0.12);
+            color: #65d8ff;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+            white-space: nowrap;
         }
 
+        /* ─── BLOCK NOTIFICATION ────────────────────────────────────── */
+        .block-notice {
+            display: none;
+            background: rgba(255, 42, 109, 0.12);
+            border: 1px solid rgba(255, 42, 109, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 12px;
+            animation: fadeStep 0.35s ease both;
+            color: #ff6b8a;
+        }
+        .block-notice.show {
+            display: flex;
+        }
+        .block-notice .icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .block-notice .msg {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .block-notice .msg strong {
+            color: #fff;
+        }
+
+        /* ─── STEP INDICATOR ────────────────────────────────────────── */
         .step-indicator {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 32px;
         }
+
         .step-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(169, 132, 69, 0.2);
-            transition: 0.3s ease;
-        }
-        .step-dot.active {
-            background: var(--gold-light);
-            width: 24px;
-            border-radius: 4px;
-            box-shadow: 0 0 15px rgba(169, 132, 69, 0.3);
-        }
-
-        .step-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--ivory);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        /* ─── INPUTS & SELECTS ───────────────────────────────────────── */
-        .form-group { margin-bottom: 20px; }
-        .form-label {
-            display: block;
-            font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.7); /* FIXED: Readable gold */
-            margin-bottom: 6px;
-        }
-        .form-input, .form-select {
-            width: 100%;
-            background: rgba(4, 18, 23, 0.6);
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            border-radius: 10px;
-            padding: 14px 16px;
-            color: var(--ivory);
-            font-size: 14px;
-            font-family: 'Segoe UI', sans-serif;
-            outline: none;
-            transition: 0.3s ease;
-            appearance: none;
-        }
-        .form-select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23C09A52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 40px;
-        }
-        .form-input:focus, .form-select:focus {
-            border-color: rgba(169, 132, 69, 0.4);
-            background: rgba(4, 18, 23, 0.8);
-            box-shadow: 0 0 20px rgba(169, 132, 69, 0.05);
-        }
-        .form-input::placeholder { color: rgba(232, 217, 184, 0.2); }
-
-        .warning-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.8rem;
-            color: rgba(200, 150, 100, 0.8);
-            margin-top: 6px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.2);
+            transition: 0.3s ease;
         }
 
-        /* ─── CATEGORY RADIOS ────────────────────────────────────────── */
-        .category-group {
-            display: flex;
-            gap: 12px;
+        .step-dot .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .step-dot.active .dot {
+            background: #65d8ff;
+            box-shadow: 0 0 16px rgba(101, 216, 255, 0.3);
+        }
+
+        .step-dot.active {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .step-dot.done .dot {
+            background: #4caf50;
+        }
+
+        .step-dot.done {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .step-line {
+            width: 30px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            align-self: center;
+        }
+
+        /* ─── FORM STYLES ───────────────────────────────────────────── */
+        .form-step {
+            display: none;
+            animation: fadeStep 0.4s ease both;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeStep {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
-        .category-radio {
-            flex: 1;
-            position: relative;
+
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 6px;
+            font-weight: 600;
         }
-        .category-radio input {
-            position: absolute;
-            opacity: 0;
+
+        .form-group label .required {
+            color: #ff2a6d;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group select {
             width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: 0.25s ease;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
         }
-        .category-radio label {
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+
+        .form-group select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ─── UG/PU RADIO GROUP ─────────────────────────────────────── */
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            padding: 6px 0;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            text-transform: none;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-weight: 500;
+            padding: 8px 18px 8px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            transition: 0.25s ease;
+        }
+
+        .radio-group label:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .radio-group label input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #65d8ff;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+            appearance: radio;
+            -webkit-appearance: radio;
+            background: transparent;
+        }
+
+        .radio-group label:has(input:checked) {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.06);
+            color: #fff;
+        }
+
+        /* ─── PLAYER FIELDS ─────────────────────────────────────────── */
+        .player-entry {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 18px 16px;
+            margin-bottom: 12px;
+            transition: 0.3s ease;
+        }
+
+        .player-entry:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .player-entry .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .player-entry .player-number {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+
+        .player-entry .player-number.leader {
+            color: #65d8ff;
+        }
+
+        .player-entry .remove-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 42, 109, 0.4);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.2s;
+            padding: 4px 8px;
+            border-radius: 6px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .player-entry .remove-btn:hover {
+            color: #ff2a6d;
+            background: rgba(255, 42, 109, 0.08);
+        }
+
+        .player-entry .player-fields {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .player-entry .player-fields.leader-fields {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .player-entry .player-fields input {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-family: inherit;
+            transition: 0.25s ease;
+            outline: none;
+        }
+
+        .player-entry .player-fields input:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+
+        .player-entry .player-fields input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .player-entry .player-fields .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .player-entry .player-fields .field-group label {
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+        }
+
+        .player-entry .player-fields .field-group label .required {
+            color: #ff2a6d;
+        }
+
+        .leader-badge {
+            display: inline-block;
+            background: rgba(101, 216, 255, 0.12);
+            color: #65d8ff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+            margin-left: 8px;
+        }
+
+        /* ─── CROSS-CHECK STYLES ────────────────────────────────────── */
+        .cross-check-entry {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 18px 16px;
+            margin-bottom: 12px;
+            transition: 0.3s ease;
+        }
+
+        .cross-check-entry:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .cross-check-entry .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cross-check-entry .player-number {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+
+        .cross-check-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cross-check-row label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .cross-check-row label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #65d8ff;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .cross-check-row select {
+            flex: 1;
+            min-width: 180px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: 0.25s ease;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        .cross-check-row select:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+
+        .cross-check-row select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .cross-check-row select:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .cross-check-row .event-badge {
+            display: inline-block;
+            background: rgba(255, 197, 61, 0.12);
+            color: #FFC53D;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(255, 197, 61, 0.1);
+        }
+
+        /* ─── ADD PLAYER BUTTON ──────────────────────────────────────── */
+        .add-player-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            font-family: inherit;
+        }
+
+        .add-player-btn:hover {
+            border-color: rgba(101, 216, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(101, 216, 255, 0.04);
+        }
+
+        .add-player-btn:active {
+            transform: scale(0.98);
+        }
+
+        .add-player-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .add-player-btn:disabled:hover {
+            border-color: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* ─── EVENT LIMIT INFO ───────────────────────────────────────── */
+        .event-limit-info {
+            background: rgba(255, 197, 61, 0.06);
+            border: 1px solid rgba(255, 197, 61, 0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .event-limit-info .icon {
+            font-size: 1.2rem;
+        }
+
+        .event-limit-info .text {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .event-limit-info .text strong {
+            color: #FFC53D;
+        }
+
+        /* ─── PAYMENT SECTION ───────────────────────────────────────── */
+        .payment-summary {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 14px;
+            padding: 20px;
+            margin: 16px 0 24px 0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .payment-summary .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .payment-summary .summary-row.total {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 12px;
+            margin-top: 6px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .payment-summary .summary-row.total .amount {
+            color: #65d8ff;
+        }
+
+        .payment-side {
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 25px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 197, 61, 0.15);
+            margin-top: 20px;
+        }
+
+        .payment-side h5 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 1.8rem;
+            color: #FFC53D;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        .payment-side p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .pay-app-btn {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
             width: 100%;
             padding: 14px;
-            background: rgba(4, 18, 23, 0.6);
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            border-radius: 10px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            color: rgba(232, 217, 184, 0.6);
-            transition: 0.3s ease;
+            border-radius: 12px;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
             cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
         }
-        .category-radio input:checked + label {
-            border-color: var(--gold-light);
-            background: rgba(169, 132, 69, 0.08);
-            color: var(--gold-bright);
-            box-shadow: 0 0 20px rgba(169, 132, 69, 0.1);
+
+        .pay-app-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .pay-app-btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-gpay {
+            background: #4285F4;
+        }
+        .btn-phonepe {
+            background: #5f259f;
+        }
+        .btn-paytm {
+            background: #00baf2;
+        }
+        .btn-other {
+            background: #FFC53D;
+            color: #0a0a0f;
+        }
+
+        .qr-toggle {
+            font-size: 0.75rem;
+            color: #65d8ff;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: underline;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .qr-container {
+            display: none;
+            margin-top: 15px;
+            animation: fadeStep 0.3s ease;
+        }
+
+        .qr-frame {
+            display: inline-block;
+            background: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #FFC53D;
+        }
+
+        .qr-frame img {
+            width: 140px;
+            height: 140px;
+            display: block;
+        }
+
+        .utr-section {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.15);
+            animation: fadeStep 0.4s ease;
+        }
+
+        .utr-section.active {
+            display: block;
+        }
+
+        .f-control {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: 0.25s ease;
+            outline: none;
+        }
+
+        .f-control:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
         }
 
         /* ─── BUTTONS ────────────────────────────────────────────────── */
-        .btn-group {
+        .form-actions {
             display: flex;
             gap: 12px;
             margin-top: 28px;
+            flex-wrap: wrap;
         }
+
         .btn {
-            flex: 1;
-            padding: 14px;
-            border-radius: 10px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.85rem;
             font-weight: 700;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             cursor: pointer;
             transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            text-align: center;
+            font-family: inherit;
             -webkit-tap-highlight-color: transparent;
-        }
-        .btn-secondary {
-            background: rgba(4, 18, 23, 0.4);
-            color: rgba(232, 217, 184, 0.6);
-        }
-        .btn-secondary:hover {
-            background: rgba(4, 18, 23, 0.6);
-            color: var(--ivory);
-            border-color: rgba(169, 132, 69, 0.3);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, rgba(169, 132, 69, 0.15), rgba(169, 132, 69, 0.05));
-            color: var(--gold-bright);
-            border-color: rgba(169, 132, 69, 0.3);
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, rgba(169, 132, 69, 0.25), rgba(169, 132, 69, 0.1));
-            color: var(--ivory);
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(169, 132, 69, 0.1);
-        }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-
-        .btn-add {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px dashed rgba(169, 132, 69, 0.3);
-            background: rgba(169, 132, 69, 0.02);
-            color: rgba(192, 154, 82, 0.8);
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            cursor: pointer;
-            transition: 0.3s ease;
-            margin-top: 12px;
-        }
-        .btn-add:hover {
-            background: rgba(169, 132, 69, 0.08);
-            border-color: rgba(169, 132, 69, 0.5);
-            color: var(--gold-bright);
-        }
-
-        /* ─── PLAYER LIST ────────────────────────────────────────────── */
-        .player-list {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .player-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(4, 18, 23, 0.4);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(169, 132, 69, 0.1);
-            animation: fadeInStep 0.3s ease;
-        }
-        .player-item .player-num {
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            color: var(--gold-light);
-            min-width: 24px;
-        }
-        .player-item input {
             flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--ivory);
-            font-size: 14px;
-            outline: none;
-        }
-        .player-item input::placeholder { color: rgba(232, 217, 184, 0.2); }
-        .player-item .remove-player {
-            background: none;
-            border: none;
-            color: rgba(200, 100, 100, 0.6);
-            cursor: pointer;
-            font-size: 18px;
-            padding: 4px;
-            transition: 0.2s;
-        }
-        .player-item .remove-player:hover { color: rgba(200, 100, 100, 1); }
-
-        /* ─── REVIEW TABLE ───────────────────────────────────────────── */
-        .review-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-            font-size: 0.85rem;
-        }
-        .review-table th {
-            font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.6);
-            text-align: left;
-            padding: 8px 4px;
-            border-bottom: 1px solid rgba(169, 132, 69, 0.15);
-        }
-        .review-table td {
-            padding: 12px 4px;
-            color: var(--ivory);
-            border-bottom: 1px solid rgba(169, 132, 69, 0.05);
-        }
-        .review-table .total-row td {
-            border-top: 1px solid rgba(169, 132, 69, 0.3);
-            border-bottom: none;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            color: var(--gold-bright);
-            font-size: 1rem;
-            padding-top: 16px;
+            min-width: 120px;
+            text-align: center;
         }
 
-        /* ─── PAYMENT OPTIONS ────────────────────────────────────────── */
-        .payment-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+        .btn:active {
+            transform: scale(0.96);
         }
-        .pay-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px;
-            background: rgba(4, 18, 23, 0.6);
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            border-radius: 10px;
-            color: rgba(232, 217, 184, 0.8);
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            transition: 0.3s ease;
-            text-decoration: none;
-        }
-        .pay-btn:hover {
-            border-color: rgba(169, 132, 69, 0.4);
-            background: rgba(169, 132, 69, 0.08);
-            color: var(--gold-bright);
-        }
-        .pay-btn .pay-icon { font-size: 1.2rem; }
 
-        .qr-placeholder {
-            width: 160px;
-            height: 160px;
-            margin: 20px auto;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #041217;
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            border: 2px solid var(--gold);
+        .btn-primary {
+            background: linear-gradient(135deg, #65d8ff, #3b7bff);
+            color: #0a0a0f;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(101, 216, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(76, 175, 80, 0.2);
+        }
+
+        .btn-gold {
+            background: #FFC53D;
+            color: #0a0a0f;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 197, 61, 0.25);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         /* ─── SUCCESS STATE ──────────────────────────────────────────── */
@@ -567,497 +975,1555 @@
             text-align: center;
             padding: 20px 0;
         }
-        .success-icon {
-            font-size: 3rem;
+
+        .success-state .check {
+            font-size: 4rem;
+            display: block;
             margin-bottom: 16px;
-            animation: pulseSuccess 2s ease-in-out infinite;
         }
-        @keyframes pulseSuccess {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(169, 132, 69, 0.3)); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(169, 132, 69, 0.6)); }
+
+        .success-state h2 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+            background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .success-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.4rem;
-            color: var(--gold-bright);
+
+        .success-state p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .success-state .reg-details {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: left;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .success-state .reg-details strong {
+            color: #fff;
+        }
+
+        /* ─── RESPONSIVE ────────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .home-link {
+                top: 18px;
+                left: 18px;
+                font-size: 0.7rem;
+                padding: 8px 14px;
+                letter-spacing: 2px;
+            }
+
+            .register-wrap {
+                padding: 80px 16px 40px 16px;
+            }
+
+            .register-card {
+                padding: clamp(24px, 4vw, 32px);
+                border-radius: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .player-entry .player-fields.leader-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .cross-check-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .cross-check-row select {
+                min-width: 100%;
+            }
+
+            .step-line {
+                width: 16px;
+            }
+
+            .step-dot {
+                font-size: 0.55rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                flex: none;
+                width: 100%;
+                padding: 16px;
+            }
+
+            .payment-side {
+                padding: 20px 16px;
+            }
+
+            .qr-frame img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .event-banner {
+                flex-wrap: wrap;
+            }
+            .event-banner .badge {
+                font-size: 0.6rem;
+            }
+
+            .radio-group {
+                gap: 12px;
+            }
+            .radio-group label {
+                padding: 6px 14px 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .register-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .register-card {
+                padding: 20px 16px;
+                border-radius: 16px;
+            }
+
+            .payment-summary {
+                padding: 16px;
+            }
+
+            .step-indicator {
+                gap: 6px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .step-dot .dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .step-line {
+                width: 10px;
+            }
+
+            .pay-app-btn {
+                font-size: 0.85rem;
+                padding: 12px;
+            }
+
+            .qr-frame img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .cross-check-row label {
+                font-size: 0.7rem;
+            }
+
+            .event-banner .icon {
+                font-size: 1.2rem;
+            }
+            .event-banner .info strong {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* ─── UTILITY ────────────────────────────────────────────────── */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-8 {
+            margin-top: 8px;
+        }
+
+        .mt-16 {
+            margin-top: 16px;
+        }
+
+        .mb-8 {
             margin-bottom: 8px;
         }
-        .success-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1rem;
-            color: rgba(232, 217, 184, 0.7);
-            line-height: 1.5;
+
+        .hidden {
+            display: none !important;
         }
 
-        /* ─── LOADING & ERROR STATES ─────────────────────────────────── */
-        .loading-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(4, 18, 23, 0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            border-radius: 20px;
+        .text-gold {
+            color: #FFC53D;
         }
+
+        .text-aqua {
+            color: #65d8ff;
+        }
+
+        /* ─── LOADING SPINNER ────────────────────────────────────────── */
         .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid rgba(169, 132, 69, 0.1);
-            border-top-color: var(--gold-light);
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-top: 2px solid #65d8ff;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 16px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text {
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            letter-spacing: 0.2em;
-            color: var(--gold-light);
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
         }
 
-        .error-banner {
-            background: rgba(200, 100, 100, 0.1);
-            border: 1px solid rgba(200, 100, 100, 0.2);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            color: rgba(232, 217, 184, 0.8);
-            font-size: 0.8rem;
-            display: none;
-            align-items: center;
-            gap: 8px;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
-        .error-banner.show { display: flex; }
 
-        /* ─── TOAST ──────────────────────────────────────────────────── */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(6, 26, 32, 0.95);
-            backdrop-filter: blur(16px);
-            padding: 14px 28px;
-            border-radius: 12px;
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            color: rgba(232, 217, 184, 0.9);
-            font-size: 0.85rem;
-            z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+        .btn-loading {
             pointer-events: none;
-            text-align: center;
-            max-width: 90vw;
-            box-shadow: var(--shadow-deep);
-        }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .toast.error { border-color: rgba(200, 100, 100, 0.3); color: #e8a8a8; }
-        .toast.success { border-color: rgba(169, 132, 69, 0.3); color: var(--gold-bright); }
-
-        /* ─── RESPONSIVE ─────────────────────────────────────────────── */
-        @media (max-width: 480px) {
-            .reg-container { padding: 70px 16px 30px 16px; }
-            .form-card { padding: 24px 20px; }
-            .category-group { flex-direction: column; gap: 8px; }
-            .payment-options { grid-template-columns: 1fr; }
-            .review-table { font-size: 0.75rem; }
-            .review-table th, .review-table td { padding: 8px 2px; }
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
+    <!-- ─── BACKGROUND ORBS ────────────────────────────────────────── -->
+    <div class="page-bg-orb orb-1"></div>
+    <div class="page-bg-orb orb-2"></div>
+    <div class="page-bg-orb orb-3"></div>
 
-    <!-- FLOATING LOGO -->
-    <header class="header">
-        <div class="trigger-wrapper" id="logoTrigger">
-            <svg class="logo-emblem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="24" cy="24" r="20" fill="rgba(6,26,32,0.6)" stroke="rgba(169,132,69,0.2)" stroke-width="1.5" />
-                <path d="M24 8 L24 40 M8 24 L40 24" stroke="rgba(169,132,69,0.15)" stroke-width="1" />
-                <path d="M14 14 L34 34 M34 14 L14 34" stroke="rgba(169,132,69,0.1)" stroke-width="0.8" />
-                <path d="M24 12 L24 36 M18 20 L24 28 L30 20" stroke="rgba(169,132,69,0.25)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="24" cy="10" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <circle cx="24" cy="38" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <circle cx="10" cy="24" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <circle cx="38" cy="24" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <path d="M16 30 Q20 26 24 30 Q28 34 32 30" stroke="rgba(169,132,69,0.1)" stroke-width="0.8" fill="none" />
-            </svg>
-            <div class="epic-dropdown" id="dropdownMenu">
-                <a class="dropdown-item" href="index.html"><span class="icon">⌂</span> Home</a>
-                <a class="dropdown-item" href="index.html#explore"><span class="icon">▸</span> Explore Events</a>
-            </div>
-        </div>
-    </header>
+    <!-- ─── HOME LINK ───────────────────────────────────────────────── -->
+    <a href="index.html" class="home-link" aria-label="Back to home">← Home</a>
 
-    <!-- BACKGROUND -->
-    <div class="reg-background">
-        <div class="particles" id="particles">
-            <div class="part"></div><div class="part"></div><div class="part"></div>
-            <div class="part"></div><div class="part"></div><div class="part"></div>
-        </div>
-    </div>
+    <!-- ─── MAIN WRAPPER ───────────────────────────────────────────── -->
+    <main class="register-wrap">
+        <div class="register-container">
+            <div class="register-card">
 
-    <!-- MAIN REGISTRATION CONTAINER -->
-    <main class="reg-container">
-        <div class="reg-header">
-            <div class="reg-title">DEPLOMAT · 2026</div>
-            <div class="reg-subtitle">Secure your spot in the Atlantean Trials</div>
-        </div>
-
-        <div class="form-card" id="formCard">
-            <!-- Loading Overlay (Hidden by default, shown via JS if needed) -->
-            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
-                <div class="spinner"></div>
-                <div class="loading-text">🔱 Loading event limits...</div>
-            </div>
-
-            <!-- Error Banner -->
-            <div class="error-banner" id="errorBanner">
-                <span>⚡</span> <span id="errorText">Please select UG (Under Graduate) or PU (Post Graduate)</span>
-            </div>
-
-            <!-- STEP 1: Category & Event -->
-            <div class="form-step active" id="step1">
-                <div class="step-indicator">
-                    <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
+                <!-- ─── HEADER ─────────────────────────────────────────── -->
+                <div class="register-header">
+                    <p class="eyebrow">DEPLOMAT · 2026</p>
+                    <h1>REGISTRATION</h1>
+                    <p class="sub">Secure your spot in the Atlantean Trials</p>
                 </div>
-                <div class="step-title">Team Check</div>
-                
-                <div class="form-group">
-                    <label class="form-label">Select Category *</label>
-                    <div class="category-group">
-                        <div class="category-radio">
-                            <input type="radio" name="category" id="catUG" value="UG" />
-                            <label for="catUG">UG</label>
+
+                <!-- ─── EVENT AUTO-SELECT BANNER ──────────────────────── -->
+                <div class="event-banner" id="eventBanner">
+                    <span class="icon">🔱</span>
+                    <div class="info">
+                        <strong id="bannerEventName">Loading...</strong>
+                        <small id="bannerEventSub">You're registering for this event</small>
+                    </div>
+                    <span class="badge">Pre‑selected</span>
+                </div>
+
+                <!-- ─── BLOCK NOTICE ───────────────────────────────────── -->
+                <div class="block-notice" id="blockNotice">
+                    <span class="icon">⛔</span>
+                    <span class="msg" id="blockMsg">This event is not available for your category.</span>
+                </div>
+
+                <!-- ─── STEP INDICATOR ─────────────────────────────────── -->
+                <div class="step-indicator">
+                    <div class="step-dot active" data-step="1">
+                        <span class="dot"></span>
+                        <span>Details</span>
+                    </div>
+                    <span class="step-line"></span>
+                    <div class="step-dot" data-step="2">
+                        <span class="dot"></span>
+                        <span>Team</span>
+                    </div>
+                    <span class="step-line"></span>
+                    <div class="step-dot" data-step="3">
+                        <span class="dot"></span>
+                        <span>Check</span>
+                    </div>
+                    <span class="step-line"></span>
+                    <div class="step-dot" data-step="4">
+                        <span class="dot"></span>
+                        <span>Payment</span>
+                    </div>
+                </div>
+
+                <!-- ─── FORM ───────────────────────────────────────────── -->
+                <form id="registrationForm" novalidate>
+
+                    <!-- ========== STEP 1: BASIC DETAILS ========== -->
+                    <div class="form-step active" data-step="1">
+                        <div class="form-group">
+                            <label>College / Institution <span class="required">*</span></label>
+                            <input type="text" id="college" placeholder="Enter your college name" required />
                         </div>
-                <div class="category-radio">
-                            <input type="radio" name="category" id="catPU" value="PU" />
-                            <label for="catPU">PU</label>
+
+                        <!-- ─── UG / PU SELECTION ─────────────────────── -->
+                        <div class="form-group">
+                            <label>Select Category <span class="required">*</span></label>
+                            <div class="radio-group" id="ugPuGroup">
+                                <label>
+                                    <input type="radio" name="ug_pu" value="UG" />
+                                    <span>UG</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="ug_pu" value="PU" />
+                                    <span>PU</span>
+                                </label>
+                            </div>
+                            <small style="color: rgba(255,255,255,0.25); font-size: 0.7rem; display: block; margin-top: 4px;">
+                                ⚡ Please select UG (Under Graduate) or PU (Post Graduate)
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Select Event <span class="required">*</span></label>
+                            <select id="eventSelect" required>
+                                <option value="">— Select an event —</option>
+                                <option value="0">THE ATLANTEAN TRIALS · Escape Room</option>
+                                <option value="1">THE LOST RELIC · Treasure Hunt</option>
+                                <option value="2">THE TRIDENT WAR · Free Fire</option>
+                                <option value="3">COURT OF THE DEEP · Moot Court</option>
+                                <option value="4">THE SIREN'S ACT · Reels Making</option>
+                                <option value="5">ECHOS OF ATLANTIS · Solo Singing</option>
+                                <option value="6">THE MERMAID'S WALTZ · Solo Dance</option>
+                                <option value="7">TIDES OF RYTHM · Group Dance</option>
+                                <option value="8">RUNWAY OF REALMS · Rampwalk</option>
+                                <option value="9">THE KRAKEN'S PITCH · Cricket (PU/UG Boys)</option>
+                                <option value="10">POSEIDON'S CUP · Football (P.U Boys)</option>
+                                <option value="11">TIDAL THROWDOWN · Throwball (UG Girls)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" id="step1Next">Next →</button>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="eventSelect">Select Event *</label>
-                    <select class="form-select" id="eventSelect">
-                        <option value="">— Select an event —</option>
-                        <option value="0">THE ATLANTEAN TRIALS · Escape Room</option>
-                        <option value="1">THE LOST RELIC · Treasure Hunt</option>
-                        <option value="2">THE TRIDENT WAR · Free Fire</option>
-                        <option value="3">COURT OF THE DEEP · Moot Court</option>
-                        <option value="4">THE SIREN'S ACT · Reels Making</option>
-                        <option value="5">ECHOS OF ATLANTIS · Solo Singing</option>
-                        <option value="6">THE MERMAID'S WALTZ · Solo Dance</option>
-                        <option value="7">TIDES OF RYTHM · Group Dance</option>
-                        <option value="8">RUNWAY OF REALMS · Rampwalk</option>
-                        <option value="9">THE KRAKEN'S PITCH · Cricket (PU/UG Boys)</option>
-                        <option value="10">POSEIDON'S CUP · Football (P.U Boys)</option>
-                        <option value="11">TIDAL THROWDOWN · Throwball (UG Girls)</option>
-                    </select>
-                </div>
+                    <!-- ========== STEP 2: TEAM / PLAYER DETAILS ========== -->
+                    <div class="form-step" data-step="2">
+                        <div id="eventLimitInfo" class="event-limit-info">
+                            <span class="icon">📋</span>
+                            <span class="text" id="limitText">Loading event limits...</span>
+                        </div>
 
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">← Home</button>
-                    <button class="btn btn-primary" onclick="nextStep(1)">Next →</button>
-                </div>
-            </div>
+                        <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-bottom: 16px; letter-spacing: 0.05em;">
+                            ⚡ Enter all participants for this event. Per person fee: <strong style="color: #65d8ff;">₹250</strong>
+                            <br /><span style="color: rgba(255,255,255,0.2); font-size: 0.7rem;">The first participant is the <strong style="color: #65d8ff;">Team Leader</strong>.</span>
+                        </p>
 
-            <!-- STEP 2: Team Details -->
-            <div class="form-step" id="step2">
-                <div class="step-indicator">
-                    <div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
-                </div>
-                <div class="step-title">Team Details</div>
-                <div class="warning-text">⚡ Enter all participants. Per person fee: ₹250. The first is the Team Leader.</div>
-                
-                <div class="player-list" id="playerList">
-                    <div class="player-item">
-                        <span class="player-num">01</span>
-                        <input type="text" placeholder="Team Leader Name" class="player-name" required />
+                        <div id="playersContainer">
+                            <!-- Players will be added here dynamically -->
+                        </div>
+
+                        <button type="button" class="add-player-btn" id="addPlayerBtn">+ Add Player</button>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="step2Back">← Back</button>
+                            <button type="button" class="btn btn-primary" id="step2Next">Next →</button>
+                        </div>
                     </div>
-                </div>
-                <button class="btn-add" onclick="addPlayer()">+ Add Player</button>
 
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="prevStep(2)">← Back</button>
-                    <button class="btn btn-primary" onclick="nextStep(2)">Next →</button>
-                </div>
-            </div>
+                    <!-- ========== STEP 3: CROSS-CHECK ========== -->
+                    <div class="form-step" data-step="3">
+                        <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-bottom: 16px; letter-spacing: 0.05em;">
+                            🔍 Please select if any participant has registered for other events.
+                        </p>
 
-            <!-- STEP 3: Review -->
-            <div class="form-step" id="step3">
-                <div class="step-indicator">
-                    <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div>
-                </div>
-                <div class="step-title">Review Registration</div>
-                <div class="warning-text">🔍 Please verify all participant details before proceeding.</div>
+                        <div id="crossCheckContainer">
+                            <!-- Cross-check fields will be added dynamically -->
+                        </div>
 
-                <table class="review-table">
-                    <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Team Leader</th>
-                            <th>Cat</th>
-                            <th>Qty</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reviewBody">
-                        <!-- Populated by JS -->
-                    </tbody>
-                    <tfoot>
-                        <tr class="total-row">
-                            <td colspan="3">Total Amount</td>
-                            <td id="totalAmount">₹0</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="prevStep(3)">← Back</button>
-                    <button class="btn btn-primary" onclick="nextStep(3)">Next →</button>
-                </div>
-            </div>
-
-            <!-- STEP 4: Payment -->
-            <div class="form-step" id="step4">
-                <div class="step-indicator">
-                    <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div>
-                </div>
-                <div class="step-title">Payment</div>
-                
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold-bright); font-weight: 700;" id="payAmount">PAY ₹0</div>
-                    <div style="font-size: 0.75rem; color: rgba(232, 217, 184, 0.5); margin-top: 4px;">Tap to open your payment app</div>
-                </div>
-
-                <div class="payment-options">
-                    <a href="#" class="pay-btn" onclick="showToast('Opening GPay...', 'success')"><span class="pay-icon">📱</span> GPay</a>
-                    <a href="#" class="pay-btn" onclick="showToast('Opening PhonePe...', 'success')"><span class="pay-icon">📱</span> PhonePe</a>
-                    <a href="#" class="pay-btn" onclick="showToast('Opening Paytm...', 'success')"><span class="pay-icon">📱</span> Paytm</a>
-                    <a href="#" class="pay-btn" onclick="showToast('Opening UPI App...', 'success')"><span class="pay-icon">📱</span> Other UPI</a>
-                </div>
-
-                <div style="text-align: center; margin: 16px 0;">
-                    <div style="font-size: 0.7rem; color: rgba(192, 154, 82, 0.6); letter-spacing: 0.1em; margin-bottom: 8px;">OR SCAN QR CODE MANUALLY</div>
-                    <div class="qr-placeholder">QR CODE</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="utrInput">Transaction ID / UTR Number *</label>
-                    <input type="text" class="form-input" id="utrInput" placeholder="Enter 12-digit UTR" maxlength="12" />
-                </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="prevStep(4)">← Back</button>
-                    <button class="btn btn-primary" onclick="submitRegistration()">Confirm Registration 🔱</button>
-                </div>
-            </div>
-
-            <!-- STEP 5: Success -->
-            <div class="form-step" id="step5">
-                <div class="success-state">
-                    <div class="success-icon">✅</div>
-                    <div class="success-title">Registration Complete!</div>
-                    <div class="success-text">
-                        Your registration has been confirmed.<br />
-                        You will receive a confirmation email shortly.
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="step3Back">← Back</button>
+                            <button type="button" class="btn btn-primary" id="step3Next">Next →</button>
+                        </div>
                     </div>
-                    <div class="btn-group" style="margin-top: 32px; justify-content: center;">
-                        <button class="btn btn-primary" onclick="window.location.href='index.html'" style="max-width: 250px;">← Back to Home</button>
-                    </div>
-                </div>
-            </div>
 
+                    <!-- ========== STEP 4: PAYMENT ========== -->
+                    <div class="form-step" data-step="4">
+                        <div class="payment-summary">
+                            <div class="summary-row">
+                                <span>Event</span>
+                                <span id="payEventName">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Team Leader</span>
+                                <span id="payTeamLeader">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Category</span>
+                                <span id="payUgPu">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Number of Participants</span>
+                                <span id="payPlayerCount">0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Fee per participant</span>
+                                <span>₹250</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total Amount</span>
+                                <span class="amount" id="payTotal">₹0</span>
+                            </div>
+                        </div>
+
+                        <!-- ─── PAYMENT SIDE ────────────────────────────── -->
+                        <div class="payment-side">
+                            <h5 id="payhead">PAY ₹0</h5>
+                            <p>Tap to open your payment app</p>
+
+                            <button onclick="openPaymentApp('gpay')" class="pay-app-btn btn-gpay">
+                                <i class="fab fa-google-pay"></i> Pay with GPay
+                            </button>
+                            <button onclick="openPaymentApp('phonepe')" class="pay-app-btn btn-phonepe">
+                                <i class="fas fa-mobile-alt"></i> Pay with PhonePe
+                            </button>
+                            <button onclick="openPaymentApp('paytm')" class="pay-app-btn btn-paytm">
+                                <i class="fas fa-wallet"></i> Pay with Paytm
+                            </button>
+                            <button onclick="openPaymentApp('upi')" class="pay-app-btn btn-other">
+                                <i class="fas fa-qrcode"></i> Other UPI Apps
+                            </button>
+
+                            <div class="qr-toggle" onclick="toggleQR()">Or scan QR code manually</div>
+                            <div class="qr-container" id="qrArea">
+                                <div class="qr-frame">
+                                    <img id="qrImage" src="" alt="QR Code for payment" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ─── UTR SECTION ─────────────────────────────── -->
+                        <div class="utr-section" id="utrArea">
+                            <div class="form-group" style="margin-bottom:0">
+                                <label style="color: #65d8ff;">Transaction ID / UTR Number <span class="required">*</span></label>
+                                <input class="f-control" id="txnInput" placeholder="Paste 12-digit UTR here" />
+                            </div>
+                            <button type="button" onclick="submitRegistration()" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:15px;padding:16px;" id="submitBtn">
+                                Confirm Registration 🔱
+                            </button>
+                        </div>
+
+                        <div class="form-actions" style="margin-top:16px;">
+                            <button type="button" class="btn btn-secondary" id="step4Back">← Back</button>
+                        </div>
+                    </div>
+
+                    <!-- ========== SUCCESS STATE ========== -->
+                    <div class="form-step" data-step="5">
+                        <div class="success-state">
+                            <span class="check">✅</span>
+                            <h2>Registration Complete!</h2>
+                            <p>Your registration has been confirmed. You will receive a confirmation email shortly.</p>
+                            <div class="reg-details" id="successDetails">
+                                <!-- Filled dynamically -->
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='index.html'">
+                                ← Back to Home
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
         </div>
     </main>
 
-    <!-- TOAST -->
-    <div class="toast" id="toast"></div>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
-        // ─── STATE ──────────────────────────────────────────────────────
-        let currentStep = 1;
-        const FEE_PER_PERSON = 250;
-        const eventsData = [
-            "THE ATLANTEAN TRIALS", "THE LOST RELIC", "THE TRIDENT WAR", "COURT OF THE DEEP",
-            "THE SIREN'S ACT", "ECHOS OF ATLANTIS", "THE MERMAID'S WALTZ", "TIDES OF RYTHM",
-            "RUNWAY OF REALMS", "THE KRAKEN'S PITCH", "POSEIDON'S CUP", "TIDAL THROWDOWN"
+        // ═══════════════════════════════════════════════════════════════════
+        //  🔐 SUPABASE CONFIG — EDIT THESE WITH YOUR OWN CREDENTIALS
+        // ═══════════════════════════════════════════════════════════════════
+
+        const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
+
+        // ─── INIT SUPABASE ─────────────────────────────────────────────────
+        let supabaseClient = null;
+        try {
+            if (typeof supabase !== 'undefined' && supabase.createClient) {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized.');
+            } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized (window.supabase).');
+            } else {
+                console.warn('⚠️ Supabase library not loaded. Registrations will be saved to localStorage only.');
+            }
+        } catch (err) {
+            console.error('❌ Failed to init Supabase:', err);
+        }
+
+        // ─── EVENT DATA WITH LIMITS & CATEGORY RESTRICTIONS ──────────
+        const EVENT_FEE = 250;
+        const UPI_ID = "baijuacm@okicici";
+        const PAYEE_NAME = "DEPLOMAT";
+
+        // ─── EVENT CATEGORIES ─────────────────────────────────────────
+        // 'both' = open to UG & PU   |   'pu' = PU only   |   'ug' = UG only
+        const EVENTS = [
+            { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both' },
+            { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5, category: 'both' },
+            { id: 2, name: "THE TRIDENT WAR", sub: "Free Fire", min: 4, max: 4, category: 'both' },
+            { id: 3, name: "COURT OF THE DEEP", sub: "Moot Court", min: 2, max: 3, category: 'both' },
+            { id: 4, name: "THE SIREN'S ACT", sub: "Reels Making", min: 1, max: 3, category: 'both' },
+            { id: 5, name: "ECHOS OF ATLANTIS", sub: "Solo Singing", min: 1, max: 1, category: 'both' },
+            { id: 6, name: "THE MERMAID'S WALTZ", sub: "Solo Dance", min: 1, max: 1, category: 'both' },
+            { id: 7, name: "TIDES OF RYTHM", sub: "Group Dance", min: 6, max: 12, category: 'both' },
+            { id: 8, name: "RUNWAY OF REALMS", sub: "Rampwalk", min: 10, max: 12, category: 'both' },
+            { id: 9, name: "THE KRAKEN'S PITCH", sub: "Cricket (PU/UG Boys)", min: 11, max: 11, category: 'both' },
+            { id: 10, name: "POSEIDON'S CUP", sub: "Football (P.U Boys)", min: 11, max: 11, category: 'pu' },
+            { id: 11, name: "TIDAL THROWDOWN", sub: "Throwball (UG Girls)", min: 9, max: 9, category: 'ug' }
         ];
 
-        // ─── URL PARAM CHECK (Pre-selected logic) ───────────────────────
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const preEvent = params.get('event');
-            if (preEvent !== null && !isNaN(preEvent) && preEvent >= 0 && preEvent < 12) {
-                document.getElementById('eventSelect').value = preEvent;
-                showToast(`🔱 You're registering for: ${eventsData[preEvent]}`, 'success');
+        // ─── DOM REFS ─────────────────────────────────────────────────
+        const form = document.getElementById('registrationForm');
+        const steps = document.querySelectorAll('.form-step');
+        const dots = document.querySelectorAll('.step-dot');
+
+        // Step 1
+        const collegeInput = document.getElementById('college');
+        const eventSelect = document.getElementById('eventSelect');
+        const step1Next = document.getElementById('step1Next');
+        const ugPuRadios = document.querySelectorAll('input[name="ug_pu"]');
+
+        // Step 2
+        const playersContainer = document.getElementById('playersContainer');
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
+        const step2Back = document.getElementById('step2Back');
+        const step2Next = document.getElementById('step2Next');
+        const limitText = document.getElementById('limitText');
+        const eventLimitInfo = document.getElementById('eventLimitInfo');
+
+        // Step 3
+        const crossCheckContainer = document.getElementById('crossCheckContainer');
+        const step3Back = document.getElementById('step3Back');
+        const step3Next = document.getElementById('step3Next');
+
+        // Step 4 - Payment
+        const payEventName = document.getElementById('payEventName');
+        const payTeamLeader = document.getElementById('payTeamLeader');
+        const payUgPu = document.getElementById('payUgPu');
+        const payPlayerCount = document.getElementById('payPlayerCount');
+        const payTotal = document.getElementById('payTotal');
+        const payhead = document.getElementById('payhead');
+        const qrImage = document.getElementById('qrImage');
+        const qrArea = document.getElementById('qrArea');
+        const utrArea = document.getElementById('utrArea');
+        const txnInput = document.getElementById('txnInput');
+        const step4Back = document.getElementById('step4Back');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Banner & Block
+        const eventBanner = document.getElementById('eventBanner');
+        const bannerEventName = document.getElementById('bannerEventName');
+        const bannerEventSub = document.getElementById('bannerEventSub');
+        const blockNotice = document.getElementById('blockNotice');
+        const blockMsg = document.getElementById('blockMsg');
+
+        // ─── STATE ─────────────────────────────────────────────────────
+        let currentStep = 1;
+        let players = [];
+        let selectedEvent = null;
+        let currentMin = 1;
+        let currentMax = 12;
+        let autoSelectedEventId = null;
+        let teamLeaderData = null;
+        let selectedCategory = null; // 'UG' or 'PU'
+
+        // ─── CATEGORY VALIDATION ──────────────────────────────────────
+
+        /**
+         * Check if a given category ('UG' or 'PU') is compatible with an event ID.
+         * Returns { valid: boolean, message: string }
+         */
+        function checkCategoryEventCompatibility(category, eventId) {
+            if (!category || !eventId) {
+                return { valid: true, message: '' };
             }
 
-            // Interactive Parallax for Background
-            const regBg = document.querySelector('.reg-background');
-            const particles = document.getElementById('particles');
-            regBg.addEventListener('mousemove', (e) => {
-                const x = (e.clientX / window.innerWidth - 0.5) * 2;
-                const y = (e.clientY / window.innerHeight - 0.5) * 2;
-                if (particles) particles.style.transform = `translate(${x * -15}px, ${y * -15}px)`;
-            });
-        });
-
-        // ─── NAVIGATION ─────────────────────────────────────────────────
-        function showStep(step) {
-            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
-            document.getElementById(`step${step}`).classList.add('active');
-            
-            document.querySelectorAll('.step-dot').forEach((dot, idx) => {
-                dot.classList.toggle('active', idx === step - 1);
-            });
-            currentStep = step;
-            hideError();
-        }
-
-        function nextStep(fromStep) {
-            hideError();
-            if (fromStep === 1) {
-                const category = document.querySelector('input[name="category"]:checked');
-                const event = document.getElementById('eventSelect').value;
-                if (!category) { showError("⚡ Please select UG (Under Graduate) or PU (Post Graduate)"); return; }
-                if (!event) { showError("⚡ Please select an event to continue"); return; }
-                
-                // Mock loading for event limits
-                const loader = document.getElementById('loadingOverlay');
-                loader.style.display = 'flex';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    showStep(2);
-                }, 800);
-            } else if (fromStep === 2) {
-                const players = document.querySelectorAll('.player-name');
-                let valid = true;
-                players.forEach((p, idx) => {
-                    if (!p.value.trim()) { valid = false; p.style.borderColor = 'rgba(200, 100, 100, 0.5)'; }
-                    else { p.style.borderColor = 'transparent'; }
-                });
-                if (!valid) { showError("⚡ Please enter names for all participants"); return; }
-                populateReview();
-                showStep(3);
-            } else if (fromStep === 3) {
-                showStep(4);
+            const event = EVENTS.find(e => e.id === parseInt(eventId));
+            if (!event) {
+                return { valid: true, message: '' };
             }
+
+            // 'both' → always compatible
+            if (event.category === 'both') {
+                return { valid: true, message: '' };
+            }
+
+            const cat = category.toUpperCase();
+            if (cat === 'UG' && event.category === 'pu') {
+                return {
+                    valid: false,
+                    message: `⛔ "${event.name} · ${event.sub}" is for <strong>PU</strong> students only. UG students cannot register for this event.`
+                };
+            }
+            if (cat === 'PU' && event.category === 'ug') {
+                return {
+                    valid: false,
+                    message: `⛔ "${event.name} · ${event.sub}" is for <strong>UG</strong> students only. PU students cannot register for this event.`
+                };
+            }
+
+            return { valid: true, message: '' };
         }
 
-        function prevStep(fromStep) {
-            hideError();
-            showStep(fromStep - 1);
-        }
-
-        // ─── PLAYER MANAGEMENT ──────────────────────────────────────────
-        function addPlayer() {
-            const list = document.getElementById('playerList');
-            const count = list.children.length + 1;
-            const div = document.createElement('div');
-            div.className = 'player-item';
-            div.innerHTML = `
-                <span class="player-num">${String(count).padStart(2, '0')}</span>
-                <input type="text" placeholder="Participant Name" class="player-name" required />
-                <button class="remove-player" onclick="removePlayer(this)" title="Remove">×</button>
-            `;
-            list.appendChild(div);
-            updateNumbers();
-        }
-
-        function removePlayer(btn) {
-            const list = document.getElementById('playerList');
-            if (list.children.length > 1) {
-                btn.parentElement.remove();
-                updateNumbers();
+        /**
+         * Show or hide the block notice.
+         */
+        function showBlockNotice(message) {
+            if (message) {
+                blockMsg.innerHTML = message;
+                blockNotice.classList.add('show');
             } else {
-                showToast("⚡ Team must have at least one leader", "error");
+                blockNotice.classList.remove('show');
             }
         }
 
-        function updateNumbers() {
-            const items = document.querySelectorAll('.player-item');
-            items.forEach((item, idx) => {
-                item.querySelector('.player-num').textContent = String(idx + 1).padStart(2, '0');
-            });
+        /**
+         * Validate current category + event selection and show/hide block notice.
+         * Returns true if valid, false if blocked.
+         */
+        function validateCategoryEventPair(showAlert = false) {
+            const cat = getSelectedCategory();
+            const eventVal = eventSelect.value;
+
+            // If either is missing, hide notice and allow (but don't block)
+            if (!cat || !eventVal) {
+                showBlockNotice('');
+                return true;
+            }
+
+            const result = checkCategoryEventCompatibility(cat, eventVal);
+            if (!result.valid) {
+                showBlockNotice(result.message);
+                if (showAlert) {
+                    // Show a more prominent alert as well
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}`);
+                }
+                return false;
+            } else {
+                showBlockNotice('');
+                return true;
+            }
         }
 
-        // ─── REVIEW & CALCULATION ───────────────────────────────────────
-        function populateReview() {
-            const category = document.querySelector('input[name="category"]:checked').value;
-            const eventIdx = document.getElementById('eventSelect').value;
-            const eventName = eventsData[eventIdx];
-            const leader = document.querySelector('.player-name').value;
-            const count = document.querySelectorAll('.player-name').length;
-            const total = count * FEE_PER_PERSON;
-
-            const tbody = document.getElementById('reviewBody');
-            tbody.innerHTML = `
-                <tr>
-                    <td>${eventName}</td>
-                    <td>${leader}</td>
-                    <td>${category}</td>
-                    <td>${count}</td>
-                </tr>
-            `;
-            document.getElementById('totalAmount').textContent = `₹${total}`;
-            document.getElementById('payAmount').textContent = `PAY ₹${total}`;
+        function getSelectedCategory() {
+            const checked = document.querySelector('input[name="ug_pu"]:checked');
+            return checked ? checked.value : null;
         }
 
-        // ─── SUBMISSION ─────────────────────────────────────────────────
-        function submitRegistration() {
-            const utr = document.getElementById('utrInput').value.trim();
-            if (utr.length < 12 || isNaN(utr)) {
-                showError("⚡ Please enter a valid 12-digit UTR / Transaction ID");
-                document.getElementById('utrInput').focus();
+        // ─── EVENT LIMIT FUNCTIONS ────────────────────────────────────
+
+        function getEventLimits(eventId) {
+            const event = EVENTS.find(e => e.id === parseInt(eventId));
+            if (event) {
+                return { min: event.min, max: event.max, name: event.name, sub: event.sub, category: event.category };
+            }
+            return { min: 1, max: 12, name: 'Unknown', sub: '', category: 'both' };
+        }
+
+        function updateEventLimitInfo() {
+            const eventVal = eventSelect.value;
+            if (!eventVal) {
+                limitText.textContent = 'Please select an event first.';
+                eventLimitInfo.style.display = 'flex';
                 return;
             }
 
-            const btn = event.target;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;margin:0 auto;"></span>';
+            const limits = getEventLimits(eventVal);
+            currentMin = limits.min;
+            currentMax = limits.max;
 
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.innerHTML = 'Confirm Registration 🔱';
-                showStep(5);
-                showToast("✅ Registration Confirmed Successfully!", "success");
-            }, 1500);
+            let catLabel = '';
+            if (limits.category === 'pu') catLabel = '🔵 PU Only';
+            else if (limits.category === 'ug') catLabel = '🟣 UG Only';
+            else catLabel = '🟢 UG + PU';
+
+            if (limits.min === limits.max) {
+                limitText.innerHTML = `
+                        <strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>
+                        📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)
+                    `;
+            } else {
+                limitText.innerHTML = `
+                        <strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>
+                        📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed (including Team Leader)
+                    `;
+            }
+
+            // Trim players if exceeding max
+            const currentCount = playersContainer.children.length;
+            if (currentCount > currentMax) {
+                while (playersContainer.children.length > currentMax) {
+                    playersContainer.lastChild.remove();
+                }
+                updatePlayerNumbers();
+            } else if (currentCount < currentMin) {
+                while (playersContainer.children.length < currentMin) {
+                    addPlayer();
+                }
+            }
+
+            updateAddButtonState();
         }
 
-        // ─── UTILITIES ──────────────────────────────────────────────────
-        function showError(msg) {
-            const banner = document.getElementById('errorBanner');
-            document.getElementById('errorText').textContent = msg;
-            banner.classList.add('show');
-            banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        function updateAddButtonState() {
+            const currentCount = playersContainer.children.length;
+            if (currentCount >= currentMax) {
+                addPlayerBtn.disabled = true;
+                addPlayerBtn.textContent = `✓ Max ${currentMax} players reached`;
+            } else {
+                addPlayerBtn.disabled = false;
+                addPlayerBtn.textContent = '+ Add Player';
+            }
         }
 
-        function hideError() {
-            document.getElementById('errorBanner').classList.remove('show');
+        // ─── STEP MANAGEMENT ──────────────────────────────────────────
+
+        function goToStep(step) {
+            // Validate current step before moving forward
+            if (step > currentStep) {
+                if (!validateStep(currentStep)) return;
+            }
+
+            const targetStep = document.querySelector(`.form-step[data-step="${step}"]`);
+            if (!targetStep) {
+                console.error(`❌ Step ${step} not found in DOM`);
+                return;
+            }
+
+            steps.forEach(s => s.classList.remove('active'));
+            targetStep.classList.add('active');
+
+            dots.forEach((dot, index) => {
+                const num = index + 1;
+                dot.classList.remove('active', 'done');
+                if (num === step) dot.classList.add('active');
+                else if (num < step) dot.classList.add('done');
+            });
+
+            currentStep = step;
+
+            const card = document.querySelector('.register-card');
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            if (step === 2) {
+                initializePlayers();
+                updateEventLimitInfo();
+                // Re-check category compatibility when entering step 2
+                validateCategoryEventPair(false);
+            }
+            if (step === 3) {
+                initializeCrossCheck();
+            }
+            if (step === 4) {
+                updatePaymentSummary();
+                utrArea.classList.add('active');
+            }
         }
 
-        function showToast(msg, type = 'info') {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = `toast show ${type}`;
-            setTimeout(() => toast.classList.remove('show', 'success', 'error', 'info'), 3000);
+        // ─── VALIDATION ──────────────────────────────────────────────
+
+        function validateStep(step) {
+            if (step === 1) {
+                const college = collegeInput.value.trim();
+                const eventVal = eventSelect.value;
+
+                if (!college) { alert('Please enter your college name.'); return false; }
+
+                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+                if (!ugPuSelected) {
+                    alert('⚠️ Please select either UG or PU category.');
+                    return false;
+                }
+
+                if (!eventVal) { alert('Please select an event.'); return false; }
+
+                // ── 🔥 CATEGORY BLOCK: validate UG/PU vs Event ──
+                const cat = ugPuSelected.value;
+                const result = checkCategoryEventCompatibility(cat, eventVal);
+                if (!result.valid) {
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}`);
+                    // Highlight the block notice
+                    showBlockNotice(result.message);
+                    return false;
+                }
+                showBlockNotice('');
+
+                selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
+                if (!selectedEvent) {
+                    alert('Please select a valid event.');
+                    return false;
+                }
+
+                // Store category
+                selectedCategory = cat;
+
+                return true;
+            }
+
+            if (step === 2) {
+                const playerInputs = playersContainer.querySelectorAll('.player-entry');
+                const currentCount = playerInputs.length;
+
+                if (currentCount < currentMin) {
+                    alert(
+                        `This event requires at least ${currentMin} participant${currentMin > 1 ? 's' : ''} (including Team Leader). Please add more players.`);
+                    return false;
+                }
+
+                if (currentCount > currentMax) {
+                    alert(
+                        `This event allows maximum ${currentMax} participant${currentMax > 1 ? 's' : ''}. Please remove extra players.`
+                        );
+                    return false;
+                }
+
+                const leaderEntry = playerInputs[0];
+                const leaderName = leaderEntry.querySelector('.player-name');
+                const leaderEmail = leaderEntry.querySelector('.player-email');
+                const leaderPhone = leaderEntry.querySelector('.player-phone');
+
+                if (!leaderName || !leaderName.value.trim()) {
+                    alert('Please enter the Team Leader\'s full name.');
+                    return false;
+                }
+                if (!leaderEmail || !leaderEmail.value.trim() || !leaderEmail.value.includes('@')) {
+                    alert('Please enter a valid email address for the Team Leader.');
+                    return false;
+                }
+                const phoneDigits = leaderPhone ? leaderPhone.value.replace(/\D/g, '') : '';
+                if (!leaderPhone || !leaderPhone.value.trim() || phoneDigits.length < 10) {
+                    alert('Please enter a valid 10-digit phone number for the Team Leader.');
+                    return false;
+                }
+
+                teamLeaderData = {
+                    name: leaderName.value.trim(),
+                    email: leaderEmail.value.trim(),
+                    phone: leaderPhone.value.trim()
+                };
+
+                let allValid = true;
+                playerInputs.forEach((entry, index) => {
+                    if (index === 0) return;
+                    const nameInput = entry.querySelector('.player-name');
+                    if (!nameInput || !nameInput.value.trim()) {
+                        alert(`Please enter name for Player ${index + 1}.`);
+                        allValid = false;
+                    }
+                });
+
+                if (!allValid) return false;
+
+                players = [];
+                playerInputs.forEach((entry, index) => {
+                    const nameInput = entry.querySelector('.player-name');
+                    const isLeader = index === 0;
+                    if (isLeader) {
+                        const emailInput = entry.querySelector('.player-email');
+                        const phoneInput = entry.querySelector('.player-phone');
+                        players.push({
+                            name: nameInput ? nameInput.value.trim() : '',
+                            email: emailInput ? emailInput.value.trim() : '',
+                            phone: phoneInput ? phoneInput.value.trim() : 'N/A',
+                            isLeader: true
+                        });
+                    } else {
+                        players.push({
+                            name: nameInput ? nameInput.value.trim() : '',
+                            isLeader: false
+                        });
+                    }
+                });
+
+                return true;
+            }
+
+            return true;
         }
 
-        // ─── DROPDOWN LOGIC ─────────────────────────────────────────────
-        const trigger = document.getElementById('logoTrigger');
-        const dropdown = document.getElementById('dropdownMenu');
-        trigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('open');
+        // ─── PLAYER MANAGEMENT ────────────────────────────────────────
+
+        function initializePlayers() {
+            if (playersContainer.children.length === 0) {
+                const initialCount = Math.max(1, currentMin);
+                for (let i = 0; i < initialCount; i++) {
+                    addPlayer(i === 0);
+                }
+            }
+            updateAddButtonState();
+        }
+
+        function addPlayer(isLeader = false) {
+            const currentCount = playersContainer.children.length;
+            if (currentCount >= currentMax) {
+                alert(`Maximum ${currentMax} players allowed for this event.`);
+                return;
+            }
+
+            const index = currentCount + 1;
+            const div = document.createElement('div');
+            div.className = 'player-entry';
+
+            const isFirst = currentCount === 0;
+
+            let headerHtml = `
+                    <div class="player-header">
+                        <span class="player-number ${isFirst ? 'leader' : ''}">
+                            ${isFirst ? '👑 Team Leader' : `Player ${index}`}
+                            ${isFirst ? '<span class="leader-badge">Leader</span>' : ''}
+                        </span>
+                        ${!isFirst ? `<button type="button" class="remove-btn" title="Remove player">✕</button>` : ''}
+                    </div>
+                `;
+
+            let fieldsHtml = '';
+            if (isFirst) {
+                fieldsHtml = `
+                        <div class="player-fields leader-fields">
+                            <div class="field-group">
+                                <label>Full Name <span class="required">*</span></label>
+                                <input type="text" class="player-name" placeholder="Team Leader full name" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Email <span class="required">*</span></label>
+                                <input type="email" class="player-email" placeholder="leader@example.com" required />
+                            </div>
+                            <div class="field-group">
+                                <label>Phone <span class="required">*</span></label>
+                                <input type="tel" class="player-phone" placeholder="+91 98765 43210" required />
+                            </div>
+                        </div>
+                    `;
+            } else {
+                fieldsHtml = `
+                        <div class="player-fields">
+                            <div class="field-group">
+                                <label>Full Name <span class="required">*</span></label>
+                                <input type="text" class="player-name" placeholder="Player ${index} full name" required />
+                            </div>
+                        </div>
+                    `;
+            }
+
+            div.innerHTML = headerHtml + fieldsHtml;
+
+            if (!isFirst) {
+                div.querySelector('.remove-btn').addEventListener('click', () => {
+                    const currentCount = playersContainer.children.length;
+                    if (currentCount > currentMin) {
+                        div.remove();
+                        updatePlayerNumbers();
+                        updateAddButtonState();
+                    } else {
+                        alert(`Minimum ${currentMin} participant${currentMin > 1 ? 's' : ''} required for this event.`);
+                    }
+                });
+            }
+
+            playersContainer.appendChild(div);
+            updatePlayerNumbers();
+            updateAddButtonState();
+        }
+
+        function updatePlayerNumbers() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            entries.forEach((entry, index) => {
+                const isFirst = index === 0;
+                const numSpan = entry.querySelector('.player-number');
+                if (numSpan) {
+                    if (isFirst) {
+                        numSpan.innerHTML =
+                            '👑 Team Leader <span class="leader-badge">Leader</span>';
+                        numSpan.className = 'player-number leader';
+                    } else {
+                        numSpan.textContent = `Player ${index + 1}`;
+                        numSpan.className = 'player-number';
+                    }
+                }
+
+                const removeBtn = entry.querySelector('.remove-btn');
+                if (removeBtn) {
+                    if (isFirst) {
+                        removeBtn.style.display = 'none';
+                    } else {
+                        removeBtn.style.display = 'block';
+                    }
+                }
+            });
+            updateAddButtonState();
+        }
+
+        // ─── CROSS-CHECK ───────────────────────────────────────────────
+
+        function initializeCrossCheck() {
+            crossCheckContainer.innerHTML = '';
+            const entries = playersContainer.querySelectorAll('.player-entry');
+
+            function getEventOptions(excludeId) {
+                let options = '<option value="">— Select —</option>';
+                EVENTS.forEach(e => {
+                    if (e.id !== excludeId) {
+                        options += `<option value="${e.id}">${e.name} · ${e.sub}</option>`;
+                    }
+                });
+                return options;
+            }
+
+            const currentEventId = selectedEvent ? selectedEvent.id : -1;
+
+            entries.forEach((entry, index) => {
+                const nameInput = entry.querySelector('.player-name');
+                const displayName = nameInput ? nameInput.value.trim() || `Player ${index + 1}` :
+                    `Player ${index + 1}`;
+                const isLeader = index === 0;
+
+                const div = document.createElement('div');
+                div.className = 'cross-check-entry';
+                div.innerHTML = `
+                        <div class="player-header">
+                            <span class="player-number">
+                                ${isLeader ? '👑 ' : ''}${displayName}
+                                ${isLeader ? '<span class="leader-badge">Leader</span>' : ''}
+                            </span>
+                            <span class="event-badge">${selectedEvent ? selectedEvent.name : 'Current Event'}</span>
+                        </div>
+                        <div class="cross-check-row">
+                            <label>
+                                <input type="checkbox" class="cross-check-input" />
+                                Registered for other event?
+                            </label>
+                            <select class="cross-check-select" disabled>
+                                ${getEventOptions(currentEventId)}
+                            </select>
+                        </div>
+                    `;
+
+                const check = div.querySelector('.cross-check-input');
+                const select = div.querySelector('.cross-check-select');
+
+                check.addEventListener('change', () => {
+                    select.disabled = !check.checked;
+                    if (!check.checked) select.value = '';
+                });
+
+                crossCheckContainer.appendChild(div);
+            });
+        }
+
+        // ─── PAYMENT FUNCTIONS ────────────────────────────────────────
+
+        function getTotalAmount() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            return entries.length * EVENT_FEE;
+        }
+
+        function updatePaymentSummary() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            const count = entries.length;
+            const total = count * EVENT_FEE;
+
+            let leaderName = 'Not specified';
+            const firstEntry = entries[0];
+            if (firstEntry) {
+                const nameInput = firstEntry.querySelector('.player-name');
+                if (nameInput && nameInput.value.trim()) {
+                    leaderName = nameInput.value.trim();
+                }
+            }
+
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '—';
+
+            payEventName.textContent = selectedEvent ? `${selectedEvent.name} · ${selectedEvent.sub}` : '—';
+            payTeamLeader.textContent = leaderName;
+            payUgPu.textContent = ugPuValue;
+            payPlayerCount.textContent = count;
+            payTotal.textContent = `₹${total}`;
+            payhead.textContent = `PAY ₹${total}`;
+
+            updateQR(total);
+        }
+
+        function updateQR(amount) {
+            const upi = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${amount}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
+            qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upi)}`;
+        }
+
+        function toggleQR() {
+            qrVisible = !qrVisible;
+            qrArea.style.display = qrVisible ? 'block' : 'none';
+            if (qrVisible) {
+                const total = getTotalAmount();
+                updateQR(total);
+            }
+        }
+
+        let qrVisible = false;
+
+        function openPaymentApp(app) {
+            const college = collegeInput.value.trim();
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+
+            if (!college) { alert('⚠️ Please fill in your college name.'); return; }
+            if (!ugPuSelected) { alert('⚠️ Please select UG or PU category.'); return; }
+            if (!selectedEvent) { alert('⚠️ Please select an event.'); return; }
+
+            const firstEntry = playersContainer.querySelector('.player-entry');
+            let leaderName = 'Team Leader';
+            if (firstEntry) {
+                const nameInput = firstEntry.querySelector('.player-name');
+                if (nameInput && nameInput.value.trim()) {
+                    leaderName = nameInput.value.trim();
+                } else {
+                    alert('⚠️ Please enter the Team Leader\'s name in the Team section.');
+                    return;
+                }
+            } else {
+                alert('⚠️ Please add at least one participant (Team Leader) in the Team section.');
+                return;
+            }
+
+            const total = getTotalAmount();
+            const note = encodeURIComponent(`${selectedEvent ? selectedEvent.name : 'Event'} x${playersContainer.children.length}`);
+
+            let upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
+
+            if (app === 'gpay') {
+                upiLink = `gpay://upi/pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
+            } else if (app === 'phonepe') {
+                upiLink = `phonepe://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
+            } else if (app === 'paytm') {
+                upiLink = `paytmmp://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
+            }
+
+            window.location.href = upiLink;
+            utrArea.classList.add('active');
+        }
+
+        // ─── SUBMIT REGISTRATION → SUPABASE ──────────────────────────
+
+        async function submitRegistration() {
+            const txn = txnInput.value.trim();
+            if (!txn) {
+                alert("⚠️ Please enter your Transaction ID / UTR number to confirm.");
+                return;
+            }
+
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            const total = entries.length * EVENT_FEE;
+
+            const crossCheckEntries = crossCheckContainer.querySelectorAll('.cross-check-entry');
+            const crossCheckData = [];
+            crossCheckEntries.forEach(entry => {
+                const check = entry.querySelector('.cross-check-input');
+                const select = entry.querySelector('.cross-check-select');
+                crossCheckData.push({
+                    checked: check ? check.checked : false,
+                    eventId: select ? select.value : ''
+                });
+            });
+
+            const participants = [];
+            entries.forEach((entry, index) => {
+                const nameInput = entry.querySelector('.player-name');
+                const isLeader = index === 0;
+                let participant = {
+                    name: nameInput ? nameInput.value.trim() : '',
+                    isLeader: isLeader
+                };
+
+                if (isLeader) {
+                    const emailInput = entry.querySelector('.player-email');
+                    const phoneInput = entry.querySelector('.player-phone');
+                    participant.email = emailInput ? emailInput.value.trim() : '';
+                    participant.phone = phoneInput ? phoneInput.value.trim() : 'N/A';
+                }
+
+                if (crossCheckData[index]) {
+                    participant.otherEvent = crossCheckData[index].checked ?
+                        EVENTS.find(e => e.id === parseInt(crossCheckData[index].eventId))?.name || 'Yes' :
+                        'No';
+                } else {
+                    participant.otherEvent = 'No';
+                }
+
+                participants.push(participant);
+            });
+
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+
+            const leader = participants[0] || {};
+            const leaderName = leader.name || '';
+            const leaderEmail = leader.email || '';
+            const leaderPhone = leader.phone || '';
+
+            const registrationData = {
+                event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+                event_sub: selectedEvent ? selectedEvent.sub : '',
+                college: collegeInput.value.trim(),
+                ug_pu: ugPuValue,
+                team_leader: leaderName,
+                email: leaderEmail,
+                phone: leaderPhone,
+                total_amount: total,
+                txn: txn,
+                participants: participants,
+                cross_check: crossCheckData,
+                registered_at: new Date().toISOString()
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+            submitBtn.classList.add('btn-loading');
+
+            try {
+                let supabaseSuccess = false;
+                if (supabaseClient) {
+                    try {
+                        const { data, error } = await supabaseClient
+                            .from('registrations')
+                            .insert([registrationData])
+                            .select();
+
+                        if (error) {
+                            console.error('❌ Supabase insert error:', error);
+                            throw new Error(error.message || 'Database insert failed.');
+                        }
+
+                        console.log('✅ Registration saved to Supabase:', data);
+                        supabaseSuccess = true;
+                    } catch (supabaseErr) {
+                        console.warn('⚠️ Supabase save failed, falling back to localStorage:', supabaseErr.message);
+                    }
+                } else {
+                    console.warn('⚠️ Supabase client not available, using localStorage fallback.');
+                }
+
+                try {
+                    const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                    db.push({
+                        email: leaderEmail,
+                        teamLeader: leaderName,
+                        college: registrationData.college,
+                        ug_pu: ugPuValue,
+                        phone: leaderPhone,
+                        event: registrationData.event_name,
+                        heads: participants.length,
+                        amount: registrationData.total_amount,
+                        txn: registrationData.txn,
+                        participants: participants.map(p => p.name).join(', '),
+                        otherEvents: participants.filter(p => p.otherEvent && p.otherEvent !== 'No').map(p => p
+                            .otherEvent).join(', ') || 'None'
+                    });
+                    localStorage.setItem('deplomat_db', JSON.stringify(db));
+                    console.log('✅ Registration saved to localStorage (backup).');
+                } catch (localErr) {
+                    console.warn('⚠️ localStorage fallback failed:', localErr);
+                }
+
+                goToStep(5);
+                updateSuccessDetails(registrationData, participants);
+
+            } catch (err) {
+                console.error('❌ Submission error:', err);
+                alert(
+                    `❌ Failed to save registration.\n\n` +
+                    `Error: ${err.message}\n\n` +
+                    `Please try again or contact support if the issue persists.`
+                );
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Confirm Registration 🔱';
+                submitBtn.classList.remove('btn-loading');
+            }
+        }
+
+        function updateSuccessDetails(data, participants) {
+            const details = document.getElementById('successDetails');
+            const leader = participants ? participants.find(p => p.isLeader) || participants[0] || {} : {};
+            details.innerHTML = `
+                    <p><strong>Event:</strong> ${data.event_name}</p>
+                    <p><strong>College:</strong> ${data.college}</p>
+                    <p><strong>Category:</strong> ${data.ug_pu || '—'}</p>
+                    <p><strong>Team Leader:</strong> ${leader.name || data.team_leader || '—'}</p>
+                    <p><strong>Leader Email:</strong> ${leader.email || data.email || '—'}</p>
+                    <p><strong>Participants:</strong> ${participants ? participants.length : 0}</p>
+                    <p><strong>Total Paid:</strong> ₹${data.total_amount}</p>
+                    <p><strong>UTR:</strong> ${data.txn}</p>
+                    <hr style="border-color: rgba(255,255,255,0.05); margin: 10px 0;" />
+                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">
+                        ✅ Registration saved · A confirmation email has been sent to ${leader.email || data.email || 'your email'}
+                    </p>
+                `;
+        }
+
+        // ─── AUTO-SELECT EVENT FROM URL ───────────────────────────────
+
+        function autoSelectEventFromURL() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const eventIndex = params.get('event');
+
+                if (eventIndex !== null && eventIndex !== '') {
+                    const select = document.getElementById('eventSelect');
+                    if (select) {
+                        const optionExists = Array.from(select.options).some(opt => opt.value === eventIndex);
+                        if (optionExists) {
+                            select.value = eventIndex;
+                            select.dispatchEvent(new Event('change'));
+
+                            const event = EVENTS.find(e => e.id === parseInt(eventIndex));
+                            if (event) {
+                                bannerEventName.textContent = event.name;
+                                bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                                eventBanner.classList.add('show');
+                                autoSelectedEventId = eventIndex;
+
+                                setTimeout(() => {
+                                    const card = document.querySelector('.register-card');
+                                    if (card) {
+                                        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                    }
+                                }, 400);
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ Auto-select from URL failed:', e);
+            }
+        }
+
+        // ─── EVENT LISTENERS ──────────────────────────────────────────
+
+        // ── UG/PU change: re-validate event compatibility ──
+        ugPuRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const cat = this.value;
+                const eventVal = eventSelect.value;
+                if (cat && eventVal) {
+                    const result = checkCategoryEventCompatibility(cat, eventVal);
+                    if (!result.valid) {
+                        showBlockNotice(result.message);
+                        // Auto-clear the event selection
+                        eventSelect.value = '';
+                        // Also clear the banner
+                        eventBanner.classList.remove('show');
+                        // Show an alert
+                        const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                        alert(`⛔ ${cleanMsg}\n\nYour event selection has been cleared. Please select a compatible event.`);
+                    } else {
+                        showBlockNotice('');
+                        // If compatible, update banner
+                        const event = EVENTS.find(e => e.id === parseInt(eventVal));
+                        if (event) {
+                            bannerEventName.textContent = event.name;
+                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                            eventBanner.classList.add('show');
+                        }
+                    }
+                } else {
+                    showBlockNotice('');
+                }
+                // Re-run validation for step 1
+                validateCategoryEventPair(false);
+            });
         });
-        document.addEventListener('click', (e) => {
-            if (!document.querySelector('.header').contains(e.target)) {
-                dropdown.classList.remove('open');
+
+        // ── Event select change: re-validate category compatibility ──
+        eventSelect.addEventListener('change', function() {
+            const val = this.value;
+            const cat = getSelectedCategory();
+
+            if (val && cat) {
+                const result = checkCategoryEventCompatibility(cat, val);
+                if (!result.valid) {
+                    showBlockNotice(result.message);
+                    // Auto-clear the event selection
+                    this.value = '';
+                    eventBanner.classList.remove('show');
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}\n\nYour event selection has been cleared. Please select a compatible event.`);
+                    return;
+                } else {
+                    showBlockNotice('');
+                    const event = EVENTS.find(e => e.id === parseInt(val));
+                    if (event) {
+                        bannerEventName.textContent = event.name;
+                        bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                        eventBanner.classList.add('show');
+                        selectedEvent = event;
+                        if (currentStep === 2) {
+                            updateEventLimitInfo();
+                            playersContainer.innerHTML = '';
+                            for (let i = 0; i < currentMin; i++) {
+                                addPlayer(i === 0);
+                            }
+                            updateAddButtonState();
+                        }
+                    }
+                }
+            } else if (val) {
+                // Category not selected yet, just show event info
+                const event = EVENTS.find(e => e.id === parseInt(val));
+                if (event) {
+                    bannerEventName.textContent = event.name;
+                    bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                    eventBanner.classList.add('show');
+                    selectedEvent = event;
+                    if (currentStep === 2) {
+                        updateEventLimitInfo();
+                        playersContainer.innerHTML = '';
+                        for (let i = 0; i < currentMin; i++) {
+                            addPlayer(i === 0);
+                        }
+                        updateAddButtonState();
+                    }
+                }
+            } else {
+                eventBanner.classList.remove('show');
+                showBlockNotice('');
+            }
+
+            // Also validate the pair
+            validateCategoryEventPair(false);
+        });
+
+        // ── Step 1 → Step 2 ──
+        step1Next.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Double-check validation with alert
+            const cat = getSelectedCategory();
+            const eventVal = eventSelect.value;
+            if (cat && eventVal) {
+                const result = checkCategoryEventCompatibility(cat, eventVal);
+                if (!result.valid) {
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}`);
+                    showBlockNotice(result.message);
+                    return;
+                }
+                showBlockNotice('');
+            }
+            goToStep(2);
+        });
+
+        // ── Step 2 navigation ──
+        step2Back.addEventListener('click', () => goToStep(1));
+        step2Next.addEventListener('click', () => goToStep(3));
+
+        // ── Add player ──
+        addPlayerBtn.addEventListener('click', () => addPlayer(false));
+
+        // ── Step 3 navigation ──
+        step3Back.addEventListener('click', () => goToStep(2));
+        step3Next.addEventListener('click', () => goToStep(4));
+
+        // ── Step 4 back ──
+        step4Back.addEventListener('click', () => goToStep(3));
+
+        // ─── KEYBOARD SHORTCUTS ───────────────────────────────────────
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const activeStep = document.querySelector('.form-step.active');
+                if (activeStep) {
+                    const step = parseInt(activeStep.dataset.step);
+                    if (step === 1) step1Next.click();
+                    else if (step === 2) step2Next.click();
+                    else if (step === 3) step3Next.click();
+                }
             }
         });
+
+        // ─── INIT ──────────────────────────────────────────────────────
+
+        autoSelectEventFromURL();
+
+        setTimeout(() => {
+            if (playersContainer.children.length === 0) {
+                const initialCount = Math.max(1, currentMin);
+                for (let i = 0; i < initialCount; i++) {
+                    addPlayer(i === 0);
+                }
+            }
+            updateEventLimitInfo();
+            updateAddButtonState();
+            // Initial category validation
+            validateCategoryEventPair(false);
+        }, 100);
+
+        setTimeout(() => {
+            updateQR(EVENT_FEE);
+        }, 200);
+
+        console.log('🎯 DEPLOMAT Registration ready!');
+        console.log('📋 UPI ID:', UPI_ID);
+        console.log('📋 Events loaded:', EVENTS.length);
+        console.log('🔐 Supabase available:', !!supabase);
+        console.log('💾 localStorage fallback: enabled');
+        console.log('🔒 Category block mechanism active: UG/PU validation in place.');
+
+        // ─── CHECK STATUS MODE ─────────────────────────────────────────────
+
+        function handleStatusCheck() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('status') === 'check') {
+                goToStep(5);
+                const details = document.getElementById('successDetails');
+                details.innerHTML = `
+                        <p style="color: rgba(255,255,255,0.6);">
+                            🔍 Enter your registered email or UTR below to check your registration status.
+                        </p>
+                        <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; justify-content: center;">
+                            <input type="email" id="statusEmail" placeholder="Your email" style="flex:1; min-width:200px; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color:#fff;">
+                            <button id="checkStatusBtn" class="btn btn-primary" style="padding:12px 28px;">Check Status</button>
+                        </div>
+                        <div id="statusResult" style="margin-top: 16px; font-size:0.9rem; color: #65d8ff;"></div>
+                    `;
+                document.getElementById('checkStatusBtn').addEventListener('click', function() {
+                    const email = document.getElementById('statusEmail').value.trim();
+                    if (!email) {
+                        alert('Please enter your email.');
+                        return;
+                    }
+                    document.getElementById('statusResult').innerHTML = `
+                            <span style="background: rgba(101,216,255,0.1); padding:10px 20px; border-radius:8px; display:inline-block;">
+                                ✅ Registration found for <strong>${email}</strong>. Check your inbox for confirmation.
+                            </span>
+                        `;
+                });
+            }
+        }
+
+        handleStatusCheck();
     </script>
 </body>
 </html>
