@@ -343,9 +343,9 @@
         }
 
         .carousel-track .event-card .card-image {
-                width: 100%;
-    height: 100%;
-    object-fit: cover;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             position: absolute;
             top: 0;
             left: 0;
@@ -709,7 +709,7 @@
             opacity: 0.2;
         }
 
-        /* ─── LOGIN MODAL ───────────────────────────────────────────── */
+        /* ─── LOGIN MODAL (ENHANCED) ────────────────────────────────── */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -732,7 +732,7 @@
 
         .login-modal {
             width: 90%;
-            max-width: 360px;
+            max-width: 380px;
             background: rgba(16, 16, 26, 0.82);
             backdrop-filter: blur(32px) saturate(1.2);
             -webkit-backdrop-filter: blur(32px) saturate(1.2);
@@ -756,7 +756,7 @@
             letter-spacing: 4px;
             text-transform: uppercase;
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
             background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -768,9 +768,75 @@
             letter-spacing: 3px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.25);
-            margin-bottom: 28px;
+            margin-bottom: 22px;
         }
 
+        /* ─── ROLE SELECTOR (NEW) ──────────────────────────────────── */
+        .role-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .role-selector .role-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .role-selector .role-btn .role-icon {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .role-selector .role-btn:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .role-selector .role-btn.active {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.06);
+            color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.05);
+        }
+
+        .role-selector .role-btn.active.admin-active {
+            border-color: rgba(255, 42, 109, 0.3);
+            background: rgba(255, 42, 109, 0.06);
+            color: #ff2a6d;
+        }
+
+        .role-selector .role-btn.active.student-active {
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.06);
+            color: #00d4ff;
+        }
+
+        .role-selector .role-btn.active.faculty-active {
+            border-color: rgba(255, 197, 61, 0.3);
+            background: rgba(255, 197, 61, 0.06);
+            color: #FFC53D;
+        }
+
+        /* ─── LOGIN FIELDS ──────────────────────────────────────────── */
         .login-field {
             margin-bottom: 16px;
         }
@@ -806,6 +872,31 @@
             background: rgba(0, 212, 255, 0.04);
         }
 
+        .login-field input.error {
+            border-color: rgba(255, 42, 109, 0.4);
+            background: rgba(255, 42, 109, 0.06);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-8px);
+            }
+            40% {
+                transform: translateX(8px);
+            }
+            60% {
+                transform: translateX(-4px);
+            }
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
         .login-submit {
             width: 100%;
             margin-top: 8px;
@@ -821,6 +912,8 @@
             cursor: pointer;
             transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: 'Segoe UI', sans-serif;
+            position: relative;
+            overflow: hidden;
         }
 
         .login-submit:hover {
@@ -830,6 +923,37 @@
 
         .login-submit:active {
             transform: scale(0.97);
+        }
+
+        .login-submit:disabled {
+            opacity: 0.5;
+            transform: none !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+        }
+
+        .login-submit .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(10, 10, 15, 0.2);
+            border-top-color: #0a0a0f;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto;
+        }
+
+        .login-submit.loading .spinner {
+            display: block;
+        }
+        .login-submit.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .forgot-link {
@@ -869,6 +993,25 @@
         .modal-close:hover {
             background: rgba(255, 42, 109, 0.1);
             color: #ff2a6d;
+        }
+
+        /* ─── LOGIN ERROR MESSAGE ──────────────────────────────────── */
+        .login-error {
+            background: rgba(255, 42, 109, 0.08);
+            border: 1px solid rgba(255, 42, 109, 0.15);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            font-size: 0.7rem;
+            color: #ff6b8a;
+            text-align: center;
+            display: none;
+            letter-spacing: 0.04em;
+        }
+
+        .login-error.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         /* ─── RESPONSIVE TWEAKS ────────────────────────────────────── */
@@ -943,6 +1086,18 @@
                 width: 40%;
                 max-width: 180px;
             }
+
+            .login-modal {
+                padding: 28px 20px 24px 20px;
+            }
+            .role-selector .role-btn {
+                min-width: 60px;
+                padding: 8px 6px;
+                font-size: 0.5rem;
+            }
+            .role-selector .role-btn .role-icon {
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -998,6 +1153,21 @@
                 width: 30%;
                 max-width: 120px;
             }
+
+            .role-selector .role-btn {
+                min-width: 50px;
+                padding: 6px 4px;
+                font-size: 0.45rem;
+            }
+            .role-selector .role-btn .role-icon {
+                font-size: 0.85rem;
+            }
+            .login-modal {
+                padding: 24px 16px 20px 16px;
+            }
+            .login-modal h3 {
+                font-size: 1.4rem;
+            }
         }
 
         /* extra small screens */
@@ -1046,6 +1216,48 @@
                 min-height: 320px;
                 max-height: 500px;
             }
+        }
+
+        /* ─── TOAST NOTIFICATION ────────────────────────────────────── */
+        .login-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(16, 16, 26, 0.92);
+            backdrop-filter: blur(16px);
+            padding: 14px 28px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            text-align: center;
+            max-width: 90vw;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        .login-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .login-toast.success {
+            border-color: rgba(76, 175, 80, 0.3);
+            color: #81c784;
+        }
+        .login-toast.error {
+            border-color: rgba(255, 42, 109, 0.3);
+            color: #ff6b8a;
+        }
+        .login-toast.info {
+            border-color: rgba(0, 212, 255, 0.2);
+            color: #65d8ff;
         }
     </style>
 </head>
@@ -1122,7 +1334,7 @@
         <div class="vignette-bottom"></div>
 
         <div class="promo-content">
-            <!-- ─── EVENT DATE (NEW) ─────────────────────────────── -->
+            <!-- ─── EVENT DATE ─────────────────────────────────────── -->
             <div class="event-date-display">
                 25TH – 26TH OF SEPTEMBER 2026 &nbsp;·&nbsp; FRIDAY / SATURDAY
             </div>
@@ -1163,12 +1375,32 @@
         </div>
     </section>
 
-    <!-- ─── LOGIN MODAL ────────────────────────────────────────────── -->
+    <!-- ─── LOGIN MODAL (ENHANCED) ─────────────────────────────────── -->
     <div class="modal-overlay" id="loginOverlay">
         <div class="login-modal">
             <button class="modal-close" id="modalClose" aria-label="Close">×</button>
             <h3>DEPLOMAT</h3>
-            <div class="modal-sub">Access your portal</div>
+            <div class="modal-sub">Access your dashboard</div>
+
+            <!-- ─── ROLE SELECTOR ──────────────────────────────────── -->
+            <div class="role-selector" id="roleSelector">
+                <button class="role-btn admin-active" data-role="admin" id="roleAdmin">
+                    <span class="role-icon">🛡️</span>
+                    Admin
+                </button>
+                <button class="role-btn" data-role="student" id="roleStudent">
+                    <span class="role-icon">🎓</span>
+                    Student<br>Coordinator
+                </button>
+                <button class="role-btn" data-role="faculty" id="roleFaculty">
+                    <span class="role-icon">📚</span>
+                    Faculty<br>Coordinator
+                </button>
+            </div>
+
+            <!-- ─── ERROR MESSAGE ──────────────────────────────────── -->
+            <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
+
             <form id="loginForm">
                 <div class="login-field">
                     <label for="loginUser">Username / Email</label>
@@ -1178,16 +1410,22 @@
                     <label for="loginPass">Password</label>
                     <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required />
                 </div>
-                <button type="submit" class="login-submit">Login</button>
+                <button type="submit" class="login-submit" id="loginSubmit">
+                    <span class="btn-text">Login</span>
+                    <span class="spinner"></span>
+                </button>
                 <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
             </form>
         </div>
     </div>
 
+    <!-- ─── TOAST ────────────────────────────────────────────────────── -->
+    <div class="login-toast" id="loginToast"></div>
+
     <script>
         // ─── EVENT DATA ───────────────────────────────────────────────
         const events = [
-            { name: "THE ATLANTEAN TRIALS", sub: ".escape room",  image: "https://ibb.co/TDBLq21W" },
+            { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://ibb.co/TDBLq21W" },
             { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://ibb.co/t1n0Zjb" },
             { name: "THE TRIDENT WAR", sub: ".free fire", image: "https://ibb.co/TMZBznbs" },
             { name: "COURT OF THE DEEP", sub: ".moot court", image: "https://ibb.co/MyXhtsT4" },
@@ -1356,22 +1594,18 @@
             });
         }
 
-        // ─── SNAP TO INDEX (FIXED: seamless wrap, no lock) ────────────
+        // ─── SNAP TO INDEX ─────────────────────────────────────────────
         function snapToIndex(targetIdx, animate = true) {
             if (isSnapping) return;
 
-            // --- wrap logic: keep index in the middle copy [N, 2N-1] ---
             if (targetIdx < N) {
-                // going left past first card of middle copy → jump to last card of middle copy
                 targetIdx = 2 * N - 1;
                 animate = false;
             } else if (targetIdx >= 2 * N) {
-                // going right past last card of middle copy → jump to first card of middle copy
                 targetIdx = N;
                 animate = false;
             }
 
-            // safety clamp (should never hit if wrap logic works)
             targetIdx = Math.max(0, Math.min(3 * N - 1, targetIdx));
 
             index = targetIdx;
@@ -1398,7 +1632,7 @@
             return el.closest('.event-card');
         }
 
-        // ─── POINTER DRAG (REWRITTEN: no offset, single index) ────────
+        // ─── POINTER DRAG ──────────────────────────────────────────────
         stage.addEventListener('pointerdown', (e) => {
             if (isSnapping) return;
             isDragging = true;
@@ -1424,12 +1658,8 @@
             const deltaX = e.clientX - dragStartX;
             const deltaIdx = -deltaX / cardWidthWithGap;
 
-            // compute new index (float)
             let newIndex = dragStartIndex + deltaIdx;
 
-            // --- wrap during drag: keep index roughly in the middle range ---
-            // if we go too far left, add N; if too far right, subtract N
-            // but we want to allow some overshoot for smooth feel
             if (newIndex < N - 1.5) {
                 newIndex += N;
                 dragStartIndex += N;
@@ -1440,7 +1670,6 @@
                 dragStartX = e.clientX;
             }
 
-            // clamp to prevent extreme values during drag
             if (newIndex < N - 2) newIndex = N - 2;
             if (newIndex >= 2 * N + 2) newIndex = 2 * N + 2;
 
@@ -1474,7 +1703,6 @@
                 rafId = null;
             }
 
-            // --- if it was a tap (very small movement) → redirect ---
             const dist = Math.abs(e.clientX - dragStartX);
             if (dist < 10) {
                 const card = findCardAtPoint(e.clientX, e.clientY);
@@ -1491,48 +1719,40 @@
                     stage.releasePointerCapture(e.pointerId);
                     return;
                 }
-                // fallback: snap to current
                 snapToIndex(Math.round(index), true);
                 stage.releasePointerCapture(e.pointerId);
                 return;
             }
 
-            // --- snap with velocity ---
             const threshold = 0.25;
             const velocityThreshold = 0.3;
             let targetIdx = Math.round(index);
 
-            // apply velocity-based offset
             if (index - Math.floor(index) > threshold || velocity < -velocityThreshold) {
                 targetIdx = Math.ceil(index);
             } else if (Math.ceil(index) - index > threshold || velocity > velocityThreshold) {
                 targetIdx = Math.floor(index);
             }
 
-            // wrap via snapToIndex
             snapToIndex(targetIdx, true);
             velocity = 0;
             stage.releasePointerCapture(e.pointerId);
         });
 
-        // ─── RESIZE (debounced + recalc) ──────────────────────────────
+        // ─── RESIZE ──────────────────────────────────────────────────────
         window.addEventListener('resize', () => {
             if (resizeTimeout) clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 const oldWidth = cardWidth;
                 measureCardWidth();
-                // if width changed, update position
                 if (Math.abs(cardWidth - oldWidth) > 2) {
-                    // re-center: keep the same card visible
                     updateCarousel(false);
                 } else {
-                    // just refresh visual
                     updateCarousel(false);
                 }
             }, 150);
         });
 
-        // also observe the stage for layout shifts
         if (window.ResizeObserver) {
             const ro = new ResizeObserver(() => {
                 if (resizeTimeout) clearTimeout(resizeTimeout);
@@ -1578,7 +1798,7 @@
             }
         });
 
-        // ─── INIT ──────────────────────────────────────────────────────
+        // ─── INIT CAROUSEL ──────────────────────────────────────────────
         buildCarousel();
 
         // ─── DROPDOWN ──────────────────────────────────────────────────
@@ -1599,15 +1819,126 @@
             }
         });
 
-        // ─── LOGIN ──────────────────────────────────────────────────────
+        // ─── PROMO ──────────────────────────────────────────────────────
+        document.getElementById('promoCta').addEventListener('click', () => {});
+
+        // ─── COUNTDOWN ──────────────────────────────────────────────────
+        const promoTarget = new Date('2026-09-25T00:00:00');
+
+        function updatePromoCountdown() {
+            const now = new Date();
+            let diff = promoTarget - now;
+            if (diff < 0) diff = 0;
+            document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,
+            '0');
+            document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+            document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+        }
+        updatePromoCountdown();
+        setInterval(updatePromoCountdown, 1000);
+
+        // ═══════════════════════════════════════════════════════════════
+        //  🔐 ROLE-BASED LOGIN SYSTEM (ENHANCED)
+        // ═══════════════════════════════════════════════════════════════
+
+        // ─── CREDENTIALS ──────────────────────────────────────────────
+        const CREDENTIALS = {
+            admin: {
+                password: 'admin2026',
+                dashboard: 'dsbrd.html', // admin dashboard
+                label: 'Admin'
+            },
+            student: {
+                password: 'student2026',
+                dashboard: 'studentdb.html', // to be created
+                label: 'Student Coordinator'
+            },
+            faculty: {
+                password: 'faculty2026',
+                dashboard: 'facultydb.html', // to be created
+                label: 'Faculty Coordinator'
+            }
+        };
+
+        // ─── DOM REFS ──────────────────────────────────────────────────
         const loginOverlay = document.getElementById('loginOverlay');
         const modalClose = document.getElementById('modalClose');
         const loginForm = document.getElementById('loginForm');
+        const loginUser = document.getElementById('loginUser');
+        const loginPass = document.getElementById('loginPass');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const loginError = document.getElementById('loginError');
         const forgotLink = document.getElementById('forgotLink');
+        const loginToast = document.getElementById('loginToast');
 
-        function openLogin() { loginOverlay.classList.add('open'); }
+        const roleAdmin = document.getElementById('roleAdmin');
+        const roleStudent = document.getElementById('roleStudent');
+        const roleFaculty = document.getElementById('roleFaculty');
 
-        function closeLogin() { loginOverlay.classList.remove('open'); }
+        // ─── STATE ─────────────────────────────────────────────────────
+        let selectedRole = 'admin';
+        let toastTimer = null;
+
+        // ─── TOAST ──────────────────────────────────────────────────────
+        function showToast(msg, type = 'info') {
+            loginToast.textContent = msg;
+            loginToast.className = 'login-toast show ' + type;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                loginToast.classList.remove('show', 'success', 'error', 'info');
+            }, 3200);
+        }
+
+        // ─── ROLE SELECTION ────────────────────────────────────────────
+        function setRole(role) {
+            selectedRole = role;
+
+            // Reset all
+            [roleAdmin, roleStudent, roleFaculty].forEach(el => {
+                el.classList.remove('active', 'admin-active', 'student-active', 'faculty-active');
+            });
+
+            // Activate selected
+            const map = {
+                admin: { el: roleAdmin, cls: 'admin-active' },
+                student: { el: roleStudent, cls: 'student-active' },
+                faculty: { el: roleFaculty, cls: 'faculty-active' }
+            };
+
+            if (map[role]) {
+                map[role].el.classList.add('active', map[role].cls);
+            }
+
+            // Update placeholder
+            const cred = CREDENTIALS[role];
+            loginPass.placeholder = 'Enter ' + cred.label + ' password';
+            loginPass.value = '';
+            loginError.classList.remove('show');
+            loginPass.classList.remove('error');
+        }
+
+        roleAdmin.addEventListener('click', () => setRole('admin'));
+        roleStudent.addEventListener('click', () => setRole('student'));
+        roleFaculty.addEventListener('click', () => setRole('faculty'));
+
+        // ─── OPEN / CLOSE MODAL ────────────────────────────────────────
+        function openLogin() {
+            loginOverlay.classList.add('open');
+            loginUser.value = '';
+            loginPass.value = '';
+            loginError.classList.remove('show');
+            loginPass.classList.remove('error');
+            loginSubmit.disabled = false;
+            loginSubmit.classList.remove('loading');
+            setTimeout(() => loginUser.focus(), 300);
+        }
+
+        function closeLogin() {
+            loginOverlay.classList.remove('open');
+            loginSubmit.disabled = false;
+            loginSubmit.classList.remove('loading');
+        }
 
         modalClose.addEventListener('click', closeLogin);
         loginOverlay.addEventListener('click', (e) => {
@@ -1617,13 +1948,7 @@
             if (e.key === 'Escape') closeLogin();
         });
 
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            closeLogin();
-        });
-
-        forgotLink.addEventListener('click', (e) => e.preventDefault());
-
+        // ─── DROPDOWN LOGIN TRIGGER ────────────────────────────────────
         dropdown.querySelectorAll('.dropdown-item').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1645,25 +1970,103 @@
             });
         });
 
-        // ─── PROMO ──────────────────────────────────────────────────────
-        document.getElementById('promoCta').addEventListener('click', () => {});
+        // ─── FORGOT PASSWORD ───────────────────────────────────────────
+        forgotLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showToast('🔑 Contact the administrator to reset your password.', 'info');
+        });
 
-        // ─── COUNTDOWN ──────────────────────────────────────────────────
-        // 🗓️  Event date: 25th September 2026
-        const promoTarget = new Date('2026-09-25T00:00:00');
+        // ─── LOGIN SUBMIT ──────────────────────────────────────────────
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        function updatePromoCountdown() {
-            const now = new Date();
-            let diff = promoTarget - now;
-            if (diff < 0) diff = 0;
-            document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
-            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2,
-            '0');
-            document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-            document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-        }
-        updatePromoCountdown();
-        setInterval(updatePromoCountdown, 1000);
+            const username = loginUser.value.trim();
+            const password = loginPass.value.trim();
+
+            // Validate
+            if (!username) {
+                loginError.textContent = 'Please enter your username or email.';
+                loginError.classList.add('show');
+                loginUser.focus();
+                return;
+            }
+
+            if (!password) {
+                loginError.textContent = 'Please enter your password.';
+                loginError.classList.add('show');
+                loginPass.focus();
+                return;
+            }
+
+            // Get credentials for selected role
+            const cred = CREDENTIALS[selectedRole];
+            if (!cred) {
+                loginError.textContent = 'Invalid role selected.';
+                loginError.classList.add('show');
+                return;
+            }
+
+            // Show loading
+            loginSubmit.disabled = true;
+            loginSubmit.classList.add('loading');
+            loginError.classList.remove('show');
+            loginPass.classList.remove('error');
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 600));
+
+            // Validate password
+            if (password === cred.password) {
+                // ✅ Success
+                loginSubmit.classList.remove('loading');
+                loginSubmit.disabled = false;
+
+                showToast(`✅ Welcome, ${cred.label}! Redirecting to dashboard...`, 'success');
+
+                // Redirect after a moment
+                setTimeout(() => {
+                    window.location.href = cred.dashboard;
+                }, 800);
+
+            } else {
+                // ❌ Failure
+                loginSubmit.classList.remove('loading');
+                loginSubmit.disabled = false;
+                loginPass.classList.add('error');
+                loginError.textContent = `❌ Invalid password for ${cred.label}. Please try again.`;
+                loginError.classList.add('show');
+                loginPass.value = '';
+                loginPass.focus();
+                showToast(`❌ Invalid password for ${cred.label}`, 'error');
+            }
+        });
+
+        // ─── CLEAR ERROR ON INPUT ─────────────────────────────────────
+        loginPass.addEventListener('input', () => {
+            loginPass.classList.remove('error');
+            loginError.classList.remove('show');
+        });
+
+        loginUser.addEventListener('input', () => {
+            loginError.classList.remove('show');
+        });
+
+        // ─── KEYBOARD: ENTER TO SUBMIT ─────────────────────────────────
+        loginPass.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // ─── INIT ROLE ─────────────────────────────────────────────────
+        setRole('admin');
+
+        console.log('🔐 DEPLOMAT Login System v2.0');
+        console.log('📋 Available roles:');
+        console.log('  🛡️  Admin          → password: admin2026  → dsbrd.html');
+        console.log('  🎓  Student Coord  → password: student2026 → studentdb.html');
+        console.log('  📚  Faculty Coord  → password: faculty2026 → facultydb.html');
+        console.log('💡 Select a role and enter the corresponding password.');
     </script>
 </body>
 </html>
