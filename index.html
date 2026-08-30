@@ -342,33 +342,63 @@
             transition-duration: 0.08s;
         }
 
+        /* ─── CARD IMAGE ────────────────────────────────────────────── */
         .carousel-track .event-card .card-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    opacity: 0.6;
-    transition: 0.6s ease;
-    background: #0a0a0f;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.carousel-track .event-card .card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;      /* ← shows full image, no crop */
-    background: #0a0a0f;
-}
-        .carousel-track .event-card:hover .card-image {
-            opacity: 0.9;
-            transform: scale(1.05);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+            transition: 0.6s ease;
+            background: #0a0a0f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
+        .carousel-track .event-card .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #0a0a0f;
+            /* ─── EAGER LOADING ──────────────────────────────────────── */
+            loading: eager;
+            fetchpriority: high;
+        }
+
+        /* ─── IMAGE LOADING SHIMMER (skeleton) ──────────────────────── */
+        .carousel-track .event-card .card-image .img-placeholder {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg,
+                    rgba(255, 255, 255, 0.02) 30%,
+                    rgba(255, 255, 255, 0.06) 50%,
+                    rgba(255, 255, 255, 0.02) 70%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            z-index: 1;
+            border-radius: 28px;
+            pointer-events: none;
+        }
+        .carousel-track .event-card .card-image img.loaded~.img-placeholder {
+            opacity: 0;
+            animation: none;
+            transition: opacity 0.5s ease;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ─── CARD CONTENT ───────────────────────────────────────────── */
         .carousel-track .event-card .card-content {
             position: relative;
             z-index: 2;
@@ -430,7 +460,7 @@
             transform: scale(0.92);
         }
 
-        /* card background gradients */
+        /* card background gradients (fallback) */
         .card-1 .card-image {
             background: linear-gradient(145deg, #2d1b3d, #6b2a5c);
         }
@@ -564,7 +594,7 @@
             pointer-events: none;
         }
 
-        /* ─── EVENT DATE DISPLAY (new) ────────────────────────────── */
+        /* ─── EVENT DATE DISPLAY ────────────────────────────────────── */
         .event-date-display {
             font-family: 'Impact', 'Arial Black', sans-serif;
             font-size: clamp(1.2rem, 3.5vw, 2.4rem);
@@ -717,7 +747,7 @@
             opacity: 0.2;
         }
 
-        /* ─── LOGIN MODAL (ENHANCED) ────────────────────────────────── */
+        /* ─── LOGIN MODAL ────────────────────────────────────────────── */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -779,7 +809,7 @@
             margin-bottom: 22px;
         }
 
-        /* ─── ROLE SELECTOR (NEW) ──────────────────────────────────── */
+        /* ─── ROLE SELECTOR ──────────────────────────────────────────── */
         .role-selector {
             display: flex;
             gap: 8px;
@@ -1003,7 +1033,7 @@
             color: #ff2a6d;
         }
 
-        /* ─── LOGIN ERROR MESSAGE ──────────────────────────────────── */
+        /* ─── LOGIN ERROR ────────────────────────────────────────────── */
         .login-error {
             background: rgba(255, 42, 109, 0.08);
             border: 1px solid rgba(255, 42, 109, 0.15);
@@ -1022,7 +1052,49 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* ─── RESPONSIVE TWEAKS ────────────────────────────────────── */
+        /* ─── TOAST ────────────────────────────────────────────────────── */
+        .login-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(16, 16, 26, 0.92);
+            backdrop-filter: blur(16px);
+            padding: 14px 28px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            text-align: center;
+            max-width: 90vw;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        .login-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .login-toast.success {
+            border-color: rgba(76, 175, 80, 0.3);
+            color: #81c784;
+        }
+        .login-toast.error {
+            border-color: rgba(255, 42, 109, 0.3);
+            color: #ff6b8a;
+        }
+        .login-toast.info {
+            border-color: rgba(0, 212, 255, 0.2);
+            color: #65d8ff;
+        }
+
+        /* ─── RESPONSIVE ────────────────────────────────────────────── */
         @media (max-width: 768px) {
             .header {
                 top: 18px;
@@ -1178,7 +1250,6 @@
             }
         }
 
-        /* extra small screens */
         @media (max-width: 360px) {
             .carousel-track .event-card {
                 flex: 0 0 clamp(150px, 70vw, 200px);
@@ -1216,7 +1287,6 @@
             }
         }
 
-        /* ensure consistent aspect ratio on all viewports */
         @media (min-width: 1201px) {
             .carousel-track .event-card {
                 flex: 0 0 clamp(260px, 22vw, 320px);
@@ -1226,46 +1296,16 @@
             }
         }
 
-        /* ─── TOAST NOTIFICATION ────────────────────────────────────── */
-        .login-toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(16, 16, 26, 0.92);
-            backdrop-filter: blur(16px);
-            padding: 14px 28px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.8rem;
-            z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            pointer-events: none;
-            text-align: center;
-            max-width: 90vw;
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
-            font-weight: 400;
-            letter-spacing: 0.04em;
-        }
-
-        .login-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .login-toast.success {
-            border-color: rgba(76, 175, 80, 0.3);
-            color: #81c784;
-        }
-        .login-toast.error {
-            border-color: rgba(255, 42, 109, 0.3);
-            color: #ff6b8a;
-        }
-        .login-toast.info {
-            border-color: rgba(0, 212, 255, 0.2);
-            color: #65d8ff;
+        /* ─── FADE IN ────────────────────────────────────────────────── */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -1342,7 +1382,6 @@
         <div class="vignette-bottom"></div>
 
         <div class="promo-content">
-            <!-- ─── EVENT DATE ─────────────────────────────────────── -->
             <div class="event-date-display">
                 25TH – 26TH OF SEPTEMBER 2026 &nbsp;·&nbsp; FRIDAY / SATURDAY
             </div>
@@ -1383,14 +1422,13 @@
         </div>
     </section>
 
-    <!-- ─── LOGIN MODAL (ENHANCED) ─────────────────────────────────── -->
+    <!-- ─── LOGIN MODAL ────────────────────────────────────────────── -->
     <div class="modal-overlay" id="loginOverlay">
         <div class="login-modal">
             <button class="modal-close" id="modalClose" aria-label="Close">×</button>
             <h3>DEPLOMAT</h3>
             <div class="modal-sub">Access your dashboard</div>
 
-            <!-- ─── ROLE SELECTOR ──────────────────────────────────── -->
             <div class="role-selector" id="roleSelector">
                 <button class="role-btn admin-active" data-role="admin" id="roleAdmin">
                     <span class="role-icon">🛡️</span>
@@ -1406,7 +1444,6 @@
                 </button>
             </div>
 
-            <!-- ─── ERROR MESSAGE ──────────────────────────────────── -->
             <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
 
             <form id="loginForm">
@@ -1431,21 +1468,58 @@
     <div class="login-toast" id="loginToast"></div>
 
     <script>
-        // ─── EVENT DATA ───────────────────────────────────────────────
-        const events = [
-            { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://i.ibb.co/kVg16BJm/escape-room.png" },
-            { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://i.ibb.co/hTrGXQK/treasure-hunt.png" },
-            { name: "THE TRIDENT WAR", sub: ".free fire", image: "https://i.ibb.co/v4bx2rQS/free-fire.png" },
-            { name: "COURT OF THE DEEP", sub: ".moot court", image: "https://i.ibb.co/qLZncdGf/moot-court.png" },
-            { name: "THE SIREN'S ACT", sub: ".reels making", image: "https://i.ibb.co/HLTbRtQ5/reels-making.png" },
-            { name: "ECHOS OF ATLANTIS", sub: ".solo singing", image: "https://i.ibb.co/VWML1x5z/solo-singing.png" },
-            { name: "THE MERMAID'S WALTZ", sub: ".solo dance", image: "https://i.ibb.co/prJgDHw2/solo-dance.png" },
-            { name: "TIDES OF RYTHM", sub: ".group dance", image: "https://i.ibb.co/WvrhPQCc/group-dance.png" },
-            { name: "RUNWAY OF REALMS", sub: ".rampwalk", image: "https://i.ibb.co/PZS9vnHj/ramp-walk-1.png" },
-            { name: "THE KRAKEN'S PITCH", sub: ".cricket(both PU/UG boys)", image: "https://i.ibb.co/NdGfJMVV/cricket.png" },
-            { name: "POSEIDON'S CUP", sub: ".football(for P.U boys)", image: "https://i.ibb.co/84DWnC3W/football.png" },
-            { name: "TIDAL THROWDOWN", sub: ".throwball for U.G girls", image: "https://i.ibb.co/Q3V3dxYj/Gemini-Generated-Image-konq2tkonq2tkonq.png" }
-        ];
+        // ═══════════════════════════════════════════════════════════════
+        //  EVENT DATA
+        // ═══════════════════════════════════════════════════════════════
+        const events = [{
+            name: "THE ATLANTEAN TRIALS",
+            sub: ".escape room",
+            image: "https://i.ibb.co/kVg16BJm/escape-room.png"
+        }, {
+            name: "THE LOST RELIC",
+            sub: ".treasure hunt",
+            image: "https://i.ibb.co/hTrGXQK/treasure-hunt.png"
+        }, {
+            name: "THE TRIDENT WAR",
+            sub: ".free fire",
+            image: "https://i.ibb.co/v4bx2rQS/free-fire.png"
+        }, {
+            name: "COURT OF THE DEEP",
+            sub: ".moot court",
+            image: "https://i.ibb.co/qLZncdGf/moot-court.png"
+        }, {
+            name: "THE SIREN'S ACT",
+            sub: ".reels making",
+            image: "https://i.ibb.co/HLTbRtQ5/reels-making.png"
+        }, {
+            name: "ECHOS OF ATLANTIS",
+            sub: ".solo singing",
+            image: "https://i.ibb.co/VWML1x5z/solo-singing.png"
+        }, {
+            name: "THE MERMAID'S WALTZ",
+            sub: ".solo dance",
+            image: "https://i.ibb.co/prJgDHw2/solo-dance.png"
+        }, {
+            name: "TIDES OF RYTHM",
+            sub: ".group dance",
+            image: "https://i.ibb.co/WvrhPQCc/group-dance.png"
+        }, {
+            name: "RUNWAY OF REALMS",
+            sub: ".rampwalk",
+            image: "https://i.ibb.co/PZS9vnHj/ramp-walk-1.png"
+        }, {
+            name: "THE KRAKEN'S PITCH",
+            sub: ".cricket(both PU/UG boys)",
+            image: "https://i.ibb.co/NdGfJMVV/cricket.png"
+        }, {
+            name: "POSEIDON'S CUP",
+            sub: ".football(for P.U boys)",
+            image: "https://i.ibb.co/84DWnC3W/football.png"
+        }, {
+            name: "TIDAL THROWDOWN",
+            sub: ".throwball for U.G girls",
+            image: "https://i.ibb.co/Q3V3dxYj/Gemini-Generated-Image-konq2tkonq2tkonq.png"
+        }];
 
         // ─── DOM REFS ───────────────────────────────────────────────────
         const track = document.getElementById('carouselTrack');
@@ -1457,9 +1531,6 @@
         const gap = 12;
         let cardWidthWithGap = 0;
         let cardWidth = 0;
-
-        // Single index: float during drag, integer when snapped
-        // Always stays in [N, 2N-1] after snapping
         let index = N;
         let isDragging = false;
         let isSnapping = false;
@@ -1473,16 +1544,62 @@
         let resizeTimeout = null;
         let activeOrigIdx = 0;
 
+        // ═══════════════════════════════════════════════════════════════
+        //  🚀 PRELOAD ALL IMAGES (RAPID LOAD AFTER LOGIN)
+        //  Loads every event image into the browser cache immediately
+        //  so that when the carousel renders, they're already there.
+        // ═══════════════════════════════════════════════════════════════
+        function preloadAllImages(eventData) {
+            const urls = eventData.map(e => e.image);
+            let loaded = 0;
+            const total = urls.length;
+
+            urls.forEach(url => {
+                const img = new Image();
+                img.onload = () => {
+                    loaded++;
+                    if (loaded === total) {
+                        // All images are in cache — carousel can now render
+                        // without any loading delay.
+                        if (typeof buildCarousel === 'function') {
+                            // Already built, but we can re-render to show images
+                            // that might have been placeholder.
+                            document.querySelectorAll('.card-image img').forEach(el => {
+                                el.classList.add('loaded');
+                            });
+                        }
+                    }
+                };
+                img.onerror = () => {
+                    // Still count errors so we don't wait forever
+                    loaded++;
+                    if (loaded === total) {
+                        document.querySelectorAll('.card-image img').forEach(el => {
+                            el.classList.add('loaded');
+                        });
+                    }
+                };
+                img.src = url;
+            });
+        }
+
+        // Start preloading immediately — images load in background
+        // while the user interacts with the login modal and other UI.
+        preloadAllImages(events);
+
         // ─── BUILD CARDS ───────────────────────────────────────────────
         function createCardElement(evt, idx, globalIdx) {
             const card = document.createElement('div');
-            const cls = 'event-card card-' + ((idx % N) + 1);
-            card.className = cls;
+            const cls = 'card-' + ((idx % N) + 1);
+            card.className = 'event-card ' + cls;
             card.dataset.originalIndex = idx % N;
             card.dataset.globalIndex = globalIdx;
+
+            // Inner HTML with placeholder and eager loading
             card.innerHTML = `
                     <div class="card-image">
-                        <img src="${evt.image}" alt="Event photo">
+                        <img src="${evt.image}" alt="Event photo" loading="eager" fetchpriority="high" />
+                        <div class="img-placeholder"></div>
                     </div>
                     <div class="card-content">
                         <div class="card-name">${evt.name}</div>
@@ -1490,6 +1607,17 @@
                     </div>
                     <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
                 `;
+
+            // Once the image loads, remove the shimmer placeholder
+            const img = card.querySelector('img');
+            img.addEventListener('load', () => {
+                img.classList.add('loaded');
+                // The .img-placeholder will fade out via CSS
+            });
+            // If image is already cached, it may fire 'load' immediately
+            if (img.complete) {
+                img.classList.add('loaded');
+            }
 
             const badge = card.querySelector('.card-explore-badge');
             badge.addEventListener('click', (e) => {
@@ -1539,7 +1667,7 @@
 
             requestAnimationFrame(() => {
                 measureCardWidth();
-                index = 0;
+                index = N;
                 updateCarousel(false);
             });
         }
@@ -1751,13 +1879,8 @@
         window.addEventListener('resize', () => {
             if (resizeTimeout) clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                const oldWidth = cardWidth;
                 measureCardWidth();
-                if (Math.abs(cardWidth - oldWidth) > 2) {
-                    updateCarousel(false);
-                } else {
-                    updateCarousel(false);
-                }
+                updateCarousel(false);
             }, 150);
         });
 
@@ -1847,29 +1970,27 @@
         setInterval(updatePromoCountdown, 1000);
 
         // ═══════════════════════════════════════════════════════════════
-        //  🔐 ROLE-BASED LOGIN SYSTEM (ENHANCED)
+        //  🔐 ROLE-BASED LOGIN SYSTEM
         // ═══════════════════════════════════════════════════════════════
 
-        // ─── CREDENTIALS ──────────────────────────────────────────────
         const CREDENTIALS = {
             admin: {
                 password: 'admin2026',
-                dashboard: 'admindb.html',  // ✅ fixed: now points to admindb.html
+                dashboard: 'admindb.html',
                 label: 'Admin'
             },
             student: {
                 password: 'student2026',
-                dashboard: 'studentdb.html', // to be created
+                dashboard: 'studentdb.html',
                 label: 'Student Coordinator'
             },
             faculty: {
                 password: 'faculty2026',
-                dashboard: 'facultydb.html', // to be created
+                dashboard: 'facultydb.html',
                 label: 'Faculty Coordinator'
             }
         };
 
-        // ─── DOM REFS ──────────────────────────────────────────────────
         const loginOverlay = document.getElementById('loginOverlay');
         const modalClose = document.getElementById('modalClose');
         const loginForm = document.getElementById('loginForm');
@@ -1884,11 +2005,9 @@
         const roleStudent = document.getElementById('roleStudent');
         const roleFaculty = document.getElementById('roleFaculty');
 
-        // ─── STATE ─────────────────────────────────────────────────────
         let selectedRole = 'admin';
         let toastTimer = null;
 
-        // ─── TOAST ──────────────────────────────────────────────────────
         function showToast(msg, type = 'info') {
             loginToast.textContent = msg;
             loginToast.className = 'login-toast show ' + type;
@@ -1898,16 +2017,12 @@
             }, 3200);
         }
 
-        // ─── ROLE SELECTION ────────────────────────────────────────────
         function setRole(role) {
             selectedRole = role;
-
-            // Reset all
             [roleAdmin, roleStudent, roleFaculty].forEach(el => {
                 el.classList.remove('active', 'admin-active', 'student-active', 'faculty-active');
             });
 
-            // Activate selected
             const map = {
                 admin: { el: roleAdmin, cls: 'admin-active' },
                 student: { el: roleStudent, cls: 'student-active' },
@@ -1918,7 +2033,6 @@
                 map[role].el.classList.add('active', map[role].cls);
             }
 
-            // Update placeholder
             const cred = CREDENTIALS[role];
             loginPass.placeholder = 'Enter ' + cred.label + ' password';
             loginPass.value = '';
@@ -1930,7 +2044,6 @@
         roleStudent.addEventListener('click', () => setRole('student'));
         roleFaculty.addEventListener('click', () => setRole('faculty'));
 
-        // ─── OPEN / CLOSE MODAL ────────────────────────────────────────
         function openLogin() {
             loginOverlay.classList.add('open');
             loginUser.value = '';
@@ -1956,7 +2069,6 @@
             if (e.key === 'Escape') closeLogin();
         });
 
-        // ─── DROPDOWN LOGIN TRIGGER ────────────────────────────────────
         dropdown.querySelectorAll('.dropdown-item').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1978,20 +2090,17 @@
             });
         });
 
-        // ─── FORGOT PASSWORD ───────────────────────────────────────────
         forgotLink.addEventListener('click', (e) => {
             e.preventDefault();
             showToast('🔑 Contact the administrator to reset your password.', 'info');
         });
 
-        // ─── LOGIN SUBMIT ──────────────────────────────────────────────
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const username = loginUser.value.trim();
             const password = loginPass.value.trim();
 
-            // Validate
             if (!username) {
                 loginError.textContent = 'Please enter your username or email.';
                 loginError.classList.add('show');
@@ -2006,7 +2115,6 @@
                 return;
             }
 
-            // Get credentials for selected role
             const cred = CREDENTIALS[selectedRole];
             if (!cred) {
                 loginError.textContent = 'Invalid role selected.';
@@ -2014,30 +2122,24 @@
                 return;
             }
 
-            // Show loading
             loginSubmit.disabled = true;
             loginSubmit.classList.add('loading');
             loginError.classList.remove('show');
             loginPass.classList.remove('error');
 
-            // Simulate network delay
             await new Promise(resolve => setTimeout(resolve, 600));
 
-            // Validate password
             if (password === cred.password) {
-                // ✅ Success
                 loginSubmit.classList.remove('loading');
                 loginSubmit.disabled = false;
 
                 showToast(`✅ Welcome, ${cred.label}! Redirecting to dashboard...`, 'success');
 
-                // Redirect after a moment
                 setTimeout(() => {
                     window.location.href = cred.dashboard;
                 }, 800);
 
             } else {
-                // ❌ Failure
                 loginSubmit.classList.remove('loading');
                 loginSubmit.disabled = false;
                 loginPass.classList.add('error');
@@ -2049,7 +2151,6 @@
             }
         });
 
-        // ─── CLEAR ERROR ON INPUT ─────────────────────────────────────
         loginPass.addEventListener('input', () => {
             loginPass.classList.remove('error');
             loginError.classList.remove('show');
@@ -2059,22 +2160,20 @@
             loginError.classList.remove('show');
         });
 
-        // ─── KEYBOARD: ENTER TO SUBMIT ─────────────────────────────────
         loginPass.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 loginForm.dispatchEvent(new Event('submit'));
             }
         });
 
-        // ─── INIT ROLE ─────────────────────────────────────────────────
         setRole('admin');
 
-        console.log('🔐 DEPLOMAT Login System v2.0');
+        console.log('🔐 DEPLOMAT Login System v2.0 (with image preload)');
         console.log('📋 Available roles:');
         console.log('  🛡️  Admin          → password: admin2026  → admindb.html');
         console.log('  🎓  Student Coord  → password: student2026 → studentdb.html');
         console.log('  📚  Faculty Coord  → password: faculty2026 → facultydb.html');
-        console.log('💡 Select a role and enter the corresponding password.');
+        console.log('🚀 Images preloaded in background for rapid display.');
     </script>
 </body>
 </html>
