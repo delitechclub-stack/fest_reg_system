@@ -176,120 +176,24 @@
             }
         }
 
-        /* ─── SOCIAL SIDEBAR ─── */
-        .social-sidebar {
+        /* ─── TOP & BOTTOM GRADIENT OVERLAYS (always on top of VR) ─── */
+        .gradient-top,
+        .gradient-bottom {
             position: fixed;
-            right: 24px;
-            bottom: 120px;
-            z-index: 12;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: opacity 0.6s ease 0.4s;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 5;
         }
-        #overlay.hidden~.social-sidebar {
-            opacity: 1;
+        .gradient-top {
+            top: 0;
+            height: 35vh;
+            background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%);
         }
-        .social-sidebar:not(:has(~#overlay.hidden)) {
-            opacity: 0.3;
-        }
-
-        .social-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: rgba(4, 18, 23, 0.7);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(169, 132, 69, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            font-weight: 600;
-            font-family: 'Cinzel', serif;
-            text-decoration: none;
-            user-select: none;
-        }
-        .social-icon:hover {
-            border-color: var(--gold);
-            color: var(--gold-bright);
-            transform: translateX(-4px);
-            box-shadow: 0 0 20px rgba(169, 132, 69, 0.15);
-        }
-
-        /* ─── AUDIO MODAL ─── */
-        .audio-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            background: rgba(4, 18, 23, 0.82);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.4s;
-        }
-        .audio-modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .audio-content {
-            background: rgba(6, 26, 32, 0.96);
-            border: 1px solid rgba(169, 132, 69, 0.18);
-            border-radius: 18px;
-            padding: 44px 52px;
-            text-align: center;
-            box-shadow: 0 24px 72px rgba(0, 0, 0, 0.9);
-            max-width: 400px;
-            width: 90%;
-        }
-        .audio-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            color: var(--cream);
-            margin-bottom: 28px;
-            letter-spacing: 0.1em;
-            font-weight: 600;
-        }
-        .audio-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .audio-btn {
-            padding: 12px 36px;
-            border-radius: 8px;
-            border: 1px solid rgba(169, 132, 69, 0.2);
-            background: rgba(4, 18, 23, 0.6);
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .audio-btn:hover {
-            border-color: var(--gold);
-            background: rgba(169, 132, 69, 0.1);
-            color: var(--gold-bright);
-        }
-        .audio-btn.primary {
-            background: rgba(169, 132, 69, 0.12);
-            border-color: rgba(169, 132, 69, 0.25);
-            color: var(--gold-light);
-        }
-        .audio-btn.primary:hover {
-            background: rgba(169, 132, 69, 0.2);
-            border-color: var(--gold);
-            color: var(--gold-bright);
+        .gradient-bottom {
+            bottom: 0;
+            height: 30vh;
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
         }
 
         /* ─── TOAST ─── */
@@ -344,25 +248,11 @@
                 bottom: 28px;
                 letter-spacing: 0.15em;
             }
-            .social-sidebar {
-                right: 14px;
-                bottom: 90px;
-                gap: 10px;
+            .gradient-top {
+                height: 25vh;
             }
-            .social-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 0.85rem;
-            }
-            .audio-content {
-                padding: 32px 24px;
-            }
-            .audio-title {
-                font-size: 1rem;
-            }
-            .audio-btn {
-                padding: 10px 24px;
-                font-size: 0.6rem;
+            .gradient-bottom {
+                height: 20vh;
             }
             #toast {
                 font-size: 0.8rem;
@@ -393,15 +283,11 @@
                 font-size: 0.6rem;
                 bottom: 20px;
             }
-            .social-sidebar {
-                right: 10px;
-                bottom: 72px;
-                gap: 8px;
+            .gradient-top {
+                height: 20vh;
             }
-            .social-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 0.7rem;
+            .gradient-bottom {
+                height: 18vh;
             }
         }
     </style>
@@ -415,6 +301,10 @@
     allowfullscreen
     loading="eager">
 </iframe>
+
+<!-- ─── TOP & BOTTOM GRADIENT OVERLAYS (minimal black) ─── -->
+<div class="gradient-top"></div>
+<div class="gradient-bottom"></div>
 
 <!-- ─── OVERLAY ─── -->
 <div id="overlay" role="button" aria-label="Tap to explore campus">
@@ -438,25 +328,6 @@
 <!-- ─── HINT ─── -->
 <div id="hint">↻ Tap anywhere to begin</div>
 
-<!-- ─── SOCIAL SIDEBAR ─── -->
-<div class="social-sidebar">
-    <div class="social-icon" onclick="showToast('WhatsApp')" aria-label="WhatsApp">⌘</div>
-    <div class="social-icon" onclick="showToast('Facebook')" aria-label="Facebook">f</div>
-    <div class="social-icon" onclick="showToast('Twitter')" aria-label="Twitter">𝕏</div>
-    <div class="social-icon" onclick="showToast('LinkedIn')" aria-label="LinkedIn">in</div>
-</div>
-
-<!-- ─── AUDIO MODAL ─── -->
-<div class="audio-modal show" id="audioModal">
-    <div class="audio-content">
-        <div class="audio-title">Enable audio?</div>
-        <div class="audio-buttons">
-            <button class="audio-btn" onclick="closeAudioModal(true)">YES</button>
-            <button class="audio-btn primary" onclick="closeAudioModal(false)">NO</button>
-        </div>
-    </div>
-</div>
-
 <!-- ─── TOAST ─── -->
 <div id="toast"></div>
 
@@ -468,13 +339,6 @@
     function dismissOverlay() {
         if (overlay.classList.contains('hidden')) return;
         overlay.classList.add('hidden');
-        // Auto-hide modal if still visible after overlay dismiss
-        setTimeout(() => {
-            const modal = document.getElementById('audioModal');
-            if (modal && modal.classList.contains('show')) {
-                // Keep it visible — user can decide
-            }
-        }, 400);
     }
 
     overlay.addEventListener('click', dismissOverlay);
@@ -485,19 +349,6 @@
             dismissOverlay();
         }
     });
-
-    // ── Audio Modal ──
-    let audioEnabled = false;
-
-    function closeAudioModal(enable) {
-        audioEnabled = enable;
-        document.getElementById('audioModal').classList.remove('show');
-        if (enable) {
-            showToast('🔊 Audio enabled');
-        } else {
-            showToast('🔇 Audio disabled');
-        }
-    }
 
     // ── Toast ──
     let toastTimeout;
@@ -519,8 +370,6 @@
         }
     });
 
-    // ── If the iframe loads, the overlay can be dismissed ──
-    // (user still needs to tap, but we keep it as a graceful fallback)
     console.log('🌿 Explore Campus VR Tour · UI enhanced with dark-green aesthetic');
 </script>
 
