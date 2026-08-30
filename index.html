@@ -729,22 +729,29 @@
             width: 100%;
             text-align: center;
             z-index: 4;
-            font-size: 0.65rem;
-            letter-spacing: 4px;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.25);
             font-weight: 300;
             padding: 0 20px;
             pointer-events: none;
             text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
         }
 
-        .promo-credits span {
-            display: inline-block;
-            margin: 0 10px;
+        .promo-credits .credit-line {
+            display: block;
+            margin: 0 auto;
+            font-weight: 400;
+            letter-spacing: 4px;
+            color: rgba(255, 255, 255, 0.35);
         }
-        .promo-credits .divider {
-            opacity: 0.2;
+
+        .promo-credits .credit-line .highlight {
+            color: #00d4ff;
+            -webkit-text-fill-color: #00d4ff;
+            background: none;
+            font-weight: 600;
         }
 
         /* ─── LOGIN MODAL ────────────────────────────────────────────── */
@@ -1178,6 +1185,14 @@
             .role-selector .role-btn .role-icon {
                 font-size: 1rem;
             }
+
+            .promo-credits {
+                font-size: 0.6rem;
+                letter-spacing: 2px;
+            }
+            .promo-credits .credit-line {
+                letter-spacing: 2px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1248,6 +1263,14 @@
             .login-modal h3 {
                 font-size: 1.4rem;
             }
+
+            .promo-credits {
+                font-size: 0.5rem;
+                letter-spacing: 1.5px;
+            }
+            .promo-credits .credit-line {
+                letter-spacing: 1.5px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -1284,6 +1307,14 @@
                 font-size: clamp(0.7rem, 2.5vw, 1rem);
                 letter-spacing: 0.5px;
                 margin-bottom: 10px;
+            }
+
+            .promo-credits {
+                font-size: 0.45rem;
+                letter-spacing: 1px;
+            }
+            .promo-credits .credit-line {
+                letter-spacing: 1px;
             }
         }
 
@@ -1411,14 +1442,11 @@
             </div>
         </div>
 
+        <!-- ─── UPDATED CREDITS ─────────────────────────────────────── -->
         <div class="promo-credits">
-            <span>Directed by DEPLOMAT Studios</span>
-            <span class="divider">·</span>
-            <span>Produced by Fest Collective</span>
-            <span class="divider">·</span>
-            <span>Music by Ambient Waves</span>
-            <span class="divider">·</span>
-            <span>2026</span>
+            <span class="credit-line">
+                POWERED BY <span class="highlight">DELITECH I.T CLUB</span> · DE PAUL COLLEGE MYSORE
+            </span>
         </div>
     </section>
 
