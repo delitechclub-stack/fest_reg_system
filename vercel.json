@@ -1,3 +1,14 @@
 ﻿{
-  "version": 2
+  "builds": [
+    {
+      "src": "registration.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/registration.html"
+    }
+  ]
 }
