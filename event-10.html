@@ -1,281 +1,434 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>POSEIDON'S CUP · DEPLOMAT</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        --panel: rgba(13, 22, 37, 0.78);
-        --line: rgba(255, 255, 255, 0.14);
-        --text: #f3f7fb;
-        --muted: #a8b7c8;
-        --accent: #65d8ff;
-        --soft: rgba(101, 216, 255, 0.13);
-      }
-      * {
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POSEIDON'S CUP · DEPLOMAT</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #080e1a;
+      background-image:
+        radial-gradient(circle at 15% 25%, rgba(0, 200, 255, 0.06) 0%, transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(50, 255, 150, 0.04) 0%, transparent 40%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.006) 0px, rgba(255,255,255,0.006) 2px, transparent 2px, transparent 6px);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #f0f6ff;
+      padding: 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-wrapper {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .glass-card {
+      background: rgba(14, 24, 44, 0.72);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 2.8rem;
+      box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+      padding: 2.6rem 2.8rem;
+      transition: all 0.2s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(100, 255, 200, 0.12);
+    }
+
+    .space-y-6>*+* {
+      margin-top: 2rem;
+    }
+    .space-y-4>*+* {
+      margin-top: 1.2rem;
+    }
+    .space-y-3>*+* {
+      margin-top: 0.9rem;
+    }
+
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .flex-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(100, 255, 200, 0.08);
+      border: 1px solid rgba(100, 255, 200, 0.18);
+      border-radius: 100px;
+      padding: 0.35rem 1.2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #80ffcc;
+      backdrop-filter: blur(2px);
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 10vw, 5.4rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #80ffcc 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0.2rem 0 0.1rem 0;
+    }
+
+    .subhead {
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: #c8f0e0;
+      letter-spacing: 0.02em;
+      border-left: 3px solid #80ffcc;
+      padding-left: 1rem;
+      opacity: 0.9;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .subhead .chip {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 60px;
+      padding: 0.2rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #c8f0e0;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .pill-primary {
+      background: linear-gradient(145deg, #00cc88, #009966);
+      border: none;
+      color: #0a0f1e;
+      font-weight: 700;
+      padding: 0.75rem 2rem;
+      border-radius: 60px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.2s;
+      box-shadow: 0 8px 24px -6px rgba(0, 200, 120, 0.25);
+      font-size: 0.95rem;
+    }
+
+    .pill-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 32px -6px #00cc88aa;
+      background: linear-gradient(145deg, #00dd99, #00aa77);
+    }
+
+    .visual-placeholder {
+      background: rgba(255, 255, 255, 0.015);
+      border-radius: 2rem;
+      padding: 2.8rem 1.5rem;
+      text-align: center;
+      border: 1px dashed rgba(100, 255, 200, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: #6aaa8a;
+    }
+
+    .visual-placeholder .big-icon {
+      font-size: 2.8rem;
+      opacity: 0.4;
+    }
+    .visual-placeholder small {
+      font-size: 0.75rem;
+      color: #4a7a62;
+    }
+
+    .divider-light {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(100, 255, 200, 0.15), transparent 80%);
+      margin: 1.6rem 0 1rem 0;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      margin-top: 0.2rem;
+    }
+
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      padding: 0.5rem 1rem 0.5rem 1.2rem;
+      background: rgba(255, 255, 255, 0.015);
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: all 0.15s;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      color: #e0f5ec;
+    }
+
+    .rule-item:hover {
+      background: rgba(100, 255, 200, 0.03);
+      border-color: rgba(100, 255, 200, 0.1);
+      transform: translateX(4px);
+    }
+
+    .rule-item .num {
+      font-weight: 600;
+      color: #80ffcc;
+      min-width: 1.8rem;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .rule-item .highlight {
+      color: #80ffcc;
+      font-weight: 500;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.8rem 0 0.4rem 0;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 60px;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #e0f5ec;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+      font-size: 0.95rem;
+    }
+
+    .action-btn:hover {
+      background: rgba(100, 255, 200, 0.05);
+      border-color: rgba(100, 255, 200, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -10px rgba(0, 255, 150, 0.1);
+    }
+
+    .action-btn .icon {
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #8ab8a0;
+      text-decoration: none;
+      font-weight: 450;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s;
+      padding: 0.4rem 0;
+    }
+
+    .back-home:hover {
+      color: #c8f0e0;
+      border-bottom-color: #80ffcc;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #e0f5ec;
+    }
+
+    .section-head span {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(100, 255, 200, 0.15), transparent);
+    }
+
+    .fee-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 60px;
+      padding: 0.25rem 1rem;
+      font-size: 0.8rem;
+      color: #ffd700;
+      font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
       body {
-        min-height: 100vh;
-        margin: 0;
-        padding: 24px;
-        background:
-          radial-gradient(
-            circle at 12% 12%,
-            rgba(0, 190, 255, 0.2),
-            transparent 34%
-          ),
-          radial-gradient(
-            circle at 88% 88%,
-            rgba(245, 45, 132, 0.17),
-            transparent 35%
-          ),
-          #050911;
-        color: var(--text);
-        font-family: "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+        padding: 0.8rem;
       }
-      body:before {
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        background-image:
-          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.025) 1px,
-            transparent 1px
-          );
-        background-size: 44px 44px;
-        content: "";
+      .glass-card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 2rem;
       }
-      .event-shell {
-        width: min(100%, 900px);
-        margin: auto;
-        display: grid;
-        gap: 18px;
+      .flex-row {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      .scroll-panel {
-        max-height: calc(100vh - 48px);
-        overflow-y: auto;
-        padding: clamp(24px, 5vw, 58px);
-        border: 1px solid var(--line);
-        border-radius: 22px;
-        background: var(--panel);
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
-        backdrop-filter: blur(18px);
+      .rule-item {
+        border-radius: 20px;
+        padding: 0.6rem 1rem;
       }
-      .eyebrow {
-        margin: 0 0 25px;
-        color: var(--accent);
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.25em;
-        text-transform: uppercase;
+      .grid-2col {
+        grid-template-columns: 1fr;
       }
-      .event-header {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 24px;
-      }
-      h1 {
-        margin: 0;
-        font-size: clamp(2.3rem, 7vw, 5.6rem);
-        line-height: 0.98;
-        letter-spacing: 0.035em;
-      }
-      .subtitle {
-        margin: 18px 0 0;
-        color: var(--accent);
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-      .pill,
-      .back-link {
-        display: inline-flex;
-        min-height: 44px;
-        align-items: center;
-        justify-content: center;
-        padding: 11px 17px;
-        border: 1px solid rgba(101, 216, 255, 0.45);
-        border-radius: 999px;
-        background: var(--soft);
-        color: var(--text);
-        font-weight: 700;
-        text-decoration: none;
-        white-space: nowrap;
-      }
-      .placeholder {
-        min-height: 250px;
-        margin: 44px 0;
-        display: grid;
-        place-content: center;
-        justify-items: center;
-        gap: 8px;
-        border: 1px dashed rgba(101, 216, 255, 0.48);
-        color: var(--muted);
-        text-align: center;
-      }
-      .placeholder.secondary {
-        min-height: 170px;
-        margin: 30px 0;
-      }
-      .placeholder-icon {
-        font-size: 2.1rem;
-      }
-      .placeholder-hint {
-        color: #75889d;
-        font-size: 0.78rem;
-      }
-      .section-label {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        font-weight: 700;
-      }
-      .section-label:after {
-        height: 1px;
-        flex: 1;
-        background: var(--line);
-        content: "";
-      }
-      .about-copy {
-        padding-left: 16px;
-        border-left: 2px solid var(--accent);
-        color: var(--muted);
-        line-height: 1.7;
-      }
-      .scroll-cue {
-        margin: 42px 0 0;
-        color: var(--accent);
-        text-align: center;
-      }
-      .scroll-cue span {
-        display: block;
-        animation: bounce 1.4s infinite;
-        font-size: 1.25rem;
-      }
-      .rules-copy {
-        margin: 18px 0 0;
-        padding: 19px;
-        border: 1px dashed rgba(101, 216, 255, 0.48);
-        color: var(--muted);
-      }
-      .action-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin: 30px 0;
-      }
-      .action-card {
-        display: grid;
-        gap: 6px;
-        min-height: 92px;
-        padding: 17px;
-        border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.035);
-        color: var(--text);
-        text-decoration: none;
-        transition: 0.2s;
-      }
-      .action-card:hover {
-        background: rgba(101, 216, 255, 0.08);
-        border-color: var(--accent);
-      }
-      .action-card span {
-        color: var(--muted);
-        font-size: 0.8rem;
-      }
-      .back-wrap {
-        text-align: center;
-      }
-      @keyframes bounce {
-        50% {
-          transform: translateY(5px);
-        }
-      }
-      @media (max-width: 540px) {
-        body {
-          padding: 12px;
-        }
-        .scroll-panel {
-          max-height: calc(100vh - 24px);
-          padding: 24px 20px;
-        }
-        .event-header {
-          align-items: stretch;
-          flex-direction: column;
-        }
-        .pill {
-          align-self: flex-start;
-        }
-        .action-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="event-shell">
-      <section class="scroll-panel">
-        <p class="eyebrow">DEPLOMAT · Event Details</p>
-        <header class="event-header">
-          <div>
-            <h1>POSEIDON'S CUP</h1>
-            <p class="subtitle">.football(for P.U boys)</p>
+    }
+  </style>
+</head>
+<body>
+  <div class="event-wrapper">
+    <div class="glass-card space-y-6">
+
+      <!-- header -->
+      <div class="flex-row">
+        <div class="flex-col">
+          <span class="tag">⚽ DEPLOMAT · FOOTBALL (PU)</span>
+          <h1>POSEIDON'S<br>CUP</h1>
+          <div class="subhead">
+            <span>🏆 football tournament</span>
+            <span class="chip">7+3 players · 10+10 min</span>
+            <span class="fee-badge">💰 ₹1,999 entry</span>
           </div>
-          <a class="pill" href="#">🎥 Submit Video</a>
-        </header>
-        <div class="placeholder">
-          <span class="placeholder-icon">🖼️</span
-          ><span>Event visuals will be placed in this space</span
-          ><span class="placeholder-hint"
-            >(image carousel · video · poster)</span
-          >
         </div>
-        <div class="section-label">📄 About Event</div>
-        <p class="about-copy">
-          Full details for POSEIDON'S CUP will be updated soon.
+        <div>
+          <a href="#" class="pill-primary">🎥 Submit Video</a>
+        </div>
+      </div>
+
+      <!-- visual placeholder -->
+      <div class="visual-placeholder">
+        <span class="big-icon">⚽</span>
+        <span>Event visuals — carousel · video · poster</span>
+        <small>(teaser &amp; highlights will appear here)</small>
+      </div>
+
+      <!-- about -->
+      <div class="space-y-3">
+        <div class="section-head">
+          <span>📄 About Event</span><span></span>
+        </div>
+        <p style="color: #d4f0e4; line-height: 1.6; padding-left: 0.5rem; border-left: 3px solid #80ffcc; padding-left: 1.2rem;">
+          <strong>Poseidon's Cup</strong> — a thrilling football tournament for PU students. 
+          Teams of 7+3 players will battle it out on the pitch in a fast-paced 10+10 minute format. 
+          Show your skills, teamwork, and sportsmanship to claim the cup.
         </p>
-        <p class="scroll-cue">scroll down<span>⌄</span></p>
-      </section>
-      <section class="scroll-panel">
-        <div class="section-label">📋 Rules</div>
-        <div class="rules-copy">
-          ⚡ Rules &amp; guidelines for POSEIDON'S CUP will appear here shortly.
+      </div>
+
+      <!-- rules -->
+      <div class="space-y-3">
+        <div class="section-head">
+          <span>📋 Rules &amp; Regulations</span><span></span>
         </div>
-        <div class="placeholder secondary">
-          <span class="placeholder-icon">🎬</span
-          ><span>Event visuals (additional)</span
-          ><span class="placeholder-hint">(highlights · teaser)</span>
+
+        <div class="rules-grid">
+          <div class="rule-item"><span class="num">❶</span> <span class="highlight">Team Composition:</span> 7 + 3 players · One goalkeeper compulsory · Unlimited rolling substitutions</div>
+          <div class="rule-item"><span class="num">❷</span> <span class="highlight">Match Duration:</span> 10 + 10 minutes · Half-time: 3 min · Extra time: 3 min · Penalty shootout if tied</div>
+          <div class="rule-item"><span class="num">❸</span> <span class="highlight">Gameplay:</span> Kick-off from center · Standard throw-ins · 5-yard distance on free kicks · Standard fouls apply</div>
+          <div class="rule-item"><span class="num">❹</span> <span class="highlight">Discipline:</span> Yellow Card = Official Warning · Red Card = Player sent off (team continues with 6 players)</div>
+          <div class="rule-item"><span class="num">❺</span> <span class="highlight">Winning:</span> Most goals wins · Knockout draws decided by penalty shootout</div>
+          <div class="rule-item"><span class="num">❻</span> <span class="highlight">General Rules:</span> Proper sports attire compulsory · Eligibility forms required · Sportsmanship mandatory · PU students only · Referee's decision final</div>
+          <div class="rule-item"><span class="num">❼</span> <span class="highlight">Reporting:</span> School ID Card &amp; Principal's permission required before tournament commencement</div>
+          <div class="rule-item"><span class="num">❽</span> <span class="highlight">Discipline:</span> Fighting, abuse or serious misconduct may result in suspension or disqualification</div>
+          <div class="rule-item"><span class="num">❾</span> <span class="highlight">Player ID:</span> Every player must carry and wear/display a valid School ID Card and Aadhar card throughout the tournament</div>
+          <div class="rule-item"><span class="num">❿</span> <span class="highlight">Principal's Permission:</span> Every team must submit permission/approval from their Principal or authorized school authority</div>
         </div>
-        <div class="action-grid">
-          <!-- DOWNLOAD BUTTON - NOW FIRST IN THE GRID -->
-          <a class="action-card" href="https://drive.google.com/file/d/1eh4298WRNjSvCv_DcuXLZSO-y2IjYabN/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
-            <strong>⬇️ Download</strong>
-            <span>Entry form / Rules book (PDF)</span>
-          </a>
-          <a class="action-card" href="registration.html?event=10"
-            ><strong>📝 Register</strong><span>Secure your spot</span></a
-          >
-          <a class="action-card" href="#"
-            ><strong>📞 Connect Co‑ordinator</strong
-            ><span>Get in touch</span></a
-          >
-          <a class="action-card" href="reg-status.html"
-            ><strong>📊 Check Registration Update</strong
-            ><span>Verify your status</span></a
-          >
-          <a class="action-card" href="#"
-            ><strong>▶️ Watch Promo Video</strong><span>See the vibe</span></a
-          >
+      </div>
+
+      <!-- general conditions -->
+      <div class="space-y-3">
+        <div class="section-head">
+          <span>📋 General Tournament Conditions</span><span></span>
         </div>
-        <div class="back-wrap">
-          <a class="back-link" href="index.html">← Back to Home</a>
+        <div class="rules-grid">
+          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+            <span style="color:#80ffcc; font-weight:500;">📌</span>
+            The PU Football Tournament Committee may modify the schedule, playing conditions or match arrangements whenever necessary due to venue, weather, safety or administrative reasons.
+          </div>
+          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+            <span style="color:#80ffcc; font-weight:500;">📌</span>
+            All teams must cooperate with the Organizing Committee, referees, volunteers and venue authorities and maintain proper discipline and sportsmanship.
+          </div>
+          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+            <span style="color:#80ffcc; font-weight:500;">📌</span>
+            During document verification, every participating college/team must produce required documents, valid college ID cards, and documents duly signed and verified by the Principal. Failure to produce documents will result in disqualification. Registration fee is non-refundable.
+          </div>
+          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+            <span style="color:#80ffcc; font-weight:500;">📌</span>
+            Teams must report to the venue on time as per schedule. Late entry or failure to report may result in disqualification or walkover. Registration fee is non-refundable.
+          </div>
+          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+            <span style="color:#80ffcc; font-weight:500;">📌</span>
+            If the fest is extended to a second or subsequent day, the college will provide accommodation only. Food, refreshments and other personal expenses must be arranged by respective teams.
+          </div>
+          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem; border-color:rgba(255,215,0,0.15); background:rgba(255,215,0,0.03);">
+            <span style="color:#ffd700; font-weight:500;">⚠️</span>
+            <strong style="color:#ffd700;">NOTE:</strong> In case of any unforeseen circumstances or conflicts, the Organizing Committee reserves the right to make the final decision.
+          </div>
         </div>
-      </section>
-    </main>
-  </body>
+      </div>
+
+      <!-- secondary visual -->
+      <div class="visual-placeholder" style="padding: 1.8rem 1.5rem;">
+        <span class="big-icon">🎬</span>
+        <span>Additional visuals · highlights &amp; teaser</span>
+        <small>coming soon</small>
+      </div>
+
+      <!-- action grid -->
+      <div class="grid-2col">
+        <a href="https://drive.google.com/file/d/1eh4298WRNjSvCv_DcuXLZSO-y2IjYabN/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="action-btn" style="border-color:rgba(255,215,0,0.2); background:rgba(255,215,0,0.05);">
+          <span class="icon">⬇️</span> Download Form
+        </a>
+        <a href="registration.html?event=10" class="action-btn"><span class="icon">📝</span> Register</a>
+        <a href="#" class="action-btn"><span class="icon">📞</span> Connect Co‑ordinator</a>
+        <a href="reg-status.html" class="action-btn"><span class="icon">📊</span> Check Registration</a>
+        <a href="#" class="action-btn"><span class="icon">▶️</span> Watch Promo</a>
+      </div>
+
+      <div class="divider-light"></div>
+      <div style="display: flex; justify-content: flex-start;">
+        <a href="index.html" class="back-home">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

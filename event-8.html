@@ -1,269 +1,383 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RUNWAY OF REALMS · DEPLOMAT</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        --panel: rgba(13, 22, 37, 0.78);
-        --line: rgba(255, 255, 255, 0.14);
-        --text: #f3f7fb;
-        --muted: #a8b7c8;
-        --accent: #65d8ff;
-        --soft: rgba(101, 216, 255, 0.13);
-      }
-      * {
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RUNWAY OF REALMS · DEPLOMAT</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #080e1a;
+      background-image:
+        radial-gradient(circle at 15% 25%, rgba(100, 200, 255, 0.06) 0%, transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(255, 100, 200, 0.05) 0%, transparent 40%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.006) 0px, rgba(255,255,255,0.006) 2px, transparent 2px, transparent 6px);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #f0f6ff;
+      padding: 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-wrapper {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .glass-card {
+      background: rgba(14, 24, 44, 0.72);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 2.8rem;
+      box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+      padding: 2.6rem 2.8rem;
+      transition: all 0.2s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(180, 120, 255, 0.12);
+    }
+
+    .space-y-6>*+* {
+      margin-top: 2rem;
+    }
+    .space-y-4>*+* {
+      margin-top: 1.2rem;
+    }
+    .space-y-3>*+* {
+      margin-top: 0.9rem;
+    }
+
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .flex-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(180, 120, 255, 0.08);
+      border: 1px solid rgba(180, 120, 255, 0.18);
+      border-radius: 100px;
+      padding: 0.35rem 1.2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #c8a0ff;
+      backdrop-filter: blur(2px);
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 10vw, 5.4rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #c8a0ff 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0.2rem 0 0.1rem 0;
+    }
+
+    .subhead {
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: #d4c8f0;
+      letter-spacing: 0.02em;
+      border-left: 3px solid #b080ff;
+      padding-left: 1rem;
+      opacity: 0.9;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .subhead .chip {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 60px;
+      padding: 0.2rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #d4c8f0;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .pill-primary {
+      background: linear-gradient(145deg, #8a5cdb, #6a3db0);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 60px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.2s;
+      box-shadow: 0 8px 24px -6px rgba(100, 60, 200, 0.25);
+      font-size: 0.95rem;
+    }
+
+    .pill-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 32px -6px #6a3db0aa;
+      background: linear-gradient(145deg, #9a6ceb, #7a4dc0);
+    }
+
+    .visual-placeholder {
+      background: rgba(255, 255, 255, 0.015);
+      border-radius: 2rem;
+      padding: 2.8rem 1.5rem;
+      text-align: center;
+      border: 1px dashed rgba(180, 120, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: #8a7aaa;
+    }
+
+    .visual-placeholder .big-icon {
+      font-size: 2.8rem;
+      opacity: 0.4;
+    }
+    .visual-placeholder small {
+      font-size: 0.75rem;
+      color: #5a4a6a;
+    }
+
+    .divider-light {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(180, 120, 255, 0.15), transparent 80%);
+      margin: 1.6rem 0 1rem 0;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+      margin-top: 0.2rem;
+    }
+
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      padding: 0.6rem 1rem 0.6rem 1.2rem;
+      background: rgba(255, 255, 255, 0.015);
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: all 0.15s;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #ece0fc;
+    }
+
+    .rule-item:hover {
+      background: rgba(180, 120, 255, 0.03);
+      border-color: rgba(180, 120, 255, 0.1);
+      transform: translateX(4px);
+    }
+
+    .rule-item .num {
+      font-weight: 600;
+      color: #b080ff;
+      min-width: 1.8rem;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.8rem 0 0.4rem 0;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 60px;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #e2dcf0;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+      font-size: 0.95rem;
+    }
+
+    .action-btn:hover {
+      background: rgba(180, 120, 255, 0.05);
+      border-color: rgba(180, 120, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -10px rgba(150, 100, 255, 0.1);
+    }
+
+    .action-btn .icon {
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #a090b8;
+      text-decoration: none;
+      font-weight: 450;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s;
+      padding: 0.4rem 0;
+    }
+
+    .back-home:hover {
+      color: #d4c8f0;
+      border-bottom-color: #b080ff;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #e8dcf8;
+    }
+
+    .section-head span {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(180, 120, 255, 0.15), transparent);
+    }
+
+    @media (max-width: 640px) {
       body {
-        min-height: 100vh;
-        margin: 0;
-        padding: 24px;
-        background:
-          radial-gradient(
-            circle at 12% 12%,
-            rgba(0, 190, 255, 0.2),
-            transparent 34%
-          ),
-          radial-gradient(
-            circle at 88% 88%,
-            rgba(245, 45, 132, 0.17),
-            transparent 35%
-          ),
-          #050911;
-        color: var(--text);
-        font-family: "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+        padding: 0.8rem;
       }
-      body:before {
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        background-image:
-          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.025) 1px,
-            transparent 1px
-          );
-        background-size: 44px 44px;
-        content: "";
+      .glass-card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 2rem;
       }
-      .event-shell {
-        width: min(100%, 900px);
-        margin: auto;
-        display: grid;
-        gap: 18px;
+      .flex-row {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      .scroll-panel {
-        max-height: calc(100vh - 48px);
-        overflow-y: auto;
-        padding: clamp(24px, 5vw, 58px);
-        border: 1px solid var(--line);
-        border-radius: 22px;
-        background: var(--panel);
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
-        backdrop-filter: blur(18px);
+      .rule-item {
+        border-radius: 20px;
+        padding: 0.7rem 1rem;
       }
-      .eyebrow {
-        margin: 0 0 25px;
-        color: var(--accent);
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.25em;
-        text-transform: uppercase;
+      .grid-2col {
+        grid-template-columns: 1fr;
       }
-      .event-header {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 24px;
-      }
-      h1 {
-        margin: 0;
-        font-size: clamp(2.3rem, 7vw, 5.6rem);
-        line-height: 0.98;
-        letter-spacing: 0.035em;
-      }
-      .subtitle {
-        margin: 18px 0 0;
-        color: var(--accent);
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-      .pill,
-      .back-link {
-        display: inline-flex;
-        min-height: 44px;
-        align-items: center;
-        justify-content: center;
-        padding: 11px 17px;
-        border: 1px solid rgba(101, 216, 255, 0.45);
-        border-radius: 999px;
-        background: var(--soft);
-        color: var(--text);
-        font-weight: 700;
-        text-decoration: none;
-        white-space: nowrap;
-      }
-      .placeholder {
-        min-height: 250px;
-        margin: 44px 0;
-        display: grid;
-        place-content: center;
-        justify-items: center;
-        gap: 8px;
-        border: 1px dashed rgba(101, 216, 255, 0.48);
-        color: var(--muted);
-        text-align: center;
-      }
-      .placeholder.secondary {
-        min-height: 170px;
-        margin: 30px 0;
-      }
-      .placeholder-icon {
-        font-size: 2.1rem;
-      }
-      .placeholder-hint {
-        color: #75889d;
-        font-size: 0.78rem;
-      }
-      .section-label {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        font-weight: 700;
-      }
-      .section-label:after {
-        height: 1px;
-        flex: 1;
-        background: var(--line);
-        content: "";
-      }
-      .about-copy {
-        padding-left: 16px;
-        border-left: 2px solid var(--accent);
-        color: var(--muted);
-        line-height: 1.7;
-      }
-      .scroll-cue {
-        margin: 42px 0 0;
-        color: var(--accent);
-        text-align: center;
-      }
-      .scroll-cue span {
-        display: block;
-        animation: bounce 1.4s infinite;
-        font-size: 1.25rem;
-      }
-      .rules-copy {
-        margin: 18px 0 0;
-        padding: 19px;
-        border: 1px dashed rgba(101, 216, 255, 0.48);
-        color: var(--muted);
-      }
-      .action-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin: 30px 0;
-      }
-      .action-card {
-        display: grid;
-        gap: 6px;
-        min-height: 92px;
-        padding: 17px;
-        border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.035);
-        color: var(--text);
-        text-decoration: none;
-      }
-      .action-card span {
-        color: var(--muted);
-        font-size: 0.8rem;
-      }
-      .back-wrap {
-        text-align: center;
-      }
-      @keyframes bounce {
-        50% {
-          transform: translateY(5px);
-        }
-      }
-      @media (max-width: 540px) {
-        body {
-          padding: 12px;
-        }
-        .scroll-panel {
-          max-height: calc(100vh - 24px);
-          padding: 24px 20px;
-        }
-        .event-header {
-          align-items: stretch;
-          flex-direction: column;
-        }
-        .pill {
-          align-self: flex-start;
-        }
-        .action-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="event-shell">
-      <section class="scroll-panel">
-        <p class="eyebrow">DEPLOMAT · Event Details</p>
-        <header class="event-header">
-          <div>
-            <h1>RUNWAY OF REALMS</h1>
-            <p class="subtitle">.rampwalk</p>
+    }
+  </style>
+</head>
+<body>
+  <div class="event-wrapper">
+    <div class="glass-card space-y-6">
+
+      <!-- header -->
+      <div class="flex-row">
+        <div class="flex-col">
+          <span class="tag">👑 DEPLOMAT · RAMP WALK</span>
+          <h1>RUNWAY OF<br>REALMS</h1>
+          <div class="subhead">
+            <span>🌟 ramp walk competition</span>
+            <span class="chip">10–12 members · 7–8 min</span>
           </div>
-          <a class="pill" href="#">🎥 Submit Video</a>
-        </header>
-        <div class="placeholder">
-          <span class="placeholder-icon">🖼️</span
-          ><span>Event visuals will be placed in this space</span
-          ><span class="placeholder-hint"
-            >(image carousel · video · poster)</span
-          >
         </div>
-        <div class="section-label">📄 About Event</div>
-        <p class="about-copy">
-          Full details for RUNWAY OF REALMS will be updated soon.
+        <div>
+          <a href="#" class="pill-primary">🎥 Submit Video</a>
+        </div>
+      </div>
+
+      <!-- visual placeholder -->
+      <div class="visual-placeholder">
+        <span class="big-icon">👗</span>
+        <span>Event visuals — carousel · video · poster</span>
+        <small>(teaser &amp; highlights will appear here)</small>
+      </div>
+
+      <!-- about -->
+      <div class="space-y-3">
+        <div class="section-head">
+          <span>📄 About Event</span><span></span>
+        </div>
+        <p style="color: #d4c8f0; line-height: 1.6; padding-left: 0.5rem; border-left: 3px solid #b080ff; padding-left: 1.2rem;">
+          <strong>Runway of Realms</strong> — a grand ramp walk competition where style meets storytelling. 
+          Teams of 10–12 members will showcase their theme through stunning outfits, choreography, and stage presence. 
+          Walk the runway and bring your realm to life.
         </p>
-        <p class="scroll-cue">scroll down<span>⌄</span></p>
-      </section>
-      <section class="scroll-panel">
-        <div class="section-label">📋 Rules</div>
-        <div class="rules-copy">
-          ⚡ Rules &amp; guidelines for RUNWAY OF REALMS will appear here
-          shortly.
+      </div>
+
+      <!-- rules -->
+      <div class="space-y-3">
+        <div class="section-head">
+          <span>📋 Rules &amp; Regulations</span><span></span>
         </div>
-        <div class="placeholder secondary">
-          <span class="placeholder-icon">🎬</span
-          ><span>Event visuals (additional)</span
-          ><span class="placeholder-hint">(highlights · teaser)</span>
+
+        <div class="rules-grid">
+          <div class="rule-item"><span class="num">❶</span> <strong>Team Size:</strong> Each team must consist of 10–12 participants.</div>
+          <div class="rule-item"><span class="num">❷</span> <strong>Theme:</strong> Teams may either follow the given Atlantis theme or choose a completely different Open Theme of their own.</div>
+          <div class="rule-item"><span class="num">❸</span> <strong>Performance Duration:</strong> The performance must be between 7–8 minutes. Music and all activities must stop after 8 minutes.</div>
+          <div class="rule-item"><span class="num">❹</span> <strong>Performance:</strong> Teams may use group formations, coordinated solos, or a combination of both.</div>
+          <div class="rule-item"><span class="num">❺</span> <strong>Costume:</strong> Outfits must be decent, appropriate, and suitable for a college event. Vulgar, overly revealing, or inappropriate dressing is strictly prohibited.</div>
+          <div class="rule-item"><span class="num">❻</span> <strong>Props:</strong> Props are permitted, provided they are safe and do not cause any damage to the stage, venue, or college property. Dangerous, sharp, flammable, or harmful props are strictly prohibited.</div>
+          <div class="rule-item"><span class="num">❼</span> <strong>Theme Presentation:</strong> Outfits, styling, props, and performance should complement and represent the team's chosen theme.</div>
+          <div class="rule-item"><span class="num">❽</span> <strong>Question &amp; Answer Round:</strong> Each team will have a Q&A round based on their chosen theme, where they should explain their theme, why they chose it, and how their outfits and performance represent it.</div>
+          <div class="rule-item"><span class="num">❾</span> <strong>Audio Submission:</strong> The final performance track must be submitted to the organizers before the deadline.</div>
+          <div class="rule-item"><span class="num">❿</span> <strong>Reporting Time:</strong> Teams must report to the venue and be ready before their scheduled performance time.</div>
+          <div class="rule-item"><span class="num">⓫</span> <strong>Discipline:</strong> Participants must maintain proper decorum and respect the venue, coordinators, judges, and other teams. Unnecessary noise, running, fighting, or misconduct will not be tolerated.</div>
+          <div class="rule-item"><span class="num">⓬</span> <strong>Assigned Room:</strong> One room will be assigned to each team and must be kept clean and maintained properly.</div>
+          <div class="rule-item"><span class="num">⓭</span> <strong>Content:</strong> Performances must not contain offensive, disrespectful, obscene, or inappropriate content.</div>
+          <div class="rule-item"><span class="num">⓮</span> <strong>Judges' Decision:</strong> The decision of the judges and event coordinators will be final and binding.</div>
         </div>
-        <div class="action-grid">
-          <a class="action-card" href="registration.html?event=8"
-            ><strong>📝 Register</strong><span>Secure your spot</span></a
-          ><a class="action-card" href="#"
-            ><strong>📞 Connect Co‑ordinator</strong
-            ><span>Get in touch</span></a
-          ><a class="action-card" href="reg-status.html"
-            ><strong>📊 Check Registration Update</strong
-            ><span>Verify your status</span></a
-          ><a class="action-card" href="#"
-            ><strong>▶️ Watch Promo Video</strong><span>See the vibe</span></a
-          >
-        </div>
-        <div class="back-wrap">
-          <a class="back-link" href="index.html">← Back to Home</a>
-        </div>
-      </section>
-    </main>
-  </body>
+      </div>
+
+      <!-- secondary visual -->
+      <div class="visual-placeholder" style="padding: 1.8rem 1.5rem;">
+        <span class="big-icon">🎬</span>
+        <span>Additional visuals · highlights &amp; teaser</span>
+        <small>coming soon</small>
+      </div>
+
+      <!-- action grid -->
+      <div class="grid-2col">
+        <a href="registration.html?event=8" class="action-btn"><span class="icon">📝</span> Register</a>
+        <a href="#" class="action-btn"><span class="icon">📞</span> Connect Co‑ordinator</a>
+        <a href="reg-status.html" class="action-btn"><span class="icon">📊</span> Check Registration</a>
+        <a href="#" class="action-btn"><span class="icon">▶️</span> Watch Promo</a>
+      </div>
+
+      <div class="divider-light"></div>
+      <div style="display: flex; justify-content: flex-start;">
+        <a href="index.html" class="back-home">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
