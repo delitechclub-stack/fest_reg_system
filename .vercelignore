@@ -1,4 +1,12 @@
-﻿node_modules
+﻿# Create .vercelignore
+@"
+node_modules/
+dist/
+.git/
 *.log
 .DS_Store
-README.md
+*.ps1
+fix-vercel.ps1
+"@ | Out-File -FilePath ".vercelignore" -Encoding UTF8
+
+Write-Host "✅ Created .vercelignore" -ForegroundColor Green

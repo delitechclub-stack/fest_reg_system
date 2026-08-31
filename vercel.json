@@ -1,18 +1,59 @@
 ﻿{
+  "version": 2,
   "builds": [
     {
-      "src": "index.html",
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "public/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "index.html"
+      "dest": "/index.html"
+    },
+    {
+      "src": "/registration",
+      "dest": "/registration.html"
+    },
+    {
+      "src": "/reg-status",
+      "dest": "/reg-status.html"
+    },
+    {
+      "src": "/admindb",
+      "dest": "/admindb.html"
+    },
+    {
+      "src": "/campus",
+      "dest": "/campus.html"
+    },
+    {
+      "src": "/about",
+      "dest": "/about.html"
+    },
+    {
+      "src": "/connect",
+      "dest": "/connect.html"
+    },
+    {
+      "src": "/legacy",
+      "dest": "/legacy.html"
+    },
+    {
+      "src": "/event-:id",
+      "dest": "/event-:id.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/$1"
     }
   ]
 }
