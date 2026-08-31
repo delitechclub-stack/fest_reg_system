@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>DEPLOMAT · Trident Pulse</title>
+  <title>DEPLOMAT · Atlantis Immersive</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
@@ -19,15 +19,20 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       user-select: none;
+      touch-action: pan-y;
     }
     :root {
       --abyss: #041217;
+      --abyss-light: #061A20;
+      --abyss-mid: #08252B;
       --gold: #A98445;
       --gold-light: #C09A52;
       --gold-bright: #D0AF69;
       --gold-royal: #E6C875;
       --bronze: #70552F;
+      --parchment: #E8D9B8;
       --ivory: #F4EBDD;
+      --gold-glow: rgba(169, 132, 69, 0.25);
       --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.85);
     }
     ::-webkit-scrollbar { width: 4px; }
@@ -42,7 +47,6 @@
       z-index: 999;
       display: inline-block;
       touch-action: manipulation;
-      cursor: pointer;
     }
     .trigger-wrapper {
       position: relative;
@@ -157,7 +161,7 @@
       transition: transform 0.1s ease-out, opacity 0.1s ease-out;
     }
 
-    /* ─── HERO SECTION – TRIDENT PULSE ───────────────────────────── */
+    /* ─── HERO SECTION ────────────────────────────────────────────── */
     .hero-section {
       position: relative;
       height: 100dvh;
@@ -166,7 +170,6 @@
       z-index: 1;
       transform-origin: center top;
       will-change: transform, opacity;
-      touch-action: pan-y;
     }
     .hero-section .video-container {
       position: absolute;
@@ -175,14 +178,13 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      will-change: filter, transform;
     }
     .hero-section .video-container video {
       width: 100%;
       height: 100%;
       object-fit: cover;
       pointer-events: none;
-      will-change: transform;
+      filter: brightness(0.85) saturate(0.9) contrast(1.1);
     }
     .hero-section .overlay {
       position: absolute;
@@ -194,72 +196,71 @@
       background:
         radial-gradient(ellipse at 50% 60%, rgba(4, 18, 23, 0.2) 0%, rgba(4, 18, 23, 0.6) 70%, rgba(4, 18, 23, 0.85) 100%),
         linear-gradient(180deg, rgba(4, 18, 23, 0.3) 0%, transparent 30%, transparent 70%, rgba(4, 18, 23, 0.7) 100%);
-      pointer-events: none;
     }
-
-    /* ─── Trident Pulse Elements ──────────────────────────────────── */
-    .trident-flash {
+    /* Light rays & particles remain but are subtle */
+    .light-rays {
       position: absolute;
       inset: 0;
-      z-index: 3;
-      pointer-events: none;
-      opacity: 0;
-      background: radial-gradient(ellipse at center, rgba(169, 132, 69, 0.15), transparent 70%);
-      transition: opacity 0.1s ease;
-      mix-blend-mode: overlay;
-      will-change: opacity;
-    }
-    .trident-flash.active {
-      opacity: 1;
-    }
-
-    .pulse-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 30%;
-      max-width: 400px;
-      aspect-ratio: 1/1;
-      border-radius: 50%;
-      border: 1px solid rgba(169, 132, 69, 0.05);
       z-index: 2;
       pointer-events: none;
-      animation: heartPulse 4s ease-in-out infinite;
-      box-shadow: inset 0 0 80px rgba(169, 132, 69, 0.02);
-      will-change: transform, opacity;
+      overflow: hidden;
+      opacity: 0.15;
+      will-change: transform;
     }
-    @keyframes heartPulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
-      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
+    .light-rays .ray {
+      position: absolute;
+      width: 2px;
+      height: 120%;
+      top: -10%;
+      background: linear-gradient(180deg, rgba(169, 132, 69, 0.3), transparent 80%);
+      transform: rotate(var(--angle, 10deg));
+      left: var(--x, 20%);
+      animation: rayDrift var(--dur, 12s) ease-in-out infinite alternate;
     }
-
-    /* ─── Golden Particles ────────────────────────────────────────── */
-    .golden-particles {
+    .light-rays .ray:nth-child(1) { --x: 15%; --angle: 8deg; --dur: 14s; height: 140%; }
+    .light-rays .ray:nth-child(2) { --x: 35%; --angle: -4deg; --dur: 18s; height: 110%; opacity: 0.6; }
+    .light-rays .ray:nth-child(3) { --x: 55%; --angle: 12deg; --dur: 16s; height: 130%; opacity: 0.4; }
+    .light-rays .ray:nth-child(4) { --x: 75%; --angle: -6deg; --dur: 20s; height: 100%; opacity: 0.3; }
+    .light-rays .ray:nth-child(5) { --x: 90%; --angle: 5deg; --dur: 13s; height: 150%; opacity: 0.5; }
+    @keyframes rayDrift {
+      0% { transform: rotate(var(--angle, 10deg)) translateX(-30px); opacity: 0.3; }
+      100% { transform: rotate(calc(var(--angle, 10deg) + 2deg)) translateX(30px); opacity: 0.8; }
+    }
+    .particles {
       position: absolute;
       inset: 0;
-      z-index: 3;
+      z-index: 2;
       pointer-events: none;
       overflow: hidden;
       will-change: transform;
+      opacity: 0.4;
     }
-    .golden-particles .gp-particle {
+    .particles .part {
       position: absolute;
-      width: 3px;
-      height: 3px;
-      background: radial-gradient(circle, rgba(192, 154, 82, 0.8), rgba(169, 132, 69, 0.2));
+      width: 2px;
+      height: 2px;
+      background: rgba(192, 154, 82, 0.2);
       border-radius: 50%;
-      pointer-events: none;
-      will-change: transform, opacity;
-      box-shadow: 0 0 10px rgba(169, 132, 69, 0.2);
-      animation: gpFloat 3s ease-out forwards;
+      animation: floatPart var(--dur, 20s) ease-in-out infinite alternate;
+      left: var(--x, 10%);
+      top: var(--y, 10%);
+      --dur: 20s;
     }
-    @keyframes gpFloat {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      100% { transform: translate(var(--tx, 100px), var(--ty, -200px)) scale(0); opacity: 0; }
+    .particles .part:nth-child(1) { --x: 10%; --y: 20%; --dur: 22s; width: 3px; height: 3px; opacity: 0.3; }
+    .particles .part:nth-child(2) { --x: 25%; --y: 60%; --dur: 18s; opacity: 0.25; }
+    .particles .part:nth-child(3) { --x: 45%; --y: 15%; --dur: 25s; width: 4px; height: 4px; opacity: 0.2; }
+    .particles .part:nth-child(4) { --x: 60%; --y: 70%; --dur: 16s; opacity: 0.3; }
+    .particles .part:nth-child(5) { --x: 78%; --y: 30%; --dur: 21s; width: 3px; height: 3px; opacity: 0.22; }
+    .particles .part:nth-child(6) { --x: 90%; --y: 55%; --dur: 19s; opacity: 0.28; }
+    .particles .part:nth-child(7) { --x: 50%; --y: 85%; --dur: 23s; width: 2px; height: 2px; opacity: 0.2; }
+    .particles .part:nth-child(8) { --x: 5%; --y: 45%; --dur: 17s; opacity: 0.25; }
+    @keyframes floatPart {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+      50% { opacity: 0.4; }
+      100% { transform: translate(calc(var(--x, 10%) * 0.6), calc(var(--y, 10%) * -0.4)) scale(1.8); opacity: 0.1; }
     }
 
-    /* ─── Hero Content – HIGH OPACITY ────────────────────────────── */
+    /* ─── HERO CONTENT (Titling at top) ───────────────────────────── */
     .hero-center {
       position: absolute;
       top: 12vh;
@@ -269,8 +270,7 @@
       text-align: center;
       padding: 0 20px;
       pointer-events: none;
-      will-change: transform, opacity;
-      opacity: 1 !important;
+      will-change: transform;
     }
     .hero-title {
       font-family: 'Cinzel', serif;
@@ -282,13 +282,10 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(0 4px 20px rgba(169, 132, 69, 0.4)) drop-shadow(0 0 60px rgba(0, 0, 0, 0.6));
+      filter: drop-shadow(0 4px 12px rgba(169, 132, 69, 0.3)) drop-shadow(0 0 40px rgba(0, 0, 0, 0.5));
       line-height: 1.05;
       margin-bottom: 4px;
-      text-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s ease, letter-spacing 0.3s ease;
-      opacity: 1 !important;
-      color: #FFF8E7;
+      text-shadow: 0 0 60px rgba(0, 0, 0, 0.4);
     }
     .hero-title .accent {
       font-weight: 400;
@@ -307,11 +304,9 @@
       font-size: clamp(0.9rem, 2.5vw, 1.6rem);
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(244, 235, 221, 0.95);
-      text-shadow: 0 2px 40px rgba(0, 0, 0, 0.95);
+      color: rgba(232, 217, 184, 0.95);
+      text-shadow: 0 2px 30px rgba(0, 0, 0, 0.9);
       margin-top: 2px;
-      transition: transform 0.3s ease;
-      opacity: 1 !important;
     }
     .hero-subtitle .gold { color: var(--gold-bright); font-weight: 700; }
     .hero-subtitle .divider {
@@ -328,15 +323,12 @@
       font-size: clamp(0.55rem, 1.1vw, 0.85rem);
       letter-spacing: 0.4em;
       text-transform: uppercase;
-      color: rgba(192, 154, 82, 0.7);
+      color: rgba(192, 154, 82, 0.6);
       margin-top: 16px;
-      text-shadow: 0 2px 30px rgba(0, 0, 0, 0.9);
-      transition: transform 0.3s ease;
-      opacity: 1 !important;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
     }
-    .hero-tagline .ornament { display: inline-block; margin: 0 8px; opacity: 0.6; }
+    .hero-tagline .ornament { display: inline-block; margin: 0 8px; opacity: 0.5; }
 
-    /* ─── Explore CTA ────────────────────────────────────────────── */
     .explore-cta {
       position: absolute;
       bottom: 40px;
@@ -351,7 +343,6 @@
       gap: 6px;
       opacity: 0.5;
       animation: pulseDescend 4s ease-in-out infinite;
-      transition: opacity 0.8s ease;
     }
     .explore-cta span {
       font-family: 'Cinzel', serif;
@@ -1150,24 +1141,25 @@
   <!-- ─── SCROLL CONTAINER ──────────────────────────────────────────────── -->
   <div class="scroll-container" id="scrollContainer">
 
-    <!-- HERO – TRIDENT PULSE -->
+    <!-- HERO -->
     <section class="hero-section" id="hero">
-      <div class="video-container" id="videoContainer">
+      <div class="video-container">
         <video autoplay muted loop playsinline webkit-playsinline preload="auto">
           <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1788184746/Untitled_video_1.mp4" type="video/mp4" />
         </video>
       </div>
       <div class="overlay"></div>
-      
-      <!-- Trident Pulse Elements -->
-      <div class="trident-flash" id="tridentFlash"></div>
-      <div class="pulse-ring"></div>
-      <div class="golden-particles" id="goldenParticles"></div>
-      
-      <div class="hero-center" id="heroCenter">
-        <div class="hero-title" id="heroTitle">DEPLOMAT<span class="accent">2K26</span></div>
-        <div class="hero-subtitle" id="heroSubtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
-        <div class="hero-tagline" id="heroTagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
+      <div class="light-rays">
+        <div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div>
+      </div>
+      <div class="particles">
+        <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
+        <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
+      </div>
+      <div class="hero-center">
+        <div class="hero-title">DEPLOMAT<span class="accent">2K26</span></div>
+        <div class="hero-subtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
+        <div class="hero-tagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
       </div>
       <div class="explore-cta"><span>Descend</span><div class="mouse-line"></div></div>
     </section>
@@ -1511,223 +1503,75 @@
 
     buildCarousel();
 
-    // ─── TRIDENT PULSE – RHYTHM-BASED MICRO-INTERACTIONS ──────────
+    // ─── HERO MOUSE PARALLAX (desktop only) ────────────────────────
     const heroSection = document.getElementById('hero');
-    const videoContainer = document.getElementById('videoContainer');
-    const heroTitle = document.getElementById('heroTitle');
-    const heroSubtitle = document.getElementById('heroSubtitle');
-    const heroTagline = document.getElementById('heroTagline');
-    const tridentFlash = document.getElementById('tridentFlash');
-    const particleContainer = document.getElementById('goldenParticles');
-    
-    let lastScrollY = window.scrollY;
-    let scrollVelocity = 0;
-    let velocityHistory = [];
-    let flashTimeout = null;
-    let particleInterval = null;
-    let idlePulseTimer = null;
-    let isIdle = false;
-    let idleTimeout = null;
-
-    // ─── Scroll Velocity Detection ──────────────────────────────────
-    function getScrollVelocity() {
-      const scrollY = window.scrollY;
-      const dt = 0.016;
-      const newVelocity = (scrollY - lastScrollY) / dt;
-      velocityHistory.push(newVelocity);
-      if (velocityHistory.length > 15) velocityHistory.shift();
-      const avgVelocity = velocityHistory.reduce((a, b) => a + b, 0) / velocityHistory.length;
-      lastScrollY = scrollY;
-      return avgVelocity;
-    }
-
-    // ─── Spawn Golden Particle ──────────────────────────────────────
-    function spawnParticle(burst = false) {
-      const container = particleContainer;
-      const particle = document.createElement('div');
-      particle.className = 'gp-particle';
-      
-      const x = burst ? 20 + Math.random() * 60 : Math.random() * 100;
-      const y = burst ? 20 + Math.random() * 60 : Math.random() * 100;
-      
-      const angle = Math.random() * Math.PI * 2;
-      const distance = burst ? 150 + Math.random() * 250 : 30 + Math.random() * 120;
-      const tx = Math.cos(angle) * distance;
-      const ty = Math.sin(angle) * distance - 80;
-      
-      particle.style.left = x + '%';
-      particle.style.top = y + '%';
-      particle.style.setProperty('--tx', tx + 'px');
-      particle.style.setProperty('--ty', ty + 'px');
-      particle.style.width = (burst ? 2 + Math.random() * 4 : 2 + Math.random() * 2) + 'px';
-      particle.style.height = particle.style.width;
-      particle.style.background = burst ? 
-        `radial-gradient(circle, rgba(230, 200, 117, 0.9), rgba(169, 132, 69, 0.3))` :
-        `radial-gradient(circle, rgba(192, 154, 82, 0.6), rgba(169, 132, 69, 0.15))`;
-      particle.style.boxShadow = burst ? '0 0 20px rgba(169, 132, 69, 0.3)' : '0 0 10px rgba(169, 132, 69, 0.1)';
-      particle.style.animationDuration = (2 + Math.random() * 2) + 's';
-      
-      container.appendChild(particle);
-      
-      setTimeout(() => {
-        if (particle.parentNode) particle.remove();
-      }, 4000);
-    }
-
-    // ─── Trident Pulse – Flash Effect ──────────────────────────────
-    function triggerTridentPulse() {
-      if (flashTimeout) return;
-      
-      // Flash
-      tridentFlash.classList.add('active');
-      
-      // Burst of particles
-      for (let i = 0; i < 20; i++) {
-        setTimeout(() => spawnParticle(true), i * 15);
-      }
-      
-      // Text pulse
-      heroTitle.style.transform = 'scale(1.04)';
-      heroTitle.style.letterSpacing = '0.18em';
-      heroSubtitle.style.transform = 'scale(1.02)';
-      heroTagline.style.transform = 'scale(1.02)';
-      
-      flashTimeout = setTimeout(() => {
-        tridentFlash.classList.remove('active');
-        heroTitle.style.transform = 'scale(1)';
-        heroTitle.style.letterSpacing = '0.12em';
-        heroSubtitle.style.transform = 'scale(1)';
-        heroTagline.style.transform = 'scale(1)';
-        flashTimeout = null;
-      }, 300);
-    }
-
-    // ─── Idle State – Gentle Breathing ─────────────────────────────
-    function startIdlePulse() {
-      if (idlePulseTimer) return;
-      isIdle = true;
-      
-      let breathPhase = 0;
-      idlePulseTimer = setInterval(() => {
-        breathPhase += 0.02;
-        const breath = Math.sin(breathPhase) * 0.5 + 0.5;
-        const scale = 0.98 + (breath * 0.04);
-        const opacity = 0.85 + (breath * 0.15);
-        
-        heroTitle.style.transform = `scale(${scale})`;
-        heroTitle.style.opacity = opacity;
-        heroSubtitle.style.transform = `scale(${0.98 + breath * 0.02})`;
-        heroTagline.style.transform = `scale(${0.98 + breath * 0.02})`;
-        
-        // Spawn occasional idle particles
-        if (Math.random() < 0.15) {
-          spawnParticle(false);
-        }
-      }, 50);
-    }
-
-    function stopIdlePulse() {
-      if (idlePulseTimer) {
-        clearInterval(idlePulseTimer);
-        idlePulseTimer = null;
-      }
-      isIdle = false;
-      heroTitle.style.transform = 'scale(1)';
-      heroTitle.style.opacity = '1';
-      heroSubtitle.style.transform = 'scale(1)';
-      heroTagline.style.transform = 'scale(1)';
-    }
-
-    // ─── Main Scroll Handler ────────────────────────────────────────
-    let scrollTicking = false;
-    window.addEventListener('scroll', () => {
-      if (!scrollTicking) {
-        window.requestAnimationFrame(() => {
-          const velocity = getScrollVelocity();
-          const absVelocity = Math.abs(velocity);
-          
-          // ─── Trident Pulse on fast scroll ────────────────────────
-          const threshold = isMobile ? 600 : 400;
-          if (absVelocity > threshold) {
-            triggerTridentPulse();
-            // Reset idle timer
-            if (idleTimeout) clearTimeout(idleTimeout);
-            stopIdlePulse();
-            idleTimeout = setTimeout(() => {
-              startIdlePulse();
-            }, 3000);
-          }
-          
-          // ─── Video clarity based on scroll speed ──────────────────
-          const speedFactor = Math.min(absVelocity / 800, 1);
-          const blurAmount = Math.max(0, 4 - (speedFactor * 4));
-          const brightnessAmount = 0.6 + (speedFactor * 0.4);
-          const saturateAmount = 0.7 + (speedFactor * 0.3);
-          
-          videoContainer.style.filter = `
-            blur(${blurAmount}px) 
-            brightness(${brightnessAmount})
-            saturate(${saturateAmount})
-          `;
-          
-          // ─── Text displacement from scroll velocity ──────────────
-          const shiftX = Math.min(velocity * 0.02, 8);
-          const shiftY = Math.min(Math.abs(velocity) * 0.01, 4);
-          heroTitle.style.transform = `translate(${shiftX}px, ${shiftY}px)`;
-          heroSubtitle.style.transform = `translate(${shiftX * 0.7}px, ${shiftY * 0.7}px)`;
-          heroTagline.style.transform = `translate(${shiftX * 0.5}px, ${shiftY * 0.5}px)`;
-          
-          // ─── Idle detection ──────────────────────────────────────
-          if (absVelocity < 20) {
-            if (!isIdle && !idleTimeout) {
-              idleTimeout = setTimeout(() => {
-                startIdlePulse();
-                idleTimeout = null;
-              }, 2000);
-            }
-          } else {
-            if (idleTimeout) {
-              clearTimeout(idleTimeout);
-              idleTimeout = null;
-            }
-            stopIdlePulse();
-          }
-          
-          scrollTicking = false;
-        });
-        scrollTicking = true;
-      }
-    }, { passive: true });
-
-    // ─── Mouse Move: Gentle particle trail (desktop only) ──────────
     if (!isMobile) {
       heroSection.addEventListener('mousemove', (e) => {
-        if (!isDragging && !isSnapping) {
-          // Spawn a small particle at cursor
-          const rect = heroSection.getBoundingClientRect();
-          const x = ((e.clientX - rect.left) / rect.width) * 100;
-          const y = ((e.clientY - rect.top) / rect.height) * 100;
-          
-          const particle = document.createElement('div');
-          particle.className = 'gp-particle';
-          particle.style.left = x + '%';
-          particle.style.top = y + '%';
-          particle.style.setProperty('--tx', (Math.random() - 0.5) * 60 + 'px');
-          particle.style.setProperty('--ty', -30 + Math.random() * -60 + 'px');
-          particle.style.width = '2px';
-          particle.style.height = '2px';
-          particle.style.background = 'radial-gradient(circle, rgba(230, 200, 117, 0.5), rgba(169, 132, 69, 0.1))';
-          particle.style.boxShadow = '0 0 15px rgba(169, 132, 69, 0.1)';
-          particleContainer.appendChild(particle);
-          setTimeout(() => { if (particle.parentNode) particle.remove(); }, 1200);
-        }
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        const rays = document.querySelector('.light-rays');
+        const particles = document.querySelector('.particles');
+        const heroCenter = document.querySelector('.hero-center');
+        if (rays) rays.style.transform = `translate(${x * 12}px, ${y * 12}px)`;
+        if (particles) particles.style.transform = `translate(${x * -8}px, ${y * -8}px)`;
+        if (heroCenter) heroCenter.style.transform = `translate(${x * -4}px, ${y * -4}px)`;
       });
     }
 
-    // ─── Start idle after load ──────────────────────────────────────
-    setTimeout(() => {
-      startIdlePulse();
-    }, 2000);
+    // ─── 2D SCROLL INTERACTION ──────────────────────────────────────
+    const scrollContainer = document.getElementById('scrollContainer');
+    const hero = document.getElementById('hero');
+    const explore = document.getElementById('explore');
+    const promo = document.getElementById('promo');
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+
+          if (hero) {
+            const heroScale = Math.max(0.92, 1 - scrollY * 0.0004);
+            const heroOpacity = Math.max(0, 1 - scrollY * 0.0015);
+            hero.style.transform = `scale(${heroScale})`;
+            hero.style.opacity = heroOpacity;
+          }
+
+          if (explore) {
+            const rect = explore.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+            if (rect.top < viewHeight && rect.bottom > 0) {
+              const progressExp = 1 - (rect.top / viewHeight);
+              const clamped = Math.min(Math.max(progressExp, 0), 1);
+              const scale = 0.96 + (clamped * 0.04);
+              explore.style.transform = `scale(${scale})`;
+              explore.style.opacity = 0.6 + (clamped * 0.4);
+            }
+          }
+
+          if (promo) {
+            const rect = promo.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+            if (rect.top < viewHeight && rect.bottom > 0) {
+              const progressPromo = 1 - (rect.top / viewHeight);
+              const clamped = Math.min(Math.max(progressPromo, 0), 1);
+              const scale = 0.96 + (clamped * 0.04);
+              promo.style.transform = `scale(${scale})`;
+              promo.style.opacity = 0.6 + (clamped * 0.4);
+            }
+          }
+
+          const tiltX = (progress - 0.5) * 4;
+          const tiltY = (progress - 0.5) * 2;
+          scrollContainer.style.transform = `perspective(800px) rotateX(${tiltX * 0.25}deg) rotateY(${tiltY * 0.15}deg)`;
+          scrollContainer.style.opacity = Math.min(1, 1 - (progress * 0.12));
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
 
     // ─── DROPDOWN ──────────────────────────────────────────────────────
     const trigger = document.getElementById('logoTrigger');
@@ -1873,7 +1717,7 @@
     loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginForm.dispatchEvent(new Event('submit')); });
 
     setRole('admin');
-    console.log('⚡ DEPLOMAT · Trident Pulse (Rhythm-Based Micro-Interactions)');
+    console.log('🔱 DEPLOMAT · Atlantis Immersive v3.2 (Video Hero)');
   </script>
 </body>
 </html>
