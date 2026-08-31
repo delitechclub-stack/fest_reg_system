@@ -1,0 +1,15 @@
+warning: in the working copy of '.vercelignore', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/.vercelignore b/.vercelignore[m
+[1mindex c233608..1930e91 100644[m
+[1m--- a/.vercelignore[m
+[1m+++ b/.vercelignore[m
+[36m@@ -1,5 +1,4 @@[m
+[31m-﻿node_modules/[m
+[31m-dist/[m
+[31m-.vite/[m
+[32m+[m[32m﻿node_modules[m
+ *.log[m
+[31m-.DS_Store[m
+\ No newline at end of file[m
+[32m+[m[32m.DS_Store[m
+[32m+[m[32mREADME.md[m
