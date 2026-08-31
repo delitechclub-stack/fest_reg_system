@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>DEPLOMAT · Atlantis Immersive</title>
+  <title>DEPLOMAT · Abyss Pull</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
@@ -20,6 +20,7 @@
       -moz-osx-font-smoothing: grayscale;
       user-select: none;
       touch-action: pan-y;
+      cursor: none;
     }
     :root {
       --abyss: #041217;
@@ -47,6 +48,7 @@
       z-index: 999;
       display: inline-block;
       touch-action: manipulation;
+      cursor: pointer;
     }
     .trigger-wrapper {
       position: relative;
@@ -161,7 +163,7 @@
       transition: transform 0.1s ease-out, opacity 0.1s ease-out;
     }
 
-    /* ─── HERO SECTION ────────────────────────────────────────────── */
+    /* ─── HERO SECTION – THE ABYSS PULL ──────────────────────────── */
     .hero-section {
       position: relative;
       height: 100dvh;
@@ -178,12 +180,16 @@
       width: 100%;
       height: 100%;
       z-index: 0;
+      will-change: filter, transform;
+      transition: filter 0.3s ease;
     }
     .hero-section .video-container video {
       width: 100%;
       height: 100%;
       object-fit: cover;
       pointer-events: none;
+      will-change: filter, transform;
+      transition: filter 0.3s ease;
     }
     .hero-section .overlay {
       position: absolute;
@@ -193,98 +199,47 @@
       height: 100%;
       z-index: 1;
       background:
-        radial-gradient(ellipse at 50% 60%, rgba(4, 18, 23, 0.2) 0%, rgba(4, 18, 23, 0.65) 70%, rgba(4, 18, 23, 0.85) 100%),
-        linear-gradient(180deg, rgba(4, 18, 23, 0.2) 0%, transparent 40%, transparent 70%, rgba(4, 18, 23, 0.6) 100%);
-    }
-    .light-rays {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
+        radial-gradient(ellipse at 50% 60%, rgba(4, 18, 23, 0.2) 0%, rgba(4, 18, 23, 0.6) 70%, rgba(4, 18, 23, 0.85) 100%),
+        linear-gradient(180deg, rgba(4, 18, 23, 0.3) 0%, transparent 30%, transparent 70%, rgba(4, 18, 23, 0.7) 100%);
       pointer-events: none;
-      overflow: hidden;
-      opacity: 0.2;
-      will-change: transform;
     }
-    .light-rays .ray {
+
+    /* ─── SVG Distortion Filter ────────────────────────────────────── */
+    .distortion-filter {
       position: absolute;
-      width: 2px;
-      height: 120%;
-      top: -10%;
-      background: linear-gradient(180deg, rgba(169, 132, 69, 0.4), transparent 80%);
-      transform: rotate(var(--angle, 10deg));
-      left: var(--x, 20%);
-      animation: rayDrift var(--dur, 12s) ease-in-out infinite alternate;
-    }
-    .light-rays .ray:nth-child(1) { --x: 15%; --angle: 8deg; --dur: 14s; height: 140%; }
-    .light-rays .ray:nth-child(2) { --x: 35%; --angle: -4deg; --dur: 18s; height: 110%; opacity: 0.6; }
-    .light-rays .ray:nth-child(3) { --x: 55%; --angle: 12deg; --dur: 16s; height: 130%; opacity: 0.4; }
-    .light-rays .ray:nth-child(4) { --x: 75%; --angle: -6deg; --dur: 20s; height: 100%; opacity: 0.3; }
-    .light-rays .ray:nth-child(5) { --x: 90%; --angle: 5deg; --dur: 13s; height: 150%; opacity: 0.5; }
-    @keyframes rayDrift {
-      0% { transform: rotate(var(--angle, 10deg)) translateX(-30px); opacity: 0.3; }
-      100% { transform: rotate(calc(var(--angle, 10deg) + 2deg)) translateX(30px); opacity: 0.8; }
-    }
-    .particles {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
+      width: 0;
+      height: 0;
       pointer-events: none;
-      overflow: hidden;
-      will-change: transform;
     }
-    .particles .part {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: rgba(192, 154, 82, 0.25);
-      border-radius: 50%;
-      animation: floatPart var(--dur, 20s) ease-in-out infinite alternate;
-      left: var(--x, 10%);
-      top: var(--y, 10%);
-      --dur: 20s;
-    }
-    .particles .part:nth-child(1) { --x: 10%; --y: 20%; --dur: 22s; width: 3px; height: 3px; opacity: 0.3; }
-    .particles .part:nth-child(2) { --x: 25%; --y: 60%; --dur: 18s; opacity: 0.25; }
-    .particles .part:nth-child(3) { --x: 45%; --y: 15%; --dur: 25s; width: 4px; height: 4px; opacity: 0.2; }
-    .particles .part:nth-child(4) { --x: 60%; --y: 70%; --dur: 16s; opacity: 0.3; }
-    .particles .part:nth-child(5) { --x: 78%; --y: 30%; --dur: 21s; width: 3px; height: 3px; opacity: 0.22; }
-    .particles .part:nth-child(6) { --x: 90%; --y: 55%; --dur: 19s; opacity: 0.28; }
-    .particles .part:nth-child(7) { --x: 50%; --y: 85%; --dur: 23s; width: 2px; height: 2px; opacity: 0.2; }
-    .particles .part:nth-child(8) { --x: 5%; --y: 45%; --dur: 17s; opacity: 0.25; }
-    @keyframes floatPart {
-      0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
-      50% { opacity: 0.4; }
-      100% { transform: translate(calc(var(--x, 10%) * 0.6), calc(var(--y, 10%) * -0.4)) scale(1.8); opacity: 0.1; }
-    }
+
+    /* ─── Hero Content ────────────────────────────────────────────── */
     .hero-center {
       position: absolute;
-      top: 0;
+      top: 12vh;
       left: 0;
       width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       z-index: 5;
       text-align: center;
       padding: 0 20px;
       pointer-events: none;
-      will-change: transform;
+      will-change: transform, opacity;
+      transition: transform 0.1s ease-out;
     }
     .hero-title {
       font-family: 'Cinzel', serif;
       font-weight: 900;
-      font-size: clamp(2.4rem, 10vw, 6rem);
+      font-size: clamp(2.8rem, 12vw, 6.5rem);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(0 4px 12px rgba(169, 132, 69, 0.3));
+      filter: drop-shadow(0 4px 12px rgba(169, 132, 69, 0.3)) drop-shadow(0 0 40px rgba(0, 0, 0, 0.5));
       line-height: 1.05;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 60px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s ease-out, letter-spacing 0.2s ease;
     }
     .hero-title .accent {
       font-weight: 400;
@@ -300,33 +255,80 @@
     .hero-subtitle {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 600;
-      font-size: clamp(0.8rem, 2.2vw, 1.4rem);
+      font-size: clamp(0.9rem, 2.5vw, 1.6rem);
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(232, 217, 184, 0.85);
-      text-shadow: 0 2px 30px rgba(0, 0, 0, 0.8);
+      color: rgba(232, 217, 184, 0.95);
+      text-shadow: 0 2px 30px rgba(0, 0, 0, 0.9);
       margin-top: 2px;
+      transition: transform 0.1s ease-out;
     }
     .hero-subtitle .gold { color: var(--gold-bright); font-weight: 700; }
     .hero-subtitle .divider {
       display: inline-block;
       width: 1px;
       height: 0.8em;
-      background: rgba(169, 132, 69, 0.4);
+      background: rgba(169, 132, 69, 0.5);
       margin: 0 12px;
       vertical-align: middle;
     }
     .hero-tagline {
       font-family: 'Cinzel', serif;
       font-weight: 400;
-      font-size: clamp(0.5rem, 1vw, 0.75rem);
+      font-size: clamp(0.55rem, 1.1vw, 0.85rem);
       letter-spacing: 0.4em;
       text-transform: uppercase;
-      color: rgba(192, 154, 82, 0.5);
-      margin-top: 14px;
-      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+      color: rgba(192, 154, 82, 0.6);
+      margin-top: 16px;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+      transition: transform 0.1s ease-out;
     }
     .hero-tagline .ornament { display: inline-block; margin: 0 8px; opacity: 0.5; }
+
+    /* ─── Custom Cursor ────────────────────────────────────────────── */
+    .custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(169, 132, 69, 0.3);
+      background: radial-gradient(circle, rgba(169, 132, 69, 0.05), transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+      mix-blend-mode: screen;
+      box-shadow: 0 0 30px rgba(169, 132, 69, 0.05);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    .custom-cursor .cursor-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 20px rgba(169, 132, 69, 0.3);
+      transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    }
+    .custom-cursor.active {
+      width: 80px;
+      height: 80px;
+      border-color: rgba(169, 132, 69, 0.6);
+      background: radial-gradient(circle, rgba(169, 132, 69, 0.12), transparent 70%);
+      box-shadow: 0 0 60px rgba(169, 132, 69, 0.1);
+    }
+    .custom-cursor.active .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--gold-bright);
+      box-shadow: 0 0 30px rgba(169, 132, 69, 0.5);
+    }
+
+    /* ─── Explore CTA ────────────────────────────────────────────── */
     .explore-cta {
       position: absolute;
       bottom: 40px;
@@ -341,6 +343,7 @@
       gap: 6px;
       opacity: 0.5;
       animation: pulseDescend 4s ease-in-out infinite;
+      transition: opacity 0.8s ease;
     }
     .explore-cta span {
       font-family: 'Cinzel', serif;
@@ -1042,6 +1045,8 @@
 
     /* ─── RESPONSIVE ────────────────────────────────────────────────── */
     @media (max-width: 768px) {
+      body { cursor: auto; }
+      .custom-cursor { display: none; }
       .header { top: 16px; left: 16px; }
       .logo-emblem { width: 38px; height: 38px; }
       .epic-dropdown { top: 48px; min-width: 150px; max-width: calc(100vw - 40px); padding: 6px 0; }
@@ -1065,8 +1070,9 @@
       .promo-countdown .cd-item { padding: 10px 14px; min-width: 50px; }
       .promo-countdown .cd-item span { font-size: 1.8rem; }
       .promo-countdown .cd-item small { font-size: 0.35rem; }
-      .hero-title { font-size: clamp(2rem, 8vw, 3.6rem); }
-      .hero-subtitle { font-size: clamp(0.65rem, 1.8vw, 0.9rem); letter-spacing: 0.2em; }
+      .hero-title { font-size: clamp(2.2rem, 8vw, 4rem); }
+      .hero-subtitle { font-size: clamp(0.7rem, 1.8vw, 1rem); letter-spacing: 0.2em; }
+      .hero-center { top: 10vh; }
     }
     @media (max-width: 480px) {
       .carousel-track .event-card { flex: 0 0 clamp(150px, 55vw, 200px); aspect-ratio: 5 / 7; min-height: 170px; max-height: 320px; border-radius: 12px; padding: 12px 10px 10px 10px; }
@@ -1080,9 +1086,10 @@
       .promo-countdown .cd-item small { font-size: 0.3rem; letter-spacing: 0.15em; }
       .event-date-display { font-size: clamp(0.7rem, 2.5vw, 1rem); letter-spacing: 0.06em; margin-bottom: 12px; }
       .event-date-display::after { width: 25%; max-width: 80px; }
-      .hero-title { font-size: clamp(1.6rem, 7vw, 2.6rem); }
-      .hero-subtitle { font-size: clamp(0.55rem, 1.5vw, 0.75rem); letter-spacing: 0.15em; }
-      .hero-tagline { font-size: clamp(0.4rem, 0.8vw, 0.5rem); letter-spacing: 0.25em; }
+      .hero-title { font-size: clamp(1.8rem, 7vw, 3rem); }
+      .hero-subtitle { font-size: clamp(0.6rem, 1.5vw, 0.8rem); letter-spacing: 0.15em; }
+      .hero-tagline { font-size: clamp(0.4rem, 0.8vw, 0.55rem); letter-spacing: 0.25em; }
+      .hero-center { top: 8vh; }
       .login-modal { padding: 20px 12px 16px 12px; }
       .login-modal h3 { font-size: 1.4rem; }
       .role-selector .role-btn { min-width: 40px; padding: 4px 2px; font-size: 0.35rem; }
@@ -1095,7 +1102,8 @@
       .carousel-track .event-card .card-sub { font-size: clamp(0.35rem, 0.7vw, 0.4rem); }
       .event-date-display { font-size: clamp(0.6rem, 2.2vw, 0.8rem); }
       .promo-countdown .cd-item span { font-size: 1.2rem; }
-      .hero-title { font-size: clamp(1.2rem, 6vw, 2rem); }
+      .hero-title { font-size: clamp(1.4rem, 6vw, 2.4rem); }
+      .hero-center { top: 6vh; }
     }
     @media (min-width: 1201px) {
       .carousel-track .event-card { flex: 0 0 clamp(250px, 22vw, 310px); aspect-ratio: 5 / 7; min-height: 300px; max-height: 480px; }
@@ -1103,6 +1111,30 @@
   </style>
 </head>
 <body>
+
+  <!-- ─── CUSTOM CURSOR ──────────────────────────────────────────────── -->
+  <div class="custom-cursor" id="customCursor">
+    <div class="cursor-dot"></div>
+  </div>
+
+  <!-- ─── SVG DISTORTION FILTER ──────────────────────────────────────── -->
+  <svg class="distortion-filter" xmlns="http://www.w3.org/2000/svg">
+    <filter id="abyssDistortion">
+      <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="2" result="turbulence">
+        <animate id="turbulenceAnim" attributeName="baseFrequency" 
+                 values="0.015;0.05;0.015" 
+                 dur="2s" 
+                 repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" 
+                         scale="0" xChannelSelector="R" yChannelSelector="G">
+        <animate id="displacementAnim" attributeName="scale" 
+                 values="0;0;0" 
+                 dur="0.5s" 
+                 repeatCount="indefinite"/>
+      </feDisplacementMap>
+    </filter>
+  </svg>
 
   <!-- FLOATING LOGO -->
   <header class="header">
@@ -1136,25 +1168,19 @@
   <!-- ─── SCROLL CONTAINER ──────────────────────────────────────────────── -->
   <div class="scroll-container" id="scrollContainer">
 
-    <!-- HERO -->
+    <!-- HERO – THE ABYSS PULL -->
     <section class="hero-section" id="hero">
-      <div class="video-container">
+      <div class="video-container" id="videoContainer">
         <video autoplay muted loop playsinline webkit-playsinline preload="auto">
-          <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1787309801/hero-bg.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1788184746/Untitled_video_1.mp4" type="video/mp4" />
         </video>
       </div>
       <div class="overlay"></div>
-      <div class="light-rays">
-        <div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div>
-      </div>
-      <div class="particles">
-        <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
-        <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
-      </div>
-      <div class="hero-center">
-        <div class="hero-title">DEPLOMAT<span class="accent">2K26</span></div>
-        <div class="hero-subtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
-        <div class="hero-tagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
+      
+      <div class="hero-center" id="heroCenter">
+        <div class="hero-title" id="heroTitle">DEPLOMAT<span class="accent">2K26</span></div>
+        <div class="hero-subtitle" id="heroSubtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
+        <div class="hero-tagline" id="heroTagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
       </div>
       <div class="explore-cta"><span>Descend</span><div class="mouse-line"></div></div>
     </section>
@@ -1498,73 +1524,163 @@
 
     buildCarousel();
 
-    // ─── HERO MOUSE PARALLAX (desktop only) ────────────────────────
+    // ─── THE ABYSS PULL – MAGNETIC CURSOR DISTORTION ──────────────
     const heroSection = document.getElementById('hero');
+    const videoContainer = document.getElementById('videoContainer');
+    const heroCenter = document.getElementById('heroCenter');
+    const heroTitle = document.getElementById('heroTitle');
+    const heroSubtitle = document.getElementById('heroSubtitle');
+    const heroTagline = document.getElementById('heroTagline');
+    const customCursor = document.getElementById('customCursor');
+    const turbulenceAnim = document.getElementById('turbulenceAnim');
+    const displacementAnim = document.getElementById('displacementAnim');
+    
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isCursorActive = false;
+    let cursorTimeout = null;
+
+    // ─── Desktop: Custom Cursor + Distortion ──────────────────────
     if (!isMobile) {
-      heroSection.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2;
-        const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        const rays = document.querySelector('.light-rays');
-        const particles = document.querySelector('.particles');
-        const heroCenter = document.querySelector('.hero-center');
-        if (rays) rays.style.transform = `translate(${x * 15}px, ${y * 15}px)`;
-        if (particles) particles.style.transform = `translate(${x * -10}px, ${y * -10}px)`;
-        if (heroCenter) heroCenter.style.transform = `translate(${x * -5}px, ${y * -5}px)`;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        // Move custom cursor
+        customCursor.style.left = mouseX + 'px';
+        customCursor.style.top = mouseY + 'px';
+        
+        // Activate cursor when over hero
+        const rect = heroSection.getBoundingClientRect();
+        const isOverHero = mouseX >= rect.left && mouseX <= rect.right &&
+                          mouseY >= rect.top && mouseY <= rect.bottom;
+        
+        if (isOverHero) {
+          customCursor.classList.add('active');
+          isCursorActive = true;
+          
+          // Calculate distortion strength based on distance from center
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const distX = (mouseX - centerX) / (rect.width / 2);
+          const distY = (mouseY - centerY) / (rect.height / 2);
+          const distance = Math.sqrt(distX * distX + distY * distY);
+          const strength = Math.min(distance * 30, 40);
+          
+          // Apply displacement
+          displacementAnim.setAttribute('values', `0;${strength};0`);
+          
+          // Apply video distortion (CSS filter)
+          const blurAmount = Math.min(distance * 4, 6);
+          const brightnessAmount = 1 - Math.min(distance * 0.15, 0.2);
+          videoContainer.style.filter = `
+            blur(${blurAmount}px) 
+            brightness(${brightnessAmount})
+            saturate(${1 + distance * 0.1})
+          `;
+          
+          // Apply text distortion (shift + scale)
+          targetX = distX * 30;
+          targetY = distY * 20 - 5;
+          
+          // Scale text slightly
+          const scaleAmount = 1 + Math.min(distance * 0.03, 0.04);
+          heroTitle.style.transform = `translate(${targetX}px, ${targetY}px) scale(${scaleAmount})`;
+          heroSubtitle.style.transform = `translate(${targetX * 0.7}px, ${targetY * 0.7}px)`;
+          heroTagline.style.transform = `translate(${targetX * 0.5}px, ${targetY * 0.5}px)`;
+          
+          // Letter spacing effect
+          heroTitle.style.letterSpacing = (0.12 + Math.min(distance * 0.02, 0.02)) + 'em';
+          
+          // Cursor glow
+          customCursor.style.boxShadow = `0 0 ${40 + distance * 20}px rgba(169, 132, 69, ${0.05 + distance * 0.05})`;
+        } else {
+          customCursor.classList.remove('active');
+          isCursorActive = false;
+          // Reset effects
+          videoContainer.style.filter = 'none';
+          heroTitle.style.transform = 'none';
+          heroTitle.style.letterSpacing = '0.12em';
+          heroSubtitle.style.transform = 'none';
+          heroTagline.style.transform = 'none';
+          customCursor.style.boxShadow = 'none';
+          displacementAnim.setAttribute('values', '0;0;0');
+        }
       });
+      
+      // ─── Smooth follow animation ─────────────────────────────────
+      function animateCursor() {
+        if (isCursorActive) {
+          // Smooth spring-like follow
+          currentX += (targetX - currentX) * 0.08;
+          currentY += (targetY - currentY) * 0.08;
+          
+          // Apply smooth transform
+          heroTitle.style.transform = `translate(${currentX}px, ${currentY}px) scale(${1 + Math.min(Math.abs(currentX) / 500, 0.04)})`;
+          heroSubtitle.style.transform = `translate(${currentX * 0.7}px, ${currentY * 0.7}px)`;
+          heroTagline.style.transform = `translate(${currentX * 0.5}px, ${currentY * 0.5}px)`;
+        }
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
     }
 
-    // ─── 2D SCROLL INTERACTION ──────────────────────────────────────
-    const scrollContainer = document.getElementById('scrollContainer');
-    const hero = document.getElementById('hero');
-    const explore = document.getElementById('explore');
-    const promo = document.getElementById('promo');
-    let ticking = false;
+    // ─── Mobile: Gyroscope-based distortion ────────────────────────
+    if (isMobile && window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        const gamma = e.gamma || 0; // -90 to 90
+        const beta = e.beta || 0;   // -180 to 180
+        const x = (gamma / 90) * 15;
+        const y = (beta / 180) * 15 - 5;
+        
+        // Apply subtle distortion
+        const strength = Math.min(Math.abs(x) + Math.abs(y), 20);
+        videoContainer.style.filter = `
+          blur(${strength * 0.2}px) 
+          brightness(${1 - strength * 0.005})
+        `;
+        heroTitle.style.transform = `translate(${x}px, ${y}px)`;
+        heroSubtitle.style.transform = `translate(${x * 0.7}px, ${y * 0.7}px)`;
+        heroTagline.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+      }, { passive: true });
+    }
 
+    // ─── Scroll-based video filter (Atlantis rising effect) ──────
+    let scrollTicking = false;
     window.addEventListener('scroll', () => {
-      if (!ticking) {
+      if (!scrollTicking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
-
-          if (hero) {
-            const heroScale = Math.max(0.92, 1 - scrollY * 0.0004);
-            const heroOpacity = Math.max(0, 1 - scrollY * 0.0015);
-            hero.style.transform = `scale(${heroScale})`;
-            hero.style.opacity = heroOpacity;
+          const maxScroll = window.innerHeight * 0.8;
+          const progress = Math.min(scrollY / maxScroll, 1);
+          
+          // Video clarity increases with scroll
+          const blurAmount = 8 - (progress * 8);
+          const brightnessAmount = 0.4 + (progress * 0.6);
+          const saturateAmount = 0.4 + (progress * 0.7);
+          
+          // Only apply if not being distorted by cursor
+          if (!isCursorActive && !isMobile) {
+            videoContainer.style.filter = `
+              blur(${blurAmount}px) 
+              brightness(${brightnessAmount})
+              saturate(${saturateAmount})
+            `;
           }
-
-          if (explore) {
-            const rect = explore.getBoundingClientRect();
-            const viewHeight = window.innerHeight;
-            if (rect.top < viewHeight && rect.bottom > 0) {
-              const progressExp = 1 - (rect.top / viewHeight);
-              const clamped = Math.min(Math.max(progressExp, 0), 1);
-              const scale = 0.96 + (clamped * 0.04);
-              explore.style.transform = `scale(${scale})`;
-              explore.style.opacity = 0.6 + (clamped * 0.4);
-            }
-          }
-
-          if (promo) {
-            const rect = promo.getBoundingClientRect();
-            const viewHeight = window.innerHeight;
-            if (rect.top < viewHeight && rect.bottom > 0) {
-              const progressPromo = 1 - (rect.top / viewHeight);
-              const clamped = Math.min(Math.max(progressPromo, 0), 1);
-              const scale = 0.96 + (clamped * 0.04);
-              promo.style.transform = `scale(${scale})`;
-              promo.style.opacity = 0.6 + (clamped * 0.4);
-            }
-          }
-
-          const tiltX = (progress - 0.5) * 4;
-          const tiltY = (progress - 0.5) * 2;
-          scrollContainer.style.transform = `perspective(800px) rotateX(${tiltX * 0.25}deg) rotateY(${tiltY * 0.15}deg)`;
-          scrollContainer.style.opacity = Math.min(1, 1 - (progress * 0.12));
-          ticking = false;
+          
+          // Title reveal
+          const titleOpacity = 0.4 + (progress * 0.6);
+          const titleY = 30 - (progress * 30);
+          heroCenter.style.opacity = titleOpacity;
+          heroCenter.style.transform = `translateY(${titleY}px)`;
+          
+          scrollTicking = false;
         });
-        ticking = true;
+        scrollTicking = true;
       }
     }, { passive: true });
 
@@ -1712,7 +1828,7 @@
     loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginForm.dispatchEvent(new Event('submit')); });
 
     setRole('admin');
-    console.log('🔱 DEPLOMAT · Atlantis Immersive v3.1 (Cross-Device Optimized)');
+    console.log('🔱 DEPLOMAT · The Abyss Pull (Magnetic Distortion) v1.0');
   </script>
 </body>
 </html>
