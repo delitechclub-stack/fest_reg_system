@@ -1307,19 +1307,129 @@
         const blockNotice = document.getElementById('blockNotice');
         const blockMsg = document.getElementById('blockMsg');
 
-        // ─── STATE ──────────────────────────────────────────────────────────
-        let currentStep = 1;
-        let players = [];
-        let selectedEvent = null;
-        let currentMin = 1;
-        let currentMax = 12;
-        let selectedCategory = null;
-        let paymentInteractionDone = false;
-        let utrTimerInterval = null;
-        let utrTimeRemaining = 300;
-        let utrValidated = false;
-        let qrVisible = false;
+       // ─── STATE ──────────────────────────────────────────────────────────
+let currentStep = 1;
+let players = [];
+let selectedEvent = null;
+let currentMin = 1;
+let currentMax = 12;
+let selectedCategory = null;
+let paymentInteractionDone = false;
+let utrTimerInterval = null;
+let utrTimeRemaining = 300;
+let utrValidated = false;
+let qrVisible = false;
 
+// ─── PASTE THIS NEW CODE HERE ──────────────────────────────────────
+// SAVE/RESTORE FORM STATE USING localStorage
+function saveFormState() {
+    try {
+        const state = {
+            college: document.getElementById('college').value,
+            ug_pu: document.querySelector('input[name="ug_pu"]:checked')?.value || '',
+            event: document.getElementById('eventSelect').value,
+            players: [],
+            currentStep: currentStep,
+            paymentInteractionDone: paymentInteractionDone,
+            utrTimeRemaining: utrTimeRemaining,
+            utrValue: document.getElementById('txnInput').value
+        };
+        
+        // Save all players data
+        document.querySelectorAll('.player-entry').forEach((entry, index) => {
+            const name = entry.querySelector('.player-name')?.value || '';
+            const email = entry.querySelector('.player-email')?.value || '';
+            const phone = entry.querySelector('.player-phone')?.value || '';
+            state.players.push({ name, email, phone });
+        });
+        
+        localStorage.setItem('deplomat_registration_state', JSON.stringify(state));
+    } catch (e) {
+        console.log('Save state error:', e);
+    }
+}
+
+function restoreFormState() {
+    try {
+        const saved = localStorage.getItem('deplomat_registration_state');
+        if (!saved) return false;
+        
+        const state = JSON.parse(saved);
+        
+        // Restore college
+        document.getElementById('college').value = state.college || '';
+        
+        // Restore UG/PU
+        if (state.ug_pu) {
+            const radio = document.querySelector(`input[name="ug_pu"][value="${state.ug_pu}"]`);
+            if (radio) radio.checked = true;
+        }
+        
+        // Restore event
+        if (state.event) {
+            document.getElementById('eventSelect').value = state.event;
+            document.getElementById('eventSelect').dispatchEvent(new Event('change'));
+        }
+        
+        // Restore players
+        if (state.players && state.players.length > 0) {
+            playersContainer.innerHTML = '';
+            state.players.forEach((player, index) => {
+                const isLeader = index === 0;
+                addPlayer(isLeader);
+                const entry = playersContainer.children[index];
+                if (entry) {
+                    const nameInput = entry.querySelector('.player-name');
+                    if (nameInput) nameInput.value = player.name || '';
+                    if (isLeader) {
+                        const emailInput = entry.querySelector('.player-email');
+                        const phoneInput = entry.querySelector('.player-phone');
+                        if (emailInput) emailInput.value = player.email || '';
+                        if (phoneInput) phoneInput.value = player.phone || '';
+                    }
+                }
+            });
+        }
+        
+        // Restore step
+        if (state.currentStep && state.currentStep > 1) {
+            // We'll handle this after initialization
+            window._restoreStep = state.currentStep;
+        }
+        
+        // Restore UTR if payment was done
+        if (state.paymentInteractionDone && state.utrValue) {
+            paymentInteractionDone = true;
+            paymentInteractionRequired.style.display = 'none';
+            utrArea.classList.add('active');
+            txnInput.disabled = false;
+            txnInput.value = state.utrValue || '';
+            if (state.utrTimeRemaining > 0) {
+                utrTimeRemaining = state.utrTimeRemaining;
+                startUTRTimer();
+            }
+        }
+        
+        return true;
+    } catch (e) {
+        console.log('Restore state error:', e);
+        return false;
+    }
+}
+
+function clearSavedState() {
+    localStorage.removeItem('deplomat_registration_state');
+}
+
+// Auto-save on any form change
+function setupAutoSave() {
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.addEventListener('change', saveFormState);
+        input.addEventListener('input', saveFormState);
+    });
+}
+// ─── END OF PASTE ──────────────────────────────────────────────────
         // ─── HELPERS ──────────────────────────────────────────────────────
         function getSelectedCategory() {
             const checked = document.querySelector('input[name="ug_pu"]:checked');
@@ -1578,7 +1688,11 @@
 
         // ─── OPEN PAYMENT APP ─────────────────────────────────────────────
         function openPaymentApp(app) {
-            const college = collegeInput.value.trim();
+    // ─── ADD THIS LINE AT THE VERY START ───
+    saveFormState(); // Save form data before opening payment app
+    
+    const college = collegeInput.value.trim();
+    // ... rest of existing code stays exactly the same
             const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
             if (!college) { alert('⚠️ Please fill in your college name.'); return; }
             if (!ugPuSelected) { alert('⚠️ Please select UG or PU category.'); return; }
@@ -1683,6 +1797,7 @@
 
         // ─── SUBMIT ──────────────────────────────────────────────────────
         async function submitRegistration() {
+              saveFormState();
             if (!paymentInteractionDone) {
                 alert('⚠️ Please initiate payment by tapping one of the payment buttons first.');
                 paymentInteractionRequired.style.display = 'block';
@@ -1929,17 +2044,77 @@
         });
 
         // ─── INIT ──────────────────────────────────────────────────────────
-        autoSelectEventFromURL();
-        txnInput.disabled = true;
-        paymentInteractionRequired.style.display = 'block';
-        setTimeout(() => {
-            if (playersContainer.children.length === 0) {
-                for (let i = 0; i < Math.max(1, currentMin); i++) addPlayer(i === 0);
-            }
-            updateEventLimitInfo();
-            updateAddButtonState();
-            validateCategoryEventPair();
-        }, 100);
+
+// Try to restore saved state first
+const hasSavedState = restoreFormState();
+
+if (!hasSavedState) {
+    // If no saved state, do normal initialization
+    autoSelectEventFromURL();
+    txnInput.disabled = true;
+    paymentInteractionRequired.style.display = 'block';
+    
+    setTimeout(() => {
+        if (playersContainer.children.length === 0) {
+            for (let i = 0; i < Math.max(1, currentMin); i++) addPlayer(i === 0);
+        }
+        updateEventLimitInfo();
+        updateAddButtonState();
+        validateCategoryEventPair();
+    }, 100);
+} else {
+    // If restored, update UI
+    txnInput.disabled = true;
+    paymentInteractionRequired.style.display = 'block';
+    
+    setTimeout(() => {
+        updateEventLimitInfo();
+        updateAddButtonState();
+        validateCategoryEventPair();
+        
+        // Restore step if saved
+        if (window._restoreStep) {
+            goToStep(window._restoreStep);
+            delete window._restoreStep;
+        }
+    }, 200);
+}
+
+// Setup auto-save
+setupAutoSave();
+
+// Save state before opening payment app (MODIFY openPaymentApp)
+const originalOpenPaymentApp = window.openPaymentApp;
+window.openPaymentApp = function(app) {
+    saveFormState(); // Save before redirect
+    originalOpenPaymentApp(app);
+};
+
+// Save state on step changes
+const originalGoToStep = window.goToStep || goToStep;
+goToStep = function(step) {
+    originalGoToStep(step);
+    saveFormState();
+};
+
+// Clear state on successful submission
+const originalSubmitRegistration = window.submitRegistration || submitRegistration;
+submitRegistration = async function() {
+    await originalSubmitRegistration.call(this);
+    if (currentStep === 5) {
+        clearSavedState(); // Clear saved state on success
+    }
+};
+
+// Also save when switching between steps via buttons
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.btn-primary') || e.target.closest('.btn-secondary')) {
+        setTimeout(saveFormState, 100);
+    }
+});
+
+setTimeout(() => updateQR(EVENT_FEE), 200);
+console.log('🔱 DEPLOMAT Registration · Auto-save enabled');
         setTimeout(() => updateQR(EVENT_FEE), 200);
         console.log('🔱 DEPLOMAT Registration · UTR validation + anti-fake enabled');
     </script>
