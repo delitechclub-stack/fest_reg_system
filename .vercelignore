@@ -1,7 +1,5 @@
-﻿node_modules/
+node_modules/
 .git/
 *.log
 .DS_Store
 *.ps1
-README.md
-.vscode/
