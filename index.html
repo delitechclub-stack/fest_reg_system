@@ -23,16 +23,11 @@
     }
     :root {
       --abyss: #041217;
-      --abyss-light: #061A20;
-      --abyss-mid: #08252B;
       --gold: #A98445;
       --gold-light: #C09A52;
       --gold-bright: #D0AF69;
-      --gold-royal: #E6C875;
       --bronze: #70552F;
-      --parchment: #E8D9B8;
       --ivory: #F4EBDD;
-      --gold-glow: rgba(169, 132, 69, 0.25);
       --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.85);
     }
     ::-webkit-scrollbar { width: 4px; }
@@ -180,16 +175,15 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      will-change: filter, transform;
-      transition: filter 0.1s ease;
+      will-change: filter;
+      transition: filter 0.05s ease;
     }
     .hero-section .video-container video {
       width: 100%;
       height: 100%;
       object-fit: cover;
       pointer-events: none;
-      will-change: filter, transform;
-      transition: filter 0.1s ease;
+      will-change: transform;
     }
     .hero-section .overlay {
       position: absolute;
@@ -204,14 +198,6 @@
       pointer-events: none;
     }
 
-    /* ─── SVG Distortion Filter ────────────────────────────────────── */
-    .distortion-filter {
-      position: absolute;
-      width: 0;
-      height: 0;
-      pointer-events: none;
-    }
-
     /* ─── Hero Content – HIGH OPACITY ────────────────────────────── */
     .hero-center {
       position: absolute;
@@ -223,7 +209,7 @@
       padding: 0 20px;
       pointer-events: none;
       will-change: transform, opacity;
-      transition: transform 0.1s ease-out;
+      transition: transform 0.05s ease-out;
       opacity: 1 !important;
     }
     .hero-title {
@@ -240,7 +226,7 @@
       line-height: 1.05;
       margin-bottom: 4px;
       text-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
-      transition: transform 0.1s ease-out, letter-spacing 0.2s ease;
+      transition: transform 0.05s ease-out, letter-spacing 0.15s ease;
       opacity: 1 !important;
       color: #FFF8E7;
     }
@@ -264,7 +250,7 @@
       color: rgba(244, 235, 221, 0.95);
       text-shadow: 0 2px 40px rgba(0, 0, 0, 0.95);
       margin-top: 2px;
-      transition: transform 0.1s ease-out;
+      transition: transform 0.05s ease-out;
       opacity: 1 !important;
     }
     .hero-subtitle .gold { color: var(--gold-bright); font-weight: 700; }
@@ -285,7 +271,7 @@
       color: rgba(192, 154, 82, 0.7);
       margin-top: 16px;
       text-shadow: 0 2px 30px rgba(0, 0, 0, 0.9);
-      transition: transform 0.1s ease-out;
+      transition: transform 0.05s ease-out;
       opacity: 1 !important;
     }
     .hero-tagline .ornament { display: inline-block; margin: 0 8px; opacity: 0.6; }
@@ -1072,25 +1058,6 @@
 </head>
 <body>
 
-  <!-- ─── SVG DISTORTION FILTER ──────────────────────────────────────── -->
-  <svg class="distortion-filter" xmlns="http://www.w3.org/2000/svg">
-    <filter id="abyssDistortion">
-      <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="2" result="turbulence">
-        <animate id="turbulenceAnim" attributeName="baseFrequency" 
-                 values="0.015;0.05;0.015" 
-                 dur="2s" 
-                 repeatCount="indefinite"/>
-      </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="turbulence" 
-                         scale="0" xChannelSelector="R" yChannelSelector="G">
-        <animate id="displacementAnim" attributeName="scale" 
-                 values="0;0;0" 
-                 dur="0.5s" 
-                 repeatCount="indefinite"/>
-      </feDisplacementMap>
-    </filter>
-  </svg>
-
   <!-- FLOATING LOGO -->
   <header class="header">
     <div class="trigger-wrapper" id="logoTrigger">
@@ -1479,19 +1446,72 @@
 
     buildCarousel();
 
-    // ─── THE ABYSS PULL – MAGNETIC DISTORTION ──────────────────────
+    // ─── PERFORMANCE-OPTIMIZED ABYSS PULL ──────────────────────────
     const heroSection = document.getElementById('hero');
     const videoContainer = document.getElementById('videoContainer');
-    const heroCenter = document.getElementById('heroCenter');
     const heroTitle = document.getElementById('heroTitle');
     const heroSubtitle = document.getElementById('heroSubtitle');
     const heroTagline = document.getElementById('heroTagline');
-    const displacementAnim = document.getElementById('displacementAnim');
     
     let touchX = 0;
     let touchY = 0;
     let isTouching = false;
     let isCursorActive = false;
+    let frameId = null;
+    let lastDistortion = { x: 0, y: 0, dist: 0 };
+
+    // ─── Throttled distortion update ───────────────────────────────
+    function updateDistortion(clientX, clientY) {
+      const rect = heroSection.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distX = (clientX - centerX) / (rect.width / 2);
+      const distY = (clientY - centerY) / (rect.height / 2);
+      const distance = Math.sqrt(distX * distX + distY * distY);
+      const clampedDist = Math.min(distance, 1.0);
+      
+      // Only update if changed significantly (performance)
+      const threshold = 0.02;
+      if (Math.abs(distX - lastDistortion.x) < threshold && 
+          Math.abs(distY - lastDistortion.y) < threshold &&
+          Math.abs(clampedDist - lastDistortion.dist) < threshold) {
+        return;
+      }
+      
+      lastDistortion = { x: distX, y: distY, dist: clampedDist };
+      
+      // Video distortion - simplified for performance
+      const blurAmount = Math.min(clampedDist * 4, 6);
+      const brightnessAmount = 1 - Math.min(clampedDist * 0.12, 0.2);
+      const saturateAmount = 1 + Math.min(clampedDist * 0.06, 0.12);
+      
+      videoContainer.style.filter = `
+        blur(${blurAmount}px) 
+        brightness(${brightnessAmount})
+        saturate(${saturateAmount})
+      `;
+      
+      // Text displacement (more subtle on mobile)
+      const shiftMultiplier = isMobile ? 0.35 : 0.7;
+      const targetX = distX * 20 * shiftMultiplier;
+      const targetY = distY * 14 * shiftMultiplier;
+      const scaleAmount = 1 + Math.min(clampedDist * 0.02, 0.03);
+      const letterSpacingAmount = 0.12 + Math.min(clampedDist * 0.012, 0.02);
+      
+      heroTitle.style.transform = `translate(${targetX}px, ${targetY}px) scale(${scaleAmount})`;
+      heroTitle.style.letterSpacing = `${letterSpacingAmount}em`;
+      heroSubtitle.style.transform = `translate(${targetX * 0.7}px, ${targetY * 0.7}px)`;
+      heroTagline.style.transform = `translate(${targetX * 0.5}px, ${targetY * 0.5}px)`;
+    }
+
+    function resetDistortion() {
+      videoContainer.style.filter = 'none';
+      heroTitle.style.transform = 'none';
+      heroTitle.style.letterSpacing = '0.12em';
+      heroSubtitle.style.transform = 'none';
+      heroTagline.style.transform = 'none';
+      lastDistortion = { x: 0, y: 0, dist: 0 };
+    }
 
     // ─── TOUCH INTERACTION FOR MOBILE ──────────────────────────────
     heroSection.addEventListener('touchstart', (e) => {
@@ -1500,7 +1520,8 @@
         touchX = touch.clientX;
         touchY = touch.clientY;
         isTouching = true;
-        handleDistortion(touchX, touchY);
+        if (frameId) cancelAnimationFrame(frameId);
+        updateDistortion(touchX, touchY);
       }
     }, { passive: true });
 
@@ -1509,19 +1530,18 @@
       if (touch && isTouching) {
         touchX = touch.clientX;
         touchY = touch.clientY;
-        handleDistortion(touchX, touchY);
+        if (frameId) cancelAnimationFrame(frameId);
+        frameId = requestAnimationFrame(() => {
+          updateDistortion(touchX, touchY);
+          frameId = null;
+        });
       }
     }, { passive: true });
 
     heroSection.addEventListener('touchend', () => {
       isTouching = false;
-      // Smoothly reset
-      videoContainer.style.filter = 'none';
-      heroTitle.style.transform = 'none';
-      heroTitle.style.letterSpacing = '0.12em';
-      heroSubtitle.style.transform = 'none';
-      heroTagline.style.transform = 'none';
-      displacementAnim.setAttribute('values', '0;0;0');
+      if (frameId) cancelAnimationFrame(frameId);
+      resetDistortion();
     }, { passive: true });
 
     // ─── DESKTOP: Mouse Distortion ──────────────────────────────────
@@ -1533,62 +1553,17 @@
         
         if (isOverHero) {
           isCursorActive = true;
-          handleDistortion(e.clientX, e.clientY);
+          if (frameId) cancelAnimationFrame(frameId);
+          frameId = requestAnimationFrame(() => {
+            updateDistortion(e.clientX, e.clientY);
+            frameId = null;
+          });
         } else {
           isCursorActive = false;
-          // Reset effects
-          videoContainer.style.filter = 'none';
-          heroTitle.style.transform = 'none';
-          heroTitle.style.letterSpacing = '0.12em';
-          heroSubtitle.style.transform = 'none';
-          heroTagline.style.transform = 'none';
-          displacementAnim.setAttribute('values', '0;0;0');
+          if (frameId) cancelAnimationFrame(frameId);
+          resetDistortion();
         }
       });
-    }
-
-    // ─── Unified Distortion Handler ─────────────────────────────────
-    function handleDistortion(clientX, clientY) {
-      const rect = heroSection.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distX = (clientX - centerX) / (rect.width / 2);
-      const distY = (clientY - centerY) / (rect.height / 2);
-      const distance = Math.sqrt(distX * distX + distY * distY);
-      
-      // Clamp distance for smoother feel
-      const clampedDist = Math.min(distance, 1.2);
-      
-      // Calculate distortion strength
-      const strength = Math.min(clampedDist * 35, 45);
-      
-      // Apply displacement
-      displacementAnim.setAttribute('values', `0;${strength};0`);
-      
-      // Video distortion
-      const blurAmount = Math.min(clampedDist * 5, 8);
-      const brightnessAmount = 1 - Math.min(clampedDist * 0.15, 0.25);
-      const saturateAmount = 1 + Math.min(clampedDist * 0.08, 0.15);
-      
-      videoContainer.style.filter = `
-        blur(${blurAmount}px) 
-        brightness(${brightnessAmount})
-        saturate(${saturateAmount})
-      `;
-      
-      // Text displacement (more subtle on mobile)
-      const shiftMultiplier = isMobile ? 0.4 : 0.8;
-      const targetX = distX * 25 * shiftMultiplier;
-      const targetY = distY * 18 * shiftMultiplier;
-      
-      // Scale and letter spacing
-      const scaleAmount = 1 + Math.min(clampedDist * 0.025, 0.035);
-      const letterSpacingAmount = 0.12 + Math.min(clampedDist * 0.015, 0.025);
-      
-      heroTitle.style.transform = `translate(${targetX}px, ${targetY}px) scale(${scaleAmount})`;
-      heroTitle.style.letterSpacing = `${letterSpacingAmount}em`;
-      heroSubtitle.style.transform = `translate(${targetX * 0.7}px, ${targetY * 0.7}px)`;
-      heroTagline.style.transform = `translate(${targetX * 0.5}px, ${targetY * 0.5}px)`;
     }
 
     // ─── Scroll-based video filter (Atlantis rising effect) ──────
@@ -1612,10 +1587,6 @@
               saturate(${saturateAmount})
             `;
           }
-          
-          // Title reveal (subtle)
-          const titleY = 30 - (progress * 30);
-          heroCenter.style.transform = `translateY(${titleY}px)`;
           
           scrollTicking = false;
         });
@@ -1767,7 +1738,7 @@
     loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginForm.dispatchEvent(new Event('submit')); });
 
     setRole('admin');
-    console.log('🔱 DEPLOMAT · The Abyss Pull v2.0 (Touch + Desktop)');
+    console.log('🔱 DEPLOMAT · Abyss Pull v3.0 (Performance Optimized)');
   </script>
 </body>
 </html>
