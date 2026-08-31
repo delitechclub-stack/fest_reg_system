@@ -1,12 +1,7 @@
-﻿# Create .vercelignore
-@"
-node_modules/
-dist/
+﻿node_modules/
 .git/
 *.log
 .DS_Store
 *.ps1
-fix-vercel.ps1
-"@ | Out-File -FilePath ".vercelignore" -Encoding UTF8
-
-Write-Host "✅ Created .vercelignore" -ForegroundColor Green
+README.md
+.vscode/
