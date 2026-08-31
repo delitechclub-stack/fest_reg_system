@@ -204,7 +204,7 @@
 
         .search-form .form-row {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 14px;
             margin-bottom: 16px;
         }
@@ -221,6 +221,11 @@
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.35);
             font-weight: 600;
+        }
+
+        .search-form .form-group label .required {
+            color: #ff2a6d;
+            margin-left: 4px;
         }
 
         .search-form .form-group input {
@@ -244,6 +249,11 @@
             border-color: rgba(101, 216, 255, 0.3);
             background: rgba(101, 216, 255, 0.04);
             box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+
+        .search-form .form-group input.input-error {
+            border-color: rgba(255, 42, 109, 0.4);
+            box-shadow: 0 0 0 4px rgba(255, 42, 109, 0.08);
         }
 
         .search-form .form-actions {
@@ -329,6 +339,11 @@
             font-size: 0.7rem;
             letter-spacing: 0.1em;
             margin-top: 12px;
+        }
+
+        .search-hint strong {
+            color: #65d8ff;
+            font-weight: 600;
         }
 
         /* ─── RESULTS ────────────────────────────────────────────────── */
@@ -531,7 +546,7 @@
         /* ─── RESPONSIVE ────────────────────────────────────────────── */
         @media (max-width: 992px) {
             .search-form .form-row {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr 1fr;
                 gap: 12px;
             }
         }
@@ -662,6 +677,34 @@
             flex: 1;
             font-size: 0.85rem;
         }
+
+        /* ─── SUCCESS BANNER ──────────────────────────────────────────── */
+        .success-banner {
+            display: none;
+            background: rgba(76, 175, 80, 0.10);
+            border: 1px solid rgba(76, 175, 80, 0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 12px;
+            color: #4caf50;
+            animation: fadeStep 0.35s ease both;
+        }
+
+        .success-banner.show {
+            display: flex;
+        }
+
+        .success-banner .icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .success-banner .msg {
+            flex: 1;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
@@ -693,24 +736,22 @@
                     <span class="msg" id="errorMsg">Something went wrong.</span>
                 </div>
 
+                <!-- ─── SUCCESS BANNER ─────────────────────────────────── -->
+                <div class="success-banner" id="successBanner">
+                    <span class="icon">✅</span>
+                    <span class="msg" id="successMsg">Registration found!</span>
+                </div>
+
                 <!-- ─── SEARCH FORM ────────────────────────────────────── -->
                 <form class="search-form" id="searchForm" novalidate>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="searchName">Team Leader Name</label>
-                            <input type="text" id="searchName" placeholder="e.g. John Doe" />
+                            <label for="searchEmail">Email <span class="required">*</span></label>
+                            <input type="email" id="searchEmail" placeholder="john@example.com" required />
                         </div>
                         <div class="form-group">
-                            <label for="searchEmail">Email</label>
-                            <input type="email" id="searchEmail" placeholder="john@example.com" />
-                        </div>
-                        <div class="form-group">
-                            <label for="searchPhone">Phone Number</label>
-                            <input type="tel" id="searchPhone" placeholder="+91 98765 43210" />
-                        </div>
-                        <div class="form-group">
-                            <label for="searchCollege">College Name</label>
-                            <input type="text" id="searchCollege" placeholder="e.g. MIT, Stanford" />
+                            <label for="searchPhone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="searchPhone" placeholder="+91 98765 43210" required />
                         </div>
                     </div>
 
@@ -724,7 +765,7 @@
                     </div>
 
                     <p class="search-hint">
-                        ✦ Enter at least one field above (Name, Email, Phone, or College)
+                        ✦ Enter <strong>both</strong> Email and Phone Number (primary keys) to verify your registration
                     </p>
                 </form>
 
@@ -787,10 +828,8 @@
         // ─── DOM REFS ──────────────────────────────────────────────────
 
         const form = document.getElementById('searchForm');
-        const searchName = document.getElementById('searchName');
         const searchEmail = document.getElementById('searchEmail');
         const searchPhone = document.getElementById('searchPhone');
-        const searchCollege = document.getElementById('searchCollege');
         const searchBtn = document.getElementById('searchBtn');
         const clearBtn = document.getElementById('clearBtn');
         const clearResultsBtn = document.getElementById('clearResultsBtn');
@@ -799,6 +838,8 @@
         const resultCount = document.getElementById('resultCount');
         const errorBanner = document.getElementById('errorBanner');
         const errorMsg = document.getElementById('errorMsg');
+        const successBanner = document.getElementById('successBanner');
+        const successMsg = document.getElementById('successMsg');
 
         // ─── UTILITY ──────────────────────────────────────────────────
 
@@ -806,13 +847,25 @@
             if (msg) {
                 errorMsg.textContent = msg;
                 errorBanner.classList.add('show');
+                successBanner.classList.remove('show');
             } else {
                 errorBanner.classList.remove('show');
             }
         }
 
-        function hideError() {
+        function showSuccess(msg) {
+            if (msg) {
+                successMsg.textContent = msg;
+                successBanner.classList.add('show');
+                errorBanner.classList.remove('show');
+            } else {
+                successBanner.classList.remove('show');
+            }
+        }
+
+        function hideAllBanners() {
             errorBanner.classList.remove('show');
+            successBanner.classList.remove('show');
         }
 
         function setLoading(loading) {
@@ -831,59 +884,55 @@
             resultsArea.classList.remove('show');
             resultsGrid.innerHTML = '';
             resultCount.innerHTML = 'Found <strong>0</strong> registration(s)';
+            hideAllBanners();
+        }
+
+        function markError(input) {
+            input.classList.add('input-error');
+        }
+
+        function clearError(input) {
+            input.classList.remove('input-error');
         }
 
         function getSearchParams() {
             return {
-                name: searchName.value.trim(),
                 email: searchEmail.value.trim(),
-                phone: searchPhone.value.trim(),
-                college: searchCollege.value.trim()
+                phone: searchPhone.value.trim()
             };
         }
 
         function hasSearchTerms() {
             const p = getSearchParams();
-            return !!(p.name || p.email || p.phone || p.college);
+            return !!(p.email && p.phone);
         }
 
-        // ─── QUERY SUPABASE ───────────────────────────────────────────
+        // ─── QUERY SUPABASE (EXACT MATCH ON EMAIL AND PHONE) ────────
 
         async function queryRegistrations(params) {
             // Try Supabase first
             if (supabaseClient) {
                 try {
-                    // Build OR filter dynamically
-                    const filters = [];
-                    if (params.name) {
-                        filters.push(`team_leader.ilike.%${params.name}%`);
-                    }
-                    if (params.email) {
-                        filters.push(`email.ilike.%${params.email}%`);
-                    }
-                    if (params.phone) {
-                        // Phone might have spaces, dashes, etc. Search with partial match
-                        const cleanPhone = params.phone.replace(/\s/g, '');
-                        filters.push(`phone.ilike.%${cleanPhone}%`);
-                        // Also try with spaces preserved
-                        filters.push(`phone.ilike.%${params.phone}%`);
-                    }
-                    if (params.college) {
-                        filters.push(`college.ilike.%${params.college}%`);
-                    }
+                    // Clean phone number for matching (remove spaces, dashes, etc.)
+                    const cleanPhone = params.phone.replace(/[\s\-\(\)\+]/g, '');
 
-                    if (filters.length === 0) {
-                        return { data: null, error: 'No search terms provided', source: 'supabase' };
-                    }
-
-                    // Use OR with all filters
-                    const filterString = filters.join(',');
-
-                    const { data, error } = await supabaseClient
+                    // Build query with exact matches on email and phone
+                    let query = supabaseClient
                         .from('registrations')
-                        .select('*')
-                        .or(filterString)
-                        .order('registered_at', { ascending: false });
+                        .select('*');
+
+                    // Email: exact match (case-insensitive)
+                    if (params.email) {
+                        query = query.ilike('email', params.email);
+                    }
+
+                    // Phone: match with various formats (exact or partial)
+                    if (params.phone) {
+                        // Try exact match first with cleaned phone
+                        query = query.or(`phone.ilike.%${cleanPhone}%,phone.ilike.%${params.phone}%`);
+                    }
+
+                    const { data, error } = await query.order('registered_at', { ascending: false });
 
                     if (error) {
                         console.warn('⚠️ Supabase query error:', error);
@@ -910,26 +959,21 @@
 
                 const results = db.filter(entry => {
                     let match = false;
-                    if (params.name) {
-                        const nameLower = params.name.toLowerCase();
-                        const entryName = (entry.teamLeader || '').toLowerCase();
-                        if (entryName.includes(nameLower)) match = true;
-                    }
-                    if (params.email && !match) {
+
+                    // Email match (case-insensitive)
+                    if (params.email) {
                         const emailLower = params.email.toLowerCase();
                         const entryEmail = (entry.email || '').toLowerCase();
-                        if (entryEmail.includes(emailLower)) match = true;
+                        if (entryEmail === emailLower) match = true;
                     }
+
+                    // Phone match (cleaned)
                     if (params.phone && !match) {
-                        const phoneClean = params.phone.replace(/\s/g, '');
-                        const entryPhone = (entry.phone || '').replace(/\s/g, '');
-                        if (entryPhone.includes(phoneClean)) match = true;
+                        const phoneClean = params.phone.replace(/[\s\-\(\)\+]/g, '');
+                        const entryPhone = (entry.phone || '').replace(/[\s\-\(\)\+]/g, '');
+                        if (entryPhone === phoneClean) match = true;
                     }
-                    if (params.college && !match) {
-                        const collegeLower = params.college.toLowerCase();
-                        const entryCollege = (entry.college || '').toLowerCase();
-                        if (entryCollege.includes(collegeLower)) match = true;
-                    }
+
                     return match;
                 });
 
@@ -959,25 +1003,35 @@
         async function performSearch() {
             const params = getSearchParams();
 
-            if (!hasSearchTerms()) {
-                showError('⚠️ Please enter at least one search term (Name, Email, Phone, or College).');
+            // Validate: both email and phone are required
+            if (!params.email) {
+                showError('⚠️ Please enter your Email address.');
+                markError(searchEmail);
                 clearResults();
                 return;
             }
 
-            hideError();
+            if (!params.phone) {
+                showError('⚠️ Please enter your Phone Number.');
+                markError(searchPhone);
+                clearResults();
+                return;
+            }
+
+            // Clear error states
+            clearError(searchEmail);
+            clearError(searchPhone);
+            hideAllBanners();
             setLoading(true);
             clearResults();
 
             try {
                 // 1. Try Supabase
                 let results = [];
-                let usedSupabase = false;
 
                 const supabaseResult = await queryRegistrations(params);
                 if (supabaseResult.data && supabaseResult.data.length > 0) {
                     results = supabaseResult.data;
-                    usedSupabase = true;
                 } else if (supabaseResult.data && supabaseResult.data.length === 0) {
                     // No results from Supabase, try localStorage
                     const localResults = queryLocalStorage(params);
@@ -1006,14 +1060,18 @@
                             <div class="no-results">
                                 <span class="icon">🔍</span>
                                 <h3>No Registrations Found</h3>
-                                <p>We couldn't find any registration matching your search.</p>
-                                <p class="suggestions">💡 Try double‑checking the spelling or use a different search term.</p>
+                                <p>We couldn't find any registration matching your Email and Phone Number.</p>
+                                <p class="suggestions">💡 Please double‑check that you entered the correct Email and Phone Number used during registration.</p>
                             </div>
                         `;
                     resultCount.innerHTML = 'Found <strong>0</strong> registration(s)';
                     resultsArea.classList.add('show');
+                    showError('❌ No registration found with the provided Email and Phone Number.');
                     return;
                 }
+
+                // Success - show results
+                showSuccess(`✅ Found ${results.length} registration(s) matching your credentials.`);
 
                 // Display results
                 resultCount.innerHTML = `Found <strong>${results.length}</strong> registration(s)`;
@@ -1140,22 +1198,26 @@
 
         // Clear button (clears form fields + results)
         clearBtn.addEventListener('click', () => {
-            searchName.value = '';
             searchEmail.value = '';
             searchPhone.value = '';
-            searchCollege.value = '';
-            hideError();
+            clearError(searchEmail);
+            clearError(searchPhone);
+            hideAllBanners();
             clearResults();
         });
 
         // Clear results button
         clearResultsBtn.addEventListener('click', () => {
             clearResults();
-            hideError();
+            hideAllBanners();
         });
 
-        // Enter key on any field triggers search
-        [searchName, searchEmail, searchPhone, searchCollege].forEach(input => {
+        // Remove error styling on focus
+        searchEmail.addEventListener('focus', () => clearError(searchEmail));
+        searchPhone.addEventListener('focus', () => clearError(searchPhone));
+
+        // Enter key triggers search
+        [searchEmail, searchPhone].forEach(input => {
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -1169,19 +1231,13 @@
         function autoSearchFromURL() {
             try {
                 const params = new URLSearchParams(window.location.search);
-                const name = params.get('name');
                 const email = params.get('email');
                 const phone = params.get('phone');
-                const college = params.get('college');
 
                 let hasAuto = false;
-                if (name) { searchName.value = name;
-                    hasAuto = true; }
                 if (email) { searchEmail.value = email;
                     hasAuto = true; }
                 if (phone) { searchPhone.value = phone;
-                    hasAuto = true; }
-                if (college) { searchCollege.value = college;
                     hasAuto = true; }
 
                 if (hasAuto) {
@@ -1199,6 +1255,7 @@
         console.log('🔍 DEPLOMAT Registration Status ready!');
         console.log('🔐 Supabase available:', !!supabaseClient);
         console.log('💾 localStorage fallback: enabled');
+        console.log('📌 Search uses Email + Phone Number as primary keys');
 
         // Auto-search if URL params present
         autoSearchFromURL();
