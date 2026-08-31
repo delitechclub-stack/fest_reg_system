@@ -1,1381 +1,1288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>DEPLOMAT · Atlantis Immersive</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>DEPLOMAT · Atlantis Immersive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────────────────────── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: #041217;
+      color: #e8d9b8;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+      touch-action: pan-y;
+    }
+    :root {
+      --abyss: #041217;
+      --abyss-light: #061A20;
+      --abyss-mid: #08252B;
+      --gold: #A98445;
+      --gold-light: #C09A52;
+      --gold-bright: #D0AF69;
+      --gold-royal: #E6C875;
+      --bronze: #70552F;
+      --parchment: #E8D9B8;
+      --ivory: #F4EBDD;
+      --gold-glow: rgba(169, 132, 69, 0.25);
+      --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.85);
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--abyss); }
+    ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+    /* ─── FLOATING LOGO ───────────────────────────────────────────── */
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 999;
+      display: inline-block;
+      touch-action: manipulation;
+    }
+    .trigger-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .logo-emblem {
+      display: block;
+      width: 44px;
+      height: 44px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.8));
+      border-radius: 50%;
+      border: 1.5px solid rgba(169, 132, 69, 0.3);
+      padding: 4px;
+      background: rgba(4, 18, 23, 0.7);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .trigger-wrapper:active .logo-emblem { transform: scale(0.92); }
 
-    <style>
-        /* ─── RESET & BASE ─────────────────────────────────────────────── */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; overscroll-behavior: none; }
-        body {
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: #041217;
-            color: #e8d9b8;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            user-select: none;
-        }
+    /* ─── DROPDOWN ────────────────────────────────────────────────── */
+    .epic-dropdown {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 54px;
+      min-width: 190px;
+      width: max-content;
+      padding: 10px 0;
+      border-radius: 12px;
+      background: rgba(6, 26, 32, 0.95);
+      backdrop-filter: blur(24px) saturate(1.2);
+      -webkit-backdrop-filter: blur(24px) saturate(1.2);
+      box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169, 132, 69, 0.12);
+      z-index: 100;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.92) translateY(-10px);
+      transform-origin: top left;
+      transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.3s;
+      border: 1px solid rgba(169, 132, 69, 0.1);
+    }
+    .epic-dropdown.open {
+      display: flex;
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0px);
+    }
+    .dropdown-section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(169, 132, 69, 0.5);
+      padding: 6px 22px 2px 22px;
+    }
+    .dropdown-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.2), transparent);
+      margin: 4px 16px;
+      border: none;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(232, 217, 184, 0.8);
+      text-decoration: none;
+      padding: 8px 22px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.4px;
+      transition: 0.2s ease;
+      border-left: 2px solid transparent;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      touch-action: manipulation;
+    }
+    .dropdown-item:active {
+      background: rgba(169, 132, 69, 0.1);
+      transform: scale(0.97);
+    }
+    .dropdown-item .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: rgba(169, 132, 69, 0.06);
+      border-radius: 50%;
+      font-size: 10px;
+      color: rgba(169, 132, 69, 0.5);
+      flex-shrink: 0;
+      transition: 0.2s;
+      font-style: normal;
+    }
+    .dropdown-item.login-item { color: rgba(232, 217, 184, 0.9); }
 
-        /* ─── ATLANTIS COLOR TOKENS ────────────────────────────────────── */
-        :root {
-            --abyss: #041217;
-            --abyss-light: #061A20;
-            --abyss-mid: #08252B;
-            --ocean-teal: #0B3A40;
-            --ocean-teal-light: #10535A;
-            --ocean-teal-bright: #14646A;
-            --gold: #A98445;
-            --gold-light: #C09A52;
-            --gold-bright: #D0AF69;
-            --gold-royal: #E6C875;
-            --bronze: #70552F;
-            --bronze-light: #8B6B3A;
-            --parchment: #E8D9B8;
-            --ivory: #F4EBDD;
-            --gold-glow: rgba(169, 132, 69, 0.25);
-            --gold-border: rgba(169, 132, 69, 0.35);
-            --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.85);
-        }
+    /* ─── SCROLL CONTAINER ────────────────────────────────────────── */
+    .scroll-container {
+      position: relative;
+      z-index: 1;
+      transform-origin: center top;
+      will-change: transform, opacity;
+      transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+    }
 
-        /* ─── SCROLLBAR ────────────────────────────────────────────────── */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--abyss); }
-        ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+    /* ─── HERO SECTION ────────────────────────────────────────────── */
+    .hero-section {
+      position: relative;
+      height: 100dvh;
+      width: 100%;
+      overflow: hidden;
+      z-index: 1;
+      transform-origin: center top;
+      will-change: transform, opacity;
+    }
+    .hero-section .video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .hero-section .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .hero-section .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse at 50% 60%, rgba(4, 18, 23, 0.2) 0%, rgba(4, 18, 23, 0.65) 70%, rgba(4, 18, 23, 0.85) 100%),
+        linear-gradient(180deg, rgba(4, 18, 23, 0.2) 0%, transparent 40%, transparent 70%, rgba(4, 18, 23, 0.6) 100%);
+    }
+    .light-rays {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.2;
+      will-change: transform;
+    }
+    .light-rays .ray {
+      position: absolute;
+      width: 2px;
+      height: 120%;
+      top: -10%;
+      background: linear-gradient(180deg, rgba(169, 132, 69, 0.4), transparent 80%);
+      transform: rotate(var(--angle, 10deg));
+      left: var(--x, 20%);
+      animation: rayDrift var(--dur, 12s) ease-in-out infinite alternate;
+    }
+    .light-rays .ray:nth-child(1) { --x: 15%; --angle: 8deg; --dur: 14s; height: 140%; }
+    .light-rays .ray:nth-child(2) { --x: 35%; --angle: -4deg; --dur: 18s; height: 110%; opacity: 0.6; }
+    .light-rays .ray:nth-child(3) { --x: 55%; --angle: 12deg; --dur: 16s; height: 130%; opacity: 0.4; }
+    .light-rays .ray:nth-child(4) { --x: 75%; --angle: -6deg; --dur: 20s; height: 100%; opacity: 0.3; }
+    .light-rays .ray:nth-child(5) { --x: 90%; --angle: 5deg; --dur: 13s; height: 150%; opacity: 0.5; }
+    @keyframes rayDrift {
+      0% { transform: rotate(var(--angle, 10deg)) translateX(-30px); opacity: 0.3; }
+      100% { transform: rotate(calc(var(--angle, 10deg) + 2deg)) translateX(30px); opacity: 0.8; }
+    }
+    .particles {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+      will-change: transform;
+    }
+    .particles .part {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(192, 154, 82, 0.25);
+      border-radius: 50%;
+      animation: floatPart var(--dur, 20s) ease-in-out infinite alternate;
+      left: var(--x, 10%);
+      top: var(--y, 10%);
+      --dur: 20s;
+    }
+    .particles .part:nth-child(1) { --x: 10%; --y: 20%; --dur: 22s; width: 3px; height: 3px; opacity: 0.3; }
+    .particles .part:nth-child(2) { --x: 25%; --y: 60%; --dur: 18s; opacity: 0.25; }
+    .particles .part:nth-child(3) { --x: 45%; --y: 15%; --dur: 25s; width: 4px; height: 4px; opacity: 0.2; }
+    .particles .part:nth-child(4) { --x: 60%; --y: 70%; --dur: 16s; opacity: 0.3; }
+    .particles .part:nth-child(5) { --x: 78%; --y: 30%; --dur: 21s; width: 3px; height: 3px; opacity: 0.22; }
+    .particles .part:nth-child(6) { --x: 90%; --y: 55%; --dur: 19s; opacity: 0.28; }
+    .particles .part:nth-child(7) { --x: 50%; --y: 85%; --dur: 23s; width: 2px; height: 2px; opacity: 0.2; }
+    .particles .part:nth-child(8) { --x: 5%; --y: 45%; --dur: 17s; opacity: 0.25; }
+    @keyframes floatPart {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+      50% { opacity: 0.4; }
+      100% { transform: translate(calc(var(--x, 10%) * 0.6), calc(var(--y, 10%) * -0.4)) scale(1.8); opacity: 0.1; }
+    }
+    .hero-center {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      text-align: center;
+      padding: 0 20px;
+      pointer-events: none;
+      will-change: transform;
+    }
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: clamp(2.4rem, 10vw, 6rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 4px 12px rgba(169, 132, 69, 0.3));
+      line-height: 1.05;
+      margin-bottom: 6px;
+    }
+    .hero-title .accent {
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      font-size: 0.45em;
+      display: block;
+      margin-top: 2px;
+      background: linear-gradient(180deg, #E6C875, #A98445);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: clamp(0.8rem, 2.2vw, 1.4rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(232, 217, 184, 0.85);
+      text-shadow: 0 2px 30px rgba(0, 0, 0, 0.8);
+      margin-top: 2px;
+    }
+    .hero-subtitle .gold { color: var(--gold-bright); font-weight: 700; }
+    .hero-subtitle .divider {
+      display: inline-block;
+      width: 1px;
+      height: 0.8em;
+      background: rgba(169, 132, 69, 0.4);
+      margin: 0 12px;
+      vertical-align: middle;
+    }
+    .hero-tagline {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: clamp(0.5rem, 1vw, 0.75rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.5);
+      margin-top: 14px;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    }
+    .hero-tagline .ornament { display: inline-block; margin: 0 8px; opacity: 0.5; }
+    .explore-cta {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      z-index: 5;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.5;
+      animation: pulseDescend 4s ease-in-out infinite;
+    }
+    .explore-cta span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.6);
+      font-weight: 600;
+      text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+    .explore-cta .mouse-line {
+      width: 1px;
+      height: 28px;
+      background: linear-gradient(180deg, rgba(192, 154, 82, 0.5), transparent);
+      margin-top: 2px;
+    }
+    @keyframes pulseDescend {
+      0%, 100% { opacity: 0.4; transform: translateY(0); }
+      50% { opacity: 0.8; transform: translateY(-4px); }
+    }
 
-        /* ─── FLOATING LOGO ───────────────────────────────────────────── */
-        .header {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 999;
-            display: inline-block;
-        }
-        .trigger-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .logo-emblem {
-            display: block;
-            width: 48px;
-            height: 48px;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.8));
-            border-radius: 50%;
-            border: 1.5px solid rgba(169, 132, 69, 0.3);
-            padding: 4px;
-            background: rgba(4, 18, 23, 0.7);
-            backdrop-filter: blur(4px);
-        }
-        .trigger-wrapper:hover .logo-emblem {
-            transform: scale(1.08);
-            border-color: var(--gold);
-            box-shadow: 0 0 40px var(--gold-glow);
-        }
-        .trigger-wrapper:active .logo-emblem { transform: scale(0.92); }
+    /* ─── EXPLORE SECTION ──────────────────────────────────────────── */
+    .explore-section {
+      position: relative;
+      z-index: 2;
+      background: var(--abyss);
+      min-height: 100dvh;
+      padding: 80px 0 30px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      will-change: transform, opacity;
+      transform-origin: center bottom;
+    }
+    .explore-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.2), transparent);
+      z-index: 0;
+    }
+    .explore-header {
+      padding: 0 24px 14px 24px;
+      border-bottom: 1px solid rgba(169, 132, 69, 0.08);
+      position: relative;
+      z-index: 1;
+    }
+    .explore-header .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.4);
+      margin-bottom: 2px;
+    }
+    .explore-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.6rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(232, 217, 184, 0.12);
+      line-height: 1;
+    }
+    .explore-header h2 .gold-text { color: rgba(192, 154, 82, 0.8); }
 
-        /* ─── DROPDOWN ────────────────────────────────────────────────── */
-        .epic-dropdown {
-            display: none;
-            position: absolute;
-            left: 0;
-            top: 60px;
-            min-width: 210px;
-            width: max-content;
-            padding: 10px 0;
-            border-radius: 12px;
-            background: rgba(6, 26, 32, 0.92);
-            backdrop-filter: blur(20px) saturate(1.1);
-            -webkit-backdrop-filter: blur(20px) saturate(1.1);
-            box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169, 132, 69, 0.15), inset 0 0 60px rgba(0, 0, 0, 0.3);
-            z-index: 100;
-            flex-direction: column;
-            gap: 0;
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.92) translateY(-10px) rotateX(-2deg);
-            transform-origin: top left;
-            transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.35s;
-            border: 1px solid rgba(169, 132, 69, 0.12);
-        }
-        .epic-dropdown::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 14px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(169, 132, 69, 0.2), transparent 40%, transparent 60%, rgba(169, 132, 69, 0.1));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-        .epic-dropdown.open {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1) translateY(0px) rotateX(0deg);
-        }
-        .dropdown-section-title {
-            font-family: 'Cinzel', serif;
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: rgba(169, 132, 69, 0.6);
-            padding: 6px 24px 2px 24px;
-            margin-top: 2px;
-        }
-        .dropdown-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.25), transparent);
-            margin: 4px 18px;
-            border: none;
-        }
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            color: rgba(232, 217, 184, 0.8);
-            text-decoration: none;
-            padding: 8px 24px;
-            font-size: 12.5px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            transition: 0.25s ease;
-            border-left: 2px solid transparent;
-            white-space: nowrap;
-            -webkit-tap-highlight-color: transparent;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-        }
-        .dropdown-item:hover {
-            color: var(--ivory);
-            background: rgba(169, 132, 69, 0.08);
-            border-left-color: var(--gold);
-        }
-        .dropdown-item:active {
-            background: rgba(169, 132, 69, 0.12);
-            transform: scale(0.98);
-        }
-        .dropdown-item .icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
-            background: rgba(169, 132, 69, 0.08);
-            border-radius: 50%;
-            font-size: 11px;
-            color: rgba(169, 132, 69, 0.6);
-            flex-shrink: 0;
-            transition: 0.25s;
-            font-style: normal;
-        }
-        .dropdown-item:hover .icon {
-            background: rgba(169, 132, 69, 0.15);
-            color: var(--gold-light);
-        }
-        .dropdown-item.login-item { color: rgba(232, 217, 184, 0.9); }
-        .dropdown-item.login-item:hover {
-            color: var(--gold-bright);
-            border-left-color: var(--gold);
-            background: rgba(169, 132, 69, 0.08);
-        }
+    /* ─── CAROUSEL ──────────────────────────────────────────────────── */
+    .carousel-stage {
+      position: relative;
+      width: 100%;
+      padding: 16px 0 8px 0;
+      overflow: hidden;
+      touch-action: pan-y;
+      cursor: grab;
+      will-change: transform;
+      contain: layout style;
+      z-index: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+    .carousel-stage:active { cursor: grabbing; }
+    .carousel-track {
+      display: flex;
+      gap: 12px;
+      will-change: transform;
+      transition: none;
+      padding: 0 8px;
+      touch-action: pan-y;
+    }
+    .carousel-track .event-card {
+      flex: 0 0 clamp(200px, 38vw, 290px);
+      aspect-ratio: 5 / 7;
+      min-height: 240px;
+      max-height: 440px;
+      background: linear-gradient(160deg, rgba(6, 26, 32, 0.92), rgba(4, 18, 23, 0.96));
+      border-radius: 16px;
+      border: 1px solid rgba(169, 132, 69, 0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px 16px 16px 16px;
+      position: relative;
+      box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.9);
+      cursor: pointer;
+      will-change: transform, opacity;
+      transform: scale(0.92);
+      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, opacity 0.3s ease, border-color 0.4s ease;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+      contain: layout style;
+      touch-action: pan-y;
+    }
+    .carousel-track .event-card::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 13px;
+      border: 1px solid rgba(169, 132, 69, 0.06);
+      pointer-events: none;
+      z-index: 3;
+      transition: border-color 0.4s ease;
+    }
+    .carousel-track .event-card::after {
+      content: '✦';
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 7px;
+      color: rgba(169, 132, 69, 0.12);
+      z-index: 4;
+      pointer-events: none;
+    }
+    .carousel-track .event-card .card-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.5;
+      transition: opacity 0.6s ease;
+      background: var(--abyss);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .carousel-track .event-card .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: var(--abyss);
+    }
+    .carousel-track .event-card .card-image .img-placeholder {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, rgba(169, 132, 69, 0.02) 30%, rgba(169, 132, 69, 0.06) 50%, rgba(169, 132, 69, 0.02) 70%);
+      background-size: 200% 100%;
+      animation: shimmerAtlantis 2s ease-in-out infinite;
+      z-index: 1;
+      border-radius: 16px;
+      pointer-events: none;
+    }
+    .carousel-track .event-card .card-image img.loaded ~ .img-placeholder {
+      opacity: 0;
+      animation: none;
+      transition: opacity 0.5s ease;
+    }
+    @keyframes shimmerAtlantis {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .carousel-track .event-card .card-content {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(to top, rgba(4, 18, 23, 0.98) 0%, rgba(4, 18, 23, 0.5) 50%, transparent 100%);
+      margin: 0 -16px -16px -16px;
+      padding: 32px 16px 18px 16px;
+      border-radius: 0 0 16px 16px;
+    }
+    .carousel-track .event-card .card-name {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.8rem, 1.8vw, 1.2rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      color: var(--ivory);
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+    }
+    .carousel-track .event-card .card-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.5rem, 0.9vw, 0.7rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.7);
+      font-weight: 600;
+    }
+    .carousel-track .event-card .card-explore-badge {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      z-index: 3;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.35rem, 0.7vw, 0.5rem);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      background: rgba(4, 18, 23, 0.7);
+      padding: 3px 12px;
+      border-radius: 30px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(169, 132, 69, 0.12);
+      transition: 0.3s ease;
+      pointer-events: auto;
+      cursor: pointer;
+      opacity: 0.7;
+      font-weight: 600;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .carousel-track .event-card .card-explore-badge:active { transform: scale(0.92); }
+    .carousel-track .event-card.active-card {
+      border-color: rgba(169, 132, 69, 0.25);
+      box-shadow: 0 30px 70px -12px rgba(0, 0, 0, 0.95), 0 0 50px rgba(169, 132, 69, 0.04);
+    }
+    .carousel-track .event-card.active-card .card-image { opacity: 0.7; }
+    .carousel-track .event-card.active-card .card-explore-badge { opacity: 0.9; border-color: rgba(169, 132, 69, 0.2); }
 
-        /* ─── SCROLL CONTAINER (2D LAYER) ────────────────────────────── */
-        .scroll-container {
-            position: relative;
-            z-index: 1;
-            transform-origin: center top;
-            will-change: transform, opacity;
-            transition: transform 0.1s ease-out, opacity 0.1s ease-out;
-        }
+    .dots-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 4px 0;
+      z-index: 2;
+      position: relative;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(169, 132, 69, 0.2);
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      cursor: pointer;
+      border: 1px solid rgba(169, 132, 69, 0.04);
+      touch-action: manipulation;
+    }
+    .dot.active {
+      background: var(--gold-light);
+      width: 20px;
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(169, 132, 69, 0.1);
+      border-color: rgba(169, 132, 69, 0.15);
+    }
 
-        /* ─── HERO SECTION ────────────────────────────────────────────── */
-        .hero-section {
-            position: relative;
-            height: 100dvh;
-            width: 100%;
-            overflow: hidden;
-            z-index: 1;
-            transform-origin: center top;
-            will-change: transform, opacity;
-        }
-        .hero-section .video-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-        .hero-section .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none;
-        }
-        .hero-section .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background:
-                radial-gradient(ellipse at 50% 60%, rgba(4, 18, 23, 0.2) 0%, rgba(4, 18, 23, 0.65) 70%, rgba(4, 18, 23, 0.85) 100%),
-                linear-gradient(180deg, rgba(4, 18, 23, 0.2) 0%, transparent 40%, transparent 70%, rgba(4, 18, 23, 0.6) 100%);
-        }
+    /* ─── PROMO COUNTDOWN ──────────────────────────────────────────── */
+    .promo-section {
+      position: relative;
+      height: 100dvh;
+      width: 100%;
+      overflow: hidden;
+      z-index: 2;
+      background: var(--abyss);
+      transform-origin: center top;
+      will-change: transform, opacity;
+    }
+    .promo-section .video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .promo-section .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .promo-section .vignette-left,
+    .promo-section .vignette-right,
+    .promo-section .vignette-bottom {
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .promo-section .vignette-left {
+      top: 0;
+      left: 0;
+      width: 20%;
+      height: 100%;
+      background: linear-gradient(to right, rgba(4, 18, 23, 0.8), transparent);
+    }
+    .promo-section .vignette-right {
+      top: 0;
+      right: 0;
+      width: 20%;
+      height: 100%;
+      background: linear-gradient(to left, rgba(4, 18, 23, 0.8), transparent);
+    }
+    .promo-section .vignette-bottom {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background: linear-gradient(to top, rgba(4, 18, 23, 0.95), transparent 60%);
+    }
+    .promo-section .gold-ornament {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      max-width: 500px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      border: 1px solid rgba(169, 132, 69, 0.04);
+      z-index: 1;
+      pointer-events: none;
+      box-shadow: inset 0 0 100px rgba(169, 132, 69, 0.02);
+    }
+    .promo-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      pointer-events: none;
+    }
+    .event-date-display {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.9rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(232, 217, 184, 0.95);
+      text-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+      margin-bottom: 20px;
+      padding: 0 10px;
+      line-height: 1.2;
+      background: linear-gradient(180deg, #F4EBDD 0%, #C09A52 60%, #A98445 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5));
+    }
+    .event-date-display::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40%;
+      max-width: 180px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.2), transparent);
+    }
+    .event-date-display .accent-dot {
+      color: var(--gold-light);
+      -webkit-text-fill-color: var(--gold-light);
+      background: none;
+    }
+    .promo-countdown {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .promo-countdown .cd-item {
+      background: rgba(4, 18, 23, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 14px 18px;
+      border-radius: 10px;
+      min-width: 64px;
+      border: 1px solid rgba(169, 132, 69, 0.08);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+      transition: 0.3s ease;
+      position: relative;
+    }
+    .promo-countdown .cd-item::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 11px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(169, 132, 69, 0.08), transparent 50%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .promo-countdown .cd-item span {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--ivory);
+      text-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+      line-height: 1.1;
+    }
+    .promo-countdown .cd-item small {
+      font-family: 'Cinzel', serif;
+      font-size: 0.45rem;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: rgba(192, 154, 82, 0.4);
+      margin-top: 2px;
+      display: block;
+    }
+    .promo-countdown .cd-item.accent { border-color: rgba(169, 132, 69, 0.12); }
+    .promo-countdown .cd-item.accent span {
+      color: var(--gold-light);
+      text-shadow: 0 0 40px rgba(169, 132, 69, 0.08);
+    }
+    .promo-cta {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(232, 217, 184, 0.4);
+      font-weight: 600;
+      text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      transition: 0.4s ease;
+      cursor: pointer;
+      pointer-events: auto;
+      padding: 12px 28px;
+      border-radius: 40px;
+      border: 1px solid rgba(169, 132, 69, 0.08);
+      background: rgba(4, 18, 23, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .promo-cta:active { transform: scale(0.96); }
+    .promo-cta .arrow-link { display: inline-block; margin-left: 8px; transition: 0.3s; color: rgba(169, 132, 69, 0.3); }
+    .promo-cta:active .arrow-link { transform: translateX(6px); color: var(--gold-light); }
+    .promo-credits {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      z-index: 4;
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.2);
+      font-weight: 400;
+      padding: 0 16px;
+      pointer-events: none;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+    }
+    .promo-credits .credit-line { display: block; margin: 0 auto; letter-spacing: 0.2em; color: rgba(192, 154, 82, 0.3); }
+    .promo-credits .credit-line .highlight { color: var(--gold-light); font-weight: 700; letter-spacing: 0.1em; }
 
-        /* ─── underwater light rays ────────────────────────────────────── */
-        .light-rays {
-            position: absolute;
-            inset: 0;
-            z-index: 2;
-            pointer-events: none;
-            overflow: hidden;
-            opacity: 0.25;
-            will-change: transform;
-        }
-        .light-rays .ray {
-            position: absolute;
-            width: 2px;
-            height: 120%;
-            top: -10%;
-            background: linear-gradient(180deg, rgba(169, 132, 69, 0.5), transparent 80%);
-            transform: rotate(var(--angle, 10deg));
-            left: var(--x, 20%);
-            animation: rayDrift var(--dur, 12s) ease-in-out infinite alternate;
-        }
-        .light-rays .ray:nth-child(1) { --x: 15%; --angle: 8deg; --dur: 14s; height: 140%; }
-        .light-rays .ray:nth-child(2) { --x: 35%; --angle: -4deg; --dur: 18s; height: 110%; opacity: 0.6; }
-        .light-rays .ray:nth-child(3) { --x: 55%; --angle: 12deg; --dur: 16s; height: 130%; opacity: 0.4; }
-        .light-rays .ray:nth-child(4) { --x: 75%; --angle: -6deg; --dur: 20s; height: 100%; opacity: 0.3; }
-        .light-rays .ray:nth-child(5) { --x: 90%; --angle: 5deg; --dur: 13s; height: 150%; opacity: 0.5; }
+    /* ─── LOGIN MODAL ──────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 18, 23, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .login-modal {
+      width: 90%;
+      max-width: 380px;
+      background: rgba(6, 26, 32, 0.95);
+      backdrop-filter: blur(32px) saturate(1.2);
+      -webkit-backdrop-filter: blur(32px) saturate(1.2);
+      border-radius: 18px;
+      box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169, 132, 69, 0.06);
+      padding: 32px 24px 26px 24px;
+      transform: scale(0.9) translateY(20px);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+      position: relative;
+      border: 1px solid rgba(169, 132, 69, 0.04);
+    }
+    .modal-overlay.open .login-modal { transform: scale(1) translateY(0); opacity: 1; }
+    .login-modal h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 0px;
+      background: linear-gradient(180deg, #F4EBDD 0%, #C09A52 60%, #A98445 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+    .login-modal .modal-sub {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.35);
+      margin-bottom: 18px;
+      font-weight: 400;
+    }
+    .role-selector { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; justify-content: center; }
+    .role-selector .role-btn {
+      flex: 1;
+      min-width: 60px;
+      padding: 8px 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(169, 132, 69, 0.04);
+      background: rgba(255, 255, 255, 0.02);
+      color: rgba(232, 217, 184, 0.35);
+      font-size: 0.5rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Cinzel', serif;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .role-selector .role-btn .role-icon { display: block; font-size: 1rem; margin-bottom: 2px; opacity: 0.4; transition: opacity 0.3s ease; }
+    .role-selector .role-btn.active { border-color: rgba(169, 132, 69, 0.15); background: rgba(169, 132, 69, 0.05); color: var(--gold-light); }
+    .role-selector .role-btn.active .role-icon { opacity: 0.8; }
+    .role-selector .role-btn.active.admin-active { color: var(--gold-bright); border-color: rgba(169, 132, 69, 0.2); }
+    .login-field { margin-bottom: 14px; }
+    .login-field label {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.45rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.35);
+      margin-bottom: 3px;
+    }
+    .login-field input {
+      width: 100%;
+      background: rgba(4, 18, 23, 0.6);
+      border: 1px solid rgba(169, 132, 69, 0.06);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--ivory);
+      font-size: 13px;
+      font-family: 'Segoe UI', sans-serif;
+      outline: none;
+      transition: 0.3s ease;
+      -webkit-appearance: none;
+    }
+    .login-field input::placeholder { color: rgba(232, 217, 184, 0.1); }
+    .login-field input:focus { border-color: rgba(169, 132, 69, 0.15); background: rgba(4, 18, 23, 0.8); box-shadow: 0 0 30px rgba(169, 132, 69, 0.02); }
+    .login-field input.error { border-color: rgba(200, 100, 100, 0.25); background: rgba(200, 100, 100, 0.05); animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+    .login-submit {
+      width: 100%;
+      margin-top: 4px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(169, 132, 69, 0.08);
+      background: linear-gradient(135deg, rgba(169, 132, 69, 0.04), rgba(169, 132, 69, 0.02));
+      color: rgba(232, 217, 184, 0.7);
+      font-weight: 700;
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    .login-submit:active { transform: scale(0.97); }
+    .login-submit:disabled { opacity: 0.3; transform: none !important; cursor: not-allowed; }
+    .login-submit .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(232, 217, 184, 0.1);
+      border-top-color: var(--gold-light);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    .login-submit.loading .spinner { display: block; }
+    .login-submit.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .forgot-link {
+      display: block;
+      text-align: center;
+      margin-top: 14px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.12em;
+      color: rgba(192, 154, 82, 0.25);
+      text-decoration: none;
+      transition: 0.2s;
+      touch-action: manipulation;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(169, 132, 69, 0.02);
+      border: 1px solid rgba(169, 132, 69, 0.04);
+      color: rgba(232, 217, 184, 0.15);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      z-index: 10;
+      font-family: 'Segoe UI', sans-serif;
+      touch-action: manipulation;
+    }
+    .login-error {
+      background: rgba(200, 100, 100, 0.04);
+      border: 1px solid rgba(200, 100, 100, 0.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      font-size: 0.6rem;
+      color: rgba(232, 217, 184, 0.5);
+      text-align: center;
+      display: none;
+      letter-spacing: 0.04em;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .login-error.show { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .login-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(6, 26, 32, 0.95);
+      backdrop-filter: blur(16px);
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: 1px solid rgba(169, 132, 69, 0.08);
+      color: rgba(232, 217, 184, 0.7);
+      font-size: 0.75rem;
+      font-family: 'Segoe UI', sans-serif;
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+      text-align: center;
+      max-width: 90vw;
+      box-shadow: var(--shadow-deep);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+    .login-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .login-toast.success { border-color: rgba(169, 132, 69, 0.15); color: var(--gold-light); }
+    .login-toast.error { border-color: rgba(200, 100, 100, 0.15); color: rgba(232, 217, 184, 0.5); }
 
-        @keyframes rayDrift {
-            0% { transform: rotate(var(--angle, 10deg)) translateX(-30px); opacity: 0.3; }
-            100% { transform: rotate(calc(var(--angle, 10deg) + 2deg)) translateX(30px); opacity: 0.8; }
-        }
-
-        /* ─── floating particles ───────────────────────────────────────── */
-        .particles {
-            position: absolute;
-            inset: 0;
-            z-index: 2;
-            pointer-events: none;
-            overflow: hidden;
-            will-change: transform;
-        }
-        .particles .part {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(192, 154, 82, 0.3);
-            border-radius: 50%;
-            animation: floatPart var(--dur, 20s) ease-in-out infinite alternate;
-            left: var(--x, 10%);
-            top: var(--y, 10%);
-            --dur: 20s;
-        }
-        .particles .part:nth-child(1) { --x: 10%; --y: 20%; --dur: 22s; width: 3px; height: 3px; opacity: 0.3; }
-        .particles .part:nth-child(2) { --x: 25%; --y: 60%; --dur: 18s; opacity: 0.25; }
-        .particles .part:nth-child(3) { --x: 45%; --y: 15%; --dur: 25s; width: 4px; height: 4px; opacity: 0.2; }
-        .particles .part:nth-child(4) { --x: 60%; --y: 70%; --dur: 16s; opacity: 0.3; }
-        .particles .part:nth-child(5) { --x: 78%; --y: 30%; --dur: 21s; width: 3px; height: 3px; opacity: 0.22; }
-        .particles .part:nth-child(6) { --x: 90%; --y: 55%; --dur: 19s; opacity: 0.28; }
-        .particles .part:nth-child(7) { --x: 50%; --y: 85%; --dur: 23s; width: 2px; height: 2px; opacity: 0.2; }
-        .particles .part:nth-child(8) { --x: 5%; --y: 45%; --dur: 17s; opacity: 0.25; }
-
-        @keyframes floatPart {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
-            50% { opacity: 0.4; }
-            100% { transform: translate(calc(var(--x, 10%) * 0.6), calc(var(--y, 10%) * -0.4)) scale(1.8); opacity: 0.1; }
-        }
-
-        /* ─── HERO CONTENT ─────────────────────────────────────────────── */
-        .hero-center {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            text-align: center;
-            padding: 0 24px;
-            pointer-events: none;
-            will-change: transform;
-        }
-        .hero-title {
-            font-family: 'Cinzel', serif;
-            font-weight: 900;
-            font-size: clamp(2.8rem, 10vw, 6.5rem);
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 4px 12px rgba(169, 132, 69, 0.4)) drop-shadow(0 0 50px rgba(192, 154, 82, 0.2));
-            line-height: 1.05;
-            margin-bottom: 8px;
-        }
-        .hero-title .accent {
-            font-weight: 400;
-            letter-spacing: 0.3em;
-            font-size: 0.45em;
-            display: block;
-            margin-top: 2px;
-            background: linear-gradient(180deg, #E6C875, #A98445);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 2px 10px rgba(169, 132, 69, 0.3));
-        }
-        .hero-subtitle {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 600;
-            font-size: clamp(0.9rem, 2.2vw, 1.5rem);
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            color: rgba(232, 217, 184, 0.85);
-            text-shadow: 0 2px 40px rgba(0, 0, 0, 0.8);
-            margin-top: 4px;
-        }
-        .hero-subtitle .gold { color: var(--gold-bright); font-weight: 700; }
-        .hero-subtitle .divider {
-            display: inline-block;
-            width: 1px;
-            height: 0.8em;
-            background: rgba(169, 132, 69, 0.4);
-            margin: 0 14px;
-            vertical-align: middle;
-        }
-        .hero-tagline {
-            font-family: 'Cinzel', serif;
-            font-weight: 400;
-            font-size: clamp(0.55rem, 1vw, 0.8rem);
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.6);
-            margin-top: 18px;
-            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6);
-        }
-        .hero-tagline .ornament { display: inline-block; margin: 0 10px; opacity: 0.5; }
-
-        .explore-cta {
-            position: absolute;
-            bottom: 45px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            z-index: 5;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            opacity: 0.6;
-            animation: pulseDescend 4s ease-in-out infinite;
-        }
-        .explore-cta span {
-            font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.7);
-            font-weight: 600;
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-        }
-        .explore-cta .mouse-line {
-            width: 1px;
-            height: 32px;
-            background: linear-gradient(180deg, rgba(192, 154, 82, 0.6), transparent);
-            margin-top: 2px;
-        }
-        @keyframes pulseDescend {
-            0%, 100% { opacity: 0.4; transform: translateY(0); }
-            50% { opacity: 0.8; transform: translateY(-4px); }
-        }
-
-        /* ─── EXPLORE SECTION ──────────────────────────────────────────── */
-        .explore-section {
-            position: relative;
-            z-index: 2;
-            background: var(--abyss);
-            min-height: 100dvh;
-            padding: 100px 0 40px 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
-            will-change: transform, opacity;
-            transform-origin: center bottom;
-        }
-        .explore-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.3), transparent);
-            z-index: 0;
-        }
-        .explore-header {
-            padding: 0 40px 16px 40px;
-            border-bottom: 1px solid rgba(169, 132, 69, 0.1);
-            position: relative;
-            z-index: 1;
-        }
-        .explore-header .section-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.5);
-            margin-bottom: 4px;
-        }
-        .explore-header h2 {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(1.8rem, 5vw, 3.6rem);
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: rgba(232, 217, 184, 0.15);
-            line-height: 1;
-            position: relative;
-        }
-        .explore-header h2 .gold-text { color: rgba(192, 154, 82, 0.85); }
-
-        /* ─── CAROUSEL ──────────────────────────────────────────────────── */
-        .carousel-stage {
-            position: relative;
-            width: 100%;
-            padding: 20px 0 10px 0;
-            overflow: hidden;
-            touch-action: pan-y;
-            cursor: grab;
-            will-change: transform;
-            contain: layout style;
-            z-index: 1;
-        }
-        .carousel-stage:active { cursor: grabbing; }
-        .carousel-track {
-            display: flex;
-            gap: 12px;
-            will-change: transform;
-            transition: none;
-            padding: 0 8px;
-        }
-        .carousel-track .event-card {
-            flex: 0 0 clamp(220px, 38vw, 310px);
-            aspect-ratio: 5 / 7;
-            min-height: 280px;
-            max-height: 480px;
-            background: linear-gradient(160deg, rgba(6, 26, 32, 0.92), rgba(4, 18, 23, 0.96));
-            border-radius: 16px;
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 24px 20px 20px 20px;
-            position: relative;
-            box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.9), inset 0 0 80px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            will-change: transform, opacity;
-            transform: scale(0.92);
-            transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, opacity 0.3s ease, border-color 0.4s ease;
-            -webkit-tap-highlight-color: transparent;
-            flex-shrink: 0;
-            contain: layout style;
-        }
-        .carousel-track .event-card::before {
-            content: '';
-            position: absolute;
-            inset: 4px;
-            border-radius: 12px;
-            border: 1px solid rgba(169, 132, 69, 0.08);
-            pointer-events: none;
-            z-index: 3;
-            transition: border-color 0.4s ease;
-        }
-        .carousel-track .event-card::after {
-            content: '✦';
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            font-size: 8px;
-            color: rgba(169, 132, 69, 0.15);
-            z-index: 4;
-            pointer-events: none;
-            transition: color 0.4s ease;
-        }
-        .carousel-track .event-card .card-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.6;
-            transition: opacity 0.6s ease;
-            background: var(--abyss);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .carousel-track .event-card .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            background: var(--abyss);
-        }
-        .carousel-track .event-card .card-image .img-placeholder {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(110deg, rgba(169, 132, 69, 0.02) 30%, rgba(169, 132, 69, 0.08) 50%, rgba(169, 132, 69, 0.02) 70%);
-            background-size: 200% 100%;
-            animation: shimmerAtlantis 2s ease-in-out infinite;
-            z-index: 1;
-            border-radius: 16px;
-            pointer-events: none;
-        }
-        .carousel-track .event-card .card-image img.loaded ~ .img-placeholder {
-            opacity: 0;
-            animation: none;
-            transition: opacity 0.5s ease;
-        }
-        @keyframes shimmerAtlantis {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        .carousel-track .event-card .card-content {
-            position: relative;
-            z-index: 2;
-            background: linear-gradient(to top, rgba(4, 18, 23, 0.98) 0%, rgba(4, 18, 23, 0.5) 50%, transparent 100%);
-            margin: 0 -20px -20px -20px;
-            padding: 40px 20px 22px 20px;
-            border-radius: 0 0 16px 16px;
-        }
-        .carousel-track .event-card .card-name {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(0.85rem, 1.8vw, 1.3rem);
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            color: var(--ivory);
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
-        }
-        .carousel-track .event-card .card-sub {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(0.55rem, 0.9vw, 0.75rem);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.8);
-            font-weight: 600;
-        }
-        .carousel-track .event-card .card-explore-badge {
-            position: absolute;
-            bottom: 18px;
-            right: 18px;
-            z-index: 3;
-            font-family: 'Cinzel', serif;
-            font-size: clamp(0.4rem, 0.7vw, 0.55rem);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--gold-light);
-            background: rgba(4, 18, 23, 0.7);
-            padding: 4px 14px;
-            border-radius: 30px;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid rgba(169, 132, 69, 0.15);
-            transition: 0.3s ease;
-            pointer-events: auto;
-            cursor: pointer;
-            opacity: 0.7;
-            font-weight: 600;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .carousel-track .event-card .card-explore-badge:hover {
-            opacity: 1;
-            background: rgba(169, 132, 69, 0.12);
-            border-color: rgba(169, 132, 69, 0.3);
-            transform: scale(1.04);
-            box-shadow: 0 0 30px rgba(169, 132, 69, 0.1);
-            color: var(--gold-bright);
-        }
-        .carousel-track .event-card .card-explore-badge:active { transform: scale(0.92); }
-        .carousel-track .event-card.active-card {
-            border-color: rgba(169, 132, 69, 0.3);
-            box-shadow: 0 30px 70px -12px rgba(0, 0, 0, 0.95), 0 0 60px rgba(169, 132, 69, 0.05), inset 0 0 80px rgba(169, 132, 69, 0.02);
-        }
-        .carousel-track .event-card.active-card::before { border-color: rgba(169, 132, 69, 0.15); }
-        .carousel-track .event-card.active-card::after { color: rgba(169, 132, 69, 0.25); }
-        .carousel-track .event-card.active-card .card-image { opacity: 0.8; }
-        .carousel-track .event-card.active-card .card-explore-badge { opacity: 0.9; border-color: rgba(169, 132, 69, 0.25); }
-
-        .dots-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 16px;
-            padding: 6px 0;
-            z-index: 2;
-            position: relative;
-        }
-        .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(169, 132, 69, 0.25);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            cursor: pointer;
-            border: 1px solid rgba(169, 132, 69, 0.05);
-        }
-        .dot.active {
-            background: var(--gold-light);
-            width: 20px;
-            border-radius: 4px;
-            box-shadow: 0 0 20px rgba(169, 132, 69, 0.15);
-            border-color: rgba(169, 132, 69, 0.2);
-        }
-
-        /* ─── PROMO COUNTDOWN SECTION ──────────────────────────────────── */
-        .promo-section {
-            position: relative;
-            height: 100dvh;
-            width: 100%;
-            overflow: hidden;
-            z-index: 2;
-            background: var(--abyss);
-            transform-origin: center top;
-            will-change: transform, opacity;
-        }
-        .promo-section .video-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-        .promo-section .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none;
-        }
-        .promo-section .vignette-left {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 25%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(4, 18, 23, 0.85), transparent);
-            z-index: 1;
-            pointer-events: none;
-        }
-        .promo-section .vignette-right {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 25%;
-            height: 100%;
-            background: linear-gradient(to left, rgba(4, 18, 23, 0.85), transparent);
-            z-index: 1;
-            pointer-events: none;
-        }
-        .promo-section .vignette-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background: linear-gradient(to top, rgba(4, 18, 23, 0.95), transparent 60%);
-            z-index: 1;
-            pointer-events: none;
-        }
-        .promo-section .gold-ornament {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70%;
-            max-width: 600px;
-            aspect-ratio: 1/1;
-            border-radius: 50%;
-            border: 1px solid rgba(169, 132, 69, 0.05);
-            z-index: 1;
-            pointer-events: none;
-            box-shadow: inset 0 0 120px rgba(169, 132, 69, 0.02);
-        }
-        .promo-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-            pointer-events: none;
-        }
-        .event-date-display {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(1rem, 3vw, 2.2rem);
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: rgba(232, 217, 184, 0.95);
-            text-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 120px rgba(0, 0, 0, 0.4);
-            margin-bottom: 24px;
-            padding: 0 10px;
-            line-height: 1.3;
-            background: linear-gradient(180deg, #F4EBDD 0%, #C09A52 60%, #A98445 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            pointer-events: none;
-            position: relative;
-            filter: drop-shadow(0 4px 30px rgba(0, 0, 0, 0.5));
-        }
-        .event-date-display::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50%;
-            max-width: 240px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(169, 132, 69, 0.3), transparent);
-        }
-        .event-date-display .accent-dot {
-            color: var(--gold-light);
-            -webkit-text-fill-color: var(--gold-light);
-            background: none;
-        }
-        .promo-countdown {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 36px;
-        }
-        .promo-countdown .cd-item {
-            background: rgba(4, 18, 23, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 16px 24px;
-            border-radius: 10px;
-            min-width: 72px;
-            border: 1px solid rgba(169, 132, 69, 0.1);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.4), inset 0 0 40px rgba(0, 0, 0, 0.1);
-            transition: 0.3s ease;
-            position: relative;
-        }
-        .promo-countdown .cd-item::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 11px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(169, 132, 69, 0.1), transparent 50%, transparent 50%, rgba(169, 132, 69, 0.05));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-        .promo-countdown .cd-item span {
-            display: block;
-            font-family: 'Cinzel', serif;
-            font-size: 2.6rem;
-            font-weight: 700;
-            color: var(--ivory);
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-            line-height: 1.1;
-        }
-        .promo-countdown .cd-item small {
-            font-family: 'Cinzel', serif;
-            font-size: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            color: rgba(192, 154, 82, 0.5);
-            margin-top: 2px;
-            display: block;
-        }
-        .promo-countdown .cd-item.accent { border-color: rgba(169, 132, 69, 0.15); }
-        .promo-countdown .cd-item.accent span {
-            color: var(--gold-light);
-            text-shadow: 0 0 40px rgba(169, 132, 69, 0.1);
-        }
-        .promo-cta {
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            color: rgba(232, 217, 184, 0.4);
-            font-weight: 600;
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-            transition: 0.4s ease;
-            cursor: pointer;
-            pointer-events: auto;
-            padding: 14px 32px;
-            border-radius: 40px;
-            border: 1px solid rgba(169, 132, 69, 0.1);
-            background: rgba(4, 18, 23, 0.3);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-        .promo-cta:hover {
-            color: var(--ivory);
-            border-color: rgba(169, 132, 69, 0.2);
-            background: rgba(4, 18, 23, 0.5);
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(169, 132, 69, 0.05);
-        }
-        .promo-cta:active { transform: scale(0.96); }
-        .promo-cta .arrow-link { display: inline-block; margin-left: 10px; transition: 0.3s; color: rgba(169, 132, 69, 0.4); }
-        .promo-cta:hover .arrow-link { transform: translateX(6px); color: var(--gold-light); }
-        .promo-credits {
-            position: absolute;
-            bottom: 28px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            z-index: 4;
-            font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.3);
-            font-weight: 400;
-            padding: 0 20px;
-            pointer-events: none;
-            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.8);
-        }
-        .promo-credits .credit-line { display: block; margin: 0 auto; font-weight: 400; letter-spacing: 0.3em; color: rgba(192, 154, 82, 0.4); }
-        .promo-credits .credit-line .highlight { color: var(--gold-light); font-weight: 700; letter-spacing: 0.15em; }
-
-        /* ─── LOGIN MODAL ──────────────────────────────────────────────── */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(4, 18, 23, 0.8);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s;
-        }
-        .modal-overlay.open { opacity: 1; visibility: visible; }
-        .login-modal {
-            width: 90%;
-            max-width: 400px;
-            background: rgba(6, 26, 32, 0.92);
-            backdrop-filter: blur(32px) saturate(1.1);
-            -webkit-backdrop-filter: blur(32px) saturate(1.1);
-            border-radius: 18px;
-            box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169, 132, 69, 0.08);
-            padding: 38px 30px 30px 30px;
-            transform: scale(0.9) translateY(20px);
-            opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
-            position: relative;
-            border: 1px solid rgba(169, 132, 69, 0.05);
-        }
-        .login-modal::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 19px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(169, 132, 69, 0.1), transparent 40%, transparent 60%, rgba(169, 132, 69, 0.05));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-        .modal-overlay.open .login-modal { transform: scale(1) translateY(0); opacity: 1; }
-        .login-modal h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 0px;
-            background: linear-gradient(180deg, #F4EBDD 0%, #C09A52 60%, #A98445 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.1;
-        }
-        .login-modal .modal-sub {
-            text-align: center;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.4);
-            margin-bottom: 22px;
-            font-weight: 400;
-        }
-        .role-selector { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        .role-selector .role-btn {
-            flex: 1;
-            min-width: 70px;
-            padding: 10px 6px;
-            border-radius: 10px;
-            border: 1px solid rgba(169, 132, 69, 0.05);
-            background: rgba(255, 255, 255, 0.02);
-            color: rgba(232, 217, 184, 0.4);
-            font-size: 0.55rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Cinzel', serif;
-            text-align: center;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .role-selector .role-btn .role-icon { display: block; font-size: 1.1rem; margin-bottom: 2px; opacity: 0.4; transition: opacity 0.3s ease; }
-        .role-selector .role-btn:hover { border-color: rgba(169, 132, 69, 0.1); background: rgba(169, 132, 69, 0.04); color: rgba(232, 217, 184, 0.6); }
-        .role-selector .role-btn.active { border-color: rgba(169, 132, 69, 0.2); background: rgba(169, 132, 69, 0.05); color: var(--gold-light); }
-        .role-selector .role-btn.active .role-icon { opacity: 0.8; }
-        .role-selector .role-btn.active.admin-active { color: var(--gold-bright); border-color: rgba(169, 132, 69, 0.25); }
-        .login-field { margin-bottom: 16px; }
-        .login-field label {
-            display: block;
-            font-family: 'Cinzel', serif;
-            font-size: 0.5rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: rgba(192, 154, 82, 0.4);
-            margin-bottom: 4px;
-        }
-        .login-field input {
-            width: 100%;
-            background: rgba(4, 18, 23, 0.6);
-            border: 1px solid rgba(169, 132, 69, 0.08);
-            border-radius: 10px;
-            padding: 12px 14px;
-            color: var(--ivory);
-            font-size: 13px;
-            font-family: 'Segoe UI', sans-serif;
-            outline: none;
-            transition: 0.3s ease;
-        }
-        .login-field input::placeholder { color: rgba(232, 217, 184, 0.15); }
-        .login-field input:focus { border-color: rgba(169, 132, 69, 0.2); background: rgba(4, 18, 23, 0.8); box-shadow: 0 0 30px rgba(169, 132, 69, 0.02); }
-        .login-field input.error { border-color: rgba(200, 100, 100, 0.3); background: rgba(200, 100, 100, 0.05); animation: shake 0.4s ease; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-6px); }
-            40% { transform: translateX(6px); }
-            60% { transform: translateX(-3px); }
-            80% { transform: translateX(3px); }
-        }
-        .login-submit {
-            width: 100%;
-            margin-top: 6px;
-            padding: 13px;
-            border-radius: 10px;
-            border: 1px solid rgba(169, 132, 69, 0.1);
-            background: linear-gradient(135deg, rgba(169, 132, 69, 0.05), rgba(169, 132, 69, 0.02));
-            color: rgba(232, 217, 184, 0.8);
-            font-weight: 700;
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .login-submit:hover { border-color: rgba(169, 132, 69, 0.2); background: rgba(169, 132, 69, 0.08); color: var(--ivory); transform: scale(1.01); box-shadow: 0 0 40px rgba(169, 132, 69, 0.03); }
-        .login-submit:active { transform: scale(0.97); }
-        .login-submit:disabled { opacity: 0.3; transform: none !important; cursor: not-allowed; box-shadow: none !important; }
-        .login-submit .spinner {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(232, 217, 184, 0.1);
-            border-top-color: var(--gold-light);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin: 0 auto;
-        }
-        .login-submit.loading .spinner { display: block; }
-        .login-submit.loading .btn-text { display: none; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .forgot-link {
-            display: block;
-            text-align: center;
-            margin-top: 16px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.55rem;
-            letter-spacing: 0.15em;
-            color: rgba(192, 154, 82, 0.3);
-            text-decoration: none;
-            transition: 0.2s;
-        }
-        .forgot-link:hover { color: rgba(192, 154, 82, 0.6); }
-        .modal-close {
-            position: absolute;
-            top: 14px;
-            right: 16px;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: rgba(169, 132, 69, 0.02);
-            border: 1px solid rgba(169, 132, 69, 0.05);
-            color: rgba(232, 217, 184, 0.2);
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            z-index: 10;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .modal-close:hover { background: rgba(169, 132, 69, 0.08); color: rgba(232, 217, 184, 0.4); }
-        .login-error {
-            background: rgba(200, 100, 100, 0.05);
-            border: 1px solid rgba(200, 100, 100, 0.15);
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin-bottom: 16px;
-            font-size: 0.65rem;
-            color: rgba(232, 217, 184, 0.6);
-            text-align: center;
-            display: none;
-            letter-spacing: 0.04em;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .login-error.show { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        .login-toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(6, 26, 32, 0.95);
-            backdrop-filter: blur(16px);
-            padding: 14px 28px;
-            border-radius: 12px;
-            border: 1px solid rgba(169, 132, 69, 0.1);
-            color: rgba(232, 217, 184, 0.8);
-            font-size: 0.8rem;
-            font-family: 'Segoe UI', sans-serif;
-            z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            pointer-events: none;
-            text-align: center;
-            max-width: 90vw;
-            box-shadow: var(--shadow-deep);
-            font-weight: 400;
-            letter-spacing: 0.04em;
-        }
-        .login-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .login-toast.success { border-color: rgba(169, 132, 69, 0.2); color: var(--gold-light); }
-        .login-toast.error { border-color: rgba(200, 100, 100, 0.2); color: rgba(232, 217, 184, 0.6); }
-        .login-toast.info { border-color: rgba(169, 132, 69, 0.1); color: rgba(232, 217, 184, 0.5); }
-
-        /* ─── RESPONSIVE ────────────────────────────────────────────────── */
-        @media (max-width: 768px) {
-            .header { top: 16px; left: 16px; }
-            .logo-emblem { width: 40px; height: 40px; }
-            .epic-dropdown { top: 50px; min-width: 160px; max-width: calc(100vw - 40px); padding: 6px 0; }
-            .dropdown-item { font-size: 11px; padding: 7px 18px; }
-            .dropdown-item .icon { width: 20px; height: 20px; font-size: 9px; }
-            .dropdown-section-title { font-size: 7px; padding: 4px 18px 2px 18px; }
-            .explore-section { padding: 80px 0 30px 0; }
-            .explore-header { padding: 0 20px 12px 20px; }
-            .explore-header .section-label { font-size: 0.5rem; }
-            .carousel-track .event-card { flex: 0 0 clamp(200px, 55vw, 270px); aspect-ratio: 5 / 7; min-height: 240px; max-height: 420px; padding: 18px 14px 16px 14px; border-radius: 14px; }
-            .carousel-track .event-card .card-content { margin: 0 -14px -16px -14px; padding: 30px 14px 16px 14px; border-radius: 0 0 14px 14px; }
-            .carousel-track .event-card .card-name { font-size: clamp(0.8rem, 2.5vw, 1.1rem); }
-            .carousel-track .event-card .card-sub { font-size: clamp(0.5rem, 1.2vw, 0.6rem); }
-            .carousel-track .event-card .card-explore-badge { font-size: clamp(0.35rem, 0.8vw, 0.45rem); padding: 3px 10px; bottom: 12px; right: 12px; }
-            .carousel-track .event-card::after { font-size: 6px; top: 8px; right: 10px; }
-            .event-date-display { font-size: clamp(0.9rem, 3vw, 1.5rem); letter-spacing: 0.08em; margin-bottom: 18px; }
-            .event-date-display::after { width: 40%; max-width: 160px; }
-            .login-modal { padding: 28px 20px 24px 20px; }
-            .role-selector .role-btn { min-width: 56px; padding: 8px 4px; font-size: 0.45rem; }
-            .role-selector .role-btn .role-icon { font-size: 0.9rem; }
-            .promo-credits { font-size: 0.5rem; letter-spacing: 0.15em; }
-            .promo-credits .credit-line { letter-spacing: 0.15em; }
-            .promo-countdown { gap: 10px; }
-            .promo-countdown .cd-item { padding: 12px 16px; min-width: 56px; }
-            .promo-countdown .cd-item span { font-size: 2rem; }
-            .promo-countdown .cd-item small { font-size: 0.4rem; }
-            .hero-title { font-size: clamp(2.2rem, 8vw, 4rem); }
-            .hero-subtitle { font-size: clamp(0.7rem, 1.8vw, 1rem); letter-spacing: 0.25em; }
-        }
-        @media (max-width: 480px) {
-            .carousel-track .event-card { flex: 0 0 clamp(170px, 60vw, 230px); aspect-ratio: 5 / 7; min-height: 200px; max-height: 360px; border-radius: 12px; padding: 14px 12px 12px 12px; }
-            .carousel-track .event-card .card-content { margin: 0 -12px -12px -12px; padding: 24px 12px 12px 12px; border-radius: 0 0 12px 12px; }
-            .carousel-track .event-card .card-name { font-size: clamp(0.7rem, 2vw, 0.9rem); letter-spacing: 0.06em; }
-            .carousel-track .event-card .card-sub { font-size: clamp(0.45rem, 1vw, 0.5rem); letter-spacing: 0.1em; }
-            .carousel-track .event-card .card-explore-badge { font-size: clamp(0.3rem, 0.7vw, 0.4rem); padding: 2px 8px; bottom: 8px; right: 8px; letter-spacing: 0.1em; }
-            .carousel-track .event-card::after { font-size: 5px; top: 6px; right: 8px; }
-            .promo-countdown { gap: 6px; }
-            .promo-countdown .cd-item { padding: 10px 12px; min-width: 48px; }
-            .promo-countdown .cd-item span { font-size: 1.6rem; }
-            .promo-countdown .cd-item small { font-size: 0.35rem; letter-spacing: 0.2em; }
-            .event-date-display { font-size: clamp(0.75rem, 2.8vw, 1.1rem); letter-spacing: 0.06em; margin-bottom: 14px; }
-            .event-date-display::after { width: 30%; max-width: 100px; }
-            .role-selector .role-btn { min-width: 44px; padding: 6px 3px; font-size: 0.4rem; }
-            .role-selector .role-btn .role-icon { font-size: 0.75rem; }
-            .login-modal { padding: 22px 14px 18px 14px; }
-            .login-modal h3 { font-size: 1.5rem; }
-            .hero-title { font-size: clamp(1.8rem, 7vw, 3rem); }
-            .hero-subtitle { font-size: clamp(0.6rem, 1.5vw, 0.8rem); letter-spacing: 0.2em; }
-            .hero-tagline { font-size: clamp(0.4rem, 0.8vw, 0.55rem); letter-spacing: 0.3em; }
-            .explore-cta span { font-size: 0.5rem; letter-spacing: 0.3em; }
-            .promo-credits { font-size: 0.4rem; letter-spacing: 0.1em; }
-            .promo-credits .credit-line { letter-spacing: 0.1em; }
-            .explore-header h2 { font-size: clamp(1.4rem, 4vw, 2.2rem); letter-spacing: 0.1em; }
-        }
-        @media (max-width: 360px) {
-            .carousel-track .event-card { flex: 0 0 clamp(150px, 70vw, 200px); aspect-ratio: 5 / 7; min-height: 180px; max-height: 300px; border-radius: 10px; padding: 10px 8px 8px 8px; }
-            .carousel-track .event-card .card-content { margin: 0 -8px -8px -8px; padding: 18px 8px 8px 8px; border-radius: 0 0 10px 10px; }
-            .carousel-track .event-card .card-name { font-size: clamp(0.6rem, 1.8vw, 0.75rem); letter-spacing: 0.04em; }
-            .carousel-track .event-card .card-sub { font-size: clamp(0.4rem, 0.8vw, 0.45rem); letter-spacing: 0.06em; }
-            .carousel-track .event-card .card-explore-badge { font-size: 0.3rem; padding: 2px 6px; bottom: 6px; right: 6px; letter-spacing: 0.06em; }
-            .event-date-display { font-size: clamp(0.65rem, 2.5vw, 0.85rem); letter-spacing: 0.04em; margin-bottom: 10px; }
-            .promo-credits { font-size: 0.35rem; letter-spacing: 0.06em; }
-            .hero-title { font-size: clamp(1.4rem, 6vw, 2.2rem); }
-            .hero-subtitle { font-size: clamp(0.5rem, 1.2vw, 0.65rem); letter-spacing: 0.15em; }
-        }
-        @media (min-width: 1201px) {
-            .carousel-track .event-card { flex: 0 0 clamp(260px, 22vw, 320px); aspect-ratio: 5 / 7; min-height: 320px; max-height: 500px; }
-        }
-    </style>
+    /* ─── RESPONSIVE ────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .header { top: 16px; left: 16px; }
+      .logo-emblem { width: 38px; height: 38px; }
+      .epic-dropdown { top: 48px; min-width: 150px; max-width: calc(100vw - 40px); padding: 6px 0; }
+      .dropdown-item { font-size: 10.5px; padding: 6px 16px; gap: 10px; }
+      .dropdown-item .icon { width: 18px; height: 18px; font-size: 8px; }
+      .dropdown-section-title { font-size: 7px; padding: 4px 16px 2px 16px; }
+      .explore-section { padding: 70px 0 20px 0; }
+      .explore-header { padding: 0 16px 10px 16px; }
+      .carousel-track .event-card { flex: 0 0 clamp(180px, 50vw, 240px); aspect-ratio: 5 / 7; min-height: 200px; max-height: 380px; padding: 16px 12px 12px 12px; border-radius: 14px; }
+      .carousel-track .event-card .card-content { margin: 0 -12px -12px -12px; padding: 24px 12px 14px 12px; border-radius: 0 0 14px 14px; }
+      .carousel-track .event-card .card-name { font-size: clamp(0.7rem, 2.2vw, 0.95rem); }
+      .carousel-track .event-card .card-sub { font-size: clamp(0.45rem, 1vw, 0.55rem); }
+      .carousel-track .event-card .card-explore-badge { font-size: clamp(0.3rem, 0.7vw, 0.4rem); padding: 2px 10px; bottom: 10px; right: 10px; }
+      .event-date-display { font-size: clamp(0.8rem, 2.8vw, 1.3rem); letter-spacing: 0.08em; margin-bottom: 16px; }
+      .event-date-display::after { width: 30%; max-width: 140px; }
+      .login-modal { padding: 24px 16px 20px 16px; }
+      .role-selector .role-btn { min-width: 50px; padding: 6px 3px; font-size: 0.4rem; }
+      .role-selector .role-btn .role-icon { font-size: 0.8rem; }
+      .promo-credits { font-size: 0.4rem; letter-spacing: 0.15em; }
+      .promo-countdown { gap: 8px; }
+      .promo-countdown .cd-item { padding: 10px 14px; min-width: 50px; }
+      .promo-countdown .cd-item span { font-size: 1.8rem; }
+      .promo-countdown .cd-item small { font-size: 0.35rem; }
+      .hero-title { font-size: clamp(2rem, 8vw, 3.6rem); }
+      .hero-subtitle { font-size: clamp(0.65rem, 1.8vw, 0.9rem); letter-spacing: 0.2em; }
+    }
+    @media (max-width: 480px) {
+      .carousel-track .event-card { flex: 0 0 clamp(150px, 55vw, 200px); aspect-ratio: 5 / 7; min-height: 170px; max-height: 320px; border-radius: 12px; padding: 12px 10px 10px 10px; }
+      .carousel-track .event-card .card-content { margin: 0 -10px -10px -10px; padding: 18px 10px 10px 10px; border-radius: 0 0 12px 12px; }
+      .carousel-track .event-card .card-name { font-size: clamp(0.6rem, 1.8vw, 0.8rem); letter-spacing: 0.04em; }
+      .carousel-track .event-card .card-sub { font-size: clamp(0.4rem, 0.8vw, 0.45rem); letter-spacing: 0.06em; }
+      .carousel-track .event-card .card-explore-badge { font-size: 0.3rem; padding: 2px 8px; bottom: 8px; right: 8px; letter-spacing: 0.06em; }
+      .promo-countdown { gap: 4px; }
+      .promo-countdown .cd-item { padding: 8px 10px; min-width: 42px; }
+      .promo-countdown .cd-item span { font-size: 1.4rem; }
+      .promo-countdown .cd-item small { font-size: 0.3rem; letter-spacing: 0.15em; }
+      .event-date-display { font-size: clamp(0.7rem, 2.5vw, 1rem); letter-spacing: 0.06em; margin-bottom: 12px; }
+      .event-date-display::after { width: 25%; max-width: 80px; }
+      .hero-title { font-size: clamp(1.6rem, 7vw, 2.6rem); }
+      .hero-subtitle { font-size: clamp(0.55rem, 1.5vw, 0.75rem); letter-spacing: 0.15em; }
+      .hero-tagline { font-size: clamp(0.4rem, 0.8vw, 0.5rem); letter-spacing: 0.25em; }
+      .login-modal { padding: 20px 12px 16px 12px; }
+      .login-modal h3 { font-size: 1.4rem; }
+      .role-selector .role-btn { min-width: 40px; padding: 4px 2px; font-size: 0.35rem; }
+      .role-selector .role-btn .role-icon { font-size: 0.65rem; }
+    }
+    @media (max-width: 360px) {
+      .carousel-track .event-card { flex: 0 0 clamp(130px, 65vw, 170px); aspect-ratio: 5 / 7; min-height: 150px; max-height: 260px; border-radius: 10px; padding: 8px 6px 6px 6px; }
+      .carousel-track .event-card .card-content { margin: 0 -6px -6px -6px; padding: 14px 6px 6px 6px; border-radius: 0 0 10px 10px; }
+      .carousel-track .event-card .card-name { font-size: clamp(0.5rem, 1.5vw, 0.65rem); }
+      .carousel-track .event-card .card-sub { font-size: clamp(0.35rem, 0.7vw, 0.4rem); }
+      .event-date-display { font-size: clamp(0.6rem, 2.2vw, 0.8rem); }
+      .promo-countdown .cd-item span { font-size: 1.2rem; }
+      .hero-title { font-size: clamp(1.2rem, 6vw, 2rem); }
+    }
+    @media (min-width: 1201px) {
+      .carousel-track .event-card { flex: 0 0 clamp(250px, 22vw, 310px); aspect-ratio: 5 / 7; min-height: 300px; max-height: 480px; }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- FLOATING LOGO -->
-    <header class="header">
-        <div class="trigger-wrapper" id="logoTrigger">
-            <svg class="logo-emblem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="24" cy="24" r="20" fill="rgba(6,26,32,0.6)" stroke="rgba(169,132,69,0.2)" stroke-width="1.5" />
-                <path d="M24 8 L24 40 M8 24 L40 24" stroke="rgba(169,132,69,0.15)" stroke-width="1" />
-                <path d="M14 14 L34 34 M34 14 L14 34" stroke="rgba(169,132,69,0.1)" stroke-width="0.8" />
-                <path d="M24 12 L24 36 M18 20 L24 28 L30 20" stroke="rgba(169,132,69,0.25)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="24" cy="10" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <circle cx="24" cy="38" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <circle cx="10" cy="24" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <circle cx="38" cy="24" r="1.5" fill="rgba(169,132,69,0.15)" />
-                <path d="M16 30 Q20 26 24 30 Q28 34 32 30" stroke="rgba(169,132,69,0.1)" stroke-width="0.8" fill="none" />
-            </svg>
-
-            <div class="epic-dropdown" id="dropdownMenu">
-                <div class="dropdown-section-title">✦ Navigate</div>
-                <a class="dropdown-item" data-action="home"><span class="icon">⌂</span> Home</a>
-                <a class="dropdown-item" data-action="redirect" data-url="/about.html"><span class="icon">◈</span> About Us</a>
-                <a class="dropdown-item" data-action="redirect" data-url="/connect.html"><span class="icon">✦</span> Connect</a>
-                <a class="dropdown-item" data-action="redirect" data-url="/legacy.html"><span class="icon">⚜</span> Legacy</a>
-                <hr class="dropdown-divider" />
-                <div class="dropdown-section-title">⟡ Access</div>
-                <a class="dropdown-item login-item" data-action="login"><span class="icon">⟡</span> Login</a>
-                <a class="dropdown-item" data-action="explore-event"><span class="icon">▸</span> Explore Event</a>
-                <a class="dropdown-item" data-action="redirect" data-url="/campus.html"><span class="icon">◈</span> Explore Campus</a>
-            </div>
-        </div>
-    </header>
-
-    <!-- ─── SCROLL CONTAINER (2D LAYER) ────────────────────────────────── -->
-    <div class="scroll-container" id="scrollContainer">
-
-        <!-- HERO -->
-        <section class="hero-section" id="hero">
-            <div class="video-container">
-                <video autoplay muted loop playsinline webkit-playsinline preload="auto">
-                    <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1787309801/hero-bg.mp4" type="video/mp4" />
-                </video>
-            </div>
-            <div class="overlay"></div>
-            <div class="light-rays">
-                <div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div>
-            </div>
-            <div class="particles">
-                <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
-                <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
-            </div>
-            <div class="hero-center">
-                <div class="hero-title">DEPLOMAT<span class="accent">2K26</span></div>
-                <div class="hero-subtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
-                <div class="hero-tagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
-            </div>
-            <div class="explore-cta"><span>Descend</span><div class="mouse-line"></div></div>
-        </section>
-
-        <!-- EXPLORE -->
-        <section class="explore-section" id="explore">
-            <div class="explore-header">
-                <div class="section-label">⟡ The Realms of Atlantis</div>
-                <h2>DISCOVER <span class="gold-text">THE KINGDOM</span></h2>
-            </div>
-            <div class="carousel-stage" id="carouselStage">
-                <div class="carousel-track" id="carouselTrack"></div>
-            </div>
-            <div class="dots-container" id="dotsContainer"></div>
-        </section>
-
-        <!-- PROMO COUNTDOWN -->
-        <section class="promo-section" id="promo">
-            <div class="video-container">
-                <video autoplay muted loop playsinline webkit-playsinline>
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-                </video>
-            </div>
-            <div class="vignette-left"></div>
-            <div class="vignette-right"></div>
-            <div class="vignette-bottom"></div>
-            <div class="gold-ornament"></div>
-            <div class="promo-content">
-                <div class="event-date-display">25TH – 26TH OF SEPTEMBER 2026 <span class="accent-dot">·</span> FRIDAY / SATURDAY</div>
-                <div class="promo-countdown" id="promoCountdown">
-                    <div class="cd-item accent"><span id="pDays">00</span><small>Days</small></div>
-                    <div class="cd-item"><span id="pHours">00</span><small>Hours</small></div>
-                    <div class="cd-item"><span id="pMins">00</span><small>Mins</small></div>
-                    <div class="cd-item"><span id="pSecs">00</span><small>Secs</small></div>
-                </div>
-                <div class="promo-cta" id="promoCta">watch the prophecy <span class="arrow-link">→</span></div>
-            </div>
-            <div class="promo-credits">
-                <span class="credit-line">POWERED BY <span class="highlight">DELITECH I.T CLUB</span> · DE PAUL COLLEGE MYSORE</span>
-            </div>
-        </section>
+  <!-- FLOATING LOGO -->
+  <header class="header">
+    <div class="trigger-wrapper" id="logoTrigger">
+      <svg class="logo-emblem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="20" fill="rgba(6,26,32,0.6)" stroke="rgba(169,132,69,0.2)" stroke-width="1.5" />
+        <path d="M24 8 L24 40 M8 24 L40 24" stroke="rgba(169,132,69,0.15)" stroke-width="1" />
+        <path d="M14 14 L34 34 M34 14 L14 34" stroke="rgba(169,132,69,0.1)" stroke-width="0.8" />
+        <path d="M24 12 L24 36 M18 20 L24 28 L30 20" stroke="rgba(169,132,69,0.25)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="24" cy="10" r="1.5" fill="rgba(169,132,69,0.15)" />
+        <circle cx="24" cy="38" r="1.5" fill="rgba(169,132,69,0.15)" />
+        <circle cx="10" cy="24" r="1.5" fill="rgba(169,132,69,0.15)" />
+        <circle cx="38" cy="24" r="1.5" fill="rgba(169,132,69,0.15)" />
+        <path d="M16 30 Q20 26 24 30 Q28 34 32 30" stroke="rgba(169,132,69,0.1)" stroke-width="0.8" fill="none" />
+      </svg>
+      <div class="epic-dropdown" id="dropdownMenu">
+        <div class="dropdown-section-title">✦ Navigate</div>
+        <a class="dropdown-item" data-action="home"><span class="icon">⌂</span> Home</a>
+        <a class="dropdown-item" data-action="redirect" data-url="/about.html"><span class="icon">◈</span> About Us</a>
+        <a class="dropdown-item" data-action="redirect" data-url="/connect.html"><span class="icon">✦</span> Connect</a>
+        <a class="dropdown-item" data-action="redirect" data-url="/legacy.html"><span class="icon">⚜</span> Legacy</a>
+        <hr class="dropdown-divider" />
+        <div class="dropdown-section-title">⟡ Access</div>
+        <a class="dropdown-item login-item" data-action="login"><span class="icon">⟡</span> Login</a>
+        <a class="dropdown-item" data-action="explore-event"><span class="icon">▸</span> Explore Event</a>
+        <a class="dropdown-item" data-action="redirect" data-url="/campus.html"><span class="icon">◈</span> Explore Campus</a>
+      </div>
     </div>
+  </header>
 
-    <!-- LOGIN MODAL -->
-    <div class="modal-overlay" id="loginOverlay">
-        <div class="login-modal">
-            <button class="modal-close" id="modalClose" aria-label="Close">×</button>
-            <h3>DEPLOMAT</h3>
-            <div class="modal-sub">Enter the chamber</div>
-            <div class="role-selector" id="roleSelector">
-                <button class="role-btn admin-active" data-role="admin" id="roleAdmin"><span class="role-icon">🛡️</span>Admin</button>
-                <button class="role-btn" data-role="student" id="roleStudent"><span class="role-icon">🎓</span>Student<br />Coordinator</button>
-                <button class="role-btn" data-role="faculty" id="roleFaculty"><span class="role-icon">📚</span>Faculty<br />Coordinator</button>
-            </div>
-            <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
-            <form id="loginForm">
-                <div class="login-field"><label for="loginUser">Username / Email</label><input type="text" id="loginUser" placeholder="you@deplo.mat" autocomplete="username" required /></div>
-                <div class="login-field"><label for="loginPass">Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required /></div>
-                <button type="submit" class="login-submit" id="loginSubmit"><span class="btn-text">Enter</span><span class="spinner"></span></button>
-                <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
-            </form>
+  <!-- ─── SCROLL CONTAINER ──────────────────────────────────────────────── -->
+  <div class="scroll-container" id="scrollContainer">
+
+    <!-- HERO -->
+    <section class="hero-section" id="hero">
+      <div class="video-container">
+        <video autoplay muted loop playsinline webkit-playsinline preload="auto">
+          <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1787309801/hero-bg.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="overlay"></div>
+      <div class="light-rays">
+        <div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div>
+      </div>
+      <div class="particles">
+        <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
+        <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
+      </div>
+      <div class="hero-center">
+        <div class="hero-title">DEPLOMAT<span class="accent">2K26</span></div>
+        <div class="hero-subtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
+        <div class="hero-tagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
+      </div>
+      <div class="explore-cta"><span>Descend</span><div class="mouse-line"></div></div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section class="explore-section" id="explore">
+      <div class="explore-header">
+        <div class="section-label">⟡ The Realms of Atlantis</div>
+        <h2>DISCOVER <span class="gold-text">THE KINGDOM</span></h2>
+      </div>
+      <div class="carousel-stage" id="carouselStage">
+        <div class="carousel-track" id="carouselTrack"></div>
+      </div>
+      <div class="dots-container" id="dotsContainer"></div>
+    </section>
+
+    <!-- PROMO COUNTDOWN -->
+    <section class="promo-section" id="promo">
+      <div class="video-container">
+        <video autoplay muted loop playsinline webkit-playsinline>
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="vignette-left"></div>
+      <div class="vignette-right"></div>
+      <div class="vignette-bottom"></div>
+      <div class="gold-ornament"></div>
+      <div class="promo-content">
+        <div class="event-date-display">25TH – 26TH OF SEPTEMBER 2026 <span class="accent-dot">·</span> FRIDAY / SATURDAY</div>
+        <div class="promo-countdown" id="promoCountdown">
+          <div class="cd-item accent"><span id="pDays">00</span><small>Days</small></div>
+          <div class="cd-item"><span id="pHours">00</span><small>Hours</small></div>
+          <div class="cd-item"><span id="pMins">00</span><small>Mins</small></div>
+          <div class="cd-item"><span id="pSecs">00</span><small>Secs</small></div>
         </div>
+        <div class="promo-cta" id="promoCta">watch the prophecy <span class="arrow-link">→</span></div>
+      </div>
+      <div class="promo-credits">
+        <span class="credit-line">POWERED BY <span class="highlight">DELITECH I.T CLUB</span> · DE PAUL COLLEGE MYSORE</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginOverlay">
+    <div class="login-modal">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <h3>DEPLOMAT</h3>
+      <div class="modal-sub">Enter the chamber</div>
+      <div class="role-selector" id="roleSelector">
+        <button class="role-btn admin-active" data-role="admin" id="roleAdmin"><span class="role-icon">🛡️</span>Admin</button>
+        <button class="role-btn" data-role="student" id="roleStudent"><span class="role-icon">🎓</span>Student<br />Coordinator</button>
+        <button class="role-btn" data-role="faculty" id="roleFaculty"><span class="role-icon">📚</span>Faculty<br />Coordinator</button>
+      </div>
+      <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
+      <form id="loginForm">
+        <div class="login-field"><label for="loginUser">Username / Email</label><input type="text" id="loginUser" placeholder="you@deplo.mat" autocomplete="username" required /></div>
+        <div class="login-field"><label for="loginPass">Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required /></div>
+        <button type="submit" class="login-submit" id="loginSubmit"><span class="btn-text">Enter</span><span class="spinner"></span></button>
+        <a href="#" class="forgot-link" id="forgotLink">Forgot password?</a>
+      </form>
     </div>
+  </div>
 
-    <!-- TOAST -->
-    <div class="login-toast" id="loginToast"></div>
+  <!-- TOAST -->
+  <div class="login-toast" id="loginToast"></div>
 
-    <!-- ─── JAVASCRIPT ──────────────────────────────────────────────────── -->
-    <script>
-        // ─── EVENTS DATA ───────────────────────────────────────────────────
-        const events = [
-            { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://i.ibb.co/kVg16BJm/escape-room.png" },
-            { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://i.ibb.co/hTrGXQK/treasure-hunt.png" },
-            { name: "THE TRIDENT WAR", sub: ".free fire", image: "https://i.ibb.co/v4bx2rQS/free-fire.png" },
-            { name: "COURT OF THE DEEP", sub: ".moot court", image: "https://i.ibb.co/qLZncdGf/moot-court.png" },
-            { name: "THE SIREN'S ACT", sub: ".reels making", image: "https://i.ibb.co/HLTbRtQ5/reels-making.png" },
-            { name: "ECHOS OF ATLANTIS", sub: ".solo singing", image: "https://i.ibb.co/VWML1x5z/solo-singing.png" },
-            { name: "THE MERMAID'S WALTZ", sub: ".solo dance", image: "https://i.ibb.co/prJgDHw2/solo-dance.png" },
-            { name: "TIDES OF RYTHM", sub: ".group dance", image: "https://i.ibb.co/WvrhPQCc/group-dance.png" },
-            { name: "RUNWAY OF REALMS", sub: ".rampwalk", image: "https://i.ibb.co/PZS9vnHj/ramp-walk-1.png" },
-            { name: "THE KRAKEN'S PITCH", sub: ".cricket(both PU/UG boys)", image: "https://i.ibb.co/NdGfJMVV/cricket.png" },
-            { name: "POSEIDON'S CUP", sub: ".football(for P.U boys)", image: "https://i.ibb.co/84DWnC3W/football.png" },
-            { name: "RIPTIDE RALLY", sub: ".throwball for U.G girls", image: "https://i.ibb.co/Q3V3dxYj/Gemini-Generated-Image-konq2tkonq2tkonq.png" }
-        ];
+  <script>
+    // ─── EVENTS DATA ───────────────────────────────────────────────────
+    const events = [
+      { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://i.ibb.co/kVg16BJm/escape-room.png" },
+      { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://i.ibb.co/hTrGXQK/treasure-hunt.png" },
+      { name: "THE TRIDENT WAR", sub: ".free fire", image: "https://i.ibb.co/v4bx2rQS/free-fire.png" },
+      { name: "COURT OF THE DEEP", sub: ".moot court", image: "https://i.ibb.co/qLZncdGf/moot-court.png" },
+      { name: "THE SIREN'S ACT", sub: ".reels making", image: "https://i.ibb.co/HLTbRtQ5/reels-making.png" },
+      { name: "ECHOS OF ATLANTIS", sub: ".solo singing", image: "https://i.ibb.co/VWML1x5z/solo-singing.png" },
+      { name: "THE MERMAID'S WALTZ", sub: ".solo dance", image: "https://i.ibb.co/prJgDHw2/solo-dance.png" },
+      { name: "TIDES OF RYTHM", sub: ".group dance", image: "https://i.ibb.co/WvrhPQCc/group-dance.png" },
+      { name: "RUNWAY OF REALMS", sub: ".rampwalk", image: "https://i.ibb.co/PZS9vnHj/ramp-walk-1.png" },
+      { name: "THE KRAKEN'S PITCH", sub: ".cricket(both PU/UG boys)", image: "https://i.ibb.co/NdGfJMVV/cricket.png" },
+      { name: "POSEIDON'S CUP", sub: ".football(for P.U boys)", image: "https://i.ibb.co/84DWnC3W/football.png" },
+      { name: "RIPTIDE RALLY", sub: ".throwball for U.G girls", image: "https://i.ibb.co/Q3V3dxYj/Gemini-Generated-Image-konq2tkonq2tkonq.png" }
+    ];
 
-        // ─── CAROUSEL ─────────────────────────────────────────────────────
-        const track = document.getElementById('carouselTrack');
-        const stage = document.getElementById('carouselStage');
-        const dotsContainer = document.getElementById('dotsContainer');
-        const N = events.length;
-        const gap = 12;
-        let cardWidthWithGap = 0;
-        let cardWidth = 0;
-        let index = N;
-        let isDragging = false;
-        let isSnapping = false;
-        let dragStartX = 0;
-        let dragStartIndex = 0;
-        let velocity = 0;
-        let lastMoveX = 0;
-        let lastMoveTime = 0;
-        let snapTimer = null;
-        let rafId = null;
-        let resizeTimeout = null;
-        let activeOrigIdx = 0;
+    // ─── CAROUSEL ─────────────────────────────────────────────────────
+    const track = document.getElementById('carouselTrack');
+    const stage = document.getElementById('carouselStage');
+    const dotsContainer = document.getElementById('dotsContainer');
+    const N = events.length;
+    let cardWidthWithGap = 0;
+    let cardWidth = 0;
+    let index = N;
+    let isDragging = false;
+    let isSnapping = false;
+    let dragStartX = 0;
+    let dragStartIndex = 0;
+    let velocity = 0;
+    let lastMoveX = 0;
+    let lastMoveTime = 0;
+    let snapTimer = null;
+    let rafId = null;
+    let resizeTimeout = null;
+    let activeOrigIdx = 0;
+    let isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-        function preloadAllImages(eventData) {
-            const urls = eventData.map(e => e.image);
-            let loaded = 0;
-            const total = urls.length;
-            urls.forEach(url => {
-                const img = new Image();
-                img.onload = img.onerror = () => {
-                    loaded++;
-                    if (loaded === total) {
-                        document.querySelectorAll('.card-image img').forEach(el => el.classList.add('loaded'));
-                    }
-                };
-                img.src = url;
-            });
-        }
-        preloadAllImages(events);
+    function preloadAllImages(eventData) {
+      const urls = eventData.map(e => e.image);
+      let loaded = 0;
+      const total = urls.length;
+      urls.forEach(url => {
+        const img = new Image();
+        img.onload = img.onerror = () => {
+          loaded++;
+          if (loaded === total) {
+            document.querySelectorAll('.card-image img').forEach(el => el.classList.add('loaded'));
+          }
+        };
+        img.src = url;
+      });
+    }
+    preloadAllImages(events);
 
-        function createCardElement(evt, idx, globalIdx) {
-            const card = document.createElement('div');
-            card.className = 'event-card card-' + ((idx % N) + 1);
-            card.dataset.originalIndex = idx % N;
-            card.dataset.globalIndex = globalIdx;
-            card.innerHTML = `
+    function createCardElement(evt, idx, globalIdx) {
+      const card = document.createElement('div');
+      card.className = 'event-card card-' + ((idx % N) + 1);
+      card.dataset.originalIndex = idx % N;
+      card.dataset.globalIndex = globalIdx;
+      card.innerHTML = `
                 <div class="card-image">
                     <img src="${evt.image}" alt="Event photo" loading="eager" fetchpriority="high" />
                     <div class="img-placeholder"></div>
@@ -1386,410 +1293,426 @@
                 </div>
                 <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
             `;
-            const img = card.querySelector('img');
-            if (img.complete) img.classList.add('loaded');
-            img.addEventListener('load', () => img.classList.add('loaded'));
-            const badge = card.querySelector('.card-explore-badge');
-            badge.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (isDragging || isSnapping) return;
-                const origIdx = parseInt(badge.dataset.originalIndex);
-                if (!isNaN(origIdx)) window.location.href = 'event-' + origIdx + '.html';
-            });
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.card-explore-badge')) return;
-                if (isDragging || isSnapping) return;
-                const origIdx = parseInt(card.dataset.originalIndex);
-                if (!isNaN(origIdx)) window.location.href = 'event-' + origIdx + '.html';
-            });
-            return card;
-        }
+      const img = card.querySelector('img');
+      if (img.complete) img.classList.add('loaded');
+      img.addEventListener('load', () => img.classList.add('loaded'));
+      const badge = card.querySelector('.card-explore-badge');
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isDragging || isSnapping) return;
+        const origIdx = parseInt(badge.dataset.originalIndex);
+        if (!isNaN(origIdx)) window.location.href = 'event-' + origIdx + '.html';
+      });
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-explore-badge')) return;
+        if (isDragging || isSnapping) return;
+        const origIdx = parseInt(card.dataset.originalIndex);
+        if (!isNaN(origIdx)) window.location.href = 'event-' + origIdx + '.html';
+      });
+      return card;
+    }
 
-        function buildCarousel() {
-            track.innerHTML = '';
-            dotsContainer.innerHTML = '';
-            for (let copy = 0; copy < 3; copy++) {
-                events.forEach((evt, idx) => {
-                    track.appendChild(createCardElement(evt, idx, copy * N + idx));
-                });
+    function buildCarousel() {
+      track.innerHTML = '';
+      dotsContainer.innerHTML = '';
+      for (let copy = 0; copy < 3; copy++) {
+        events.forEach((evt, idx) => {
+          track.appendChild(createCardElement(evt, idx, copy * N + idx));
+        });
+      }
+      for (let i = 0; i < N; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.dataset.index = i;
+        dot.addEventListener('click', (e) => { 
+          e.preventDefault();
+          if (!isSnapping) snapToIndex(i + N); 
+        });
+        dotsContainer.appendChild(dot);
+      }
+      requestAnimationFrame(() => {
+        measureCardWidth();
+        index = N;
+        updateCarousel(false);
+      });
+    }
+
+    function measureCardWidth() {
+      const firstCard = track.querySelector('.event-card');
+      cardWidth = firstCard ? (firstCard.offsetWidth || 260) : 260;
+      cardWidthWithGap = cardWidth + 12;
+    }
+
+    function updateCarousel(animate = true) {
+      const cards = track.querySelectorAll('.event-card');
+      if (!cards.length || cardWidthWithGap === 0) return;
+      const stageWidth = stage.clientWidth;
+      const halfStage = stageWidth / 2;
+      const halfCard = cardWidth / 2;
+      const pos = -(index * cardWidthWithGap) + (stageWidth - cardWidth) / 2;
+      track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)' : 'none';
+      track.style.transform = `translateX(${pos}px)`;
+      let closestOrigIdx = 0;
+      let closestDist = Infinity;
+      cards.forEach((card, i) => {
+        const cardCenter = pos + i * cardWidthWithGap + halfCard;
+        const dist = Math.abs(cardCenter - halfStage);
+        const maxDist = stageWidth / 2 + cardWidth;
+        const norm = Math.min(dist / maxDist, 1);
+        const scale = 1 - norm * 0.18;
+        const opacity = 1 - norm * 0.3;
+        card.style.transform = `scale(${scale})`;
+        card.style.opacity = Math.max(0.5, opacity);
+        card.style.zIndex = Math.round(scale * 10);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestOrigIdx = parseInt(card.dataset.originalIndex);
+        }
+      });
+      activeOrigIdx = closestOrigIdx;
+      cards.forEach(card => {
+        card.classList.toggle('active-card', parseInt(card.dataset.originalIndex) === activeOrigIdx);
+      });
+      dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === closestOrigIdx);
+      });
+    }
+
+    function snapToIndex(targetIdx, animate = true) {
+      if (isSnapping) return;
+      if (targetIdx < N) { targetIdx = 2 * N - 1; animate = false; } 
+      else if (targetIdx >= 2 * N) { targetIdx = N; animate = false; }
+      targetIdx = Math.max(0, Math.min(3 * N - 1, targetIdx));
+      index = targetIdx;
+      isSnapping = true;
+      if (snapTimer) clearTimeout(snapTimer);
+      updateCarousel(animate);
+      snapTimer = setTimeout(() => { isSnapping = false; snapTimer = null; }, animate ? 600 : 50);
+    }
+
+    function findCardAtPoint(clientX, clientY) {
+      const el = document.elementFromPoint(clientX, clientY);
+      return el ? el.closest('.event-card') : null;
+    }
+
+    // Pointer events for both desktop and mobile
+    stage.addEventListener('pointerdown', (e) => {
+      if (isSnapping) return;
+      isDragging = true;
+      isSnapping = false;
+      dragStartX = e.clientX;
+      dragStartIndex = index;
+      velocity = 0;
+      lastMoveX = e.clientX;
+      lastMoveTime = performance.now();
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      track.style.transition = 'none';
+      stage.setPointerCapture(e.pointerId);
+      stage.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - dragStartX;
+      let newIndex = dragStartIndex + (-deltaX / cardWidthWithGap);
+      if (newIndex < N - 1.5) { newIndex += N; dragStartIndex += N; dragStartX = e.clientX; } 
+      else if (newIndex >= 2 * N + 1.5) { newIndex -= N; dragStartIndex -= N; dragStartX = e.clientX; }
+      if (newIndex < N - 2) newIndex = N - 2;
+      if (newIndex >= 2 * N + 2) newIndex = 2 * N + 2;
+      index = newIndex;
+      const now = performance.now();
+      const dt = now - lastMoveTime;
+      if (dt > 0) {
+        const v = (e.clientX - lastMoveX) / dt;
+        velocity = velocity * 0.5 + v * 0.5;
+      }
+      lastMoveTime = now;
+      lastMoveX = e.clientX;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => { updateCarousel(false); rafId = null; });
+    });
+
+    document.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      stage.style.cursor = 'grab';
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      const dist = Math.abs(e.clientX - dragStartX);
+      if (dist < 8) {
+        const card = findCardAtPoint(e.clientX, e.clientY);
+        if (card) {
+          const origIdx = parseInt(card.dataset.originalIndex);
+          if (!isNaN(origIdx)) { window.location.href = 'event-' + origIdx + '.html'; stage.releasePointerCapture(e.pointerId); return; }
+        }
+        if (activeOrigIdx !== undefined && !isNaN(activeOrigIdx)) {
+          window.location.href = 'event-' + activeOrigIdx + '.html';
+          stage.releasePointerCapture(e.pointerId);
+          return;
+        }
+        snapToIndex(Math.round(index), true);
+        stage.releasePointerCapture(e.pointerId);
+        return;
+      }
+      let targetIdx = Math.round(index);
+      if (index - Math.floor(index) > 0.25 || velocity < -0.3) targetIdx = Math.ceil(index);
+      else if (Math.ceil(index) - index > 0.25 || velocity > 0.3) targetIdx = Math.floor(index);
+      snapToIndex(targetIdx, true);
+      velocity = 0;
+      stage.releasePointerCapture(e.pointerId);
+    });
+
+    // Prevent touch scroll conflicts
+    stage.addEventListener('touchstart', (e) => {
+      // allow passive touch
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 150);
+    });
+
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(() => {
+        if (resizeTimeout) clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 150);
+      });
+      ro.observe(stage);
+    }
+
+    let wheelTimeout = null;
+    stage.addEventListener('wheel', (e) => {
+      if (isDragging || isSnapping) return;
+      e.preventDefault();
+      if (wheelTimeout) clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(() => {
+        snapToIndex(Math.round(index) + (e.deltaX || e.deltaY > 0 ? 1 : -1), true);
+        wheelTimeout = null;
+      }, 80);
+    }, { passive: false });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || isSnapping || isDragging) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); snapToIndex(Math.round(index) - 1, true); } 
+      else if (e.key === 'ArrowRight') { e.preventDefault(); snapToIndex(Math.round(index) + 1, true); }
+    });
+
+    buildCarousel();
+
+    // ─── HERO MOUSE PARALLAX (desktop only) ────────────────────────
+    const heroSection = document.getElementById('hero');
+    if (!isMobile) {
+      heroSection.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        const rays = document.querySelector('.light-rays');
+        const particles = document.querySelector('.particles');
+        const heroCenter = document.querySelector('.hero-center');
+        if (rays) rays.style.transform = `translate(${x * 15}px, ${y * 15}px)`;
+        if (particles) particles.style.transform = `translate(${x * -10}px, ${y * -10}px)`;
+        if (heroCenter) heroCenter.style.transform = `translate(${x * -5}px, ${y * -5}px)`;
+      });
+    }
+
+    // ─── 2D SCROLL INTERACTION ──────────────────────────────────────
+    const scrollContainer = document.getElementById('scrollContainer');
+    const hero = document.getElementById('hero');
+    const explore = document.getElementById('explore');
+    const promo = document.getElementById('promo');
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+
+          if (hero) {
+            const heroScale = Math.max(0.92, 1 - scrollY * 0.0004);
+            const heroOpacity = Math.max(0, 1 - scrollY * 0.0015);
+            hero.style.transform = `scale(${heroScale})`;
+            hero.style.opacity = heroOpacity;
+          }
+
+          if (explore) {
+            const rect = explore.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+            if (rect.top < viewHeight && rect.bottom > 0) {
+              const progressExp = 1 - (rect.top / viewHeight);
+              const clamped = Math.min(Math.max(progressExp, 0), 1);
+              const scale = 0.96 + (clamped * 0.04);
+              explore.style.transform = `scale(${scale})`;
+              explore.style.opacity = 0.6 + (clamped * 0.4);
             }
-            for (let i = 0; i < N; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'dot' + (i === 0 ? ' active' : '');
-                dot.dataset.index = i;
-                dot.addEventListener('click', () => { if (!isSnapping) snapToIndex(i + N); });
-                dotsContainer.appendChild(dot);
+          }
+
+          if (promo) {
+            const rect = promo.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+            if (rect.top < viewHeight && rect.bottom > 0) {
+              const progressPromo = 1 - (rect.top / viewHeight);
+              const clamped = Math.min(Math.max(progressPromo, 0), 1);
+              const scale = 0.96 + (clamped * 0.04);
+              promo.style.transform = `scale(${scale})`;
+              promo.style.opacity = 0.6 + (clamped * 0.4);
             }
-            requestAnimationFrame(() => {
-                measureCardWidth();
-                index = N;
-                updateCarousel(false);
-            });
-        }
+          }
 
-        function measureCardWidth() {
-            const firstCard = track.querySelector('.event-card');
-            cardWidth = firstCard ? (firstCard.offsetWidth || 260) : 260;
-            cardWidthWithGap = cardWidth + gap;
-        }
-
-        function updateCarousel(animate = true) {
-            const cards = track.querySelectorAll('.event-card');
-            if (!cards.length || cardWidthWithGap === 0) return;
-            const stageWidth = stage.clientWidth;
-            const halfStage = stageWidth / 2;
-            const halfCard = cardWidth / 2;
-            const pos = -(index * cardWidthWithGap) + (stageWidth - cardWidth) / 2;
-            track.style.transition = animate ? 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)' : 'none';
-            track.style.transform = `translateX(${pos}px)`;
-            let closestOrigIdx = 0;
-            let closestDist = Infinity;
-            cards.forEach((card, i) => {
-                const cardCenter = pos + i * cardWidthWithGap + halfCard;
-                const dist = Math.abs(cardCenter - halfStage);
-                const maxDist = stageWidth / 2 + cardWidth;
-                const norm = Math.min(dist / maxDist, 1);
-                const scale = 1 - norm * 0.18;
-                const opacity = 1 - norm * 0.3;
-                card.style.transform = `scale(${scale})`;
-                card.style.opacity = Math.max(0.5, opacity);
-                card.style.zIndex = Math.round(scale * 10);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closestOrigIdx = parseInt(card.dataset.originalIndex);
-                }
-            });
-            activeOrigIdx = closestOrigIdx;
-            cards.forEach(card => {
-                card.classList.toggle('active-card', parseInt(card.dataset.originalIndex) === activeOrigIdx);
-            });
-            dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === closestOrigIdx);
-            });
-        }
-
-        function snapToIndex(targetIdx, animate = true) {
-            if (isSnapping) return;
-            if (targetIdx < N) { targetIdx = 2 * N - 1; animate = false; } 
-            else if (targetIdx >= 2 * N) { targetIdx = N; animate = false; }
-            targetIdx = Math.max(0, Math.min(3 * N - 1, targetIdx));
-            index = targetIdx;
-            isSnapping = true;
-            if (snapTimer) clearTimeout(snapTimer);
-            updateCarousel(animate);
-            snapTimer = setTimeout(() => { isSnapping = false; snapTimer = null; }, animate ? 700 : 50);
-        }
-
-        function findCardAtPoint(clientX, clientY) {
-            const el = document.elementFromPoint(clientX, clientY);
-            return el ? el.closest('.event-card') : null;
-        }
-
-        stage.addEventListener('pointerdown', (e) => {
-            if (isSnapping) return;
-            isDragging = true;
-            isSnapping = false;
-            dragStartX = e.clientX;
-            dragStartIndex = index;
-            velocity = 0;
-            lastMoveX = e.clientX;
-            lastMoveTime = performance.now();
-            if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-            track.style.transition = 'none';
-            stage.setPointerCapture(e.pointerId);
+          const tiltX = (progress - 0.5) * 4;
+          const tiltY = (progress - 0.5) * 2;
+          scrollContainer.style.transform = `perspective(800px) rotateX(${tiltX * 0.25}deg) rotateY(${tiltY * 0.15}deg)`;
+          scrollContainer.style.opacity = Math.min(1, 1 - (progress * 0.12));
+          ticking = false;
         });
+        ticking = true;
+      }
+    }, { passive: true });
 
-        document.addEventListener('pointermove', (e) => {
-            if (!isDragging) return;
-            const deltaX = e.clientX - dragStartX;
-            let newIndex = dragStartIndex + (-deltaX / cardWidthWithGap);
-            if (newIndex < N - 1.5) { newIndex += N; dragStartIndex += N; dragStartX = e.clientX; } 
-            else if (newIndex >= 2 * N + 1.5) { newIndex -= N; dragStartIndex -= N; dragStartX = e.clientX; }
-            if (newIndex < N - 2) newIndex = N - 2;
-            if (newIndex >= 2 * N + 2) newIndex = 2 * N + 2;
-            index = newIndex;
-            const now = performance.now();
-            const dt = now - lastMoveTime;
-            if (dt > 0) {
-                const v = (e.clientX - lastMoveX) / dt;
-                velocity = velocity * 0.5 + v * 0.5;
-            }
-            lastMoveTime = now;
-            lastMoveX = e.clientX;
-            if (rafId) cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(() => { updateCarousel(false); rafId = null; });
-        });
+    // ─── DROPDOWN ──────────────────────────────────────────────────────
+    const trigger = document.getElementById('logoTrigger');
+    const dropdown = document.getElementById('dropdownMenu');
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+      trigger.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+      if (!document.querySelector('.header').contains(e.target)) {
+        dropdown.classList.remove('open');
+        trigger.classList.remove('active');
+      }
+    });
 
-        document.addEventListener('pointerup', (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-            const dist = Math.abs(e.clientX - dragStartX);
-            if (dist < 10) {
-                const card = findCardAtPoint(e.clientX, e.clientY);
-                if (card) {
-                    const origIdx = parseInt(card.dataset.originalIndex);
-                    if (!isNaN(origIdx)) { window.location.href = 'event-' + origIdx + '.html'; stage.releasePointerCapture(e.pointerId); return; }
-                }
-                if (activeOrigIdx !== undefined && !isNaN(activeOrigIdx)) {
-                    window.location.href = 'event-' + activeOrigIdx + '.html';
-                    stage.releasePointerCapture(e.pointerId);
-                    return;
-                }
-                snapToIndex(Math.round(index), true);
-                stage.releasePointerCapture(e.pointerId);
-                return;
-            }
-            let targetIdx = Math.round(index);
-            if (index - Math.floor(index) > 0.25 || velocity < -0.3) targetIdx = Math.ceil(index);
-            else if (Math.ceil(index) - index > 0.25 || velocity > 0.3) targetIdx = Math.floor(index);
-            snapToIndex(targetIdx, true);
-            velocity = 0;
-            stage.releasePointerCapture(e.pointerId);
-        });
+    // ─── COUNTDOWN ────────────────────────────────────────────────────
+    const promoTarget = new Date('2026-09-25T00:00:00');
+    function updatePromoCountdown() {
+      const now = new Date();
+      let diff = Math.max(0, promoTarget - now);
+      document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+      document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+      document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+      document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+    }
+    updatePromoCountdown();
+    setInterval(updatePromoCountdown, 1000);
 
-        window.addEventListener('resize', () => {
-            if (resizeTimeout) clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 150);
-        });
+    // ─── LOGIN SYSTEM ────────────────────────────────────────────────
+    const CREDENTIALS = {
+      admin: { password: 'admin2026', dashboard: 'admindb.html', label: 'Admin' },
+      student: { password: 'student2026', dashboard: 'studentdb.html', label: 'Student Coordinator' },
+      faculty: { password: 'faculty2026', dashboard: 'facultydb.html', label: 'Faculty Coordinator' }
+    };
+    const loginOverlay = document.getElementById('loginOverlay');
+    const modalClose = document.getElementById('modalClose');
+    const loginForm = document.getElementById('loginForm');
+    const loginUser = document.getElementById('loginUser');
+    const loginPass = document.getElementById('loginPass');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const loginError = document.getElementById('loginError');
+    const forgotLink = document.getElementById('forgotLink');
+    const loginToast = document.getElementById('loginToast');
+    let selectedRole = 'admin';
+    let toastTimer = null;
 
-        if (window.ResizeObserver) {
-            const ro = new ResizeObserver(() => {
-                if (resizeTimeout) clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 150);
-            });
-            ro.observe(stage);
-        }
+    function showToast(msg, type = 'info') {
+      loginToast.textContent = msg;
+      loginToast.className = 'login-toast show ' + type;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => loginToast.classList.remove('show', 'success', 'error', 'info'), 3200);
+    }
 
-        let wheelTimeout = null;
-        stage.addEventListener('wheel', (e) => {
-            if (isDragging || isSnapping) return;
-            e.preventDefault();
-            if (wheelTimeout) clearTimeout(wheelTimeout);
-            wheelTimeout = setTimeout(() => {
-                snapToIndex(Math.round(index) + (e.deltaX || e.deltaY > 0 ? 1 : -1), true);
-                wheelTimeout = null;
-            }, 80);
-        }, { passive: false });
+    function setRole(role) {
+      selectedRole = role;
+      ['roleAdmin', 'roleStudent', 'roleFaculty'].forEach(id => {
+        document.getElementById(id).classList.remove('active', 'admin-active', 'student-active', 'faculty-active');
+      });
+      const map = {
+        admin: { el: document.getElementById('roleAdmin'), cls: 'admin-active' },
+        student: { el: document.getElementById('roleStudent'), cls: 'student-active' },
+        faculty: { el: document.getElementById('roleFaculty'), cls: 'faculty-active' }
+      };
+      if (map[role]) map[role].el.classList.add('active', map[role].cls);
+      loginPass.placeholder = 'Enter ' + CREDENTIALS[role].label + ' password';
+      loginPass.value = '';
+      loginError.classList.remove('show');
+      loginPass.classList.remove('error');
+    }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || isSnapping || isDragging) return;
-            if (e.key === 'ArrowLeft') { e.preventDefault(); snapToIndex(Math.round(index) - 1, true); } 
-            else if (e.key === 'ArrowRight') { e.preventDefault(); snapToIndex(Math.round(index) + 1, true); }
-        });
+    document.getElementById('roleAdmin').addEventListener('click', () => setRole('admin'));
+    document.getElementById('roleStudent').addEventListener('click', () => setRole('student'));
+    document.getElementById('roleFaculty').addEventListener('click', () => setRole('faculty'));
 
-        buildCarousel();
+    function openLogin() {
+      loginOverlay.classList.add('open');
+      loginUser.value = ''; loginPass.value = '';
+      loginError.classList.remove('show'); loginPass.classList.remove('error');
+      loginSubmit.disabled = false; loginSubmit.classList.remove('loading');
+      setTimeout(() => loginUser.focus(), 300);
+    }
 
-        // ─── HERO MOUSE PARALLAX ─────────────────────────────────────────
-        const heroSection = document.getElementById('hero');
-        heroSection.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
-            const rays = document.querySelector('.light-rays');
-            const particles = document.querySelector('.particles');
-            const heroCenter = document.querySelector('.hero-center');
-            if (rays) rays.style.transform = `translate(${x * 15}px, ${y * 15}px)`;
-            if (particles) particles.style.transform = `translate(${x * -10}px, ${y * -10}px)`;
-            if (heroCenter) heroCenter.style.transform = `translate(${x * -5}px, ${y * -5}px)`;
-        });
+    function closeLogin() {
+      loginOverlay.classList.remove('open');
+      loginSubmit.disabled = false; loginSubmit.classList.remove('loading');
+    }
 
-        // ─── 2D SCROLL INTERACTION ──────────────────────────────────────
-        const scrollContainer = document.getElementById('scrollContainer');
-        const hero = document.getElementById('hero');
-        const explore = document.getElementById('explore');
-        const promo = document.getElementById('promo');
+    modalClose.addEventListener('click', closeLogin);
+    loginOverlay.addEventListener('click', (e) => { if (e.target === loginOverlay) closeLogin(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLogin(); });
 
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+    dropdown.querySelectorAll('.dropdown-item').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = link.getAttribute('data-action');
+        const url = link.getAttribute('data-url');
+        dropdown.classList.remove('open');
+        trigger.classList.remove('active');
+        if (action === 'home') document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+        else if (action === 'redirect' && url) window.location.href = url;
+        else if (action === 'login') openLogin();
+        else if (action === 'explore-event') document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
 
-            // Hero zoom & fade
-            if (hero) {
-                const heroScale = Math.max(0.92, 1 - scrollY * 0.0004);
-                const heroOpacity = Math.max(0, 1 - scrollY * 0.0015);
-                hero.style.transform = `scale(${heroScale})`;
-                hero.style.opacity = heroOpacity;
-            }
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast('🔑 Contact the administrator to reset your password.', 'info');
+    });
 
-            // Explore zoom in
-            if (explore) {
-                const rect = explore.getBoundingClientRect();
-                const viewHeight = window.innerHeight;
-                if (rect.top < viewHeight && rect.bottom > 0) {
-                    const progressExp = 1 - (rect.top / viewHeight);
-                    const clamped = Math.min(Math.max(progressExp, 0), 1);
-                    const scale = 0.96 + (clamped * 0.04);
-                    explore.style.transform = `scale(${scale})`;
-                    explore.style.opacity = 0.6 + (clamped * 0.4);
-                }
-            }
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = loginUser.value.trim();
+      const password = loginPass.value.trim();
+      if (!username) { loginError.textContent = 'Please enter your username or email.'; loginError.classList.add('show'); loginUser.focus(); return; }
+      if (!password) { loginError.textContent = 'Please enter your password.'; loginError.classList.add('show'); loginPass.focus(); return; }
+      const cred = CREDENTIALS[selectedRole];
+      loginSubmit.disabled = true;
+      loginSubmit.classList.add('loading');
+      loginError.classList.remove('show');
+      loginPass.classList.remove('error');
+      await new Promise(resolve => setTimeout(resolve, 600));
+      if (password === cred.password) {
+        loginSubmit.classList.remove('loading');
+        loginSubmit.disabled = false;
+        showToast(`✅ Welcome, ${cred.label}! Redirecting to dashboard...`, 'success');
+        setTimeout(() => { window.location.href = cred.dashboard; }, 800);
+      } else {
+        loginSubmit.classList.remove('loading');
+        loginSubmit.disabled = false;
+        loginPass.classList.add('error');
+        loginError.textContent = `❌ Invalid password for ${cred.label}. Please try again.`;
+        loginError.classList.add('show');
+        loginPass.value = '';
+        loginPass.focus();
+        showToast(`❌ Invalid password for ${cred.label}`, 'error');
+      }
+    });
 
-            // Promo zoom in
-            if (promo) {
-                const rect = promo.getBoundingClientRect();
-                const viewHeight = window.innerHeight;
-                if (rect.top < viewHeight && rect.bottom > 0) {
-                    const progressPromo = 1 - (rect.top / viewHeight);
-                    const clamped = Math.min(Math.max(progressPromo, 0), 1);
-                    const scale = 0.96 + (clamped * 0.04);
-                    promo.style.transform = `scale(${scale})`;
-                    promo.style.opacity = 0.6 + (clamped * 0.4);
-                }
-            }
+    loginPass.addEventListener('input', () => { loginPass.classList.remove('error'); loginError.classList.remove('show'); });
+    loginUser.addEventListener('input', () => { loginError.classList.remove('show'); });
+    loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginForm.dispatchEvent(new Event('submit')); });
 
-            // subtle 2D layer tilt based on scroll
-            const tiltX = (progress - 0.5) * 4;
-            const tiltY = (progress - 0.5) * 2;
-            scrollContainer.style.transform = `perspective(800px) rotateX(${tiltX * 0.3}deg) rotateY(${tiltY * 0.2}deg)`;
-            scrollContainer.style.opacity = Math.min(1, 1 - (progress * 0.15));
-        }, { passive: true });
-
-        // ─── DROPDOWN ──────────────────────────────────────────────────────
-        const trigger = document.getElementById('logoTrigger');
-        const dropdown = document.getElementById('dropdownMenu');
-        trigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('open');
-            trigger.classList.toggle('active');
-        });
-        document.addEventListener('click', (e) => {
-            if (!document.querySelector('.header').contains(e.target)) {
-                dropdown.classList.remove('open');
-                trigger.classList.remove('active');
-            }
-        });
-
-        // ─── COUNTDOWN ────────────────────────────────────────────────────
-        const promoTarget = new Date('2026-09-25T00:00:00');
-        function updatePromoCountdown() {
-            const now = new Date();
-            let diff = Math.max(0, promoTarget - now);
-            document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
-            document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
-            document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-            document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-        }
-        updatePromoCountdown();
-        setInterval(updatePromoCountdown, 1000);
-
-        // ─── LOGIN SYSTEM ────────────────────────────────────────────────
-        const CREDENTIALS = {
-            admin: { password: 'admin2026', dashboard: 'admindb.html', label: 'Admin' },
-            student: { password: 'student2026', dashboard: 'studentdb.html', label: 'Student Coordinator' },
-            faculty: { password: 'faculty2026', dashboard: 'facultydb.html', label: 'Faculty Coordinator' }
-        };
-        const loginOverlay = document.getElementById('loginOverlay');
-        const modalClose = document.getElementById('modalClose');
-        const loginForm = document.getElementById('loginForm');
-        const loginUser = document.getElementById('loginUser');
-        const loginPass = document.getElementById('loginPass');
-        const loginSubmit = document.getElementById('loginSubmit');
-        const loginError = document.getElementById('loginError');
-        const forgotLink = document.getElementById('forgotLink');
-        const loginToast = document.getElementById('loginToast');
-        let selectedRole = 'admin';
-        let toastTimer = null;
-
-        function showToast(msg, type = 'info') {
-            loginToast.textContent = msg;
-            loginToast.className = 'login-toast show ' + type;
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => loginToast.classList.remove('show', 'success', 'error', 'info'), 3200);
-        }
-
-        function setRole(role) {
-            selectedRole = role;
-            ['roleAdmin', 'roleStudent', 'roleFaculty'].forEach(id => {
-                document.getElementById(id).classList.remove('active', 'admin-active', 'student-active', 'faculty-active');
-            });
-            const map = {
-                admin: { el: document.getElementById('roleAdmin'), cls: 'admin-active' },
-                student: { el: document.getElementById('roleStudent'), cls: 'student-active' },
-                faculty: { el: document.getElementById('roleFaculty'), cls: 'faculty-active' }
-            };
-            if (map[role]) map[role].el.classList.add('active', map[role].cls);
-            loginPass.placeholder = 'Enter ' + CREDENTIALS[role].label + ' password';
-            loginPass.value = '';
-            loginError.classList.remove('show');
-            loginPass.classList.remove('error');
-        }
-
-        document.getElementById('roleAdmin').addEventListener('click', () => setRole('admin'));
-        document.getElementById('roleStudent').addEventListener('click', () => setRole('student'));
-        document.getElementById('roleFaculty').addEventListener('click', () => setRole('faculty'));
-
-        function openLogin() {
-            loginOverlay.classList.add('open');
-            loginUser.value = ''; loginPass.value = '';
-            loginError.classList.remove('show'); loginPass.classList.remove('error');
-            loginSubmit.disabled = false; loginSubmit.classList.remove('loading');
-            setTimeout(() => loginUser.focus(), 300);
-        }
-
-        function closeLogin() {
-            loginOverlay.classList.remove('open');
-            loginSubmit.disabled = false; loginSubmit.classList.remove('loading');
-        }
-
-        modalClose.addEventListener('click', closeLogin);
-        loginOverlay.addEventListener('click', (e) => { if (e.target === loginOverlay) closeLogin(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLogin(); });
-
-        dropdown.querySelectorAll('.dropdown-item').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const action = link.getAttribute('data-action');
-                const url = link.getAttribute('data-url');
-                dropdown.classList.remove('open');
-                trigger.classList.remove('active');
-                if (action === 'home') document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
-                else if (action === 'redirect' && url) window.location.href = url;
-                else if (action === 'login') openLogin();
-                else if (action === 'explore-event') document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
-            });
-        });
-
-        forgotLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            showToast('🔑 Contact the administrator to reset your password.', 'info');
-        });
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = loginUser.value.trim();
-            const password = loginPass.value.trim();
-            if (!username) { loginError.textContent = 'Please enter your username or email.'; loginError.classList.add('show'); loginUser.focus(); return; }
-            if (!password) { loginError.textContent = 'Please enter your password.'; loginError.classList.add('show'); loginPass.focus(); return; }
-            const cred = CREDENTIALS[selectedRole];
-            loginSubmit.disabled = true;
-            loginSubmit.classList.add('loading');
-            loginError.classList.remove('show');
-            loginPass.classList.remove('error');
-            await new Promise(resolve => setTimeout(resolve, 600));
-            if (password === cred.password) {
-                loginSubmit.classList.remove('loading');
-                loginSubmit.disabled = false;
-                showToast(`✅ Welcome, ${cred.label}! Redirecting to dashboard...`, 'success');
-                setTimeout(() => { window.location.href = cred.dashboard; }, 800);
-            } else {
-                loginSubmit.classList.remove('loading');
-                loginSubmit.disabled = false;
-                loginPass.classList.add('error');
-                loginError.textContent = `❌ Invalid password for ${cred.label}. Please try again.`;
-                loginError.classList.add('show');
-                loginPass.value = '';
-                loginPass.focus();
-                showToast(`❌ Invalid password for ${cred.label}`, 'error');
-            }
-        });
-
-        loginPass.addEventListener('input', () => { loginPass.classList.remove('error'); loginError.classList.remove('show'); });
-        loginUser.addEventListener('input', () => { loginError.classList.remove('show'); });
-        loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginForm.dispatchEvent(new Event('submit')); });
-
-        setRole('admin');
-        console.log('🔱 DEPLOMAT · Atlantis Immersive v3.0 (2D Enhanced)');
-    </script>
+    setRole('admin');
+    console.log('🔱 DEPLOMAT · Atlantis Immersive v3.1 (Cross-Device Optimized)');
+  </script>
 </body>
 </html>
