@@ -1199,6 +1199,54 @@
             pointer-events: none;
             opacity: 0.7;
         }
+
+        /* ─── UTR VALIDATION STYLES ─────────────────────────────────── */
+        .utr-valid {
+            border-color: #4caf50 !important;
+            background: rgba(76, 175, 80, 0.05) !important;
+        }
+
+        .utr-invalid {
+            border-color: #ff2a6d !important;
+            background: rgba(255, 42, 109, 0.05) !important;
+        }
+
+        .utr-error-msg {
+            color: #ff2a6d;
+            font-size: 0.7rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .utr-error-msg.show {
+            display: block;
+        }
+
+        .payment-interaction-required {
+            background: rgba(255, 197, 61, 0.08);
+            border: 1px solid rgba(255, 197, 61, 0.2);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            display: block;
+        }
+
+        .payment-interaction-required strong {
+            color: #FFC53D;
+        }
+
+        .utr-timer {
+            color: #65d8ff;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        .utr-timer span {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -1382,6 +1430,11 @@
                             </div>
                         </div>
 
+                        <!-- ─── PAYMENT INTERACTION REQUIREMENT ─────────── -->
+                        <div class="payment-interaction-required" id="paymentInteractionRequired">
+                            ⚠️ <strong>Payment interaction required!</strong> Please tap one of the payment buttons below to initiate payment before entering UTR.
+                        </div>
+
                         <!-- ─── PAYMENT SIDE ────────────────────────────── -->
                         <div class="payment-side">
                             <h5 id="payhead">PAY ₹0</h5>
@@ -1412,7 +1465,9 @@
                         <div class="utr-section" id="utrArea">
                             <div class="form-group" style="margin-bottom:0">
                                 <label style="color: #65d8ff;">Transaction ID / UTR Number <span class="required">*</span></label>
-                                <input class="f-control" id="txnInput" placeholder="Paste 12-digit UTR here" />
+                                <input class="f-control" id="txnInput" placeholder="Enter 12-digit UTR number" maxlength="12" />
+                                <div class="utr-error-msg" id="utrError">⚠️ UTR must be exactly 12 digits (numbers only)</div>
+                                <div class="utr-timer" id="utrTimer">⏱️ You have <span id="utrTimeLeft">5:00</span> to enter UTR after payment</div>
                             </div>
                             <button type="button" onclick="submitRegistration()" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:15px;padding:16px;" id="submitBtn">
                                 Confirm Registration 🔱
@@ -1531,6 +1586,10 @@
         const txnInput = document.getElementById('txnInput');
         const step4Back = document.getElementById('step4Back');
         const submitBtn = document.getElementById('submitBtn');
+        const utrError = document.getElementById('utrError');
+        const paymentInteractionRequired = document.getElementById('paymentInteractionRequired');
+        const utrTimer = document.getElementById('utrTimer');
+        const utrTimeLeft = document.getElementById('utrTimeLeft');
 
         // Banner & Block
         const eventBanner = document.getElementById('eventBanner');
@@ -1549,12 +1608,14 @@
         let teamLeaderData = null;
         let selectedCategory = null; // 'UG' or 'PU'
 
+        // ─── UTR VALIDATION STATE ──────────────────────────────────────
+        let paymentInteractionDone = false;
+        let utrTimerInterval = null;
+        let utrTimeRemaining = 300; // 5 minutes in seconds
+        let utrValidated = false;
+
         // ─── CATEGORY VALIDATION ──────────────────────────────────────
 
-        /**
-         * Check if a given category ('UG' or 'PU') is compatible with an event ID.
-         * Returns { valid: boolean, message: string }
-         */
         function checkCategoryEventCompatibility(category, eventId) {
             if (!category || !eventId) {
                 return { valid: true, message: '' };
@@ -1565,7 +1626,6 @@
                 return { valid: true, message: '' };
             }
 
-            // 'both' → always compatible
             if (event.category === 'both') {
                 return { valid: true, message: '' };
             }
@@ -1587,9 +1647,6 @@
             return { valid: true, message: '' };
         }
 
-        /**
-         * Show or hide the block notice.
-         */
         function showBlockNotice(message) {
             if (message) {
                 blockMsg.innerHTML = message;
@@ -1599,15 +1656,10 @@
             }
         }
 
-        /**
-         * Validate current category + event selection and show/hide block notice.
-         * Returns true if valid, false if blocked.
-         */
         function validateCategoryEventPair(showAlert = false) {
             const cat = getSelectedCategory();
             const eventVal = eventSelect.value;
 
-            // If either is missing, hide notice and allow (but don't block)
             if (!cat || !eventVal) {
                 showBlockNotice('');
                 return true;
@@ -1617,7 +1669,6 @@
             if (!result.valid) {
                 showBlockNotice(result.message);
                 if (showAlert) {
-                    // Show a more prominent alert as well
                     const cleanMsg = result.message.replace(/<[^>]*>/g, '');
                     alert(`⛔ ${cleanMsg}`);
                 }
@@ -1672,7 +1723,6 @@
                     `;
             }
 
-            // Trim players if exceeding max
             const currentCount = playersContainer.children.length;
             if (currentCount > currentMax) {
                 while (playersContainer.children.length > currentMax) {
@@ -1702,7 +1752,6 @@
         // ─── STEP MANAGEMENT ──────────────────────────────────────────
 
         function goToStep(step) {
-            // Validate current step before moving forward
             if (step > currentStep) {
                 if (!validateStep(currentStep)) return;
             }
@@ -1733,7 +1782,6 @@
             if (step === 2) {
                 initializePlayers();
                 updateEventLimitInfo();
-                // Re-check category compatibility when entering step 2
                 validateCategoryEventPair(false);
             }
             if (step === 3) {
@@ -1741,7 +1789,8 @@
             }
             if (step === 4) {
                 updatePaymentSummary();
-                utrArea.classList.add('active');
+                // Reset UTR state when entering payment step
+                resetUTRState();
             }
         }
 
@@ -1762,13 +1811,11 @@
 
                 if (!eventVal) { alert('Please select an event.'); return false; }
 
-                // ── 🔥 CATEGORY BLOCK: validate UG/PU vs Event ──
                 const cat = ugPuSelected.value;
                 const result = checkCategoryEventCompatibility(cat, eventVal);
                 if (!result.valid) {
                     const cleanMsg = result.message.replace(/<[^>]*>/g, '');
                     alert(`⛔ ${cleanMsg}`);
-                    // Highlight the block notice
                     showBlockNotice(result.message);
                     return false;
                 }
@@ -1780,7 +1827,6 @@
                     return false;
                 }
 
-                // Store category
                 selectedCategory = cat;
 
                 return true;
@@ -2122,18 +2168,164 @@
                 upiLink = `paytmmp://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
             }
 
-            window.location.href = upiLink;
+            // ─── MARK PAYMENT INTERACTION AS DONE ───────────────────
+            paymentInteractionDone = true;
+            paymentInteractionRequired.style.display = 'none';
             utrArea.classList.add('active');
+            
+            // Enable UTR input now
+            txnInput.disabled = false;
+            txnInput.focus();
+
+            // Start UTR timer
+            startUTRTimer();
+
+            // Open payment app
+            window.location.href = upiLink;
+        }
+
+        // ─── UTR VALIDATION FUNCTIONS ──────────────────────────────────
+
+        function validateUTR(utr) {
+            // Remove any non-digit characters
+            const cleanUtr = utr.replace(/\D/g, '');
+            
+            // Check if exactly 12 digits
+            if (cleanUtr.length !== 12) {
+                return { valid: false, message: 'UTR must be exactly 12 digits (numbers only)' };
+            }
+
+            return { valid: true, message: '' };
+        }
+
+        function handleUTRInput() {
+            const utr = txnInput.value;
+            const cleanUtr = utr.replace(/\D/g, '');
+            
+            // Update input with only digits
+            if (utr !== cleanUtr) {
+                txnInput.value = cleanUtr;
+            }
+
+            // Validate
+            const result = validateUTR(cleanUtr);
+            
+            if (result.valid) {
+                txnInput.classList.remove('utr-invalid');
+                txnInput.classList.add('utr-valid');
+                utrError.classList.remove('show');
+                utrValidated = true;
+            } else {
+                txnInput.classList.remove('utr-valid');
+                txnInput.classList.add('utr-invalid');
+                utrError.textContent = `⚠️ ${result.message}`;
+                utrError.classList.add('show');
+                utrValidated = false;
+            }
+        }
+
+        function startUTRTimer() {
+            utrTimeRemaining = 300; // 5 minutes
+            utrTimer.style.display = 'block';
+            updateTimerDisplay();
+
+            if (utrTimerInterval) {
+                clearInterval(utrTimerInterval);
+            }
+
+            utrTimerInterval = setInterval(() => {
+                utrTimeRemaining--;
+                updateTimerDisplay();
+
+                if (utrTimeRemaining <= 0) {
+                    clearInterval(utrTimerInterval);
+                    utrTimerInterval = null;
+                    // Lock UTR input and show warning
+                    txnInput.disabled = true;
+                    submitBtn.disabled = true;
+                    utrTimer.innerHTML = '⏰ <strong style="color: #ff2a6d;">Time expired! Please initiate payment again.</strong>';
+                    alert('⏰ Time expired! Please tap a payment button again to get a new 5-minute window.');
+                    resetUTRState();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(utrTimeRemaining / 60);
+            const seconds = utrTimeRemaining % 60;
+            utrTimeLeft.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (utrTimeRemaining < 60) {
+                utrTimeLeft.style.color = '#ff2a6d';
+            } else {
+                utrTimeLeft.style.color = '#65d8ff';
+            }
+        }
+
+        function resetUTRState() {
+            paymentInteractionDone = false;
+            utrValidated = false;
+            txnInput.value = '';
+            txnInput.disabled = true;
+            txnInput.classList.remove('utr-valid', 'utr-invalid');
+            utrError.classList.remove('show');
+            paymentInteractionRequired.style.display = 'block';
+            utrTimer.style.display = 'none';
+            
+            if (utrTimerInterval) {
+                clearInterval(utrTimerInterval);
+                utrTimerInterval = null;
+            }
+            
+            submitBtn.disabled = false;
         }
 
         // ─── SUBMIT REGISTRATION → SUPABASE ──────────────────────────
 
         async function submitRegistration() {
-            const txn = txnInput.value.trim();
-            if (!txn) {
-                alert("⚠️ Please enter your Transaction ID / UTR number to confirm.");
+            // ─── CRITICAL UTR VALIDATION CHECKS ──────────────────────
+            
+            // Check 1: Payment interaction must have happened
+            if (!paymentInteractionDone) {
+                alert('⚠️ Please initiate payment by tapping one of the payment buttons above first.');
+                paymentInteractionRequired.style.display = 'block';
                 return;
             }
+
+            // Check 2: UTR must be entered
+            const utr = txnInput.value.trim();
+            if (!utr || utr.length === 0) {
+                alert('⚠️ Please enter your 12-digit UTR number.');
+                txnInput.focus();
+                return;
+            }
+
+            // Check 3: UTR must be exactly 12 digits
+            const cleanUtr = utr.replace(/\D/g, '');
+            if (cleanUtr.length !== 12) {
+                alert('⚠️ Invalid UTR! Must be exactly 12 digits (numbers only).');
+                txnInput.focus();
+                txnInput.classList.add('utr-invalid');
+                utrError.textContent = '⚠️ UTR must be exactly 12 digits (numbers only)';
+                utrError.classList.add('show');
+                return;
+            }
+
+            // Check 4: Timer must not have expired
+            if (utrTimeRemaining <= 0) {
+                alert('⏰ Time expired! Please tap a payment button again to get a new 5-minute window.');
+                resetUTRState();
+                return;
+            }
+
+            // Check 5: UTR must be validated (green border)
+            if (!utrValidated) {
+                alert('⚠️ Please enter a valid 12-digit UTR number.');
+                txnInput.focus();
+                return;
+            }
+
+            // ─── ALL CHECKS PASSED - PROCEED WITH REGISTRATION ──────
 
             const entries = playersContainer.querySelectorAll('.player-entry');
             const total = entries.length * EVENT_FEE;
@@ -2193,7 +2385,7 @@
                 email: leaderEmail,
                 phone: leaderPhone,
                 total_amount: total,
-                txn: txn,
+                txn: cleanUtr, // Store only digits
                 participants: participants,
                 cross_check: crossCheckData,
                 registered_at: new Date().toISOString()
@@ -2250,6 +2442,9 @@
 
                 goToStep(5);
                 updateSuccessDetails(registrationData, participants);
+
+                // Reset UTR state after successful submission
+                resetUTRState();
 
             } catch (err) {
                 console.error('❌ Submission error:', err);
@@ -2332,16 +2527,12 @@
                     const result = checkCategoryEventCompatibility(cat, eventVal);
                     if (!result.valid) {
                         showBlockNotice(result.message);
-                        // Auto-clear the event selection
                         eventSelect.value = '';
-                        // Also clear the banner
                         eventBanner.classList.remove('show');
-                        // Show an alert
                         const cleanMsg = result.message.replace(/<[^>]*>/g, '');
                         alert(`⛔ ${cleanMsg}\n\nYour event selection has been cleared. Please select a compatible event.`);
                     } else {
                         showBlockNotice('');
-                        // If compatible, update banner
                         const event = EVENTS.find(e => e.id === parseInt(eventVal));
                         if (event) {
                             bannerEventName.textContent = event.name;
@@ -2352,7 +2543,6 @@
                 } else {
                     showBlockNotice('');
                 }
-                // Re-run validation for step 1
                 validateCategoryEventPair(false);
             });
         });
@@ -2366,7 +2556,6 @@
                 const result = checkCategoryEventCompatibility(cat, val);
                 if (!result.valid) {
                     showBlockNotice(result.message);
-                    // Auto-clear the event selection
                     this.value = '';
                     eventBanner.classList.remove('show');
                     const cleanMsg = result.message.replace(/<[^>]*>/g, '');
@@ -2391,7 +2580,6 @@
                     }
                 }
             } else if (val) {
-                // Category not selected yet, just show event info
                 const event = EVENTS.find(e => e.id === parseInt(val));
                 if (event) {
                     bannerEventName.textContent = event.name;
@@ -2412,14 +2600,30 @@
                 showBlockNotice('');
             }
 
-            // Also validate the pair
             validateCategoryEventPair(false);
+        });
+
+        // ── UTR Input Validation ──
+        txnInput.addEventListener('input', handleUTRInput);
+        
+        // ── Prevent paste of invalid content ──
+        txnInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text');
+            const digitsOnly = pasted.replace(/\D/g, '');
+            if (digitsOnly.length <= 12) {
+                this.value = digitsOnly;
+                handleUTRInput.call(this);
+            } else {
+                this.value = digitsOnly.slice(0, 12);
+                handleUTRInput.call(this);
+                alert('⚠️ Only the first 12 digits were pasted.');
+            }
         });
 
         // ── Step 1 → Step 2 ──
         step1Next.addEventListener('click', function(e) {
             e.preventDefault();
-            // Double-check validation with alert
             const cat = getSelectedCategory();
             const eventVal = eventSelect.value;
             if (cat && eventVal) {
@@ -2447,7 +2651,10 @@
         step3Next.addEventListener('click', () => goToStep(4));
 
         // ── Step 4 back ──
-        step4Back.addEventListener('click', () => goToStep(3));
+        step4Back.addEventListener('click', () => {
+            resetUTRState();
+            goToStep(3);
+        });
 
         // ─── KEYBOARD SHORTCUTS ───────────────────────────────────────
 
@@ -2467,6 +2674,10 @@
 
         autoSelectEventFromURL();
 
+        // Initialize with UTR disabled
+        txnInput.disabled = true;
+        paymentInteractionRequired.style.display = 'block';
+
         setTimeout(() => {
             if (playersContainer.children.length === 0) {
                 const initialCount = Math.max(1, currentMin);
@@ -2476,7 +2687,6 @@
             }
             updateEventLimitInfo();
             updateAddButtonState();
-            // Initial category validation
             validateCategoryEventPair(false);
         }, 100);
 
@@ -2489,7 +2699,8 @@
         console.log('📋 Events loaded:', EVENTS.length);
         console.log('🔐 Supabase available:', !!supabase);
         console.log('💾 localStorage fallback: enabled');
-        console.log('🔒 Category block mechanism active: UG/PU validation in place.');
+        console.log('🔒 UTR Validation: 12-digit required with payment interaction');
+        console.log('⏱️ UTR Timer: 5-minute window after payment');
 
         // ─── CHECK STATUS MODE ─────────────────────────────────────────────
 
