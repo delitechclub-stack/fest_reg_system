@@ -19,8 +19,7 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       user-select: none;
-      overflow: hidden;
-      height: 100vh;
+      touch-action: pan-y;
     }
     :root {
       --abyss: #041217;
@@ -40,149 +39,6 @@
     ::-webkit-scrollbar-track { background: var(--abyss); }
     ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
 
-    /* ─── ATLANTIS INTRO / BLUEPRINT ──────────────────────────────── */
-    #atlantisIntro {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 9999;
-      background: #041217;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: all;
-      transition: none;
-    }
-    #atlantisIntro.exit {
-      animation: waterDropExit 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      pointer-events: none;
-    }
-    @keyframes waterDropExit {
-      0% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); border-radius: 0%; }
-      30% { transform: scale(1.3) rotate(2deg); opacity: 0.95; filter: blur(1px); border-radius: 10%; }
-      60% { transform: scale(1.8) rotate(4deg); opacity: 0.7; filter: blur(6px); border-radius: 30%; }
-      100% { transform: scale(2.8) rotate(8deg); opacity: 0; filter: blur(18px); border-radius: 60%; }
-    }
-    #atlantisIntro.hidden { display: none; }
-
-    .intro-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 50% 60%, rgba(0, 80, 120, 0.08) 0%, transparent 70%),
-        radial-gradient(ellipse at 30% 20%, rgba(169, 132, 69, 0.03) 0%, transparent 50%),
-        linear-gradient(180deg, #061A20 0%, #041217 40%, #08252B 100%);
-    }
-    .intro-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(169, 132, 69, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(169, 132, 69, 0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.3;
-    }
-    .intro-seal-wrapper {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 20px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-    .intro-seal-wrapper:active .intro-seal { transform: scale(0.92); }
-    .intro-seal {
-      width: clamp(220px, 50vw, 450px);
-      height: clamp(220px, 50vw, 450px);
-      position: relative;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .intro-seal:hover { transform: scale(1.03); filter: drop-shadow(0 0 60px rgba(169, 132, 69, 0.2)); }
-    .intro-seal svg {
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      animation: sealReveal 2.5s ease forwards;
-    }
-    @keyframes sealReveal {
-      0% { opacity: 0; transform: scale(0.7) rotate(-10deg); }
-      40% { opacity: 0.4; transform: scale(1.05) rotate(2deg); }
-      70% { opacity: 0.8; transform: scale(0.98) rotate(-1deg); }
-      100% { opacity: 1; transform: scale(1) rotate(0deg); }
-    }
-    .intro-title {
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
-      font-size: clamp(1.8rem, 5vw, 3.5rem);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-align: center;
-      background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 4px 20px rgba(169, 132, 69, 0.15));
-      opacity: 0;
-      animation: fadeUp 1.8s ease 1.2s forwards;
-      margin-top: 20px;
-      line-height: 1.05;
-    }
-    .intro-title .accent {
-      font-weight: 400;
-      letter-spacing: 0.3em;
-      font-size: 0.45em;
-      display: block;
-      background: linear-gradient(180deg, #E6C875, #A98445);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    @keyframes fadeUp {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    .intro-enter-text {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(0.5rem, 1vw, 0.7rem);
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: rgba(192, 154, 82, 0.4);
-      margin-top: 12px;
-      opacity: 0;
-      animation: fadeUp 1.8s ease 2s forwards, pulseText 2.5s ease-in-out 2s infinite;
-    }
-    @keyframes pulseText {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.02); }
-    }
-    .intro-particles {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .intro-particles .ip {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: rgba(169, 132, 69, 0.15);
-      border-radius: 50%;
-      animation: floatP 20s ease-in-out infinite alternate;
-    }
-    @keyframes floatP {
-      0% { transform: translate(0, 0) scale(1); opacity: 0.05; }
-      100% { transform: translate(var(--tx, 50px), var(--ty, -80px)) scale(2); opacity: 0.3; }
-    }
-
     /* ─── FLOATING LOGO ───────────────────────────────────────────── */
     .header {
       position: fixed;
@@ -191,11 +47,7 @@
       z-index: 999;
       display: inline-block;
       touch-action: manipulation;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
     }
-    .header.visible { opacity: 1; transform: translateY(0); }
     .trigger-wrapper {
       position: relative;
       display: flex;
@@ -280,7 +132,10 @@
       font-family: 'Cinzel', serif;
       touch-action: manipulation;
     }
-    .dropdown-item:active { background: rgba(169, 132, 69, 0.1); transform: scale(0.97); }
+    .dropdown-item:active {
+      background: rgba(169, 132, 69, 0.1);
+      transform: scale(0.97);
+    }
     .dropdown-item .icon {
       display: inline-flex;
       align-items: center;
@@ -302,15 +157,13 @@
       position: relative;
       z-index: 1;
       height: 100vh;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow-y: hidden;
       transform-origin: center center;
-      will-change: transform;
-      opacity: 0;
-      transition: opacity 0.8s ease;
     }
-    .scroll-container.visible { opacity: 1; }
-    .scroll-container { scroll-behavior: smooth; }
+    .scroll-container.active {
+      overflow-y: auto;
+      height: 100vh;
+    }
 
     /* ─── HERO SECTION ────────────────────────────────────────────── */
     .hero-section {
@@ -319,20 +172,6 @@
       width: 100%;
       overflow: hidden;
       z-index: 1;
-      transform-origin: center center;
-      will-change: transform, opacity;
-      opacity: 0;
-      transform: scale(1.3);
-      filter: blur(10px);
-      transition: none;
-    }
-    .hero-section.entered {
-      animation: waterDropEnter 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes waterDropEnter {
-      0% { transform: scale(1.4); opacity: 0; filter: blur(12px); border-radius: 30%; }
-      40% { transform: scale(1.1); opacity: 0.6; filter: blur(4px); border-radius: 10%; }
-      100% { transform: scale(1); opacity: 1; filter: blur(0px); border-radius: 0%; }
     }
     .hero-section .video-container {
       position: absolute;
@@ -432,7 +271,7 @@
       text-align: center;
       padding: 0 20px;
       pointer-events: none;
-      will-change: transform, opacity;
+      will-change: transform;
     }
     .hero-title {
       font-family: 'Cinzel', serif;
@@ -460,25 +299,6 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero-title .char {
-      display: inline-block;
-      opacity: 0;
-      transform: translateY(30px) rotate(10deg) scale(0.8);
-      animation: charReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-    .hero-title .char:nth-child(1) { animation-delay: 0.05s; }
-    .hero-title .char:nth-child(2) { animation-delay: 0.10s; }
-    .hero-title .char:nth-child(3) { animation-delay: 0.15s; }
-    .hero-title .char:nth-child(4) { animation-delay: 0.20s; }
-    .hero-title .char:nth-child(5) { animation-delay: 0.25s; }
-    .hero-title .char:nth-child(6) { animation-delay: 0.30s; }
-    .hero-title .char:nth-child(7) { animation-delay: 0.35s; }
-    .hero-title .char:nth-child(8) { animation-delay: 0.40s; }
-    .hero-title .char:nth-child(9) { animation-delay: 0.45s; }
-    @keyframes charReveal {
-      0% { opacity: 0; transform: translateY(30px) rotate(10deg) scale(0.8); }
-      100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
-    }
     .hero-subtitle {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 600;
@@ -488,8 +308,6 @@
       color: rgba(232, 217, 184, 0.95);
       text-shadow: 0 2px 30px rgba(0, 0, 0, 0.9);
       margin-top: 2px;
-      opacity: 0;
-      animation: fadeUp 1s ease 1.5s forwards;
     }
     .hero-subtitle .gold { color: var(--gold-bright); font-weight: 700; }
     .hero-subtitle .divider {
@@ -509,10 +327,9 @@
       color: rgba(192, 154, 82, 0.6);
       margin-top: 16px;
       text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
-      opacity: 0;
-      animation: fadeUp 1s ease 1.8s forwards;
     }
     .hero-tagline .ornament { display: inline-block; margin: 0 8px; opacity: 0.5; }
+
     .explore-cta {
       position: absolute;
       bottom: 40px;
@@ -525,8 +342,8 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      opacity: 0;
-      animation: fadeUp 1s ease 2.2s forwards, pulseDescend 4s ease-in-out 2.5s infinite;
+      opacity: 0.5;
+      animation: pulseDescend 4s ease-in-out infinite;
     }
     .explore-cta span {
       font-family: 'Cinzel', serif;
@@ -560,11 +377,7 @@
       justify-content: center;
       overflow: hidden;
       will-change: transform, opacity;
-      opacity: 0;
-      transform: translateY(60px);
-      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .explore-section.visible { opacity: 1; transform: translateY(0); }
     .explore-section::before {
       content: '';
       position: absolute;
@@ -588,13 +401,6 @@
       text-transform: uppercase;
       color: rgba(192, 154, 82, 0.4);
       margin-bottom: 2px;
-      opacity: 0;
-      transform: translateX(-20px);
-      transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
-    }
-    .explore-section.visible .explore-header .section-label {
-      opacity: 1;
-      transform: translateX(0);
     }
     .explore-header h2 {
       font-family: 'Cinzel', serif;
@@ -606,19 +412,6 @@
       line-height: 1;
     }
     .explore-header h2 .gold-text { color: rgba(192, 154, 82, 0.8); }
-    .explore-header h2 .word {
-      display: inline-block;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .explore-section.visible .explore-header h2 .word {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .explore-section.visible .explore-header h2 .word:nth-child(1) { transition-delay: 0.2s; }
-    .explore-section.visible .explore-header h2 .word:nth-child(2) { transition-delay: 0.3s; }
-    .explore-section.visible .explore-header h2 .word:nth-child(3) { transition-delay: 0.4s; }
 
     /* ─── CAROUSEL ──────────────────────────────────────────────────── */
     .carousel-stage {
@@ -785,6 +578,7 @@
     }
     .carousel-track .event-card.active-card .card-image { opacity: 0.7; }
     .carousel-track .event-card.active-card .card-explore-badge { opacity: 0.9; border-color: rgba(169, 132, 69, 0.2); }
+
     .dots-container {
       display: flex;
       justify-content: center;
@@ -820,11 +614,7 @@
       overflow: hidden;
       z-index: 2;
       background: var(--abyss);
-      opacity: 0;
-      transform: scale(0.95);
-      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .promo-section.visible { opacity: 1; transform: scale(1); }
     .promo-section .video-container {
       position: absolute;
       top: 0;
@@ -913,13 +703,6 @@
       background-clip: text;
       pointer-events: none;
       filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5));
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
-    }
-    .promo-section.visible .event-date-display {
-      opacity: 1;
-      transform: translateY(0);
     }
     .event-date-display::after {
       content: '';
@@ -943,13 +726,6 @@
       justify-content: center;
       flex-wrap: wrap;
       margin-bottom: 28px;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
-    }
-    .promo-section.visible .promo-countdown {
-      opacity: 1;
-      transform: translateY(0);
     }
     .promo-countdown .cd-item {
       background: rgba(4, 18, 23, 0.6);
@@ -962,14 +738,7 @@
       box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
       transition: 0.3s ease;
       position: relative;
-      transform: scale(0.9);
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease;
     }
-    .promo-section.visible .promo-countdown .cd-item { transform: scale(1); }
-    .promo-section.visible .promo-countdown .cd-item:nth-child(1) { transition-delay: 0.1s; }
-    .promo-section.visible .promo-countdown .cd-item:nth-child(2) { transition-delay: 0.2s; }
-    .promo-section.visible .promo-countdown .cd-item:nth-child(3) { transition-delay: 0.3s; }
-    .promo-section.visible .promo-countdown .cd-item:nth-child(4) { transition-delay: 0.4s; }
     .promo-countdown .cd-item::before {
       content: '';
       position: absolute;
@@ -991,7 +760,6 @@
       color: var(--ivory);
       text-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
       line-height: 1.1;
-      transition: transform 0.3s ease;
     }
     .promo-countdown .cd-item small {
       font-family: 'Cinzel', serif;
@@ -1006,14 +774,6 @@
     .promo-countdown .cd-item.accent span {
       color: var(--gold-light);
       text-shadow: 0 0 40px rgba(169, 132, 69, 0.08);
-    }
-    .promo-countdown .cd-item.flip span {
-      animation: numberFlip 0.4s ease;
-    }
-    @keyframes numberFlip {
-      0% { transform: rotateX(0deg); opacity: 1; }
-      50% { transform: rotateX(90deg); opacity: 0.5; }
-      100% { transform: rotateX(0deg); opacity: 1; }
     }
     .promo-cta {
       font-family: 'Cinzel', serif;
@@ -1035,20 +795,8 @@
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       touch-action: manipulation;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease 0.7s, transform 0.8s ease 0.7s, background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
     }
-    .promo-section.visible .promo-cta {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .promo-cta:active {
-      transform: scale(0.96);
-      background: rgba(169, 132, 69, 0.08);
-      border-color: rgba(169, 132, 69, 0.15);
-      color: var(--gold-light);
-    }
+    .promo-cta:active { transform: scale(0.96); }
     .promo-cta .arrow-link { display: inline-block; margin-left: 8px; transition: 0.3s; color: rgba(169, 132, 69, 0.3); }
     .promo-cta:active .arrow-link { transform: translateX(6px); color: var(--gold-light); }
     .promo-credits {
@@ -1292,10 +1040,183 @@
     .login-toast.success { border-color: rgba(169, 132, 69, 0.15); color: var(--gold-light); }
     .login-toast.error { border-color: rgba(200, 100, 100, 0.15); color: rgba(232, 217, 184, 0.5); }
 
-    /* ─── RESPONSIVE ────────────────────────────────────────────────── */
+    /* ─── ATLANTIS INTRO / BLUEPRINT ──────────────────────────────── */
+    #atlantisIntro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      background: #041217;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: all;
+      transition: none;
+    }
+    #atlantisIntro.exit {
+      animation: immersiveZoomIn 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: none;
+    }
+    @keyframes immersiveZoomIn {
+      0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        border-radius: 0;
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1.4) translateY(0);
+        border-radius: 0;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(2.2) translateY(0);
+        border-radius: 50%;
+      }
+    }
+    #atlantisIntro.hidden {
+      display: none;
+    }
+
+    .intro-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 60%, rgba(0, 80, 120, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse at 30% 20%, rgba(169, 132, 69, 0.03) 0%, transparent 50%),
+        linear-gradient(180deg, #061A20 0%, #041217 40%, #08252B 100%);
+    }
+    .intro-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(169, 132, 69, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(169, 132, 69, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+    }
+
+    .intro-seal-wrapper {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 20px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .intro-seal {
+      width: clamp(220px, 50vw, 450px);
+      height: clamp(220px, 50vw, 450px);
+      position: relative;
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
+    .intro-seal:hover {
+      transform: scale(1.03);
+      filter: drop-shadow(0 0 40px rgba(169, 132, 69, 0.15));
+    }
+    .intro-seal:active {
+      transform: scale(0.97);
+    }
+
+    .intro-seal svg {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      animation: sealReveal 2.5s ease forwards;
+    }
+    @keyframes sealReveal {
+      0% { opacity: 0; transform: scale(0.8); }
+      30% { opacity: 0.2; }
+      60% { opacity: 0.5; }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .intro-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: clamp(1.8rem, 5vw, 3.5rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 4px 20px rgba(169, 132, 69, 0.15));
+      opacity: 0;
+      animation: fadeUp 1.8s ease 1.2s forwards;
+      margin-top: 20px;
+      line-height: 1.05;
+    }
+    .intro-title .accent {
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      font-size: 0.45em;
+      display: block;
+      background: linear-gradient(180deg, #E6C875, #A98445);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro-enter-text {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.5rem, 1vw, 0.7rem);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.4);
+      margin-top: 12px;
+      opacity: 0;
+      animation: fadeUp 1.8s ease 2s forwards, pulseText 2.5s ease-in-out 2s infinite;
+    }
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.02); }
+    }
+
+    .intro-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .intro-particles .ip {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(169, 132, 69, 0.15);
+      border-radius: 50%;
+      animation: floatP 20s ease-in-out infinite alternate;
+    }
+    @keyframes floatP {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.05; }
+      100% { transform: translate(var(--tx, 50px), var(--ty, -80px)) scale(2); opacity: 0.3; }
+    }
+
+    /* Intro responsive */
     @media (max-width: 768px) {
       .intro-seal { width: clamp(180px, 60vw, 300px); height: clamp(180px, 60vw, 300px); }
       .intro-title { font-size: clamp(1.4rem, 6vw, 2.2rem); }
+    }
+    @media (max-width: 480px) {
+      .intro-seal { width: clamp(140px, 70vw, 220px); height: clamp(140px, 70vw, 220px); }
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
       .header { top: 16px; left: 16px; }
       .logo-emblem { width: 38px; height: 38px; }
       .epic-dropdown { top: 48px; min-width: 150px; max-width: calc(100vw - 40px); padding: 6px 0; }
@@ -1324,7 +1245,6 @@
       .hero-center { top: 10vh; }
     }
     @media (max-width: 480px) {
-      .intro-seal { width: clamp(140px, 70vw, 220px); height: clamp(140px, 70vw, 220px); }
       .carousel-track .event-card { flex: 0 0 clamp(150px, 55vw, 200px); aspect-ratio: 5 / 7; min-height: 170px; max-height: 320px; border-radius: 12px; padding: 12px 10px 10px 10px; }
       .carousel-track .event-card .card-content { margin: 0 -10px -10px -10px; padding: 18px 10px 10px 10px; border-radius: 0 0 12px 12px; }
       .carousel-track .event-card .card-name { font-size: clamp(0.6rem, 1.8vw, 0.8rem); letter-spacing: 0.04em; }
@@ -1358,13 +1278,6 @@
     @media (min-width: 1201px) {
       .carousel-track .event-card { flex: 0 0 clamp(250px, 22vw, 310px); aspect-ratio: 5 / 7; min-height: 300px; max-height: 480px; }
     }
-
-    /* ─── REDUCED MOTION ──────────────────────────────────────────── */
-    @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-      .hero-section.entered { animation-duration: 0.01ms !important; }
-      #atlantisIntro.exit { animation-duration: 0.01ms !important; }
-    }
   </style>
 </head>
 <body>
@@ -1373,52 +1286,76 @@
   <div id="atlantisIntro" role="dialog" aria-label="Enter Atlantis">
     <div class="intro-bg"></div>
     <div class="intro-grid"></div>
+    
+    <!-- Particles -->
     <div class="intro-particles" id="introParticles"></div>
+    
+    <!-- Content -->
     <div class="intro-seal-wrapper" id="introSealWrapper" role="button" tabindex="0" aria-label="Touch to enter Atlantis">
       <div class="intro-seal" id="introSeal">
         <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer rings -->
           <circle cx="200" cy="200" r="180" stroke="rgba(169,132,69,0.08)" stroke-width="1" fill="none"/>
           <circle cx="200" cy="200" r="150" stroke="rgba(169,132,69,0.06)" stroke-width="0.8" fill="none" stroke-dasharray="4,6"/>
           <circle cx="200" cy="200" r="120" stroke="rgba(169,132,69,0.07)" stroke-width="0.8" fill="none"/>
           <circle cx="200" cy="200" r="90" stroke="rgba(169,132,69,0.1)" stroke-width="0.6" fill="none" stroke-dasharray="3,5"/>
           <circle cx="200" cy="200" r="60" stroke="rgba(169,132,69,0.12)" stroke-width="0.5" fill="none"/>
           <circle cx="200" cy="200" r="30" stroke="rgba(169,132,69,0.08)" stroke-width="0.5" fill="none"/>
-          <path d="M120,120 L160,160 L140,180 L160,200 L180,180 L160,160 L200,120" stroke="rgba(169,132,69,0.3)" stroke-width="1.5" fill="none"/>
-          <path d="M120,120 L100,140 L120,160 L140,140 L120,120" stroke="rgba(169,132,69,0.2)" stroke-width="1" fill="none"/>
-          <path d="M280,120 L240,160 L260,180 L240,200 L220,180 L240,160 L200,120" stroke="rgba(169,132,69,0.3)" stroke-width="1.5" fill="none"/>
-          <path d="M280,120 L300,140 L280,160 L260,140 L280,120" stroke="rgba(169,132,69,0.2)" stroke-width="1" fill="none"/>
+          
+          <!-- Central Atlantis seal -->
+          <path d="M120,120 L160,160 L140,180 L160,200 L180,180 L160,160 L200,120" 
+                stroke="rgba(169,132,69,0.3)" stroke-width="1.5" fill="none"/>
+          <path d="M120,120 L100,140 L120,160 L140,140 L120,120" 
+                stroke="rgba(169,132,69,0.2)" stroke-width="1" fill="none"/>
+          
+          <path d="M280,120 L240,160 L260,180 L240,200 L220,180 L240,160 L200,120" 
+                stroke="rgba(169,132,69,0.3)" stroke-width="1.5" fill="none"/>
+          <path d="M280,120 L300,140 L280,160 L260,140 L280,120" 
+                stroke="rgba(169,132,69,0.2)" stroke-width="1" fill="none"/>
+          
           <path d="M200,80 L200,150" stroke="rgba(169,132,69,0.25)" stroke-width="1.5" fill="none"/>
           <path d="M185,95 L200,80 L215,95" stroke="rgba(169,132,69,0.2)" stroke-width="1" fill="none"/>
+          
           <path d="M200,320 L200,250" stroke="rgba(169,132,69,0.2)" stroke-width="1.5" fill="none"/>
           <path d="M185,305 L200,320 L215,305" stroke="rgba(169,132,69,0.15)" stroke-width="1" fill="none"/>
+          
           <path d="M200,70 L205,120 L200,115 L195,120 Z" fill="rgba(169,132,69,0.15)"/>
           <path d="M200,70 L200,120" stroke="rgba(169,132,69,0.2)" stroke-width="1" fill="none"/>
+          
           <path d="M200,330 L205,280 L200,285 L195,280 Z" fill="rgba(169,132,69,0.08)"/>
+          
           <path d="M330,200 L280,195 L285,200 L280,205 Z" fill="rgba(169,132,69,0.1)"/>
+          
           <path d="M70,200 L120,195 L115,200 L120,205 Z" fill="rgba(169,132,69,0.1)"/>
+          
           <circle cx="200" cy="200" r="45" stroke="rgba(169,132,69,0.1)" stroke-width="0.5" fill="none" stroke-dasharray="2,4"/>
           <circle cx="200" cy="200" r="20" stroke="rgba(169,132,69,0.15)" stroke-width="0.5" fill="none"/>
+          
           <circle cx="200" cy="200" r="8" fill="rgba(169,132,69,0.08)"/>
           <circle cx="200" cy="200" r="3" fill="rgba(169,132,69,0.15)"/>
+          
           <circle cx="200" cy="40" r="3" fill="rgba(169,132,69,0.08)"/>
           <circle cx="200" cy="360" r="3" fill="rgba(169,132,69,0.08)"/>
           <circle cx="40" cy="200" r="3" fill="rgba(169,132,69,0.08)"/>
           <circle cx="360" cy="200" r="3" fill="rgba(169,132,69,0.08)"/>
+          
           <circle cx="113" cy="113" r="2" fill="rgba(169,132,69,0.06)"/>
           <circle cx="287" cy="113" r="2" fill="rgba(169,132,69,0.06)"/>
           <circle cx="113" cy="287" r="2" fill="rgba(169,132,69,0.06)"/>
           <circle cx="287" cy="287" r="2" fill="rgba(169,132,69,0.06)"/>
+          
           <circle cx="200" cy="200" r="25" fill="rgba(169,132,69,0.03)" class="seal-glow"/>
           <circle cx="200" cy="200" r="40" fill="rgba(169,132,69,0.02)" class="seal-glow"/>
         </svg>
       </div>
+      
       <div class="intro-title">DEPLOMAT<span class="accent">2K26</span></div>
       <div class="intro-enter-text">✦ TOUCH THE SEAL ✦</div>
     </div>
   </div>
 
   <!-- FLOATING LOGO -->
-  <header class="header" id="mainHeader">
+  <header class="header">
     <div class="trigger-wrapper" id="logoTrigger">
       <svg class="logo-emblem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="24" cy="24" r="20" fill="rgba(6,26,32,0.6)" stroke="rgba(169,132,69,0.2)" stroke-width="1.5" />
@@ -1447,7 +1384,7 @@
   </header>
 
   <!-- ─── SCROLL CONTAINER ──────────────────────────────────────────────── -->
-  <div class="scroll-container" id="scrollContainer">
+  <div class="scroll-container active" id="scrollContainer">
 
     <!-- HERO -->
     <section class="hero-section" id="hero">
@@ -1465,7 +1402,7 @@
         <div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div>
       </div>
       <div class="hero-center">
-        <div class="hero-title" id="heroTitle">DEPLOMAT<span class="accent">2K26</span></div>
+        <div class="hero-title">DEPLOMAT<span class="accent">2K26</span></div>
         <div class="hero-subtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
         <div class="hero-tagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
       </div>
@@ -1542,8 +1479,6 @@
       const sealWrapper = document.getElementById('introSealWrapper');
       const seal = document.getElementById('introSeal');
       const scrollContainer = document.getElementById('scrollContainer');
-      const mainHeader = document.getElementById('mainHeader');
-      const hero = document.getElementById('hero');
       let introEntered = false;
       let isTransitioning = false;
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1551,41 +1486,19 @@
       // ─── Create intro particles ──────────────────────────────────
       function createIntroParticles() {
         const container = document.getElementById('introParticles');
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 25; i++) {
           const p = document.createElement('div');
           p.className = 'ip';
           p.style.left = Math.random() * 100 + '%';
           p.style.top = Math.random() * 100 + '%';
           p.style.setProperty('--tx', (Math.random() - 0.5) * 80 + 'px');
           p.style.setProperty('--ty', (Math.random() - 0.5) * 80 + 'px');
-          p.style.animationDuration = (15 + Math.random() * 25) + 's';
-          p.style.animationDelay = (Math.random() * 20) + 's';
+          p.style.animationDuration = (15 + Math.random() * 20) + 's';
+          p.style.animationDelay = (Math.random() * 15) + 's';
           container.appendChild(p);
         }
       }
       createIntroParticles();
-
-      // ─── Split hero title into chars ─────────────────────────────
-      function splitHeroTitle() {
-        const titleEl = document.getElementById('heroTitle');
-        if (!titleEl) return;
-        const text = titleEl.textContent;
-        const chars = text.split('');
-        titleEl.innerHTML = chars.map((char, i) => {
-          if (char === ' ' || char === '\n') return ' ';
-          return `<span class="char" style="animation-delay:${0.05 * (i + 1)}s">${char}</span>`;
-        }).join('');
-        // Re-apply accent class to the span
-        const accentSpan = titleEl.querySelector('.accent');
-        if (accentSpan) {
-          const accentText = accentSpan.textContent;
-          accentSpan.innerHTML = accentText.split('').map((char, i) => {
-            if (char === ' ' || char === '\n') return ' ';
-            return `<span class="char" style="animation-delay:${0.05 * (i + 1 + 9)}s">${char}</span>`;
-          }).join('');
-        }
-      }
-      splitHeroTitle();
 
       // ─── Enter Atlantis ──────────────────────────────────────────
       function enterAtlantis(e) {
@@ -1597,7 +1510,7 @@
         
         // Pulse the seal
         seal.style.transition = 'transform 0.3s ease';
-        seal.style.transform = 'scale(0.92)';
+        seal.style.transform = 'scale(0.95)';
         setTimeout(() => {
           seal.style.transform = 'scale(1.05)';
         }, 150);
@@ -1605,33 +1518,24 @@
           seal.style.transform = 'scale(1)';
         }, 300);
         
-        // Start immersive zoom in animation
+        // IMMERSIVE ZOOM IN - the intro zooms INTO the hero page
         setTimeout(() => {
+          // Start the immersive zoom in animation
           intro.classList.add('exit');
           
-          // Show header
-          mainHeader.classList.add('visible');
-          
-          // Show scroll container
+          // Enable scroll after animation completes
           setTimeout(() => {
-            scrollContainer.classList.add('visible');
+            scrollContainer.classList.add('active');
             scrollContainer.style.overflowY = 'auto';
             document.body.style.overflow = '';
-            
-            // Enter hero with water drop effect
-            hero.classList.add('entered');
-            
-            // Hide intro after animation
-            setTimeout(() => {
-              intro.classList.add('hidden');
-            }, 200);
+            intro.classList.add('hidden');
             
             // Ensure hero video plays
             const video = document.querySelector('.hero-section video');
             if (video) {
               video.play().catch(() => {});
             }
-          }, 300);
+          }, 1900); // Match animation duration
           
         }, prefersReducedMotion ? 300 : 600);
       }
@@ -1660,11 +1564,6 @@
         document.querySelectorAll('.intro-title, .intro-enter-text').forEach(el => {
           el.style.animationDuration = '0.6s';
         });
-        hero.classList.add('entered');
-        hero.style.animation = 'none';
-        hero.style.opacity = '1';
-        hero.style.transform = 'scale(1)';
-        hero.style.filter = 'blur(0px)';
       }
 
       console.log('🏛️ Atlantis Intro ready — Touch the seal to enter.');
@@ -1730,16 +1629,16 @@
       card.dataset.originalIndex = idx % N;
       card.dataset.globalIndex = globalIdx;
       card.innerHTML = `
-        <div class="card-image">
-          <img src="${evt.image}" alt="Event photo" loading="eager" fetchpriority="high" />
-          <div class="img-placeholder"></div>
-        </div>
-        <div class="card-content">
-          <div class="card-name">${evt.name}</div>
-          <div class="card-sub">${evt.sub}</div>
-        </div>
-        <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
-      `;
+                <div class="card-image">
+                    <img src="${evt.image}" alt="Event photo" loading="eager" fetchpriority="high" />
+                    <div class="img-placeholder"></div>
+                </div>
+                <div class="card-content">
+                    <div class="card-name">${evt.name}</div>
+                    <div class="card-sub">${evt.sub}</div>
+                </div>
+                <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
+            `;
       const img = card.querySelector('img');
       if (img.complete) img.classList.add('loaded');
       img.addEventListener('load', () => img.classList.add('loaded'));
@@ -1907,6 +1806,8 @@
       stage.releasePointerCapture(e.pointerId);
     });
 
+    stage.addEventListener('touchstart', (e) => {}, { passive: true });
+
     window.addEventListener('resize', () => {
       if (resizeTimeout) clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 150);
@@ -1931,118 +1832,88 @@
       }, 80);
     }, { passive: false });
 
-    buildCarousel();
-
-    // ─── SCROLL & 2D INTERACTIONS ──────────────────────────────────
-    const scrollContainer = document.getElementById('scrollContainer');
-    const heroSection = document.getElementById('hero');
-    const exploreSection = document.getElementById('explore');
-    const promoSection = document.getElementById('promo');
-    let ticking = false;
-    let mouseX = 0;
-    let mouseY = 0;
-    let scrollY = 0;
-
-    // ─── 2D Mouse tracking ─────────────────────────────────────────
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || isSnapping || isDragging) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); snapToIndex(Math.round(index) - 1, true); } 
+      else if (e.key === 'ArrowRight') { e.preventDefault(); snapToIndex(Math.round(index) + 1, true); }
     });
 
-    // ─── Intersection Observer for section visibility ──────────────
-    const sectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+    buildCarousel();
+
+    // ─── HERO MOUSE PARALLAX (desktop only) ────────────────────────
+    const heroSection = document.getElementById('hero');
+    if (!isMobile) {
+      heroSection.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        const rays = document.querySelector('.light-rays');
+        const particles = document.querySelector('.particles');
+        const heroCenter = document.querySelector('.hero-center');
+        if (rays) rays.style.transform = `translate(${x * 12}px, ${y * 12}px)`;
+        if (particles) particles.style.transform = `translate(${x * -8}px, ${y * -8}px)`;
+        if (heroCenter) heroCenter.style.transform = `translate(${x * -4}px, ${y * -4}px)`;
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-
-    if (exploreSection) sectionObserver.observe(exploreSection);
-    if (promoSection) sectionObserver.observe(promoSection);
-
-    // ─── Split explore title into words ─────────────────────────────
-    function splitExploreTitle() {
-      const h2 = document.querySelector('.explore-header h2');
-      if (!h2) return;
-      const text = h2.textContent;
-      const words = text.split(' ');
-      h2.innerHTML = words.map((word, i) => {
-        if (word.includes('THE KINGDOM')) {
-          return `<span class="word gold-text">${word}</span>`;
-        }
-        return `<span class="word">${word}</span>`;
-      }).join(' ');
-    }
-    splitExploreTitle();
-
-    // ─── Smooth scroll update function ─────────────────────────────
-    function updateScrollEffects() {
-      scrollY = window.scrollY;
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const progress = Math.min(scrollY / maxScroll, 1);
-      
-      // Hero zoom out on scroll
-      const heroScale = 1 - (progress * 0.12);
-      const heroOpacity = 1 - (progress * 0.15);
-      
-      if (heroSection) {
-        heroSection.style.transform = `scale(${Math.max(0.88, heroScale)})`;
-        heroSection.style.opacity = Math.max(0.85, heroOpacity);
-      }
-      
-      // 2D parallax for hero content (mouse + scroll combined)
-      const heroCenter = document.querySelector('.hero-center');
-      if (heroCenter && !isMobile) {
-        const scrollOffset = scrollY * 0.02;
-        const xOffset = mouseX * -8;
-        const yOffset = mouseY * -4 + scrollOffset;
-        heroCenter.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-      }
-      
-      // Light rays 2D movement
-      const rays = document.querySelector('.light-rays');
-      if (rays) {
-        const xOffset = mouseX * 15;
-        const yOffset = mouseY * 10 + scrollY * 0.01;
-        rays.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-      }
-      
-      // Particles 2D movement
-      const particles = document.querySelector('.particles');
-      if (particles) {
-        const xOffset = mouseX * -10;
-        const yOffset = mouseY * -8 + scrollY * 0.005;
-        particles.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-      }
     }
 
-    // ─── Throttled scroll handler ──────────────────────────────────
+    // ─── SCROLL INTERACTION ──────────────────────────────────────
+    const scrollContainer = document.getElementById('scrollContainer');
+    const hero = document.getElementById('hero');
+    const explore = document.getElementById('explore');
+    const promo = document.getElementById('promo');
+    let ticking = false;
+
+    // Fix: Ensure scroll container has proper height and overflow
+    scrollContainer.classList.add('active');
+    scrollContainer.style.overflowY = 'auto';
+    scrollContainer.style.height = '100vh';
+
     window.addEventListener('scroll', () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          updateScrollEffects();
+          const scrollY = window.scrollY;
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+
+          if (hero) {
+            const heroScale = Math.max(0.92, 1 - scrollY * 0.0004);
+            const heroOpacity = Math.max(0, 1 - scrollY * 0.0015);
+            hero.style.transform = `scale(${heroScale})`;
+            hero.style.opacity = heroOpacity;
+          }
+
+          if (explore) {
+            const rect = explore.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+            if (rect.top < viewHeight && rect.bottom > 0) {
+              const progressExp = 1 - (rect.top / viewHeight);
+              const clamped = Math.min(Math.max(progressExp, 0), 1);
+              const scale = 0.96 + (clamped * 0.04);
+              explore.style.transform = `scale(${scale})`;
+              explore.style.opacity = 0.6 + (clamped * 0.4);
+            }
+          }
+
+          if (promo) {
+            const rect = promo.getBoundingClientRect();
+            const viewHeight = window.innerHeight;
+            if (rect.top < viewHeight && rect.bottom > 0) {
+              const progressPromo = 1 - (rect.top / viewHeight);
+              const clamped = Math.min(Math.max(progressPromo, 0), 1);
+              const scale = 0.96 + (clamped * 0.04);
+              promo.style.transform = `scale(${scale})`;
+              promo.style.opacity = 0.6 + (clamped * 0.4);
+            }
+          }
+
+          const tiltX = (progress - 0.5) * 4;
+          const tiltY = (progress - 0.5) * 2;
+          scrollContainer.style.transform = `perspective(800px) rotateX(${tiltX * 0.25}deg) rotateY(${tiltY * 0.15}deg)`;
+          scrollContainer.style.opacity = Math.min(1, 1 - (progress * 0.12));
           ticking = false;
         });
         ticking = true;
       }
     }, { passive: true });
-
-    // ─── Mouse move for 2D effects ─────────────────────────────────
-    document.addEventListener('mousemove', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          updateScrollEffects();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
-
-    // ─── Initial update ─────────────────────────────────────────────
-    setTimeout(() => {
-      updateScrollEffects();
-    }, 300);
 
     // ─── DROPDOWN ──────────────────────────────────────────────────────
     const trigger = document.getElementById('logoTrigger');
@@ -2061,38 +1932,13 @@
 
     // ─── COUNTDOWN ────────────────────────────────────────────────────
     const promoTarget = new Date('2026-09-25T00:00:00');
-    let prevCounts = { days: '00', hours: '00', mins: '00', secs: '00' };
-    
     function updatePromoCountdown() {
       const now = new Date();
       let diff = Math.max(0, promoTarget - now);
-      const days = String(Math.floor(diff / 86400000)).padStart(2, '0');
-      const hours = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
-      const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-      const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-      
-      const elements = {
-        days: document.getElementById('pDays'),
-        hours: document.getElementById('pHours'),
-        mins: document.getElementById('pMins'),
-        secs: document.getElementById('pSecs')
-      };
-      
-      ['days', 'hours', 'mins', 'secs'].forEach(key => {
-        const el = elements[key];
-        const newVal = { days, hours, mins, secs }[key];
-        if (el && newVal !== prevCounts[key] && newVal !== '00') {
-          el.parentElement.classList.remove('flip');
-          void el.parentElement.offsetWidth;
-          el.parentElement.classList.add('flip');
-          setTimeout(() => {
-            el.parentElement.classList.remove('flip');
-          }, 400);
-        }
-        if (el) el.textContent = newVal;
-      });
-      
-      prevCounts = { days, hours, mins, secs };
+      document.getElementById('pDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+      document.getElementById('pHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+      document.getElementById('pMins').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+      document.getElementById('pSecs').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
     }
     updatePromoCountdown();
     setInterval(updatePromoCountdown, 1000);
@@ -2210,396 +2056,10 @@
 
     loginPass.addEventListener('input', () => { loginPass.classList.remove('error'); loginError.classList.remove('show'); });
     loginUser.addEventListener('input', () => { loginError.classList.remove('show'); });
+    loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginForm.dispatchEvent(new Event('submit')); });
 
     setRole('admin');
-    console.log('🔱 DEPLOMAT · Atlantis Immersive with Water Drop & 2D Scroll');
+    console.log('🔱 DEPLOMAT · Atlantis Immersive with Zoom In');
   </script>
 </body>
-<!-- ======================================== -->
-<!-- MOBILE INTERACTIVITY - COPY THIS BLOCK   -->
-<!-- ======================================== -->
-
-<style>
-/* ─── MOBILE TOUCH ENHANCEMENTS ─────────────── */
-
-.card-expand-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(4,18,23,0.92);
-    backdrop-filter: blur(24px);
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s ease;
-    padding: 20px;
-}
-
-.card-expand-overlay.open {
-    opacity: 1;
-    visibility: visible;
-}
-
-.card-expand-content {
-    max-width: 420px;
-    width: 100%;
-    background: rgba(6,26,32,0.95);
-    border-radius: 20px;
-    padding: 30px 24px 28px;
-    transform: scale(0.92) translateY(20px);
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 1px solid rgba(169,132,69,0.12);
-    box-shadow: 0 30px 80px rgba(0,0,0,0.8);
-    position: relative;
-}
-
-.card-expand-overlay.open .card-expand-content {
-    transform: scale(1) translateY(0);
-}
-
-.card-expand-close {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    background: none;
-    border: none;
-    color: rgba(232,217,184,0.25);
-    font-size: 28px;
-    cursor: pointer;
-    padding: 8px 12px;
-}
-
-.card-expand-content h2 {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(1.2rem, 4vw, 1.8rem);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: #F4EBDD;
-    margin: 0 0 6px 0;
-}
-
-.card-expand-content .card-expand-sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(192,154,82,0.6);
-    margin: 0 0 20px 0;
-}
-
-.card-expand-content .card-expand-detail {
-    color: rgba(232,217,184,0.6);
-    font-size: 0.9rem;
-    line-height: 1.7;
-}
-
-.quick-actions {
-    position: fixed;
-    background: rgba(6,26,32,0.96);
-    backdrop-filter: blur(24px);
-    border-radius: 14px;
-    border: 1px solid rgba(169,132,69,0.08);
-    padding: 6px 0;
-    min-width: 160px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-    z-index: 1000;
-    animation: quickMenuIn 0.2s ease;
-}
-
-@keyframes quickMenuIn {
-    from { opacity: 0; transform: scale(0.92); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-.quick-actions .qa-item {
-    padding: 12px 20px;
-    color: rgba(232,217,184,0.75);
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-}
-
-.quick-actions .qa-item:active {
-    background: rgba(169,132,69,0.08);
-}
-
-.quick-actions .qa-item .qa-icon {
-    font-size: 14px;
-    opacity: 0.5;
-    width: 20px;
-    text-align: center;
-}
-
-.touch-ripple {
-    position: fixed;
-    border-radius: 50%;
-    background: rgba(169,132,69,0.08);
-    pointer-events: none;
-    animation: rippleOut 0.6s ease forwards;
-    z-index: 9999;
-}
-
-@keyframes rippleOut {
-    0% { transform: scale(0); opacity: 0.8; }
-    100% { transform: scale(4); opacity: 0; }
-}
-
-.event-card:active,
-.promo-cta:active {
-    transform: scale(0.96) !important;
-    transition: transform 0.1s ease !important;
-}
-
-@media (max-width: 768px) {
-    .light-rays { display: none; }
-    .particles { opacity: 0.15; }
-    .carousel-track {
-        will-change: transform;
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        backface-visibility: hidden;
-    }
-}
-</style>
-
-<script>
-// ============================================================
-// MOBILE INTERACTIONS - Simplified
-// ============================================================
-
-(function() {
-    'use strict';
-
-    // ─── TOAST HELPER ──────────────────────────────────────
-    function showToastMsg(msg, type) {
-        const toast = document.getElementById('loginToast');
-        if (!toast) return;
-        toast.textContent = msg;
-        toast.className = 'login-toast show ' + (type || 'info');
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(function() {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    // ─── SHOW EXPANDED CARD ──────────────────────────────
-    function showExpandedCard(card) {
-        const name = card.querySelector('.card-name')?.textContent || 'Event';
-        const sub = card.querySelector('.card-sub')?.textContent || '';
-        const img = card.querySelector('.card-image img')?.src || '';
-        
-        // Remove old overlay
-        const old = document.querySelector('.card-expand-overlay');
-        if (old) old.remove();
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'card-expand-overlay';
-        overlay.innerHTML = `
-            <div class="card-expand-content">
-                <button class="card-expand-close">✕</button>
-                ${img ? `<img src="${img}" alt="${name}" style="width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:16px;background:#041217;" />` : ''}
-                <h2>${name}</h2>
-                <div class="card-expand-sub">${sub}</div>
-                <div class="card-expand-detail">
-                    Explore the depths of this Atlantis realm.
-                </div>
-                <div style="margin-top:20px;display:flex;gap:10px;">
-                    <a href="#" style="flex:1;padding:12px;background:rgba(169,132,69,0.08);border:1px solid rgba(169,132,69,0.12);border-radius:10px;text-align:center;color:#C09A52;text-decoration:none;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;">Explore →</a>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-        
-        // Open animation
-        requestAnimationFrame(function() {
-            overlay.classList.add('open');
-        });
-        
-        // Close handlers
-        overlay.querySelector('.card-expand-close').onclick = function() {
-            overlay.classList.remove('open');
-            setTimeout(function() { overlay.remove(); }, 400);
-        };
-        
-        overlay.onclick = function(e) {
-            if (e.target === overlay) {
-                overlay.classList.remove('open');
-                setTimeout(function() { overlay.remove(); }, 400);
-            }
-        };
-    }
-
-    // ─── QUICK ACTIONS MENU ──────────────────────────────
-    function showQuickActions(card) {
-        const old = document.querySelector('.quick-actions');
-        if (old) old.remove();
-        
-        const touch = window.event?.changedTouches?.[0] || { clientX: 100, clientY: 100 };
-        
-        const menu = document.createElement('div');
-        menu.className = 'quick-actions';
-        menu.style.left = Math.min(touch.clientX - 80, window.innerWidth - 180) + 'px';
-        menu.style.top = Math.min(touch.clientY - 40, window.innerHeight - 160) + 'px';
-        
-        const actions = [
-            { icon: '✦', label: 'Share', action: function() {
-                const name = card.querySelector('.card-name')?.textContent || 'Event';
-                if (navigator.share) {
-                    navigator.share({ title: name, text: 'Check out "' + name + '" at DEPLOMAT 2K26! 🏛️' });
-                } else {
-                    showToastMsg('📋 Share feature available on mobile', 'info');
-                }
-            }},
-            { icon: '♥', label: 'Save', action: function() {
-                const name = card.querySelector('.card-name')?.textContent || 'Event';
-                showToastMsg('♥ Saved "' + name + '" to favorites', 'success');
-            }},
-            { icon: '⟡', label: 'Details', action: function() {
-                showExpandedCard(card);
-            }}
-        ];
-        
-        actions.forEach(function(a) {
-            const btn = document.createElement('button');
-            btn.className = 'qa-item';
-            btn.innerHTML = '<span class="qa-icon">' + a.icon + '</span> ' + a.label;
-            btn.onclick = function(e) {
-                e.stopPropagation();
-                a.action();
-                menu.remove();
-            };
-            menu.appendChild(btn);
-        });
-        
-        document.body.appendChild(menu);
-        
-        // Dismiss on outside tap
-        setTimeout(function() {
-            document.addEventListener('touchstart', function dismiss() {
-                menu.remove();
-                document.removeEventListener('touchstart', dismiss);
-            });
-        }, 50);
-    }
-
-    // ─── RIPPLE EFFECT ─────────────────────────────────────
-    function createRipple(x, y) {
-        const ripple = document.createElement('div');
-        ripple.className = 'touch-ripple';
-        const size = 40;
-        ripple.style.cssText = 'left:' + (x - size/2) + 'px;top:' + (y - size/2) + 'px;width:' + size + 'px;height:' + size + 'px;';
-        document.body.appendChild(ripple);
-        setTimeout(function() { ripple.remove(); }, 700);
-    }
-
-    // ─── MAIN TOUCH HANDLER ──────────────────────────────
-    function initMobileInteractions() {
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isSwiping = false;
-        let lastTapTime = 0;
-        let longPressTimer = null;
-        let isLongPress = false;
-
-        document.addEventListener('touchstart', function(e) {
-            const touch = e.touches[0];
-            touchStartX = touch.clientX;
-            touchStartY = touch.clientY;
-            isSwiping = false;
-            
-            // Double tap
-            const now = Date.now();
-            if (now - lastTapTime < 350) {
-                const card = e.target.closest('.event-card');
-                if (card) {
-                    showExpandedCard(card);
-                    if (navigator.vibrate) navigator.vibrate(10);
-                }
-            }
-            lastTapTime = now;
-            
-            // Ripple
-            createRipple(touch.clientX, touch.clientY);
-            
-            // Long press
-            const target = e.target.closest('.event-card, .promo-cta');
-            if (target) {
-                isLongPress = false;
-                longPressTimer = setTimeout(function() {
-                    isLongPress = true;
-                    if (navigator.vibrate) navigator.vibrate(20);
-                    if (target.classList.contains('event-card')) {
-                        showQuickActions(target);
-                    }
-                }, 600);
-            }
-        }, { passive: true });
-
-        document.addEventListener('touchmove', function(e) {
-            const touch = e.touches[0];
-            const deltaX = touch.clientX - touchStartX;
-            const deltaY = touch.clientY - touchStartY;
-            
-            if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
-                isSwiping = true;
-                clearTimeout(longPressTimer);
-            }
-        }, { passive: true });
-
-        document.addEventListener('touchend', function(e) {
-            clearTimeout(longPressTimer);
-            
-            const touch = e.changedTouches[0];
-            const deltaX = touch.clientX - touchStartX;
-            const deltaY = touch.clientY - touchStartY;
-            
-            // If it was a tap (not swipe, not long press)
-            if (!isSwiping && !isLongPress && Math.abs(deltaX) < 15 && Math.abs(deltaY) < 15) {
-                const target = e.target.closest('.event-card, .promo-cta, .dropdown-item');
-                if (target) {
-                    // Visual feedback
-                    target.style.transition = 'transform 0.1s ease';
-                    target.style.transform = 'scale(0.94)';
-                    setTimeout(function() {
-                        target.style.transform = '';
-                    }, 150);
-                }
-            }
-        }, { passive: true });
-
-        // ─── HAPTIC FEEDBACK ──────────────────────────────
-        if (navigator.vibrate) {
-            document.querySelectorAll('.event-card, .promo-cta, .dropdown-item, .dot').forEach(function(el) {
-                el.addEventListener('touchstart', function() {
-                    navigator.vibrate(5);
-                }, { passive: true });
-            });
-        }
-
-        console.log('📱 Mobile interactions ready!');
-    }
-
-    // ─── START ─────────────────────────────────────────────
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initMobileInteractions);
-    } else {
-        initMobileInteractions();
-    }
-
-})();
-</script>
-
-<!-- ======================================== -->
-<!-- END OF MOBILE INTERACTIVITY BLOCK        -->
-<!-- ======================================== -->
 </html>
