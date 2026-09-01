@@ -614,15 +614,15 @@
             color: #65d8ff;
         }
 
-        .table-card .table-tools {
+        .table-tools {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
             margin-bottom: 14px;
         }
 
-        .table-card .table-tools input,
-        .table-card .table-tools select {
+        .table-tools input,
+        .table-tools select {
             padding: 8px 14px;
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -636,20 +636,92 @@
             min-width: 140px;
         }
 
-        .table-card .table-tools input::placeholder {
+        .table-tools input::placeholder {
             color: rgba(255, 255, 255, 0.2);
         }
-        .table-card .table-tools input:focus,
-        .table-card .table-tools select:focus {
+        .table-tools input:focus,
+        .table-tools select:focus {
             border-color: rgba(101, 216, 255, 0.25);
             background: rgba(101, 216, 255, 0.04);
         }
 
-        .table-card .table-tools select option {
+        .table-tools select option {
             background: #1a1a2e;
             color: #fff;
         }
 
+        /* ─── NEW: Filter Badge Indicators ─────────────────────────── */
+        .filter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .filter-badge.ug {
+            background: rgba(101, 216, 255, 0.15);
+            color: #65d8ff;
+        }
+        .filter-badge.pu {
+            background: rgba(255, 197, 61, 0.15);
+            color: #FFC53D;
+        }
+        .filter-badge.mixed {
+            background: rgba(176, 0, 255, 0.15);
+            color: #b000ff;
+        }
+        .filter-badge.size-1 {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+        }
+        .filter-badge.size-2 {
+            background: rgba(255, 138, 101, 0.15);
+            color: #ff8a65;
+        }
+        .filter-badge.size-3 {
+            background: rgba(255, 42, 109, 0.15);
+            color: #ff2a6d;
+        }
+
+        .active-filters-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+            padding: 6px 0;
+            min-height: 28px;
+        }
+
+        .active-filters-info .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .active-filters-info .filter-chip .clear-filter {
+            cursor: pointer;
+            opacity: 0.4;
+            transition: 0.2s ease;
+            font-size: 0.7rem;
+        }
+
+        .active-filters-info .filter-chip .clear-filter:hover {
+            opacity: 1;
+            color: #ff2a6d;
+        }
+
+        /* ─── TABLE SCROLL ──────────────────────────────────────────── */
         .table-scroll {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -865,6 +937,15 @@
                 white-space: normal;
                 max-width: 85vw;
             }
+            .table-tools {
+                gap: 8px;
+            }
+            .table-tools input,
+            .table-tools select {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+                min-width: 100px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -907,6 +988,13 @@
             .analytics-card .card-title .filter-select {
                 max-width: 140px;
                 font-size: 0.55rem;
+            }
+            .table-tools {
+                flex-direction: column;
+            }
+            .table-tools input,
+            .table-tools select {
+                min-width: 100%;
             }
         }
 
@@ -1157,12 +1245,30 @@
                 <span style="margin-left:auto;font-size:0.55rem;color:rgba(255,255,255,0.15);" id="recordCount">0 records</span>
             </div>
 
+            <!-- ─── UPGRADED FILTERS ─── -->
             <div class="table-tools">
                 <input type="text" id="searchInput" placeholder="🔍 Search by name, email, UTR..." />
                 <select id="eventFilter">
                     <option value="">All Events</option>
                 </select>
+                <select id="categoryFilter">
+                    <option value="all">🎓 All Categories</option>
+                    <option value="ug">🎓 UG Only</option>
+                    <option value="pu">🎓 PU Only</option>
+                    <option value="mixed">🎓 Mixed (UG+PU)</option>
+                </select>
+                <select id="teamSizeFilter">
+                    <option value="all">👥 All Team Sizes</option>
+                    <option value="1">👤 Solo (1)</option>
+                    <option value="2">👥 Pair (2)</option>
+                    <option value="3">👨‍👩‍👦 3 Members</option>
+                    <option value="4">👨‍👩‍👧‍👦 4 Members</option>
+                    <option value="5plus">👥 5+ Members</option>
+                </select>
             </div>
+
+            <!-- ─── ACTIVE FILTERS DISPLAY ─── -->
+            <div class="active-filters-info" id="activeFiltersInfo"></div>
 
             <div class="table-scroll">
                 <table>
@@ -1244,10 +1350,13 @@
         const tableBody = document.getElementById('tableBody');
         const searchInput = document.getElementById('searchInput');
         const eventFilter = document.getElementById('eventFilter');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const teamSizeFilter = document.getElementById('teamSizeFilter');
         const eventFilterDropdown = document.getElementById('eventFilterDropdown');
         const recordCount = document.getElementById('recordCount');
         const refreshBtn = document.getElementById('refreshBtn');
         const tooltip = document.getElementById('tooltip');
+        const activeFiltersInfo = document.getElementById('activeFiltersInfo');
 
         const ugColBar = document.getElementById('ugColBar');
         const puColBar = document.getElementById('puColBar');
@@ -1307,8 +1416,23 @@
             return EVENT_CATEGORY_MAP[eventName] || 'UG';
         }
 
-        function getEventById(id) {
-            return EVENTS.find(e => e.id === parseInt(id));
+        function getCategoryDisplay(category) {
+            if (category === 'Mixed') return 'Mixed';
+            if (category === 'PU') return 'PU';
+            return 'UG';
+        }
+
+        function getTeamSize(registration) {
+            const parts = getParticipantsArray(registration);
+            return parts.length || 1;
+        }
+
+        function getTeamSizeLabel(size) {
+            if (size === 1) return 'Solo';
+            if (size === 2) return 'Pair';
+            if (size === 3) return '3 Members';
+            if (size === 4) return '4 Members';
+            return '5+ Members';
         }
 
         function safeString(val) {
@@ -1387,9 +1511,11 @@
         function applyFilters() {
             const search = searchInput.value.toLowerCase().trim();
             const event = eventFilter.value;
+            const category = categoryFilter.value;
+            const teamSize = teamSizeFilter.value;
 
             filteredRegistrations = allRegistrations.filter(r => {
-                if (event && r.event_name !== event) return false;
+                // Search filter
                 if (search) {
                     const searchable = [
                         r.team_leader || '',
@@ -1401,12 +1527,87 @@
                     ].join(' ').toLowerCase();
                     if (!searchable.includes(search)) return false;
                 }
+
+                // Event filter
+                if (event && r.event_name !== event) return false;
+
+                // Category filter
+                if (category !== 'all') {
+                    const rCategory = getEventCategory(r.event_name);
+                    if (category === 'ug' && rCategory !== 'UG' && rCategory !== 'Mixed') return false;
+                    if (category === 'pu' && rCategory !== 'PU' && rCategory !== 'Mixed') return false;
+                    if (category === 'mixed' && rCategory !== 'Mixed') return false;
+                }
+
+                // Team size filter
+                if (teamSize !== 'all') {
+                    const size = getTeamSize(r);
+                    if (teamSize === '5plus' && size < 5) return false;
+                    if (teamSize !== '5plus' && size !== parseInt(teamSize)) return false;
+                }
+
                 return true;
             });
 
             selectedEventFilter = eventFilterDropdown.value;
+            updateActiveFilters();
             scheduleRender();
         }
+
+        // ─── UPDATE ACTIVE FILTERS DISPLAY ─────────────────────────
+
+        function updateActiveFilters() {
+            const filters = [];
+            const search = searchInput.value.trim();
+            const event = eventFilter.value;
+            const category = categoryFilter.value;
+            const teamSize = teamSizeFilter.value;
+
+            if (search) filters.push({ label: `🔍 "${search}"`, type: 'search' });
+            if (event) {
+                const eventInfo = EVENTS.find(e => e.name === event);
+                filters.push({ label: `📋 ${eventInfo ? eventInfo.type : event}`, type: 'event' });
+            }
+            if (category !== 'all') {
+                const labels = { ug: '🎓 UG Only', pu: '🎓 PU Only', mixed: '🎓 Mixed (UG+PU)' };
+                filters.push({ label: labels[category], type: 'category' });
+            }
+            if (teamSize !== 'all') {
+                const labels = { '1': '👤 Solo (1)', '2': '👥 Pair (2)', '3': '👨‍👩‍👦 3 Members', '4': '👨‍👩‍👧‍👦 4 Members',
+                    '5plus': '👥 5+ Members' };
+                filters.push({ label: labels[teamSize], type: 'teamSize' });
+            }
+
+            if (filters.length === 0) {
+                activeFiltersInfo.innerHTML =
+                '<span style="font-size:0.6rem;color:rgba(255,255,255,0.15);">No active filters</span>';
+                return;
+            }
+
+            let html = '';
+            filters.forEach(f => {
+                html += `
+                        <span class="filter-chip">
+                            ${f.label}
+                            <span class="clear-filter" onclick="clearFilter('${f.type}')">×</span>
+                        </span>
+                    `;
+            });
+            activeFiltersInfo.innerHTML = html;
+        }
+
+        // ─── CLEAR FILTER ────────────────────────────────────────────
+
+        function clearFilter(type) {
+            if (type === 'search') searchInput.value = '';
+            if (type === 'event') eventFilter.value = '';
+            if (type === 'category') categoryFilter.value = 'all';
+            if (type === 'teamSize') teamSizeFilter.value = 'all';
+            applyFilters();
+        }
+
+        // Make clearFilter globally accessible
+        window.clearFilter = clearFilter;
 
         // ─── SCHEDULED RENDER ────────────────────────────────────────
 
@@ -1458,17 +1659,15 @@
                 const cat = getEventCategory(r.event_name);
                 if (cat === 'UG' || cat === 'Mixed') ugCollegeSet.add(college);
                 if (cat === 'PU' || cat === 'Mixed') puCollegeSet.add(college);
-                // If unknown, treat as UG
                 if (cat !== 'UG' && cat !== 'PU' && cat !== 'Mixed') ugCollegeSet.add(college);
             });
 
-            // Update UG Colleges stat (two-line display)
             const ugCount = ugCollegeSet.size;
             const puCount = puCollegeSet.size;
             ugCollegesEl.innerHTML = `${ugCount}<span class="sub-num">UG Colleges</span>`;
             puCollegesEl.innerHTML = `${puCount}<span class="sub-num">PU Colleges</span>`;
 
-            // Cross-registration count: count unique cross-check entries
+            // Cross-registration count
             const crossSet = new Set();
             regs.forEach(r => {
                 const crossCheck = r.cross_check || [];
@@ -1488,7 +1687,7 @@
             });
             crossRegsEl.textContent = crossSet.size;
 
-            // Top event (by registrations)
+            // Top event
             const eventCount = {};
             regs.forEach(r => {
                 const name = r.event_name || 'Unknown';
@@ -1564,7 +1763,7 @@
             eventBarList.innerHTML = html;
         }
 
-        // ─── COLUMN CHART (UG vs PU) — REGISTRATION-BASED ──────────
+        // ─── COLUMN CHART ────────────────────────────────────────────
 
         function renderColumnChart() {
             const regs = filteredRegistrations;
@@ -1574,10 +1773,8 @@
 
             regs.forEach(r => {
                 const cat = getEventCategory(r.event_name);
-                // Count each registration once — Mixed counts as both
                 if (cat === 'UG' || cat === 'Mixed') ug++;
                 if (cat === 'PU' || cat === 'Mixed') pu++;
-                // Fallback: unknown → UG
                 if (cat !== 'UG' && cat !== 'PU' && cat !== 'Mixed') ug++;
             });
 
@@ -1601,7 +1798,6 @@
         function renderExtraAnalytics() {
             const regs = filteredRegistrations;
 
-            // ── College stats: total, UG, PU per college ──
             const collegeStats = {};
 
             regs.forEach(r => {
@@ -1617,7 +1813,6 @@
                 if (cat !== 'UG' && cat !== 'PU' && cat !== 'Mixed') collegeStats[college].ug++;
             });
 
-            // ── Find top UG college ──
             let topUg = { name: '—', count: 0 };
             let topPu = { name: '—', count: 0 };
             let overallRankings = [];
@@ -1630,29 +1825,24 @@
 
             overallRankings.sort((a, b) => b.total - a.total);
 
-            // ── Display Top UG College ──
             topUgCollegeName.textContent = topUg.count > 0 ? topUg.name : '—';
             topUgCollegeCount.textContent = topUg.count > 0 ? `${topUg.count} UG registration${topUg.count > 1 ? 's' : ''}` :
-            'No UG registrations';
+                'No UG registrations';
 
-            // Overall rank for top UG college
             const ugRank = overallRankings.findIndex(r => r.name === topUg.name) + 1;
             topUgOverallRank.textContent = ugRank > 0 ? `#${ugRank} of ${overallRankings.length}` : '—';
 
-            // ── Display Top PU College ──
             topPuCollegeName.textContent = topPu.count > 0 ? topPu.name : '—';
             topPuCollegeCount.textContent = topPu.count > 0 ? `${topPu.count} PU registration${topPu.count > 1 ? 's' : ''}` :
-            'No PU registrations';
+                'No PU registrations';
 
             const puRank = overallRankings.findIndex(r => r.name === topPu.name) + 1;
             topPuOverallRank.textContent = puRank > 0 ? `#${puRank} of ${overallRankings.length}` : '—';
 
-            // ── Average Revenue ──
             const total = regs.reduce((sum, r) => sum + (r.total_amount || 0), 0);
             const avg = regs.length > 0 ? total / regs.length : 0;
             avgRevenue.textContent = '₹' + Math.round(avg);
 
-            // ── Team Size Stats ──
             const sizes = [];
             regs.forEach(r => {
                 const parts = getParticipantsArray(r);
@@ -1696,7 +1886,6 @@
                 const eventName = r.event_name || 'Unknown';
                 const eventInfo = EVENTS.find(e => e.name === eventName);
 
-                // Determine category (UG / PU / Mixed) based on registration
                 const cat = getEventCategory(eventName);
                 let categoryDisplay = '—';
                 let tagClass = '';
@@ -1706,6 +1895,13 @@
                     tagClass = 'ug'; } else { categoryDisplay = 'UG';
                     tagClass = 'ug'; }
 
+                // Team size badge
+                const teamSize = getTeamSize(r);
+                let sizeBadge = '';
+                if (teamSize === 1) sizeBadge = '👤';
+                else if (teamSize === 2) sizeBadge = '👥';
+                else if (teamSize >= 3) sizeBadge = `👥 ${teamSize}`;
+
                 html += `
                         <tr>
                             <td style="color:rgba(255,255,255,0.2);">${idx + 1}</td>
@@ -1714,7 +1910,9 @@
                             <td style="color:rgba(255,255,255,0.4);">${safeString(r.phone)}</td>
                             <td><span class="tag event-tag">${eventName}</span></td>
                             <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
-                            <td style="color:rgba(255,255,255,0.5);font-size:0.75rem;">${participantNames || '—'}</td>
+                            <td style="color:rgba(255,255,255,0.5);font-size:0.75rem;">
+                                ${sizeBadge} ${participantNames || '—'}
+                            </td>
                             <td><span class="txn-code">${safeString(r.txn)}</span></td>
                             <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
                         </tr>
@@ -1782,6 +1980,8 @@
 
         searchInput.addEventListener('input', debounce(applyFilters, 300));
         eventFilter.addEventListener('change', applyFilters);
+        categoryFilter.addEventListener('change', applyFilters);
+        teamSizeFilter.addEventListener('change', applyFilters);
         eventFilterDropdown.addEventListener('change', applyFilters);
         refreshBtn.addEventListener('click', refreshData);
 
@@ -1844,8 +2044,9 @@
                 refreshData();
             }, 1500);
 
-            console.log('📊 DEPLOMAT Dashboard v2.1 initialized');
+            console.log('📊 DEPLOMAT Dashboard v2.2 - Enhanced Filters');
             console.log(`📈 Loaded ${allRegistrations.length} registrations`);
+            console.log('🎯 New filters: Category (UG/PU/Mixed) + Team Size');
         }
 
         init();
