@@ -1078,6 +1078,31 @@
             pointer-events: none;
             opacity: 0.7;
         }
+        /* Restore banner */
+        .restore-banner {
+            display: none;
+            background: rgba(76, 175, 80, 0.08);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 12px;
+            color: #4caf50;
+        }
+        .restore-banner.show {
+            display: flex;
+        }
+        .restore-banner .icon {
+            font-size: 1.4rem;
+        }
+        .restore-banner .msg {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        .restore-banner .msg strong {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -1093,6 +1118,13 @@
                     <h1>REGISTRATION</h1>
                     <p class="sub">Secure your spot in the Atlantean Trials</p>
                 </div>
+                
+                <!-- Restore Banner -->
+                <div class="restore-banner" id="restoreBanner">
+                    <span class="icon">🔄</span>
+                    <span class="msg">Your registration data has been restored. <strong>Complete your payment to confirm.</strong></span>
+                </div>
+                
                 <div class="event-banner" id="eventBanner">
                     <span class="icon">🔱</span>
                     <div class="info">
@@ -1376,6 +1408,7 @@
         const bannerEventSub = document.getElementById('bannerEventSub');
         const blockNotice = document.getElementById('blockNotice');
         const blockMsg = document.getElementById('blockMsg');
+        const restoreBanner = document.getElementById('restoreBanner');
         
         // ─── SCREENSHOT UPLOAD DOM REFS ──────────────────────────────────
         const dropZone = document.getElementById('dropZone');
@@ -1398,6 +1431,160 @@
         let uploadedFile = null;
         let extractedUTR = null;
         let qrVisible = false;
+        let uploadTimer = null;
+        let uploadTimeRemaining = 1800;
+        let isPendingSubmission = false;
+        let timerStarted = false;
+
+        // ─── STATE PERSISTENCE ─────────────────────────────────────────────
+        const STATE_EXPIRY = 10 * 60 * 1000; // 10 minutes
+
+        function saveRegistrationState() {
+            const state = {
+                college: document.getElementById('college').value.trim(),
+                category: getSelectedCategory(),
+                eventId: selectedEvent ? selectedEvent.id : null,
+                participants: getParticipantsList(),
+                currentStep: currentStep,
+                timestamp: Date.now(),
+                eventName: selectedEvent ? selectedEvent.name : null,
+                eventSub: selectedEvent ? selectedEvent.sub : null
+            };
+            
+            try {
+                localStorage.setItem('deplomat_registration_state', JSON.stringify(state));
+                sessionStorage.setItem('deplomat_registration_state_backup', JSON.stringify(state));
+            } catch (e) {
+                console.warn('Could not save state:', e);
+            }
+        }
+
+        function restoreRegistrationState() {
+            let saved = localStorage.getItem('deplomat_registration_state');
+            if (!saved) {
+                saved = sessionStorage.getItem('deplomat_registration_state_backup');
+            }
+            if (!saved) return false;
+            
+            try {
+                const state = JSON.parse(saved);
+                
+                // Check expiry
+                if (Date.now() - state.timestamp > STATE_EXPIRY) {
+                    localStorage.removeItem('deplomat_registration_state');
+                    sessionStorage.removeItem('deplomat_registration_state_backup');
+                    return false;
+                }
+                
+                // Check if we have valid data
+                if (!state.college && !state.eventId && (!state.participants || state.participants.length === 0)) {
+                    return false;
+                }
+                
+                // Show restore banner
+                restoreBanner.classList.add('show');
+                
+                // Restore college
+                if (state.college) {
+                    document.getElementById('college').value = state.college;
+                }
+                
+                // Restore category
+                if (state.category) {
+                    const radio = document.querySelector(`input[name="ug_pu"][value="${state.category}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                        selectedCategory = state.category;
+                    }
+                }
+                
+                // Restore event
+                if (state.eventId !== null && state.eventId !== undefined) {
+                    const eventSelect = document.getElementById('eventSelect');
+                    const eventIndex = state.eventId.toString();
+                    if (Array.from(eventSelect.options).some(opt => opt.value === eventIndex)) {
+                        eventSelect.value = eventIndex;
+                        const event = EVENTS.find(e => e.id === state.eventId);
+                        if (event) {
+                            selectedEvent = event;
+                            bannerEventName.textContent = event.name;
+                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                            eventBanner.classList.add('show');
+                            
+                            // Update limits
+                            currentMin = event.min;
+                            currentMax = event.max;
+                            updateEventLimitInfo();
+                        }
+                        eventSelect.dispatchEvent(new Event('change'));
+                    }
+                }
+                
+                // Restore participants
+                if (state.participants && state.participants.length > 0) {
+                    // Wait for event to be initialized
+                    setTimeout(() => {
+                        playersContainer.innerHTML = '';
+                        state.participants.forEach((p, index) => {
+                            addPlayer(index === 0);
+                            const entries = playersContainer.querySelectorAll('.player-entry');
+                            const entry = entries[entries.length - 1];
+                            if (entry) {
+                                const nameInput = entry.querySelector('.player-name');
+                                if (nameInput) nameInput.value = p.name || '';
+                                
+                                if (index === 0) {
+                                    const emailInput = entry.querySelector('.player-email');
+                                    const phoneInput = entry.querySelector('.player-phone');
+                                    if (emailInput) emailInput.value = p.email || '';
+                                    if (phoneInput) phoneInput.value = p.phone || '';
+                                }
+                            }
+                        });
+                        updatePlayerNumbers();
+                        updateAddButtonState();
+                    }, 400);
+                }
+                
+                // Handle returning from payment
+                const returning = sessionStorage.getItem('returning_from_payment');
+                if (returning === 'true') {
+                    sessionStorage.removeItem('returning_from_payment');
+                    // Go to step 4 if we were there
+                    if (state.currentStep >= 4) {
+                        setTimeout(() => {
+                            goToStep(4);
+                            updatePaymentSummary();
+                            // Restart timer if payment was initiated
+                            if (localStorage.getItem('payment_initiated') === 'true') {
+                                startUploadTimer();
+                            }
+                        }, 600);
+                    }
+                    
+                    // Show message after a delay
+                    setTimeout(() => {
+                        const paid = confirm(
+                            '✅ Welcome back!\n\n' +
+                            'Did you complete the payment in your app?\n\n' +
+                            '• Click "OK" if you have paid → Upload screenshot\n' +
+                            '• Click "Cancel" if you haven\'t paid → Try again'
+                        );
+                        if (paid) {
+                            document.querySelector('.payment-side').scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                            // Reset payment state
+                            localStorage.removeItem('payment_initiated');
+                        }
+                    }, 1200);
+                }
+                
+                return true;
+            } catch (e) {
+                console.error('Error restoring state:', e);
+                return false;
+            }
+        }
 
         // ─── HELPERS ──────────────────────────────────────────────────────
         function getSelectedCategory() {
@@ -1493,6 +1680,9 @@
                 validateCategoryEventPair(); }
             if (step === 3) { initializeCrossCheck(); }
             if (step === 4) { updatePaymentSummary(); }
+            
+            // Save state on step change
+            saveRegistrationState();
         }
 
         function validateStep(step) {
@@ -1568,12 +1758,14 @@
                 div.querySelector('.remove-btn').addEventListener('click', () => {
                     if (playersContainer.children.length > currentMin) { div.remove();
                         updatePlayerNumbers();
-                        updateAddButtonState(); } else { alert(`Minimum ${currentMin} participant(s) required.`); }
+                        updateAddButtonState();
+                        saveRegistrationState(); } else { alert(`Minimum ${currentMin} participant(s) required.`); }
                 });
             }
             playersContainer.appendChild(div);
             updatePlayerNumbers();
             updateAddButtonState();
+            saveRegistrationState();
         }
 
         function updatePlayerNumbers() {
@@ -1676,36 +1868,113 @@
             if (qrVisible) updateQR(getTotalAmount());
         }
 
-       function openPaymentApp(app) {
-    const total = getTotalAmount();
-    const leaderName = getLeaderName();
-    const college = collegeInput.value.trim();
-    
-    if (!leaderName || !college) {
-        alert('Please complete all registration details first.');
-        return;
-    }
-    
-    const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
-    
-    // Store pending registration
-    const regData = {
-        leader_name: leaderName,
-        college: college,
-        event: selectedEvent ? selectedEvent.name : 'Unknown',
-        amount: total,
-        participants: getParticipantsList(),
-        timestamp: new Date().toISOString()
-    };
-    localStorage.setItem('pending_registration', JSON.stringify(regData));
-    sessionStorage.setItem('returning_from_payment', 'true');
-    
-    // ⬇️ NEW: START THE TIMER ⬇️
-    startUploadTimer();
-    
-    // Open payment app
-    window.location.href = upiLink;
-}
+        // ─── MODIFIED openPaymentApp with state persistence ──────────────
+        function openPaymentApp(app) {
+            const total = getTotalAmount();
+            const leaderName = getLeaderName();
+            const college = collegeInput.value.trim();
+            const participants = getParticipantsList();
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+            
+            if (!leaderName || !college || participants.length === 0) {
+                alert('⚠️ Please complete all registration details first.');
+                return;
+            }
+            
+            // Save state before redirect
+            saveRegistrationState();
+            
+            // Store pending registration
+            const regData = {
+                leader_name: leaderName,
+                college: college,
+                event: selectedEvent ? selectedEvent.name : 'Unknown',
+                amount: total,
+                participants: participants,
+                timestamp: new Date().toISOString(),
+                category: ugPuValue,
+                eventId: selectedEvent ? selectedEvent.id : null
+            };
+            localStorage.setItem('pending_registration', JSON.stringify(regData));
+            sessionStorage.setItem('returning_from_payment', 'true');
+            localStorage.setItem('payment_initiated', 'true');
+            
+            // Build UPI link
+            const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
+            
+            // Start timer
+            startUploadTimer();
+            
+            // Try to open in a new tab (less likely to reload the main page)
+            const newTab = window.open(upiLink, '_blank');
+            
+            if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+                // Fallback: redirect
+                if (confirm('⚠️ Could not open payment app in new tab.\n\nClick OK to redirect to payment app.\nYou will need to return to this page after payment.')) {
+                    window.location.href = upiLink;
+                }
+            } else {
+                // Show message
+                alert('📱 Payment app opened in new tab.\n\nComplete your payment and return to this page.\nYour registration data has been saved.');
+            }
+        }
+
+        // ─── TIMER FUNCTIONS ──────────────────────────────────────────────
+        function startUploadTimer() {
+            if (timerStarted) return;
+            timerStarted = true;
+            
+            const timerArea = document.getElementById('uploadTimerArea');
+            const timerDisplay = document.getElementById('uploadTimerDisplay');
+            const timerWarning = document.getElementById('timerWarning');
+            const statusBadge = document.getElementById('timerStatusBadge');
+            
+            timerArea.style.display = 'block';
+            uploadTimeRemaining = 1800;
+            
+            if (uploadTimer) clearInterval(uploadTimer);
+            
+            uploadTimer = setInterval(() => {
+                uploadTimeRemaining--;
+                const minutes = Math.floor(uploadTimeRemaining / 60);
+                const seconds = uploadTimeRemaining % 60;
+                timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                // Warning at 5 minutes
+                if (uploadTimeRemaining < 300 && uploadTimeRemaining > 0) {
+                    timerWarning.style.display = 'block';
+                    timerDisplay.style.color = '#ff6b8a';
+                    statusBadge.textContent = 'Expiring';
+                    statusBadge.style.background = 'rgba(255,42,109,0.08)';
+                    statusBadge.style.color = '#ff6b8a';
+                }
+                
+                // Timer expired
+                if (uploadTimeRemaining <= 0) {
+                    clearInterval(uploadTimer);
+                    uploadTimer = null;
+                    timerDisplay.textContent = '00:00';
+                    timerDisplay.style.color = '#ff2a6d';
+                    statusBadge.textContent = 'Expired';
+                    statusBadge.style.background = 'rgba(255,42,109,0.12)';
+                    statusBadge.style.color = '#ff2a6d';
+                    timerWarning.innerHTML = '⏰ <strong>Time expired!</strong> Submit as Pending or contact coordinator.';
+                    timerWarning.style.display = 'block';
+                    
+                    // Show pending button
+                    document.getElementById('submitPendingBtn').style.display = 'block';
+                    document.getElementById('dropZone').style.opacity = '0.5';
+                    document.getElementById('dropZone').style.pointerEvents = 'none';
+                    
+                    // Auto-submit as pending
+                    if (!isPendingSubmission) {
+                        submitPendingRegistration();
+                    }
+                }
+            }, 1000);
+        }
+
         // ─── SCREENSHOT UPLOAD HANDLING ──────────────────────────────────
         // Click to upload
         dropZone.addEventListener('click', () => fileInput.click());
@@ -1907,87 +2176,174 @@
 
         // ─── CONFIRM REGISTRATION ─────────────────────────────────────────
         async function confirmRegistration() {
-    if (!extractedUTR) {
-        alert('⚠️ Please upload payment screenshot first.');
-        return;
-    }
-    
-    finalSubmitBtn.disabled = true;
-    finalSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
-    
-    try {
-        const leaderName = getLeaderName();
-        const college = collegeInput.value.trim();
-        const total = getTotalAmount();
-        const participants = getParticipantsList();
-        const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
-        const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-        
-        const registrationData = {
-            event_name: selectedEvent ? selectedEvent.name : 'Unknown',
-            event_sub: selectedEvent ? selectedEvent.sub : '',
-            college: college,
-            ug_pu: ugPuValue,
-            team_leader: leaderName,
-            email: participants[0]?.email || '',
-            phone: participants[0]?.phone || '',
-            total_amount: total,
-            txn: extractedUTR,
-            participants: participants,
-            status: 'VERIFIED',  // ⬅️ Set to VERIFIED since UTR is present
-            registered_at: new Date().toISOString(),
-            verified_at: new Date().toISOString(),
-            is_pending: false,
-            timeout_triggered: false
-        };
-        
-        // Save to Supabase
-        if (supabaseClient) {
-            const { error } = await supabaseClient.from('registrations').insert([registrationData]);
-            if (error) throw new Error(error.message);
+            if (!extractedUTR) {
+                alert('⚠️ Please upload payment screenshot first.');
+                return;
+            }
+            
+            finalSubmitBtn.disabled = true;
+            finalSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+            
+            try {
+                const leaderName = getLeaderName();
+                const college = collegeInput.value.trim();
+                const total = getTotalAmount();
+                const participants = getParticipantsList();
+                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+                const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+                
+                const registrationData = {
+                    event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+                    event_sub: selectedEvent ? selectedEvent.sub : '',
+                    college: college,
+                    ug_pu: ugPuValue,
+                    team_leader: leaderName,
+                    email: participants[0]?.email || '',
+                    phone: participants[0]?.phone || '',
+                    total_amount: total,
+                    txn: extractedUTR,
+                    participants: participants,
+                    status: 'VERIFIED',
+                    registered_at: new Date().toISOString(),
+                    verified_at: new Date().toISOString(),
+                    is_pending: false,
+                    timeout_triggered: false
+                };
+                
+                // Save to Supabase
+                if (supabaseClient) {
+                    const { error } = await supabaseClient.from('registrations').insert([registrationData]);
+                    if (error) throw new Error(error.message);
+                }
+                
+                // Local backup
+                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                db.push(registrationData);
+                localStorage.setItem('deplomat_db', JSON.stringify(db));
+                
+                // Show success
+                goToStep(5);
+                const details = document.getElementById('successDetails');
+                details.innerHTML = `
+                    <p style="font-size:2rem;">✅</p>
+                    <h2 style="font-size:1.6rem;">Registration Complete!</h2>
+                    <p style="color:#4caf50;">🎉 Payment Verified Successfully!</p>
+                    <div class="reg-details">
+                        <p><strong>Event:</strong> ${registrationData.event_name}</p>
+                        <p><strong>Team Leader:</strong> ${leaderName}</p>
+                        <p><strong>College:</strong> ${college}</p>
+                        <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${extractedUTR}</span></p>
+                        <p><strong>Amount Paid:</strong> ₹${total}</p>
+                        <p><strong>Participants:</strong> ${participants.length}</p>
+                        <hr style="border-color:rgba(255,255,255,0.05);margin:12px 0;"/>
+                        <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);">
+                            ✅ Payment verified automatically.<br>
+                            Confirmation sent to ${participants[0]?.email || 'your email'}.
+                        </p>
+                    </div>
+                `;
+                
+                // Clean up
+                if (uploadTimer) { clearInterval(uploadTimer); uploadTimer = null; }
+                localStorage.removeItem('pending_registration');
+                localStorage.removeItem('payment_initiated');
+                sessionStorage.removeItem('returning_from_payment');
+                localStorage.removeItem('deplomat_registration_state');
+                sessionStorage.removeItem('deplomat_registration_state_backup');
+                
+                finalSubmitBtn.disabled = false;
+                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
+                
+            } catch (error) {
+                alert(`❌ Submission failed: ${error.message}`);
+                finalSubmitBtn.disabled = false;
+                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
+            }
         }
-        
-        // Local backup
-        const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-        db.push(registrationData);
-        localStorage.setItem('deplomat_db', JSON.stringify(db));
-        
-        // Show success
-        goToStep(5);
-        const details = document.getElementById('successDetails');
-        details.innerHTML = `
-            <p style="font-size:2rem;">✅</p>
-            <h2 style="font-size:1.6rem;">Registration Complete!</h2>
-            <p style="color:#4caf50;">🎉 Payment Verified Successfully!</p>
-            <div class="reg-details">
-                <p><strong>Event:</strong> ${registrationData.event_name}</p>
-                <p><strong>Team Leader:</strong> ${leaderName}</p>
-                <p><strong>College:</strong> ${college}</p>
-                <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${extractedUTR}</span></p>
-                <p><strong>Amount Paid:</strong> ₹${total}</p>
-                <p><strong>Participants:</strong> ${participants.length}</p>
-                <hr style="border-color:rgba(255,255,255,0.05);margin:12px 0;"/>
-                <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);">
-                    ✅ Payment verified automatically.<br>
-                    Confirmation sent to ${participants[0]?.email || 'your email'}.
-                </p>
-            </div>
-        `;
-        
-        // Clean up
-        if (uploadTimer) { clearInterval(uploadTimer); uploadTimer = null; }
-        localStorage.removeItem('pending_registration');
-        sessionStorage.removeItem('returning_from_payment');
-        
-        finalSubmitBtn.disabled = false;
-        finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
-        
-    } catch (error) {
-        alert(`❌ Submission failed: ${error.message}`);
-        finalSubmitBtn.disabled = false;
-        finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
-    }
-}
+
+        // ─── SUBMIT AS PENDING ──────────────────────────────────────────────
+        async function submitPendingRegistration() {
+            if (isPendingSubmission) return;
+            isPendingSubmission = true;
+            
+            const btn = document.getElementById('submitPendingBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Submitting...';
+            
+            try {
+                const leaderName = getLeaderName();
+                const college = collegeInput.value.trim();
+                const total = getTotalAmount();
+                const participants = getParticipantsList();
+                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+                const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+                
+                const pendingId = 'PND_' + Date.now().toString(36).toUpperCase();
+                
+                const registrationData = {
+                    event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+                    event_sub: selectedEvent ? selectedEvent.sub : '',
+                    college: college,
+                    ug_pu: ugPuValue,
+                    team_leader: leaderName,
+                    email: participants[0]?.email || '',
+                    phone: participants[0]?.phone || '',
+                    total_amount: total,
+                    txn: pendingId,
+                    participants: participants,
+                    status: 'PENDING',
+                    registered_at: new Date().toISOString(),
+                    pending_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+                };
+                
+                // Save to Supabase
+                if (supabaseClient) {
+                    const { error } = await supabaseClient.from('registrations').insert([registrationData]);
+                    if (error) throw new Error(error.message);
+                }
+                
+                // Local backup
+                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                db.push(registrationData);
+                localStorage.setItem('deplomat_db', JSON.stringify(db));
+                
+                // Show success with pending status
+                goToStep(5);
+                const details = document.getElementById('successDetails');
+                details.innerHTML = `
+                    <p style="font-size:2rem;">⏳</p>
+                    <h2 style="font-size:1.6rem;">Registration Submitted</h2>
+                    <p style="color:#FFC53D;">📌 Awaiting Payment Verification</p>
+                    <div class="reg-details">
+                        <p><strong>Event:</strong> ${registrationData.event_name}</p>
+                        <p><strong>Team Leader:</strong> ${leaderName}</p>
+                        <p><strong>College:</strong> ${college}</p>
+                        <p><strong>Status:</strong> <span style="color:#FFC53D;">⏳ Pending</span></p>
+                        <hr/>
+                        <p style="font-size:0.75rem;color:#FFC53D;">
+                            ⏳ Payment proof not uploaded within time limit.<br>
+                            Please contact coordinator with payment proof.<br>
+                            <strong>Pending ID:</strong> ${pendingId}
+                        </p>
+                    </div>
+                `;
+                
+                // Cleanup
+                if (uploadTimer) { clearInterval(uploadTimer); uploadTimer = null; }
+                localStorage.removeItem('pending_registration');
+                localStorage.removeItem('payment_initiated');
+                sessionStorage.removeItem('returning_from_payment');
+                
+                btn.style.display = 'none';
+                isPendingSubmission = false;
+                
+            } catch (error) {
+                alert(`❌ Submission failed: ${error.message}`);
+                btn.disabled = false;
+                btn.innerHTML = '⏳ Submit as Pending (Contact Coordinator)';
+                isPendingSubmission = false;
+            }
+        }
 
         // ─── AUTO-SELECT EVENT ──────────────────────────────────────────
         function autoSelectEventFromURL() {
@@ -2015,7 +2371,6 @@
             if (document.visibilityState === 'visible') {
                 const returning = sessionStorage.getItem('returning_from_payment');
                 if (returning === 'true') {
-                    sessionStorage.removeItem('returning_from_payment');
                     // Check if we're on step 4
                     if (currentStep === 4) {
                         const paid = confirm(
@@ -2026,6 +2381,9 @@
                         );
                         if (!paid) {
                             alert('⏳ No problem! Please complete the payment and upload the screenshot.');
+                        } else {
+                            // Scroll to upload section
+                            document.querySelector('.payment-side').scrollIntoView({ behavior: 'smooth' });
                         }
                     }
                 }
@@ -2056,6 +2414,7 @@
                     }
                 }
                 validateCategoryEventPair();
+                saveRegistrationState();
             });
         });
 
@@ -2106,6 +2465,21 @@
                 showBlockNotice('');
             }
             validateCategoryEventPair();
+            saveRegistrationState();
+        });
+
+        // Auto-save on input
+        document.addEventListener('input', function(e) {
+            if (e.target.closest('.form-step')) {
+                clearTimeout(window._saveTimeout);
+                window._saveTimeout = setTimeout(saveRegistrationState, 500);
+            }
+        });
+
+        document.addEventListener('change', function(e) {
+            if (e.target.closest('.form-step')) {
+                saveRegistrationState();
+            }
         });
 
         step1Next.addEventListener('click', function(e) { e.preventDefault();
@@ -2130,169 +2504,32 @@
         });
 
         // ─── INIT ──────────────────────────────────────────────────────────
-        autoSelectEventFromURL();
-        
-        setTimeout(() => {
-            if (playersContainer.children.length === 0) {
-                for (let i = 0; i < Math.max(1, currentMin); i++) addPlayer(i === 0);
-            }
-            updateEventLimitInfo();
-            updateAddButtonState();
-            validateCategoryEventPair();
-        }, 100);
-
-        setTimeout(() => updateQR(EVENT_FEE), 200);
-        console.log('🔱 DEPLOMAT Registration · Auto-UTR extraction via OCR enabled');
-        console.log('📸 Upload payment screenshot to auto-detect UTR');
-        console.log('☁️ Screenshots will be stored in Google Drive');
-    // ─── TIMER VARIABLES ──────────────────────────────────────────────────
-let uploadTimer = null;
-let uploadTimeRemaining = 1800;
-let isPendingSubmission = false;
-let timerStarted = false; // 30 minutes
-
-// ─── START TIMER ──────────────────────────────────────────────────────
-function startUploadTimer() {
-    
-    // Prevent multiple timers
-    if (timerStarted) return;
-    timerStarted = true;
-    const timerArea = document.getElementById('uploadTimerArea');
-    const timerDisplay = document.getElementById('uploadTimerDisplay');
-    const timerWarning = document.getElementById('timerWarning');
-    const statusBadge = document.getElementById('timerStatusBadge');
-    
-    timerArea.style.display = 'block';
-    uploadTimeRemaining = 1800;
-    
-    if (uploadTimer) clearInterval(uploadTimer);
-    
-    uploadTimer = setInterval(() => {
-        uploadTimeRemaining--;
-        const minutes = Math.floor(uploadTimeRemaining / 60);
-        const seconds = uploadTimeRemaining % 60;
-        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        
-        // Warning at 5 minutes
-        if (uploadTimeRemaining < 300 && uploadTimeRemaining > 0) {
-            timerWarning.style.display = 'block';
-            timerDisplay.style.color = '#ff6b8a';
-            statusBadge.textContent = 'Expiring';
-            statusBadge.style.background = 'rgba(255,42,109,0.08)';
-            statusBadge.style.color = '#ff6b8a';
-        }
-        
-        // Timer expired
-        if (uploadTimeRemaining <= 0) {
-            clearInterval(uploadTimer);
-            uploadTimer = null;
-            timerDisplay.textContent = '00:00';
-            timerDisplay.style.color = '#ff2a6d';
-            statusBadge.textContent = 'Expired';
-            statusBadge.style.background = 'rgba(255,42,109,0.12)';
-            statusBadge.style.color = '#ff2a6d';
-            timerWarning.innerHTML = '⏰ <strong>Time expired!</strong> Submit as Pending or contact coordinator.';
-            timerWarning.style.display = 'block';
+        document.addEventListener('DOMContentLoaded', function() {
+            // First, try to restore state
+            const restored = restoreRegistrationState();
             
-            // Show pending button
-            document.getElementById('submitPendingBtn').style.display = 'block';
-            document.getElementById('dropZone').style.opacity = '0.5';
-            document.getElementById('dropZone').style.pointerEvents = 'none';
-         
-            // Auto-submit as pending
-            if (!isPendingSubmission) {
-                submitPendingRegistration();
+            // If not restored, do normal initialization
+            if (!restored) {
+                autoSelectEventFromURL();
+                
+                // Initialize players
+                setTimeout(() => {
+                    if (playersContainer.children.length === 0) {
+                        for (let i = 0; i < Math.max(1, currentMin); i++) {
+                            addPlayer(i === 0);
+                        }
+                    }
+                    updateEventLimitInfo();
+                    updateAddButtonState();
+                }, 200);
             }
-        }
-    }, 1000);
-}
-// ─── SUBMIT AS PENDING ──────────────────────────────────────────────
-
-
-async function submitPendingRegistration() {
-    if (isPendingSubmission) return;
-    isPendingSubmission = true;
-    
-    const btn = document.getElementById('submitPendingBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Submitting...';
-    
-    try {
-        const leaderName = getLeaderName();
-        const college = collegeInput.value.trim();
-        const total = getTotalAmount();
-        const participants = getParticipantsList();
-        const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
-        const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-        
-        const pendingId = 'PND_' + Date.now().toString(36).toUpperCase();
-        
-        const registrationData = {
-            event_name: selectedEvent ? selectedEvent.name : 'Unknown',
-            event_sub: selectedEvent ? selectedEvent.sub : '',
-            college: college,
-            ug_pu: ugPuValue,
-            team_leader: leaderName,
-            email: participants[0]?.email || '',
-            phone: participants[0]?.phone || '',
-            total_amount: total,
-            txn: pendingId,
-            participants: participants,
-            status: 'PENDING',
-            registered_at: new Date().toISOString(),
-            pending_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-        };
-        
-        // Save to Supabase
-        if (supabaseClient) {
-            const { error } = await supabaseClient.from('registrations').insert([registrationData]);
-            if (error) throw new Error(error.message);
-        }
-        
-        // Local backup
-        const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-        db.push(registrationData);
-        localStorage.setItem('deplomat_db', JSON.stringify(db));
-        
-        // Show success with pending status
-        goToStep(5);
-        const details = document.getElementById('successDetails');
-        details.innerHTML = `
-            <p style="font-size:2rem;">⏳</p>
-            <h2 style="font-size:1.6rem;">Registration Submitted</h2>
-            <p style="color:#FFC53D;">📌 Awaiting Payment Verification</p>
-            <div class="reg-details">
-                <p><strong>Event:</strong> ${registrationData.event_name}</p>
-                <p><strong>Team Leader:</strong> ${leaderName}</p>
-                <p><strong>College:</strong> ${college}</p>
-                <p><strong>Status:</strong> <span style="color:#FFC53D;">⏳ Pending</span></p>
-                <hr/>
-                <p style="font-size:0.75rem;color:#FFC53D;">
-                    ⏳ Payment proof not uploaded within time limit.<br>
-                    Please contact coordinator with payment proof.<br>
-                    <strong>Pending ID:</strong> ${pendingId}
-                </p>
-            </div>
-        `;
-        
-        // Cleanup
-        if (uploadTimer) { clearInterval(uploadTimer); uploadTimer = null; }
-        localStorage.removeItem('pending_registration');
-        sessionStorage.removeItem('returning_from_payment');
-
-         // Reset UI
-        btn.style.display = 'none';
-        isPendingSubmission = false;
-        
-        
-    } catch (error) {
-        alert(`❌ Submission failed: ${error.message}`);
-        btn.disabled = false;
-        btn.innerHTML = '⏳ Submit as Pending (Contact Coordinator)';
-        isPendingSubmission = false;
-    }
-}
-     
+            
+            setTimeout(() => updateQR(EVENT_FEE), 200);
+            console.log('🔱 DEPLOMAT Registration · Auto-UTR extraction via OCR enabled');
+            console.log('📸 Upload payment screenshot to auto-detect UTR');
+            console.log('☁️ Screenshots will be stored in Google Drive');
+            console.log('💾 State persistence enabled - your data is safe!');
+        });
     </script>
 </body>
 </html>
