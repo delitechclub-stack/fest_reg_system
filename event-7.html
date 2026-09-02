@@ -47,16 +47,6 @@
       border-color: rgba(255, 200, 100, 0.12);
     }
 
-    .space-y-6>*+* {
-      margin-top: 2rem;
-    }
-    .space-y-4>*+* {
-      margin-top: 1.2rem;
-    }
-    .space-y-3>*+* {
-      margin-top: 0.9rem;
-    }
-
     .flex-row {
       display: flex;
       flex-wrap: wrap;
@@ -83,6 +73,7 @@
       text-transform: uppercase;
       color: #facc7a;
       backdrop-filter: blur(2px);
+      width: fit-content;
     }
 
     h1 {
@@ -121,50 +112,6 @@
       border: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .pill-primary {
-      background: linear-gradient(145deg, #f5a623, #d4891b);
-      border: none;
-      color: #0a0f1e;
-      font-weight: 700;
-      padding: 0.75rem 2rem;
-      border-radius: 60px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      transition: all 0.2s;
-      box-shadow: 0 8px 24px -6px rgba(245, 166, 35, 0.25);
-      font-size: 0.95rem;
-    }
-
-    .pill-primary:hover {
-      transform: scale(1.02);
-      box-shadow: 0 12px 32px -6px #f5a623aa;
-      background: linear-gradient(145deg, #ffb841, #e09520);
-    }
-
-    .visual-placeholder {
-      background: rgba(255, 255, 255, 0.015);
-      border-radius: 2rem;
-      padding: 2.8rem 1.5rem;
-      text-align: center;
-      border: 1px dashed rgba(255, 200, 100, 0.12);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      color: #8a7a60;
-    }
-
-    .visual-placeholder .big-icon {
-      font-size: 2.8rem;
-      opacity: 0.4;
-    }
-    .visual-placeholder small {
-      font-size: 0.75rem;
-      color: #5a4e3c;
-    }
-
     .divider-light {
       width: 100%;
       height: 1px;
@@ -174,9 +121,9 @@
 
     .rules-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 0.6rem;
-      margin-top: 0.2rem;
+      margin-top: 0.8rem;
     }
 
     .rule-item {
@@ -188,8 +135,8 @@
       border-radius: 60px;
       border: 1px solid rgba(255, 255, 255, 0.03);
       transition: all 0.15s;
-      font-size: 0.95rem;
-      line-height: 1.4;
+      font-size: 0.9rem;
+      line-height: 1.5;
       color: #ece0cc;
     }
 
@@ -205,11 +152,12 @@
       min-width: 1.8rem;
       font-size: 0.8rem;
       opacity: 0.7;
+      flex-shrink: 0;
     }
 
     .grid-2col {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin: 1.8rem 0 0.4rem 0;
     }
@@ -228,6 +176,7 @@
       text-decoration: none;
       backdrop-filter: blur(4px);
       font-size: 0.95rem;
+      white-space: nowrap;
     }
 
     .action-btn:hover {
@@ -240,6 +189,7 @@
     .action-btn .icon {
       font-size: 1.2rem;
       opacity: 0.7;
+      flex-shrink: 0;
     }
 
     .back-home {
@@ -266,12 +216,42 @@
       font-weight: 600;
       letter-spacing: 0.02em;
       color: #e8dcc8;
+      margin-bottom: 0.8rem;
     }
 
-    .section-head span {
+    .section-head .line {
       flex: 1;
       height: 1px;
       background: linear-gradient(90deg, rgba(255, 200, 100, 0.15), transparent);
+    }
+
+    .about-box {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border-left: 3px solid #facc7a;
+      background: rgba(255, 255, 255, 0.01);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .about-box p {
+      color: #d4c8b0;
+      line-height: 1.7;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .about-box strong {
+      color: #fff;
+    }
+
+    .section-spacer {
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .rules-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 640px) {
@@ -293,14 +273,20 @@
       .grid-2col {
         grid-template-columns: 1fr;
       }
+      .action-btn {
+        white-space: normal;
+      }
+      .about-box {
+        padding: 0.8rem 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="event-wrapper">
-    <div class="glass-card space-y-6">
+    <div class="glass-card">
 
-      <!-- header -->
+      <!-- HEADER - Submit Video button removed -->
       <div class="flex-row">
         <div class="flex-col">
           <span class="tag">💃 DEPLOMAT · GROUP DANCE</span>
@@ -310,34 +296,25 @@
             <span class="chip">5–12 members · ≤7 min</span>
           </div>
         </div>
-        <div>
-          <a href="#" class="pill-primary">🎥 Submit Video</a>
+        <!-- Submit Video button removed -->
+      </div>
+
+      <!-- ABOUT EVENT -->
+      <div class="section-spacer">
+        <div class="section-head">
+          <span>📄 About Event</span>
+          <span class="line"></span>
+        </div>
+        <div class="about-box">
+          <p><strong>Tides of Rhythm</strong> — a group dance competition where sync and energy take center stage. With 5–12 members per team, showcase your chemistry and creativity across any dance form. Let the rhythm of the ocean guide your moves and captivate the audience.</p>
         </div>
       </div>
 
-      <!-- visual placeholder -->
-      <div class="visual-placeholder">
-        <span class="big-icon">🩰</span>
-        <span>Event visuals — carousel · video · poster</span>
-        <small>(teaser &amp; highlights will appear here)</small>
-      </div>
-
-      <!-- about -->
-      <div class="space-y-3">
+      <!-- RULES -->
+      <div class="section-spacer">
         <div class="section-head">
-          <span>📄 About Event</span><span></span>
-        </div>
-        <p style="color: #d4c8b0; line-height: 1.6; padding-left: 0.5rem; border-left: 3px solid #facc7a; padding-left: 1.2rem;">
-          <strong>Tides of Rhythm</strong> — a group dance competition where sync and energy take center stage. 
-          With 5–12 members per team, showcase your chemistry and creativity across any dance form. 
-          Let the rhythm of the ocean guide your moves and captivate the audience.
-        </p>
-      </div>
-
-      <!-- rules -->
-      <div class="space-y-3">
-        <div class="section-head">
-          <span>📋 Rules &amp; Regulations</span><span></span>
+          <span>📋 Rules &amp; Regulations</span>
+          <span class="line"></span>
         </div>
 
         <div class="rules-grid">
@@ -354,25 +331,28 @@
         </div>
       </div>
 
-      <!-- secondary visual -->
-      <div class="visual-placeholder" style="padding: 1.8rem 1.5rem;">
-        <span class="big-icon">🎬</span>
-        <span>Additional visuals · highlights &amp; teaser</span>
-        <small>coming soon</small>
+      <!-- ACTION BUTTONS - Watch Promo removed -->
+      <div class="section-spacer">
+        <div class="grid-2col">
+          <a href="registration.html?event=7" class="action-btn">
+            <span class="icon">📝</span> Register
+          </a>
+          <a href="co.html?event=7" class="action-btn">
+            <span class="icon">📞</span> Connect Coordinator
+          </a>
+          <a href="reg-status.html" class="action-btn">
+            <span class="icon">📊</span> Check Registration
+          </a>
+          <!-- Watch Promo button removed -->
+        </div>
       </div>
 
-      <!-- action grid -->
-      <div class="grid-2col">
-        <a href="registration.html?event=7" class="action-btn"><span class="icon">📝</span> Register</a>
-        <a href="co.html?event=7" class="action-btn"><span class="icon">📞</span> Connect Coordinator</a>
-        <a href="reg-status.html" class="action-btn"><span class="icon">📊</span> Check Registration</a>
-        <a href="#" class="action-btn"><span class="icon">▶️</span> Watch Promo</a>
-      </div>
-
+      <!-- DIVIDER & BACK -->
       <div class="divider-light"></div>
       <div style="display: flex; justify-content: flex-start;">
-        <a href="index.html" class="back-home">← Back to Home</a>
+        <a href="index.html#explore" class="back-home">← Back to Explore</a>
       </div>
+
     </div>
   </div>
 </body>

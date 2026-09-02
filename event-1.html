@@ -237,49 +237,40 @@
       background: linear-gradient(135deg, #2f8aff, #0070f0);
     }
 
-    .visual-placeholder {
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 2rem;
-      padding: 2.5rem 1.5rem;
-      text-align: center;
-      border: 1px dashed rgba(100, 210, 255, 0.15);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.6rem;
-      color: #7a9bc7;
+    /* ----- hidden / removed elements ----- */
+    .hidden-remove {
+      display: none !important;
     }
 
-    .visual-placeholder .big-icon {
-      font-size: 2.6rem;
-      opacity: 0.5;
+    /* about event full width */
+    .about-full {
+      padding-left: 0.5rem;
+      border-left: 3px solid #64d8ff;
+      padding-left: 1.2rem;
+      width: 100%;
     }
-
-    .visual-placeholder small {
-      font-size: 0.8rem;
-      color: #4a6b92;
+    .about-full p {
+      color: #c6dbf5;
+      line-height: 1.6;
+      width: 100%;
     }
 
     @media (max-width: 640px) {
       body {
         padding: 0.8rem;
       }
-
       .glass-card {
         padding: 1.8rem 1.2rem;
         border-radius: 2rem;
       }
-
       .flex-row {
         flex-direction: column;
         align-items: flex-start;
       }
-
       .rule-item {
         border-radius: 20px;
         padding: 0.7rem 1rem;
       }
-
       .grid-2col {
         grid-template-columns: 1fr;
       }
@@ -292,84 +283,61 @@
     <!-- main card -->
     <div class="glass-card space-y-6">
 
-      <!-- header row -->
+      <!-- header row: removed "Submit Video" button -->
       <div class="flex-row">
         <div class="flex-col">
           <span class="tag">⚡ DEPLOMAT · event</span>
           <h1>THE LOST<br>RELIC</h1>
           <div class="subhead">📍 treasure hunt · 2 per team</div>
         </div>
-        <div>
-          <a href="#" class="pill-primary">🎥 Submit Video</a>
-        </div>
+        <!-- Submit Video button removed -->
       </div>
 
-      <!-- visual placeholder -->
-      <div class="visual-placeholder">
-        <span class="big-icon">🖼️</span>
-        <span>Event visuals — carousel · video · poster</span>
-        <small>(teaser highlights will appear here)</small>
-      </div>
+      <!-- visual placeholder removed (the square with "Event visuals — carousel · video · poster") -->
 
-      <!-- about + rules -->
+      <!-- about + rules: about event now full width -->
       <div class="space-y-4">
         <div style="display: flex; align-items: center; gap: 0.8rem;">
           <span style="font-weight: 600; letter-spacing: 0.02em;">📄 About Event</span>
-          <span
-            style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
+          <span style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
         </div>
-        <p
-          style="color: #c6dbf5; line-height: 1.6; padding-left: 0.5rem; border-left: 3px solid #64d8ff; padding-left: 1.2rem;">
-          <strong>The Lost Relic</strong> — a thrilling treasure hunt across the campus. Teams of two will decipher
-          cryptic clues, solve puzzles, and race against time to uncover the hidden relic. Stay sharp, work together,
-          and claim the glory.
-        </p>
+        <div class="about-full">
+          <p><strong>The Lost Relic</strong> — a thrilling treasure hunt across the campus. Teams of two will decipher cryptic clues, solve puzzles, and race against time to uncover the hidden relic. Stay sharp, work together, and claim the glory.</p>
+        </div>
       </div>
 
-      <!-- rules section (updated) -->
+      <!-- rules section (unchanged) -->
       <div class="space-y-3">
         <div style="display: flex; align-items: center; gap: 0.8rem;">
           <span style="font-weight: 600; letter-spacing: 0.02em;">📋 Rules &amp; Regulations</span>
-          <span
-            style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
+          <span style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
         </div>
 
         <div class="rules-grid">
-          <div class="rule-item"><span class="num">❶</span> Teams must follow the clues in the given order. Skipping any
-            clue is not permitted.</div>
-          <div class="rule-item"><span class="num">❷</span> Mobile phones and other electronic devices are strictly
-            prohibited during the event.</div>
-          <div class="rule-item"><span class="num">❸</span> Participants must not tamper with, hide, or interfere with
-            clues intended for other teams.</div>
-          <div class="rule-item"><span class="num">❹</span> Entry into restricted or unauthorized areas is strictly
-            prohibited.</div>
-          <div class="rule-item"><span class="num">❺</span> Cheating, unfair practices, or any damage to college
-            property will result in immediate disqualification.</div>
-          <div class="rule-item"><span class="num">❻</span> All participants must strictly adhere to the instructions
-            given by the event coordinators. The decision of the event coordinators shall be final and binding.</div>
+          <div class="rule-item"><span class="num">❶</span> Teams must follow the clues in the given order. Skipping any clue is not permitted.</div>
+          <div class="rule-item"><span class="num">❷</span> Mobile phones and other electronic devices are strictly prohibited during the event.</div>
+          <div class="rule-item"><span class="num">❸</span> Participants must not tamper with, hide, or interfere with clues intended for other teams.</div>
+          <div class="rule-item"><span class="num">❹</span> Entry into restricted or unauthorized areas is strictly prohibited.</div>
+          <div class="rule-item"><span class="num">❺</span> Cheating, unfair practices, or any damage to college property will result in immediate disqualification.</div>
+          <div class="rule-item"><span class="num">❻</span> All participants must strictly adhere to the instructions given by the event coordinators. The decision of the event coordinators shall be final and binding.</div>
         </div>
       </div>
 
-      <!-- extra visual (secondary) -->
-      <div class="visual-placeholder" style="padding: 1.5rem; margin-top: 0.4rem;">
-        <span class="big-icon">🎬</span>
-        <span>Additional visuals · highlights &amp; teaser</span>
-        <small>coming soon</small>
-      </div>
+      <!-- extra visual removed (the second square "Additional visuals · highlights & teaser") -->
 
-      <!-- action grid -->
+      <!-- action grid: removed "Watch Promo" button -->
       <div class="grid-2col">
         <a href="registration.html?event=1" class="action-btn">
           <span class="icon">📝</span> Register</a>
         <a href="co.html?event=1" class="action-btn"><span class="icon">📞</span> Connect Coordinator</a>
         <a href="reg-status.html" class="action-btn"><span class="icon">📊</span> Check Registration</a>
-        <a href="#" class="action-btn"><span class="icon">▶️</span> Watch Promo</a>
+        <!-- "Watch Promo" button removed -->
       </div>
 
-      <!-- divider & back -->
+      <!-- divider & back: now links to index.html (explore area) -->
       <div class="divider"></div>
       <div style="display: flex; justify-content: flex-start;">
-        <a href="index.html" class="back-home">← Back to Home</a>
+        <a href="index.html#explore" class="back-home">← Back to Explore</a>
       </div>
     </div>
   </div>

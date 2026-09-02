@@ -47,16 +47,6 @@
       border-color: rgba(100, 255, 200, 0.12);
     }
 
-    .space-y-6>*+* {
-      margin-top: 2rem;
-    }
-    .space-y-4>*+* {
-      margin-top: 1.2rem;
-    }
-    .space-y-3>*+* {
-      margin-top: 0.9rem;
-    }
-
     .flex-row {
       display: flex;
       flex-wrap: wrap;
@@ -83,6 +73,7 @@
       text-transform: uppercase;
       color: #80ffcc;
       backdrop-filter: blur(2px);
+      width: fit-content;
     }
 
     h1 {
@@ -134,50 +125,6 @@
       font-weight: 600;
     }
 
-    .pill-primary {
-      background: linear-gradient(145deg, #00cc88, #009966);
-      border: none;
-      color: #0a0f1e;
-      font-weight: 700;
-      padding: 0.75rem 2rem;
-      border-radius: 60px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      transition: all 0.2s;
-      box-shadow: 0 8px 24px -6px rgba(0, 200, 120, 0.25);
-      font-size: 0.95rem;
-    }
-
-    .pill-primary:hover {
-      transform: scale(1.02);
-      box-shadow: 0 12px 32px -6px #00cc88aa;
-      background: linear-gradient(145deg, #00dd99, #00aa77);
-    }
-
-    .visual-placeholder {
-      background: rgba(255, 255, 255, 0.015);
-      border-radius: 2rem;
-      padding: 2.8rem 1.5rem;
-      text-align: center;
-      border: 1px dashed rgba(100, 255, 200, 0.12);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      color: #6aaa8a;
-    }
-
-    .visual-placeholder .big-icon {
-      font-size: 2.8rem;
-      opacity: 0.4;
-    }
-    .visual-placeholder small {
-      font-size: 0.75rem;
-      color: #4a7a62;
-    }
-
     .divider-light {
       width: 100%;
       height: 1px;
@@ -187,22 +134,22 @@
 
     .rules-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
-      margin-top: 0.2rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
     }
 
     .rule-item {
       display: flex;
       align-items: flex-start;
       gap: 0.9rem;
-      padding: 0.5rem 1rem 0.5rem 1.2rem;
+      padding: 0.6rem 1rem 0.6rem 1.2rem;
       background: rgba(255, 255, 255, 0.015);
       border-radius: 60px;
       border: 1px solid rgba(255, 255, 255, 0.03);
       transition: all 0.15s;
-      font-size: 0.92rem;
-      line-height: 1.4;
+      font-size: 0.9rem;
+      line-height: 1.5;
       color: #e0f5ec;
     }
 
@@ -218,6 +165,7 @@
       min-width: 1.8rem;
       font-size: 0.8rem;
       opacity: 0.7;
+      flex-shrink: 0;
     }
 
     .rule-item .highlight {
@@ -227,7 +175,7 @@
 
     .grid-2col {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin: 1.8rem 0 0.4rem 0;
     }
@@ -246,6 +194,7 @@
       text-decoration: none;
       backdrop-filter: blur(4px);
       font-size: 0.95rem;
+      white-space: nowrap;
     }
 
     .action-btn:hover {
@@ -258,6 +207,12 @@
     .action-btn .icon {
       font-size: 1.2rem;
       opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    .action-btn.download-btn {
+      border-color: rgba(255, 215, 0, 0.2);
+      background: rgba(255, 215, 0, 0.05);
     }
 
     .back-home {
@@ -284,12 +239,58 @@
       font-weight: 600;
       letter-spacing: 0.02em;
       color: #e0f5ec;
+      margin-bottom: 0.8rem;
     }
 
-    .section-head span {
+    .section-head .line {
       flex: 1;
       height: 1px;
       background: linear-gradient(90deg, rgba(100, 255, 200, 0.15), transparent);
+    }
+
+    .about-box {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border-left: 3px solid #80ffcc;
+      background: rgba(255, 255, 255, 0.01);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .about-box p {
+      color: #d4f0e4;
+      line-height: 1.7;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .about-box strong {
+      color: #fff;
+    }
+
+    .section-spacer {
+      margin-top: 2rem;
+    }
+
+    .rule-item.condition-item {
+      border-radius: 20px;
+      padding: 0.8rem 1.2rem;
+    }
+
+    .rule-item.note-item {
+      border-color: rgba(255, 215, 0, 0.15);
+      background: rgba(255, 215, 0, 0.03);
+    }
+
+    .rule-item.note-item .note-icon {
+      color: #ffd700;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .rules-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 640px) {
@@ -311,14 +312,20 @@
       .grid-2col {
         grid-template-columns: 1fr;
       }
+      .action-btn {
+        white-space: normal;
+      }
+      .about-box {
+        padding: 0.8rem 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="event-wrapper">
-    <div class="glass-card space-y-6">
+    <div class="glass-card">
 
-      <!-- header -->
+      <!-- HEADER - Submit Video button removed -->
       <div class="flex-row">
         <div class="flex-col">
           <span class="tag">🏏 DEPLOMAT · CRICKET (PU & UG BOYS)</span>
@@ -329,34 +336,25 @@
             <span class="fee-badge">💰 ₹1,999 entry</span>
           </div>
         </div>
-        <div>
-          <a href="#" class="pill-primary">🎥 Submit Video</a>
+        <!-- Submit Video button removed -->
+      </div>
+
+      <!-- ABOUT EVENT -->
+      <div class="section-spacer">
+        <div class="section-head">
+          <span>📄 About Event</span>
+          <span class="line"></span>
+        </div>
+        <div class="about-box">
+          <p><strong>The Kraken's Pitch</strong> — a thrilling box-cricket tournament for PU &amp; UG Boys. Teams of 7+3 players will battle it out in a fast-paced format. Show your batting, bowling, and fielding skills to claim the crown in this high-energy competition.</p>
         </div>
       </div>
 
-      <!-- visual placeholder -->
-      <div class="visual-placeholder">
-        <span class="big-icon">🏏</span>
-        <span>Event visuals — carousel · video · poster</span>
-        <small>(teaser &amp; highlights will appear here)</small>
-      </div>
-
-      <!-- about -->
-      <div class="space-y-3">
+      <!-- RULES -->
+      <div class="section-spacer">
         <div class="section-head">
-          <span>📄 About Event</span><span></span>
-        </div>
-        <p style="color: #d4f0e4; line-height: 1.6; padding-left: 0.5rem; border-left: 3px solid #80ffcc; padding-left: 1.2rem;">
-          <strong>The Kraken's Pitch</strong> — a thrilling box-cricket tournament for PU &amp; UG Boys. 
-          Teams of 7+3 players will battle it out in a fast-paced format. Show your batting, bowling, and fielding skills 
-          to claim the crown in this high-energy competition.
-        </p>
-      </div>
-
-      <!-- rules -->
-      <div class="space-y-3">
-        <div class="section-head">
-          <span>📋 Rules &amp; Regulations</span><span></span>
+          <span>📋 Rules &amp; Regulations</span>
+          <span class="line"></span>
         </div>
 
         <div class="rules-grid">
@@ -372,61 +370,65 @@
         </div>
       </div>
 
-      <!-- general conditions -->
-      <div class="space-y-3">
+      <!-- GENERAL CONDITIONS -->
+      <div class="section-spacer">
         <div class="section-head">
-          <span>📋 General Tournament Conditions</span><span></span>
+          <span>📋 General Tournament Conditions</span>
+          <span class="line"></span>
         </div>
         <div class="rules-grid">
-          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+          <div class="rule-item condition-item">
             <span style="color:#80ffcc; font-weight:500;">📌</span>
             The Cricket Tournament Committee may modify the schedule, playing conditions, or match arrangements due to venue, weather, safety, or administrative reasons.
           </div>
-          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+          <div class="rule-item condition-item">
             <span style="color:#80ffcc; font-weight:500;">📌</span>
             All teams must cooperate with Organizing Committee, referees, volunteers, and venue authorities, maintaining proper discipline and sportsmanship.
           </div>
-          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+          <div class="rule-item condition-item">
             <span style="color:#80ffcc; font-weight:500;">📌</span>
             <strong>Document Verification:</strong> Every college must produce required documents, valid college ID cards, and documents signed by Principal. Failure results in disqualification. Registration fee is non-refundable.
           </div>
-          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+          <div class="rule-item condition-item">
             <span style="color:#80ffcc; font-weight:500;">📌</span>
             Teams must report to venue on time as per schedule. Late entry may result in disqualification or walkover. Registration fee is non-refundable.
           </div>
-          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem;">
+          <div class="rule-item condition-item">
             <span style="color:#80ffcc; font-weight:500;">📌</span>
             If the fest is extended to a second or subsequent day, the college will provide accommodation only. Food, refreshments, and other personal expenses must be arranged by teams.
           </div>
-          <div class="rule-item" style="border-radius:20px; padding:0.8rem 1.2rem; border-color:rgba(255,215,0,0.15); background:rgba(255,215,0,0.03);">
-            <span style="color:#ffd700; font-weight:500;">⚠️</span>
+          <div class="rule-item condition-item note-item">
+            <span class="note-icon">⚠️</span>
             <strong style="color:#ffd700;">NOTE:</strong> In case of any unforeseen circumstances or conflicts, the Organizing Committee reserves the right to modify or amend the rules accordingly.
           </div>
         </div>
       </div>
 
-      <!-- secondary visual -->
-      <div class="visual-placeholder" style="padding: 1.8rem 1.5rem;">
-        <span class="big-icon">🎬</span>
-        <span>Additional visuals · highlights &amp; teaser</span>
-        <small>coming soon</small>
+      <!-- ACTION BUTTONS - Watch Promo removed -->
+      <div class="section-spacer">
+        <div class="grid-2col">
+          <a href="https://drive.google.com/file/d/14Xl3evDhY-LlWgIhFNAF8EMVrcUuW-89/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="action-btn download-btn">
+            <span class="icon">⬇️</span> Download Form
+          </a>
+          <a href="registration.html?event=9" class="action-btn">
+            <span class="icon">📝</span> Register
+          </a>
+          <a href="co.html?event=9" class="action-btn">
+            <span class="icon">📞</span> Connect Coordinator
+          </a>
+          <a href="reg-status.html" class="action-btn">
+            <span class="icon">📊</span> Check Registration
+          </a>
+          <!-- Watch Promo button removed -->
+        </div>
       </div>
 
-      <!-- action grid -->
-      <div class="grid-2col">
-        <a href="https://drive.google.com/file/d/14Xl3evDhY-LlWgIhFNAF8EMVrcUuW-89/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="action-btn" style="border-color:rgba(255,215,0,0.2); background:rgba(255,215,0,0.05);">
-          <span class="icon">⬇️</span> Download Form
-        </a>
-        <a href="registration.html?event=9" class="action-btn"><span class="icon">📝</span> Register</a>
-        <a href="co.html?event=9" class="action-btn"><span class="icon">📞</span> Connect Coordinator</a>
-        <a href="reg-status.html" class="action-btn"><span class="icon">📊</span> Check Registration</a>
-        <a href="#" class="action-btn"><span class="icon">▶️</span> Watch Promo</a>
-      </div>
-
+      <!-- DIVIDER & BACK -->
       <div class="divider-light"></div>
       <div style="display: flex; justify-content: flex-start;">
-        <a href="index.html" class="back-home">← Back to Home</a>
+        <a href="index.html#explore" class="back-home">← Back to Explore</a>
       </div>
+
     </div>
   </div>
 </body>

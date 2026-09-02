@@ -1,530 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ATLANTEAN TRIALS · DEPLOMAT</title>
-    <style>
-        :root {
-            color-scheme: dark;
-            --bg: #050911;
-            --panel: rgba(8, 16, 30, 0.85);
-            --line: rgba(255, 255, 255, 0.08);
-            --text: #f0f4fa;
-            --muted: #94a9bf;
-            --accent: #5fd9ff;
-            --accent2: #a78bfa;
-            --soft: rgba(95, 217, 255, 0.08);
-            --glow: rgba(95, 217, 255, 0.15);
-            --card-bg: rgba(255, 255, 255, 0.03);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE ATLANTEAN TRIALS · DEPLOMAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Inter','Segoe UI','Helvetica Neue',sans-serif;
+      background: #050911;
+      color: #f0f4fa;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(95, 217, 255, 0.12), transparent 50%),
+        radial-gradient(ellipse at 85% 80%, rgba(167, 139, 250, 0.10), transparent 50%),
+        #050911;
+    }
+    :root {
+      --bg: #050911;
+      --panel: rgba(8, 16, 30, 0.85);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f0f4fa;
+      --muted: #94a9bf;
+      --accent: #5fd9ff;
+      --accent2: #a78bfa;
+      --soft: rgba(95, 217, 255, 0.08);
+      --glow: rgba(95, 217, 255, 0.15);
+      --card-bg: rgba(255, 255, 255, 0.03);
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-            background:
-                radial-gradient(ellipse at 15% 20%, rgba(95, 217, 255, 0.12), transparent 50%),
-                radial-gradient(ellipse at 85% 80%, rgba(167, 139, 250, 0.10), transparent 50%),
-                #050911;
-            color: var(--text);
-            font-family: "Inter", "Segoe UI", "Helvetica Neue", system-ui, -apple-system, sans-serif;
-        }
-
-        body::before {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background-image:
-                radial-gradient(circle at 30% 50%, rgba(95, 217, 255, 0.03) 0%, transparent 60%),
-                radial-gradient(circle at 70% 50%, rgba(167, 139, 250, 0.03) 0%, transparent 60%);
-            content: "";
-        }
-
-        .event-shell {
-            width: min(100%, 1000px);
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .scroll-panel {
-            padding: clamp(28px, 4vw, 50px);
-            border: 1px solid var(--line);
-            border-radius: 28px;
-            background: var(--panel);
-            backdrop-filter: blur(24px);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: border-color 0.3s ease;
-        }
-
-        .scroll-panel:hover {
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 8px;
-        }
-
-        .eyebrow {
-            color: var(--accent);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-
-        .event-header {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        .title-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        h1 {
-            font-size: clamp(2.6rem, 8vw, 5.2rem);
-            font-weight: 800;
-            line-height: 0.96;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            margin-top: 12px;
-            color: var(--accent);
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            opacity: 0.9;
-        }
-
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            min-height: 46px;
-            padding: 10px 22px;
-            border: 1px solid rgba(95, 217, 255, 0.3);
-            border-radius: 100px;
-            background: var(--soft);
-            color: var(--text);
-            font-size: 0.82rem;
-            font-weight: 600;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: all 0.25s ease;
-            flex-shrink: 0;
-        }
-
-        .pill:hover {
-            border-color: var(--accent);
-            background: rgba(95, 217, 255, 0.18);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(95, 217, 255, 0.15);
-        }
-
-        .hero-visual {
-            min-height: 200px;
-            margin: 32px 0 28px;
-            display: grid;
-            place-content: center;
-            justify-items: center;
-            gap: 10px;
-            border-radius: 16px;
-            background: radial-gradient(ellipse at center, rgba(95, 217, 255, 0.06), transparent 70%);
-            border: 1px dashed rgba(95, 217, 255, 0.2);
-            color: var(--muted);
-            text-align: center;
-            padding: 30px 20px;
-        }
-
-        .hero-visual .icon {
-            font-size: 3rem;
-            opacity: 0.6;
-        }
-
-        .hero-visual .hint {
-            color: #5a6f84;
-            font-size: 0.78rem;
-            letter-spacing: 0.05em;
-        }
-
-        .section-label {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .section-label::after {
-            height: 1px;
-            flex: 1;
-            background: linear-gradient(to right, var(--line), transparent);
-            content: "";
-        }
-
-        .about-copy {
-            padding-left: 18px;
-            border-left: 3px solid var(--accent);
-            color: var(--muted);
-            line-height: 1.8;
-            font-size: 1rem;
-        }
-
-        .about-copy strong {
-            color: var(--text);
-        }
-
-        .scroll-cue {
-            margin-top: 36px;
-            color: var(--accent);
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
-            text-align: center;
-            text-transform: uppercase;
-            opacity: 0.6;
-        }
-
-        .scroll-cue span {
-            display: block;
-            margin-top: 4px;
-            animation: bounce 1.6s ease-in-out infinite;
-            font-size: 1.2rem;
-        }
-
-        .rules-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 16px 0 0;
-        }
-
-        .rule-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            transition: background 0.2s ease;
-        }
-
-        .rule-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .rule-item .num {
-            flex-shrink: 0;
-            width: 24px;
-            height: 24px;
-            display: grid;
-            place-items: center;
-            border-radius: 50%;
-            background: var(--soft);
-            color: var(--accent);
-            font-size: 0.7rem;
-            font-weight: 700;
-        }
-
-        .rule-item .text {
-            color: var(--muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .rule-item .text strong {
-            color: var(--text);
-        }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: 28px 0 20px;
-        }
-
-        .action-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 4px;
-            min-height: 80px;
-            padding: 16px 20px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: var(--card-bg);
-            color: var(--text);
-            text-decoration: none;
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(95, 217, 255, 0.04), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .action-card:hover::before {
-            opacity: 1;
-        }
-
-        .action-card:hover {
-            border-color: rgba(95, 217, 255, 0.25);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .action-card strong {
-            font-size: 0.95rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .action-card span {
-            color: var(--muted);
-            font-size: 0.78rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-wrap {
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 22px;
-            border-radius: 100px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--muted);
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.25s ease;
-        }
-
-        .back-link:hover {
-            border-color: var(--accent);
-            color: var(--text);
-            background: var(--soft);
-            transform: translateY(-2px);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 100px;
-            background: var(--soft);
-            color: var(--accent);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            border: 1px solid rgba(95, 217, 255, 0.15);
-        }
-
-        @keyframes bounce {
-            50% {
-                transform: translateY(5px);
-            }
-        }
-
-        @media (max-width: 640px) {
-            body {
-                padding: 12px;
-            }
-
-            .scroll-panel {
-                padding: 20px 16px;
-                border-radius: 20px;
-            }
-
-            .event-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 16px;
-            }
-
-            .pill {
-                align-self: flex-start;
-            }
-
-            .hero-visual {
-                min-height: 150px;
-                margin: 20px 0;
-            }
-
-            .rules-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .action-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .rule-item {
-                padding: 10px 14px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .scroll-cue span {
-                animation: none;
-            }
-            .pill,
-            .action-card,
-            .back-link {
-                transition: none;
-            }
-        }
-    </style>
+    .event-shell {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .scroll-panel {
+      padding: clamp(28px, 4vw, 50px);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+      transition: border-color 0.3s ease;
+    }
+    .scroll-panel:hover {
+      border-color: rgba(255,255,255,0.12);
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 100px;
+      background: var(--soft);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(95, 217, 255, 0.15);
+    }
+    .event-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .title-group { flex: 1; min-width: 200px; }
+    h1 {
+      font-size: clamp(2.6rem, 8vw, 5.2rem);
+      font-weight: 800;
+      line-height: 0.96;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      margin-top: 12px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+    /* ─── ABOUT ───────────────────────────────────────── */
+    .about-copy {
+      padding-left: 18px;
+      border-left: 3px solid var(--accent);
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 1rem;
+      margin-top: 6px;
+    }
+    .about-copy strong {
+      color: var(--text);
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 18px 0 16px;
+    }
+    .section-label::after {
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(to right, var(--line), transparent);
+      content: "";
+    }
+    /* ─── RULES GRID ──────────────────────────────────── */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0 0;
+    }
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.2s ease;
+    }
+    .rule-item:hover { background: rgba(255,255,255,0.04); }
+    .rule-item .num {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--soft);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .rule-item .text {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .rule-item .text strong { color: var(--text); }
+    /* ─── ACTION GRID ─────────────────────────────────── */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 28px 0 20px;
+    }
+    .action-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      min-height: 80px;
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: var(--card-bg);
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(95,217,255,0.04), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .action-card:hover::before { opacity: 1; }
+    .action-card:hover {
+      border-color: rgba(95,217,255,0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .action-card strong { font-size: 0.95rem; position: relative; z-index: 1; }
+    .action-card span { color: var(--muted); font-size: 0.78rem; position: relative; z-index: 1; }
+    /* ─── BACK LINK ───────────────────────────────────── */
+    .back-wrap {
+      text-align: center;
+      margin-top: 8px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      background: transparent;
+    }
+    .back-link:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      background: var(--soft);
+      transform: translateY(-2px);
+    }
+    /* ─── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 640px) {
+      .event-shell { padding: 12px; }
+      .scroll-panel { padding: 20px 16px; border-radius: 20px; }
+      .event-header { flex-direction: column; align-items: stretch; gap: 16px; }
+      .rules-grid { grid-template-columns: 1fr; }
+      .action-grid { grid-template-columns: 1fr; }
+      .rule-item { padding: 10px 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .action-card, .back-link { transition: none; }
+    }
+  </style>
 </head>
-
 <body>
-    <main class="event-shell">
-        <!-- Panel 1: Hero -->
-        <section class="scroll-panel">
-            <div class="panel-header">
-                <span class="eyebrow">⚡ DEPLOMAT · Event Details</span>
-                <span class="badge">🏆 3 per team</span>
-            </div>
+  <main class="event-shell">
+    <!-- Panel 1: Hero (without submit button & hero visual) -->
+    <section class="scroll-panel">
+      <div class="panel-header">
+        <span class="eyebrow">⚡ DEPLOMAT · Event Details</span>
+        <span class="badge">🏆 3 per team</span>
+      </div>
 
-            <header class="event-header">
-                <div class="title-group">
-                    <h1>THE ATLANTEAN TRIALS</h1>
-                    <p class="subtitle">.escape room · teamwork &amp; logic</p>
-                </div>
-                <a class="pill" href="#">🎥 Submit Video</a>
-            </header>
+      <header class="event-header">
+        <div class="title-group">
+          <h1>THE ATLANTEAN TRIALS</h1>
+          <p class="subtitle">.escape room · teamwork &amp; logic</p>
+        </div>
+        <!-- Submit Video button removed -->
+      </header>
 
-            <div class="hero-visual">
-                <span class="icon">🧩</span>
-                <span>5 Trials · 3 Participants · One Victory</span>
-                <span class="hint">(visuals · poster · teaser coming soon)</span>
-            </div>
+      <!-- Hero visual (5 trials box) removed entirely -->
+      <!-- About event: full width, no visual above -->
+      <div class="section-label">📄 About Event</div>
+      <p class="about-copy">
+        <strong>THE ATLANTEAN TRIALS</strong> is an immersive <strong>Escape Room</strong>
+        experience designed to push your <strong>teamwork, observation, coordination,
+        logic and problem-solving</strong> to the limit. With <strong>5 distinct trials</strong>
+        to conquer, your team of <strong>3</strong> must navigate through puzzles,
+        challenges and cryptic clues — all against the clock. Only the sharpest
+        minds will emerge victorious. Are you ready to take the plunge?
+      </p>
+      <!-- scroll cue removed as requested (no "Explore the trials" text) -->
+    </section>
 
-            <div class="section-label">📄 About Event</div>
-            <p class="about-copy">
-                <strong>THE ATLANTEAN TRIALS</strong> is an immersive <strong>Escape Room</strong>
-                experience designed to push your <strong>teamwork, observation, coordination,
-                logic and problem-solving</strong> to the limit. With <strong>5 distinct trials</strong>
-                to conquer, your team of <strong>3</strong> must navigate through puzzles,
-                challenges and cryptic clues — all against the clock. Only the sharpest
-                minds will emerge victorious. Are you ready to take the plunge?
-            </p>
+    <!-- Panel 2: Rules + Actions -->
+    <section class="scroll-panel">
+      <div class="section-label">📋 Rules &amp; Regulations</div>
 
-            <p class="scroll-cue">Explore the trials <span>⌄</span></p>
-        </section>
+      <div class="rules-grid">
+        <div class="rule-item"><span class="num">1</span><span class="text"><strong>Team Size</strong> — Each team must consist of <strong>3 participants</strong> only.</span></div>
+        <div class="rule-item"><span class="num">2</span><span class="text"><strong>5 Trials</strong> — The event consists of five different trials testing <strong>teamwork, observation, coordination, logic and problem-solving</strong>.</span></div>
+        <div class="rule-item"><span class="num">3</span><span class="text"><strong>Time &amp; Sequence</strong> — All trials must be completed within the given time limit and in the <strong>specified sequence</strong>. No skipping allowed.</span></div>
+        <div class="rule-item"><span class="num">4</span><span class="text"><strong>No External Help</strong> — Mobile phones, internet searches and external assistance are <strong>strictly prohibited</strong>.</span></div>
+        <div class="rule-item"><span class="num">5</span><span class="text"><strong>Active Participation</strong> — Both team members must <strong>actively participate</strong> in the challenges.</span></div>
+        <div class="rule-item"><span class="num">6</span><span class="text"><strong>Respect Props</strong> — Participants must <strong>not damage or tamper</strong> with any props, puzzles or equipment.</span></div>
+        <div class="rule-item"><span class="num">7</span><span class="text"><strong>No Cheating</strong> — Cheating, external help or disturbing other teams is <strong>strictly prohibited</strong>.</span></div>
+        <div class="rule-item"><span class="num">8</span><span class="text"><strong>Follow Instructions</strong> — Participants must follow the instructions given by the <strong>organizers and volunteers</strong> at all times.</span></div>
+        <div class="rule-item"><span class="num">9</span><span class="text"><strong>Winner</strong> — The team completing the final challenge in the <strong>shortest time</strong> will be declared the winner.</span></div>
+        <div class="rule-item"><span class="num">10</span><span class="text"><strong>Final Decision</strong> — The decision of the <strong>event coordinators</strong> will be final and binding.</span></div>
+      </div>
 
-        <!-- Panel 2: Rules + Actions -->
-        <section class="scroll-panel">
-            <div class="section-label">📋 Rules &amp; Regulations</div>
+      <div class="action-grid">
+        <a class="action-card" href="registration.html?event=0&v=2">
+          <strong>📝 Register</strong>
+          <span>Secure your spot</span>
+        </a>
+        <a class="action-card" href="co.html?event=0">
+          <strong>📞 Connect Coordinator</strong>
+          <span>Get in touch</span>
+        </a>
+        <a class="action-card" href="reg-status.html">
+          <strong>📊 Check Registration Update</strong>
+          <span>Verify your status</span>
+        </a>
+        <!-- Watch Promo Video button removed -->
+      </div>
 
-            <div class="rules-grid">
-                <div class="rule-item">
-                    <span class="num">1</span>
-                    <span class="text"><strong>Team Size</strong> — Each team must consist of <strong>3 participants</strong> only.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">2</span>
-                    <span class="text"><strong>5 Trials</strong> — The event consists of five different trials testing <strong>teamwork, observation, coordination, logic and problem-solving</strong>.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">3</span>
-                    <span class="text"><strong>Time &amp; Sequence</strong> — All trials must be completed within the given time limit and in the <strong>specified sequence</strong>. No skipping allowed.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">4</span>
-                    <span class="text"><strong>No External Help</strong> — Mobile phones, internet searches and external assistance are <strong>strictly prohibited</strong>.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">5</span>
-                    <span class="text"><strong>Active Participation</strong> — Both team members must <strong>actively participate</strong> in the challenges.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">6</span>
-                    <span class="text"><strong>Respect Props</strong> — Participants must <strong>not damage or tamper</strong> with any props, puzzles or equipment.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">7</span>
-                    <span class="text"><strong>No Cheating</strong> — Cheating, external help or disturbing other teams is <strong>strictly prohibited</strong>.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">8</span>
-                    <span class="text"><strong>Follow Instructions</strong> — Participants must follow the instructions given by the <strong>organizers and volunteers</strong> at all times.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">9</span>
-                    <span class="text"><strong>Winner</strong> — The team completing the final challenge in the <strong>shortest time</strong> will be declared the winner.</span>
-                </div>
-                <div class="rule-item">
-                    <span class="num">10</span>
-                    <span class="text"><strong>Final Decision</strong> — The decision of the <strong>event coordinators</strong> will be final and binding.</span>
-                </div>
-            </div>
+      <div class="back-wrap">
+        <!-- Back to Home: now scrolls to explore section of index page -->
+        <a class="back-link" href="index.html#explore">← Back to Explore</a>
+      </div>
+    </section>
+  </main>
 
-            <div class="action-grid">
-                <a class="action-card" href="registration.html?event=0&v=2">
-                    <strong>📝 Register</strong>
-                    <span>Secure your spot</span>
-                </a>
-                <a class="action-card" href="co.html?event=0">
-                    <strong>📞 Connect Coordinator</strong>
-                    <span>Get in touch</span>
-                </a>
-                <a class="action-card" href="reg-status.html">
-                    <strong>📊 Check Registration Update</strong>
-                    <span>Verify your status</span>
-                </a>
-                <a class="action-card" href="#">
-                    <strong>▶️ Watch Promo Video</strong>
-                    <span>See the vibe</span>
-                </a>
-            </div>
-
-            <div class="back-wrap">
-                <a class="back-link" href="index.html">← Back to Home</a>
-            </div>
-        </section>
-    </main>
+  <!-- Small script to handle anchor scrolling if needed -->
+  <script>
+    (function() {
+      // if the page loads with #explore, scroll smoothly
+      if (window.location.hash === '#explore') {
+        setTimeout(() => {
+          const el = document.getElementById('explore');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+      // Back link uses standard href, works with fragment
+      console.log('🧩 Atlantean Trials — cleaned up');
+    })();
+  </script>
 </body>
-
 </html>
