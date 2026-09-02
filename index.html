@@ -433,90 +433,207 @@
       box-shadow: 0 16px 40px -12px rgba(0,0,0,0.9);
       cursor: pointer;
       will-change: auto;
-      transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-                  box-shadow 0.3s,
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+                  box-shadow 0.4s ease,
                   opacity 0.25s,
                   border-color 0.3s,
-                  filter 0.2s;
+                  filter 0.3s;
       -webkit-tap-highlight-color: transparent;
       flex-shrink: 0;
       contain: layout style;
       touch-action: pan-y;
     }
 
+    /* ─── GLOW AURA (WIDE SOFT GLOW BELOW CARD) ─── */
+    .carousel-track .event-card .glow-aura {
+      position: absolute;
+      bottom: -30px;
+      left: -20%;
+      width: 140%;
+      height: 60%;
+      background: radial-gradient(
+        ellipse at bottom center,
+        rgba(255, 255, 255, 0.06) 0%,
+        rgba(200, 220, 255, 0.03) 30%,
+        rgba(200, 220, 255, 0.01) 60%,
+        transparent 100%
+      );
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: scaleY(0.3) scaleX(0.8);
+      filter: blur(30px);
+      will-change: opacity, transform;
+    }
+
+    /* ─── BOTTOM-TO-TOP WHITE GLOW ─── */
     .carousel-track .event-card::after {
       content: '';
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 40%;
+      height: 0%;
       background: linear-gradient(
         to top,
-        rgba(169, 132, 69, 0.12) 0%,
-        rgba(169, 132, 69, 0.06) 40%,
-        rgba(169, 132, 69, 0.02) 70%,
+        rgba(255, 255, 255, 0.30) 0%,
+        rgba(255, 255, 255, 0.18) 20%,
+        rgba(255, 255, 255, 0.10) 40%,
+        rgba(200, 220, 255, 0.05) 60%,
+        rgba(200, 220, 255, 0.02) 80%,
         transparent 100%
       );
       opacity: 0;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.5s ease, height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
       z-index: 4;
       border-radius: 0 0 16px 16px;
+      box-shadow: 
+        inset 0 -80px 120px rgba(255, 255, 255, 0.05),
+        inset 0 -40px 60px rgba(200, 220, 255, 0.03);
     }
 
+    /* ─── GLOW BOTTOM LINE ─── */
     .carousel-track .event-card::before {
       content: '';
       position: absolute;
       bottom: -1px;
-      left: 15%;
-      width: 70%;
-      height: 2px;
+      left: 5%;
+      width: 90%;
+      height: 3px;
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(169, 132, 69, 0.2) 20%,
-        rgba(192, 154, 82, 0.6) 50%,
-        rgba(169, 132, 69, 0.2) 80%,
+        rgba(255, 255, 255, 0.5) 15%,
+        rgba(255, 255, 255, 0.8) 35%,
+        rgba(200, 230, 255, 1) 50%,
+        rgba(255, 255, 255, 0.8) 65%,
+        rgba(255, 255, 255, 0.5) 85%,
         transparent
       );
-      filter: blur(3px);
+      filter: blur(4px);
       z-index: 5;
       opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      transform: scaleX(0.8);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: scaleX(0.4);
       pointer-events: none;
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
     }
 
-    .carousel-track .event-card:hover::after,
+    /* ─── FULL GLOW EFFECT (ACTIVE) ─── */
+    .carousel-track .event-card.glow-effect::after {
+      opacity: 1;
+      height: 100%;
+    }
+
+    .carousel-track .event-card.glow-effect::before {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    .carousel-track .event-card.glow-effect .glow-aura {
+      opacity: 1;
+      transform: scaleY(1) scaleX(1);
+    }
+
+    .carousel-track .event-card.glow-effect {
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 
+        0 0 80px rgba(255, 255, 255, 0.04),
+        0 0 160px rgba(200, 220, 255, 0.02),
+        0 20px 60px rgba(0, 0, 0, 0.9);
+      transform: scale(0.98);
+    }
+
+    .carousel-track .event-card.glow-effect .card-image {
+      opacity: 0.7;
+      filter: brightness(1.15) saturate(1.1);
+    }
+
+    .carousel-track .event-card.glow-effect .card-explore-badge {
+      opacity: 1;
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(4, 18, 23, 0.9);
+      color: #ffffff;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+    }
+
+    .carousel-track .event-card.glow-effect .card-name {
+      text-shadow: 0 0 50px rgba(255, 255, 255, 0.12);
+    }
+
+    /* ─── HOVER STATE (DESKTOP) ─── */
+    .carousel-track .event-card:hover::after {
+      opacity: 1;
+      height: 100%;
+    }
     .carousel-track .event-card:hover::before {
       opacity: 1;
       transform: scaleX(1);
     }
-
-    .carousel-track .event-card:active {
-      transform: scale(0.96);
-      border-color: rgba(169, 132, 69, 0.2);
-      box-shadow: 0 8px 40px rgba(169, 132, 69, 0.08);
+    .carousel-track .event-card:hover .glow-aura {
+      opacity: 1;
+      transform: scaleY(1) scaleX(1);
+    }
+    .carousel-track .event-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 
+        0 0 80px rgba(255, 255, 255, 0.04),
+        0 0 160px rgba(200, 220, 255, 0.02),
+        0 20px 60px rgba(0, 0, 0, 0.9);
+      transform: scale(0.98);
+    }
+    .carousel-track .event-card:hover .card-image {
+      opacity: 0.7;
+      filter: brightness(1.15) saturate(1.1);
+    }
+    .carousel-track .event-card:hover .card-explore-badge {
+      opacity: 1;
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(4, 18, 23, 0.9);
+      color: #ffffff;
+    }
+    .carousel-track .event-card:hover .card-name {
+      text-shadow: 0 0 50px rgba(255, 255, 255, 0.12);
     }
 
-    .carousel-track .event-card:active::after,
+    /* ─── ACTIVE/TAP STATE ─── */
+    .carousel-track .event-card:active::after {
+      opacity: 1;
+      height: 100%;
+    }
     .carousel-track .event-card:active::before {
       opacity: 1;
       transform: scaleX(1);
     }
-
-    .carousel-track .event-card.active-card {
-      transform: scale(0.97);
-      border-color: rgba(169, 132, 69, 0.2);
-      box-shadow: 0 12px 50px rgba(169, 132, 69, 0.1);
-    }
-
-    .carousel-track .event-card.active-card::after,
-    .carousel-track .event-card.active-card::before {
+    .carousel-track .event-card:active .glow-aura {
       opacity: 1;
-      transform: scaleX(1);
+      transform: scaleY(1) scaleX(1);
     }
+    .carousel-track .event-card:active {
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 
+        0 0 120px rgba(255, 255, 255, 0.06),
+        0 0 200px rgba(200, 220, 255, 0.04),
+        0 8px 40px rgba(0, 0, 0, 0.8);
+      transform: scale(0.96);
+    }
+    .carousel-track .event-card:active .card-image {
+      opacity: 0.8;
+      filter: brightness(1.2) saturate(1.2);
+    }
+    .carousel-track .event-card:active .card-explore-badge {
+      opacity: 1;
+    }
+
+    /* ─── ACTIVE CARD STATE (VIA JS) ─── */
+    .carousel-track .event-card.active-card {
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5);
+    }
+    .carousel-track .event-card.active-card .card-image { opacity:0.65; }
+    .carousel-track .event-card.active-card .card-explore-badge { opacity:0.85; border-color:rgba(255,255,255,0.1); }
 
     .carousel-track .event-card .card-image {
       position:absolute;
@@ -526,7 +643,7 @@
       height:100%;
       z-index:0;
       opacity:0.45;
-      transition:opacity 0.4s;
+      transition:opacity 0.5s ease, filter 0.5s ease;
       background:var(--abyss);
       display:flex;
       align-items:center;
@@ -563,25 +680,29 @@
       z-index:2;
       background:linear-gradient(to top, rgba(4,18,23,0.98) 0%, rgba(4,18,23,0.5) 50%, transparent 100%);
       margin: 0 -14px -12px -14px;
-      padding: 28px 14px 14px 14px;
+      padding: 32px 14px 16px 14px;
       border-radius:0 0 16px 16px;
     }
     .carousel-track .event-card .card-name {
       font-family:'Cinzel',serif;
-      font-size:clamp(0.7rem,1.6vw,1.05rem);
-      font-weight:700;
-      letter-spacing:0.04em;
-      text-transform:uppercase;
-      color:var(--ivory);
-      text-shadow:0 2px 12px rgba(0,0,0,0.5);
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ivory);
+      text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+      line-height: 1.1;
+      margin-bottom: 2px;
+      transition: text-shadow 0.4s ease;
     }
     .carousel-track .event-card .card-sub {
       font-family:'Cormorant Garamond',serif;
-      font-size:clamp(0.45rem,0.8vw,0.6rem);
-      letter-spacing:0.1em;
-      text-transform:uppercase;
-      color:rgba(192,154,82,0.65);
-      font-weight:600;
+      font-size: clamp(0.7rem, 1.2vw, 1rem);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(192,154,82,0.85);
+      font-weight: 700;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.7);
     }
     .carousel-track .event-card .card-explore-badge {
       position:absolute;
@@ -589,27 +710,25 @@
       right:12px;
       z-index:3;
       font-family:'Cinzel',serif;
-      font-size:clamp(0.3rem,0.6vw,0.45rem);
-      letter-spacing:0.1em;
+      font-size:clamp(0.4rem, 0.7vw, 0.55rem);
+      letter-spacing:0.15em;
       text-transform:uppercase;
       color:var(--gold-light);
-      background:rgba(4,18,23,0.7);
-      padding:2px 10px;
+      background:rgba(4,18,23,0.75);
+      padding:3px 14px;
       border-radius:30px;
-      backdrop-filter:blur(4px);
-      -webkit-backdrop-filter:blur(4px);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
       border:1px solid rgba(169,132,69,0.1);
-      transition:0.25s;
+      transition:0.3s ease;
       pointer-events:auto;
       cursor:pointer;
-      opacity:0.6;
-      font-weight:600;
-      box-shadow:0 4px 16px rgba(0,0,0,0.25);
+      opacity:0.7;
+      font-weight:700;
+      box-shadow:0 4px 20px rgba(0,0,0,0.3);
       touch-action:manipulation;
     }
     .carousel-track .event-card .card-explore-badge:active { transform:scale(0.92); }
-    .carousel-track .event-card.active-card .card-image { opacity:0.65; }
-    .carousel-track .event-card.active-card .card-explore-badge { opacity:0.85; border-color:rgba(169,132,69,0.15); }
 
     .dots-container {
       display:flex;
@@ -1163,6 +1282,11 @@
         border-radius: 14px;
       }
       
+      .carousel-track .event-card .glow-aura {
+        bottom: -20px;
+        height: 50%;
+      }
+      
       .carousel-track .event-card .card-content { 
         margin: 0 -12px -10px -12px;
         padding: 28px 12px 12px 12px;
@@ -1170,19 +1294,19 @@
       }
       
       .carousel-track .event-card .card-name { 
-        font-size: clamp(0.85rem, 3vw, 1.2rem);
-        font-weight: 800;
-        letter-spacing: 0.06em;
+        font-size: clamp(1.2rem, 4.5vw, 1.8rem);
+        font-weight: 900;
+        letter-spacing: 0.08em;
       }
       
       .carousel-track .event-card .card-sub { 
-        font-size: clamp(0.5rem, 1.2vw, 0.65rem);
+        font-size: clamp(0.7rem, 1.8vw, 0.95rem);
         letter-spacing: 0.12em;
       }
       
       .carousel-track .event-card .card-explore-badge { 
-        font-size: clamp(0.35rem, 0.8vw, 0.5rem);
-        padding: 3px 12px;
+        font-size: clamp(0.4rem, 1vw, 0.55rem);
+        padding: 4px 14px;
         bottom: 10px;
         right: 10px;
         border-radius: 30px;
@@ -1236,6 +1360,11 @@
         padding: 10px 8px 8px 8px;
       }
       
+      .carousel-track .event-card .glow-aura {
+        bottom: -15px;
+        height: 40%;
+      }
+      
       .carousel-track .event-card .card-content { 
         margin: 0 -8px -8px -8px;
         padding: 22px 8px 8px 8px;
@@ -1243,16 +1372,17 @@
       }
       
       .carousel-track .event-card .card-name { 
-        font-size: clamp(0.75rem, 3.5vw, 1rem);
+        font-size: clamp(1rem, 4vw, 1.4rem);
+        font-weight: 900;
       }
       
       .carousel-track .event-card .card-sub { 
-        font-size: clamp(0.4rem, 1vw, 0.5rem);
+        font-size: clamp(0.6rem, 1.5vw, 0.8rem);
       }
       
       .carousel-track .event-card .card-explore-badge {
-        font-size: clamp(0.3rem, 0.7vw, 0.4rem);
-        padding: 2px 10px;
+        font-size: clamp(0.35rem, 0.8vw, 0.45rem);
+        padding: 3px 12px;
         bottom: 8px;
         right: 8px;
       }
@@ -1299,7 +1429,11 @@
       }
       
       .carousel-track .event-card .card-name { 
-        font-size: clamp(0.65rem, 3vw, 0.85rem);
+        font-size: clamp(0.8rem, 3.5vw, 1.1rem);
+      }
+      
+      .carousel-track .event-card .card-sub { 
+        font-size: clamp(0.5rem, 1.2vw, 0.65rem);
       }
     }
 
@@ -1539,7 +1673,7 @@
     ];
 
     // ═══════════════════════════════════════════════════════════
-    // 3. CAROUSEL — FIXED
+    // 3. CAROUSEL — FIXED WITH WHITE GLOW EFFECT
     // ═══════════════════════════════════════════════════════════
     const track = document.getElementById('carouselTrack');
     const stage = document.getElementById('carouselStage');
@@ -1548,6 +1682,7 @@
     let cardWidthWithGap = 0, cardWidth = 0, index = N;
     let isDragging = false, isSnapping = false, dragStartX = 0, dragStartIndex = 0, velocity = 0, lastMoveX = 0, lastMoveTime = 0;
     let snapTimer = null, rafId = null, resizeTimeout = null, activeOrigIdx = 0;
+    let currentGlowCard = null;
 
     function getGap() {
       const styles = getComputedStyle(track);
@@ -1565,6 +1700,26 @@
       } else {
         cardWidth = 220;
         cardWidthWithGap = 232;
+      }
+    }
+
+    // ─── GLOW EFFECT FUNCTIONS ───
+    function applyGlow(card) {
+      if (currentGlowCard && currentGlowCard !== card) {
+        currentGlowCard.classList.remove('glow-effect');
+      }
+      if (card) {
+        card.classList.add('glow-effect');
+        currentGlowCard = card;
+      } else {
+        currentGlowCard = null;
+      }
+    }
+
+    function clearGlow() {
+      if (currentGlowCard) {
+        currentGlowCard.classList.remove('glow-effect');
+        currentGlowCard = null;
       }
     }
 
@@ -1599,6 +1754,7 @@
           <img src="${evt.image}" alt="Event photo" loading="${idx < 3 ? 'eager' : 'lazy'}" fetchpriority="${idx < 3 ? 'high' : 'auto'}" />
           <div class="img-placeholder"></div>
         </div>
+        <div class="glow-aura"></div>
         <div class="card-content">
           <div class="card-name">${evt.name}</div>
           <div class="card-sub">${evt.sub}</div>
@@ -1627,6 +1783,7 @@
       card.addEventListener('touchstart', function(e) {
         if (tapTimer) clearTimeout(tapTimer);
         this.classList.add('active-card');
+        applyGlow(this);
       }, { passive: true });
       
       card.addEventListener('touchend', function(e) {
@@ -1646,6 +1803,7 @@
       
       card.addEventListener('mousedown', function(e) {
         this.classList.add('active-card');
+        applyGlow(this);
       });
       
       card.addEventListener('mouseup', function(e) {
@@ -1701,6 +1859,8 @@
       track.style.transform = `translateX(${pos}px)`;
       
       let closestOrigIdx = 0, closestDist = Infinity;
+      let closestCard = null;
+      
       cards.forEach((card, i) => {
         const cardCenter = pos + i * cardWidthWithGap + halfCard;
         const dist = Math.abs(cardCenter - halfStage);
@@ -1713,10 +1873,18 @@
         card.style.zIndex = Math.round(scale * 10);
         if (dist < closestDist) { 
           closestDist = dist; 
-          closestOrigIdx = parseInt(card.dataset.originalIndex); 
+          closestOrigIdx = parseInt(card.dataset.originalIndex);
+          closestCard = card;
         }
       });
+      
       activeOrigIdx = closestOrigIdx;
+      
+      // Apply glow to the closest card (center card)
+      if (closestCard && !isDragging) {
+        applyGlow(closestCard);
+      }
+      
       cards.forEach(card => card.classList.toggle('active-card', parseInt(card.dataset.originalIndex) === activeOrigIdx));
       dotsContainer.querySelectorAll('.dot').forEach((dot,i) => dot.classList.toggle('active', i === closestOrigIdx));
     }
@@ -1733,15 +1901,18 @@
       snapTimer = setTimeout(() => { isSnapping = false; snapTimer = null; }, animate ? 500 : 40);
     }
 
-    // Touch / pointer events
+    // ─── SMOOTH TOUCH EVENTS ───
     stage.addEventListener('pointerdown', (e) => {
       if (isSnapping) return;
-      isDragging = true; isSnapping = false;
-      dragStartX = e.clientX; dragStartIndex = index; velocity = 0;
-      lastMoveX = e.clientX; lastMoveTime = performance.now();
+      isDragging = true;
+      dragStartX = e.clientX; 
+      dragStartIndex = index; 
+      velocity = 0;
+      lastMoveX = e.clientX; 
+      lastMoveTime = performance.now();
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       track.style.transition = 'none';
-      stage.setPointerCapture(e.pointerId);
+      clearGlow();
     });
 
     document.addEventListener('pointermove', (e) => {
@@ -1768,10 +1939,12 @@
       const dist = Math.abs(e.clientX - dragStartX);
       if (dist < 8) {
         const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.event-card');
-        if (card) { const oi = parseInt(card.dataset.originalIndex); if(!isNaN(oi)) window.location.href='event-'+oi+'.html'; }
+        if (card) { 
+          const oi = parseInt(card.dataset.originalIndex); 
+          if(!isNaN(oi)) window.location.href='event-'+oi+'.html'; 
+        }
         else if (activeOrigIdx !== undefined && !isNaN(activeOrigIdx)) window.location.href='event-'+activeOrigIdx+'.html';
         snapToIndex(Math.round(index), true);
-        stage.releasePointerCapture(e.pointerId);
         return;
       }
       let targetIdx = Math.round(index);
@@ -1779,7 +1952,6 @@
       else if (Math.ceil(index) - index > 0.2 || velocity > 0.2) targetIdx = Math.floor(index);
       snapToIndex(targetIdx, true);
       velocity = 0;
-      stage.releasePointerCapture(e.pointerId);
     });
 
     preloadImagesWithPriority(events);
@@ -1963,7 +2135,7 @@
     loginPass.addEventListener('input', ()=>{ loginPass.classList.remove('error'); loginError.classList.remove('show'); });
     loginUser.addEventListener('input', ()=>{ loginError.classList.remove('show'); });
     setRole('admin');
-    console.log('🔱 DEPLOMAT · Fixed & Optimized');
+    console.log('🔱 DEPLOMAT · White Glow Effect Active');
   </script>
 </body>
 </html>
