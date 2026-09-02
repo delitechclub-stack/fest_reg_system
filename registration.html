@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DEPLOMAT · Registration</title>
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+    <!-- Tesseract.js for OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
     </script>
     <style>
         /* ─── RESET & BASE ─────────────────────────────────────────── */
@@ -747,32 +751,84 @@
             height: 140px;
             display: block;
         }
-        .utr-section {
-            display: none;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px dashed rgba(255, 255, 255, 0.15);
-            animation: fadeStep 0.4s ease;
+        /* ─── SCREENSHOT UPLOAD STYLES ──────────────────────────── */
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            transition: 0.3s ease;
+            cursor: pointer;
+            margin-top: 16px;
         }
-        .utr-section.active {
-            display: block;
-        }
-        .f-control {
-            width: 100%;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.04);
-            color: #fff;
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: 0.25s ease;
-            outline: none;
-        }
-        .f-control:focus {
-            border-color: rgba(101, 216, 255, 0.3);
+        .upload-area.dragover {
+            border-color: #65d8ff;
             background: rgba(101, 216, 255, 0.04);
-            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+        .upload-area .icon-big {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .upload-area .text-muted {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+        }
+        .upload-area .text-small {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.65rem;
+            margin-top: 4px;
+        }
+        .upload-preview {
+            display: none;
+            margin-top: 12px;
+        }
+        .upload-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #4caf50;
+        }
+        .upload-preview .success-text {
+            color: #4caf50;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        .upload-status {
+            display: none;
+            margin-top: 12px;
+        }
+        .upload-status .status-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(101, 216, 255, 0.06);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+        }
+        .utr-result {
+            display: none;
+            margin-top: 12px;
+        }
+        .utr-result .result-box {
+            background: rgba(76, 175, 80, 0.06);
+            border: 1px solid rgba(76, 175, 80, 0.15);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+        .utr-result .result-box .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .utr-result .result-box .value {
+            color: #4caf50;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: monospace;
         }
         .form-actions {
             display: flex;
@@ -874,6 +930,22 @@
         }
         .success-state .reg-details strong {
             color: #fff;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-top: 2px solid #65d8ff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
         @media (max-width: 768px) {
             .home-link {
@@ -1002,77 +1074,9 @@
         .text-aqua {
             color: #65d8ff;
         }
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-top: 2px solid #65d8ff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
         .btn-loading {
             pointer-events: none;
             opacity: 0.7;
-        }
-        .utr-valid {
-            border-color: #4caf50 !important;
-            background: rgba(76, 175, 80, 0.05) !important;
-        }
-        .utr-invalid {
-            border-color: #ff2a6d !important;
-            background: rgba(255, 42, 109, 0.05) !important;
-        }
-        .utr-error-msg {
-            color: #ff2a6d;
-            font-size: 0.7rem;
-            margin-top: 4px;
-            display: none;
-        }
-        .utr-error-msg.show {
-            display: block;
-        }
-        .payment-interaction-required {
-            background: rgba(255, 197, 61, 0.08);
-            border: 1px solid rgba(255, 197, 61, 0.2);
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-bottom: 12px;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.6);
-            display: block;
-        }
-        .payment-interaction-required strong {
-            color: #FFC53D;
-        }
-        .utr-timer {
-            color: #65d8ff;
-            font-size: 0.7rem;
-            margin-top: 4px;
-        }
-        .utr-timer span {
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        .fake-utr-warning {
-            background: rgba(255, 42, 109, 0.12);
-            border: 1px solid rgba(255, 42, 109, 0.25);
-            border-radius: 8px;
-            padding: 8px 12px;
-            margin-top: 8px;
-            font-size: 0.8rem;
-            color: #ff6b8a;
-            display: none;
-        }
-        .fake-utr-warning.show {
-            display: block;
         }
     </style>
 </head>
@@ -1177,7 +1181,7 @@
                             <button type="button" class="btn btn-primary" id="step3Next">Next →</button>
                         </div>
                     </div>
-                    <!-- STEP 4: PAYMENT -->
+                    <!-- STEP 4: PAYMENT + SCREENSHOT UPLOAD -->
                     <div class="form-step" data-step="4">
                         <div class="payment-summary">
                             <div class="summary-row"><span>Event</span><span id="payEventName">—</span></div>
@@ -1187,11 +1191,8 @@
                             <div class="summary-row"><span>Fee per participant</span><span>₹250</span></div>
                             <div class="summary-row total"><span>Total Amount</span><span class="amount" id="payTotal">₹0</span></div>
                         </div>
-                        <!-- Interaction required block -->
-                        <div class="payment-interaction-required" id="paymentInteractionRequired">
-                            ⚠️ <strong>Payment interaction required!</strong> Please tap one of the payment buttons below to initiate payment before entering UTR.
-                        </div>
-                        <!-- Payment side -->
+
+                        <!-- Payment Section -->
                         <div class="payment-side">
                             <h5 id="payhead">PAY ₹0</h5>
                             <p>Tap to open your payment app</p>
@@ -1204,19 +1205,60 @@
                                 <div class="qr-frame"><img id="qrImage" src="" alt="QR Code" /></div>
                             </div>
                         </div>
-                        <!-- UTR SECTION (hidden until payment interaction) -->
-                        <div class="utr-section" id="utrArea">
-                            <div class="form-group" style="margin-bottom:0">
-                                <label style="color: #65d8ff;">Transaction ID / UTR Number <span class="required">*</span></label>
-                                <input class="f-control" id="txnInput" placeholder="Enter 12-digit UTR number" maxlength="12" disabled />
-                                <div class="utr-error-msg" id="utrError">⚠️ UTR must be exactly 12 digits (numbers only)</div>
-                                <div class="utr-timer" id="utrTimer">⏱️ You have <span id="utrTimeLeft">5:00</span> to enter UTR after payment</div>
-                                <div class="fake-utr-warning" id="fakeUtrWarning">⚠️ Suspicious UTR pattern detected. Please ensure you have completed the payment.</div>
+
+                        <!-- Screenshot Upload Section -->
+                        <div style="margin-top:24px;border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;">
+                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                                <span style="font-size:1.5rem;">📸</span>
+                                <div>
+                                    <h4 style="font-size:0.9rem;color:#fff;">Upload Payment Screenshot</h4>
+                                    <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);">
+                                        After payment, take a screenshot and upload it here<br>
+                                        <span style="color:#FFC53D;font-size:0.65rem;">⏳ We'll auto-detect your UTR from the screenshot</span>
+                                    </p>
+                                </div>
                             </div>
-                            <button type="button" onclick="submitRegistration()" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:15px;padding:16px;" id="submitBtn">
-                                Confirm Registration 🔱
+                            
+                            <!-- Upload Area -->
+                            <div class="upload-area" id="dropZone">
+                                <div id="uploadPrompt">
+                                    <span class="icon-big">📤</span>
+                                    <p class="text-muted">Tap to upload screenshot</p>
+                                    <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
+                                </div>
+                                <div class="upload-preview" id="uploadPreview">
+                                    <img id="previewImage" src="" alt="Screenshot Preview" />
+                                    <p class="success-text">✅ Screenshot uploaded</p>
+                                </div>
+                                <input type="file" id="screenshotInput" accept="image/*,.pdf" style="display:none;" />
+                            </div>
+                            
+                            <!-- Upload Status -->
+                            <div class="upload-status" id="uploadStatus">
+                                <div class="status-box">
+                                    <span class="spinner"></span>
+                                    <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;" id="statusText">Processing screenshot & extracting UTR...</span>
+                                </div>
+                            </div>
+                            
+                            <!-- UTR Result -->
+                            <div class="utr-result" id="utrResult">
+                                <div class="result-box">
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <span style="color:#4caf50;font-size:1.2rem;">✅</span>
+                                        <div style="flex:1;">
+                                            <p class="label">Extracted UTR Number</p>
+                                            <p class="value" id="extractedUtr">—</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" id="finalSubmitBtn" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:16px;padding:16px;display:none;" onclick="confirmRegistration()">
+                                🔱 Confirm Registration
                             </button>
                         </div>
+
                         <div class="form-actions" style="margin-top:16px;">
                             <button type="button" class="btn btn-secondary" id="step4Back">← Back</button>
                         </div>
@@ -1243,6 +1285,10 @@
         const EVENT_FEE = 250;
         const UPI_ID = "baijuacm@okicici";
         const PAYEE_NAME = "DEPLOMAT";
+        
+        // ─── YOUR GOOGLE APPS SCRIPT WEB APP URL ──────────────────────────
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzTZEG_4kMrakDO9SRIzENGjYzzJXUGh0B-QNHE70f-iMozYMkLXucuPanRyfMuyqlW/exec';
+        
         const EVENTS = [
             { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both' },
             { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5, category: 'both' },
@@ -1292,144 +1338,36 @@
         const payhead = document.getElementById('payhead');
         const qrImage = document.getElementById('qrImage');
         const qrArea = document.getElementById('qrArea');
-        const utrArea = document.getElementById('utrArea');
-        const txnInput = document.getElementById('txnInput');
         const step4Back = document.getElementById('step4Back');
-        const submitBtn = document.getElementById('submitBtn');
-        const utrError = document.getElementById('utrError');
-        const paymentInteractionRequired = document.getElementById('paymentInteractionRequired');
-        const utrTimer = document.getElementById('utrTimer');
-        const utrTimeLeft = document.getElementById('utrTimeLeft');
-        const fakeUtrWarning = document.getElementById('fakeUtrWarning');
+        const finalSubmitBtn = document.getElementById('finalSubmitBtn');
         const eventBanner = document.getElementById('eventBanner');
         const bannerEventName = document.getElementById('bannerEventName');
         const bannerEventSub = document.getElementById('bannerEventSub');
         const blockNotice = document.getElementById('blockNotice');
         const blockMsg = document.getElementById('blockMsg');
+        
+        // ─── SCREENSHOT UPLOAD DOM REFS ──────────────────────────────────
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('screenshotInput');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const uploadPreview = document.getElementById('uploadPreview');
+        const previewImage = document.getElementById('previewImage');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const statusText = document.getElementById('statusText');
+        const utrResult = document.getElementById('utrResult');
+        const extractedUtr = document.getElementById('extractedUtr');
 
-       // ─── STATE ──────────────────────────────────────────────────────────
-let currentStep = 1;
-let players = [];
-let selectedEvent = null;
-let currentMin = 1;
-let currentMax = 12;
-let selectedCategory = null;
-let paymentInteractionDone = false;
-let utrTimerInterval = null;
-let utrTimeRemaining = 300;
-let utrValidated = false;
-let qrVisible = false;
+        // ─── STATE ──────────────────────────────────────────────────────────
+        let currentStep = 1;
+        let players = [];
+        let selectedEvent = null;
+        let currentMin = 1;
+        let currentMax = 12;
+        let selectedCategory = null;
+        let uploadedFile = null;
+        let extractedUTR = null;
+        let qrVisible = false;
 
-// ─── PASTE THIS NEW CODE HERE ──────────────────────────────────────
-// SAVE/RESTORE FORM STATE USING localStorage
-function saveFormState() {
-    try {
-        const state = {
-            college: document.getElementById('college').value,
-            ug_pu: document.querySelector('input[name="ug_pu"]:checked')?.value || '',
-            event: document.getElementById('eventSelect').value,
-            players: [],
-            currentStep: currentStep,
-            paymentInteractionDone: paymentInteractionDone,
-            utrTimeRemaining: utrTimeRemaining,
-            utrValue: document.getElementById('txnInput').value
-        };
-        
-        // Save all players data
-        document.querySelectorAll('.player-entry').forEach((entry, index) => {
-            const name = entry.querySelector('.player-name')?.value || '';
-            const email = entry.querySelector('.player-email')?.value || '';
-            const phone = entry.querySelector('.player-phone')?.value || '';
-            state.players.push({ name, email, phone });
-        });
-        
-        localStorage.setItem('deplomat_registration_state', JSON.stringify(state));
-    } catch (e) {
-        console.log('Save state error:', e);
-    }
-}
-
-function restoreFormState() {
-    try {
-        const saved = localStorage.getItem('deplomat_registration_state');
-        if (!saved) return false;
-        
-        const state = JSON.parse(saved);
-        
-        // Restore college
-        document.getElementById('college').value = state.college || '';
-        
-        // Restore UG/PU
-        if (state.ug_pu) {
-            const radio = document.querySelector(`input[name="ug_pu"][value="${state.ug_pu}"]`);
-            if (radio) radio.checked = true;
-        }
-        
-        // Restore event
-        if (state.event) {
-            document.getElementById('eventSelect').value = state.event;
-            document.getElementById('eventSelect').dispatchEvent(new Event('change'));
-        }
-        
-        // Restore players
-        if (state.players && state.players.length > 0) {
-            playersContainer.innerHTML = '';
-            state.players.forEach((player, index) => {
-                const isLeader = index === 0;
-                addPlayer(isLeader);
-                const entry = playersContainer.children[index];
-                if (entry) {
-                    const nameInput = entry.querySelector('.player-name');
-                    if (nameInput) nameInput.value = player.name || '';
-                    if (isLeader) {
-                        const emailInput = entry.querySelector('.player-email');
-                        const phoneInput = entry.querySelector('.player-phone');
-                        if (emailInput) emailInput.value = player.email || '';
-                        if (phoneInput) phoneInput.value = player.phone || '';
-                    }
-                }
-            });
-        }
-        
-        // Restore step
-        if (state.currentStep && state.currentStep > 1) {
-            // We'll handle this after initialization
-            window._restoreStep = state.currentStep;
-        }
-        
-        // Restore UTR if payment was done
-        if (state.paymentInteractionDone && state.utrValue) {
-            paymentInteractionDone = true;
-            paymentInteractionRequired.style.display = 'none';
-            utrArea.classList.add('active');
-            txnInput.disabled = false;
-            txnInput.value = state.utrValue || '';
-            if (state.utrTimeRemaining > 0) {
-                utrTimeRemaining = state.utrTimeRemaining;
-                startUTRTimer();
-            }
-        }
-        
-        return true;
-    } catch (e) {
-        console.log('Restore state error:', e);
-        return false;
-    }
-}
-
-function clearSavedState() {
-    localStorage.removeItem('deplomat_registration_state');
-}
-
-// Auto-save on any form change
-function setupAutoSave() {
-    const inputs = document.querySelectorAll('input, select');
-    inputs.forEach(input => {
-        input.addEventListener('change', saveFormState);
-        input.addEventListener('input', saveFormState);
-    });
-}
-// ─── END OF PASTE ──────────────────────────────────────────────────
         // ─── HELPERS ──────────────────────────────────────────────────────
         function getSelectedCategory() {
             const checked = document.querySelector('input[name="ug_pu"]:checked');
@@ -1474,6 +1412,33 @@ function setupAutoSave() {
 
         function getTotalAmount() {
             return playersContainer.children.length * EVENT_FEE;
+        }
+
+        function getLeaderName() {
+            const firstEntry = playersContainer.querySelector('.player-entry');
+            if (firstEntry) {
+                const nameInput = firstEntry.querySelector('.player-name');
+                return nameInput ? nameInput.value.trim() : 'Unknown';
+            }
+            return 'Unknown';
+        }
+
+        function getParticipantsList() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            const participants = [];
+            entries.forEach((entry, index) => {
+                const nameInput = entry.querySelector('.player-name');
+                const isLeader = index === 0;
+                let p = { name: nameInput ? nameInput.value.trim() : '', isLeader: isLeader };
+                if (isLeader) {
+                    const emailInput = entry.querySelector('.player-email');
+                    const phoneInput = entry.querySelector('.player-phone');
+                    p.email = emailInput ? emailInput.value.trim() : '';
+                    p.phone = phoneInput ? phoneInput.value.trim() : '';
+                }
+                participants.push(p);
+            });
+            return participants;
         }
 
         // ─── STEP MANAGEMENT ──────────────────────────────────────────────
@@ -1605,8 +1570,7 @@ function setupAutoSave() {
 
         function updateEventLimitInfo() {
             const eventVal = eventSelect.value;
-            if (!eventVal) { limitText.textContent = 'Please select an event first.';
-                eventLimitInfo.style.display = 'flex'; return; }
+            if (!eventVal) { limitText.textContent = 'Please select an event first.'; return; }
             const limits = getEventLimits(eventVal);
             currentMin = limits.min;
             currentMax = limits.max;
@@ -1654,16 +1618,11 @@ function setupAutoSave() {
             });
         }
 
-        // ─── PAYMENT & UTR ──────────────────────────────────────────────
+        // ─── PAYMENT & SCREENSHOT UPLOAD ──────────────────────────────────
         function updatePaymentSummary() {
             const count = playersContainer.children.length;
             const total = count * EVENT_FEE;
-            let leaderName = 'Not specified';
-            const firstEntry = playersContainer.querySelector('.player-entry');
-            if (firstEntry) {
-                const nameInput = firstEntry.querySelector('.player-name');
-                if (nameInput && nameInput.value.trim()) leaderName = nameInput.value.trim();
-            }
+            let leaderName = getLeaderName();
             const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
             const ugPuValue = ugPuSelected ? ugPuSelected.value : '—';
             payEventName.textContent = selectedEvent ? `${selectedEvent.name} · ${selectedEvent.sub}` : '—';
@@ -1688,228 +1647,307 @@ function setupAutoSave() {
 
         // ─── OPEN PAYMENT APP ─────────────────────────────────────────────
         function openPaymentApp(app) {
-    // ─── ADD THIS LINE AT THE VERY START ───
-    saveFormState(); // Save form data before opening payment app
-    
-    const college = collegeInput.value.trim();
-    // ... rest of existing code stays exactly the same
-            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
-            if (!college) { alert('⚠️ Please fill in your college name.'); return; }
-            if (!ugPuSelected) { alert('⚠️ Please select UG or PU category.'); return; }
-            if (!selectedEvent) { alert('⚠️ Please select an event.'); return; }
-            const firstEntry = playersContainer.querySelector('.player-entry');
-            if (!firstEntry) { alert('⚠️ Please add a Team Leader.'); return; }
             const total = getTotalAmount();
-            const note = encodeURIComponent(`${selectedEvent?selectedEvent.name:'Event'} x${playersContainer.children.length}`);
-            let upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
-            if (app === 'gpay') upiLink = `gpay://upi/pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
-            else if (app === 'phonepe') upiLink = `phonepe://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
-            else if (app === 'paytm') upiLink = `paytmmp://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${note}`;
-
-            // MARK PAYMENT INTERACTION
-            paymentInteractionDone = true;
-            paymentInteractionRequired.style.display = 'none';
-            utrArea.classList.add('active');
-            txnInput.disabled = false;
-            txnInput.focus();
-            startUTRTimer();
+            const leaderName = getLeaderName();
+            const college = collegeInput.value.trim();
+            
+            if (!leaderName || !college) {
+                alert('Please complete all registration details first.');
+                return;
+            }
+            
+            const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
+            
+            // Store pending registration
+            const regData = {
+                leader_name: leaderName,
+                college: college,
+                event: selectedEvent ? selectedEvent.name : 'Unknown',
+                amount: total,
+                participants: getParticipantsList(),
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('pending_registration', JSON.stringify(regData));
+            sessionStorage.setItem('returning_from_payment', 'true');
+            
+            // Open payment app
             window.location.href = upiLink;
         }
 
-        // ─── UTR VALIDATION ──────────────────────────────────────────────
-        function validateUTR(utr) {
-            const clean = utr.replace(/\D/g, '');
-            if (clean.length !== 12) return { valid: false, message: 'UTR must be exactly 12 digits (numbers only)' };
-            return { valid: true, message: '' };
-        }
+        // ─── SCREENSHOT UPLOAD HANDLING ──────────────────────────────────
+        // Click to upload
+        dropZone.addEventListener('click', () => fileInput.click());
 
-        function handleUTRInput() {
-            const utr = txnInput.value;
-            const clean = utr.replace(/\D/g, '');
-            if (utr !== clean) txnInput.value = clean;
-            const result = validateUTR(clean);
-            if (result.valid) {
-                txnInput.classList.remove('utr-invalid');
-                txnInput.classList.add('utr-valid');
-                utrError.classList.remove('show');
-                utrValidated = true;
-                fakeUtrWarning.classList.remove('show');
-                // Simple fake pattern detection: repeated digits or sequential
-                if (/^(\d)\1{11}$/.test(clean) || /^123456789012$/.test(clean) || /^000000000000$/.test(clean) || /^999999999999$/
-                    .test(clean)) {
-                    fakeUtrWarning.textContent = '⚠️ Suspicious UTR pattern detected. Please ensure you have completed the payment.';
-                    fakeUtrWarning.classList.add('show');
-                } else {
-                    fakeUtrWarning.classList.remove('show');
-                }
-            } else {
-                txnInput.classList.remove('utr-valid');
-                txnInput.classList.add('utr-invalid');
-                utrError.textContent = `⚠️ ${result.message}`;
-                utrError.classList.add('show');
-                utrValidated = false;
-                fakeUtrWarning.classList.remove('show');
+        // File selection
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
             }
-        }
+        });
 
-        function startUTRTimer() {
-            utrTimeRemaining = 300;
-            utrTimer.style.display = 'block';
-            updateTimerDisplay();
-            if (utrTimerInterval) clearInterval(utrTimerInterval);
-            utrTimerInterval = setInterval(() => {
-                utrTimeRemaining--;
-                updateTimerDisplay();
-                if (utrTimeRemaining <= 0) {
-                    clearInterval(utrTimerInterval);
-                    utrTimerInterval = null;
-                    txnInput.disabled = true;
-                    submitBtn.disabled = true;
-                    utrTimer.innerHTML =
-                        '⏰ <strong style="color: #ff2a6d;">Time expired! Please initiate payment again.</strong>';
-                    alert('⏰ Time expired! Please tap a payment button again to get a new 5-minute window.');
-                    resetUTRState();
-                }
-            }, 1000);
-        }
+        // Drag and drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
 
-        function updateTimerDisplay() {
-            const m = Math.floor(utrTimeRemaining / 60);
-            const s = utrTimeRemaining % 60;
-            utrTimeLeft.textContent = `${m}:${s.toString().padStart(2,'0')}`;
-            utrTimeLeft.style.color = utrTimeRemaining < 60 ? '#ff2a6d' : '#65d8ff';
-        }
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
 
-        function resetUTRState() {
-            paymentInteractionDone = false;
-            utrValidated = false;
-            txnInput.value = '';
-            txnInput.disabled = true;
-            txnInput.classList.remove('utr-valid', 'utr-invalid');
-            utrError.classList.remove('show');
-            fakeUtrWarning.classList.remove('show');
-            paymentInteractionRequired.style.display = 'block';
-            utrTimer.style.display = 'none';
-            if (utrTimerInterval) { clearInterval(utrTimerInterval);
-                utrTimerInterval = null; }
-            submitBtn.disabled = false;
-        }
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
 
-        // ─── SUBMIT ──────────────────────────────────────────────────────
-        async function submitRegistration() {
-              saveFormState();
-            if (!paymentInteractionDone) {
-                alert('⚠️ Please initiate payment by tapping one of the payment buttons first.');
-                paymentInteractionRequired.style.display = 'block';
+        function handleFile(file) {
+            // Validate file type
+            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+            if (!validTypes.includes(file.type)) {
+                alert('⚠️ Please upload PNG, JPG, or PDF files only.');
                 return;
             }
-            const utr = txnInput.value.trim();
-            const cleanUtr = utr.replace(/\D/g, '');
-            if (!utr || cleanUtr.length !== 12) {
-                alert('⚠️ Please enter a valid 12-digit UTR number.');
-                txnInput.focus();
+            
+            // Validate size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('⚠️ File size must be less than 5MB.');
                 return;
             }
-            if (utrTimeRemaining <= 0) {
-                alert('⏰ Time expired! Please tap a payment button again.');
-                resetUTRState();
-                return;
-            }
-            if (!utrValidated) {
-                alert('⚠️ Please enter a valid 12-digit UTR number.');
-                txnInput.focus();
-                return;
-            }
-            // Fake utr check
-            if (/^(\d)\1{11}$/.test(cleanUtr) || /^123456789012$/.test(cleanUtr) || /^000000000000$/.test(cleanUtr) || /^999999999999$/
-                .test(cleanUtr)) {
-                alert('⚠️ Suspicious UTR pattern detected. Please ensure you have completed the payment.');
-                fakeUtrWarning.classList.add('show');
-                return;
-            }
-
-            const entries = playersContainer.querySelectorAll('.player-entry');
-            const total = entries.length * EVENT_FEE;
-            const crossCheckEntries = crossCheckContainer.querySelectorAll('.cross-check-entry');
-            const crossCheckData = [];
-            crossCheckEntries.forEach(entry => {
-                const check = entry.querySelector('.cross-check-input');
-                const select = entry.querySelector('.cross-check-select');
-                crossCheckData.push({ checked: check ? check.checked : false, eventId: select ? select.value : '' });
-            });
-            const participants = [];
-            entries.forEach((entry, index) => {
-                const nameInput = entry.querySelector('.player-name');
-                const isLeader = index === 0;
-                let p = { name: nameInput ? nameInput.value.trim() : '', isLeader: isLeader };
-                if (isLeader) {
-                    const emailInput = entry.querySelector('.player-email');
-                    const phoneInput = entry.querySelector('.player-phone');
-                    p.email = emailInput ? emailInput.value.trim() : '';
-                    p.phone = phoneInput ? phoneInput.value.trim() : 'N/A';
-                }
-                if (crossCheckData[index]) {
-                    p.otherEvent = crossCheckData[index].checked ? EVENTS.find(e => e.id === parseInt(crossCheckData[index]
-                        .eventId))?.name || 'Yes' : 'No';
-                } else { p.otherEvent = 'No'; }
-                participants.push(p);
-            });
-            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
-            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-            const leader = participants[0] || {};
-            const registrationData = {
-                event_name: selectedEvent ? selectedEvent.name : 'Unknown',
-                event_sub: selectedEvent ? selectedEvent.sub : '',
-                college: collegeInput.value.trim(),
-                ug_pu: ugPuValue,
-                team_leader: leader.name || '',
-                email: leader.email || '',
-                phone: leader.phone || '',
-                total_amount: total,
-                txn: cleanUtr,
-                participants: participants,
-                cross_check: crossCheckData,
-                registered_at: new Date().toISOString()
+            
+            uploadedFile = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                uploadPrompt.style.display = 'none';
+                uploadPreview.style.display = 'block';
+                dropZone.style.borderColor = '#4caf50';
             };
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
-            submitBtn.classList.add('btn-loading');
+            reader.readAsDataURL(file);
+            
+            // Start OCR process
+            processScreenshot(file);
+        }
+
+        // ─── UPLOAD SCREENSHOT TO GOOGLE DRIVE ──────────────────────────
+        async function uploadScreenshotToDrive(file, utrNumber) {
             try {
+                // Convert file to base64
+                const base64 = await fileToBase64(file);
+                
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'upload',
+                        filename: `payment_${utrNumber}_${Date.now()}.png`,
+                        file: base64.split(',')[1],
+                        utr: utrNumber,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                console.log('✅ Screenshot uploaded to Google Drive');
+                
+            } catch (error) {
+                console.warn('Google Drive upload failed, storing locally:', error);
+                // Fallback: Store in localStorage
+                const screenshots = JSON.parse(localStorage.getItem('payment_screenshots') || '[]');
+                screenshots.push({
+                    utr: utrNumber,
+                    timestamp: new Date().toISOString(),
+                    data: URL.createObjectURL(file)
+                });
+                localStorage.setItem('payment_screenshots', JSON.stringify(screenshots));
+            }
+        }
+
+        // Helper: Convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // ─── OCR: EXTRACT UTR USING TESSERACT.JS ─────────────────────────
+        async function processScreenshot(file) {
+            uploadStatus.style.display = 'block';
+            statusText.textContent = 'Processing screenshot & extracting UTR...';
+            finalSubmitBtn.style.display = 'none';
+            utrResult.style.display = 'none';
+            
+            try {
+                const Tesseract = window.Tesseract;
+                if (!Tesseract) {
+                    throw new Error('OCR library not loaded. Please check internet connection.');
+                }
+                
+                // Convert file to image URL
+                const imageUrl = URL.createObjectURL(file);
+                
+                // Perform OCR
+                const result = await Tesseract.recognize(
+                    imageUrl,
+                    'eng',
+                    {
+                        logger: (m) => {
+                            if (m.status === 'recognizing text') {
+                                statusText.textContent = `Processing... ${Math.round(m.progress * 100)}%`;
+                            }
+                        }
+                    }
+                );
+                
+                // Extract text
+                const text = result.data.text;
+                console.log('📝 OCR Extracted Text:', text);
+                
+                // Find UTR pattern (12 digits)
+                const utrMatch = text.match(/\b\d{12}\b/);
+                
+                if (utrMatch) {
+                    extractedUTR = utrMatch[0];
+                    extractedUtr.textContent = extractedUTR;
+                    utrResult.style.display = 'block';
+                    finalSubmitBtn.style.display = 'block';
+                    uploadStatus.style.display = 'none';
+                    statusText.textContent = '✅ UTR extracted successfully!';
+                    
+                    // Upload screenshot to Google Drive
+                    await uploadScreenshotToDrive(file, extractedUTR);
+                    
+                } else {
+                    // Try alternative: UPI reference number
+                    const upiMatch = text.match(/[A-Z0-9]{8,15}/);
+                    if (upiMatch && upiMatch[0].length >= 8) {
+                        extractedUTR = upiMatch[0];
+                        extractedUtr.textContent = extractedUTR;
+                        utrResult.style.display = 'block';
+                        finalSubmitBtn.style.display = 'block';
+                        uploadStatus.style.display = 'none';
+                        statusText.textContent = '✅ Transaction ID extracted!';
+                        
+                        // Upload screenshot to Google Drive
+                        await uploadScreenshotToDrive(file, extractedUTR);
+                        
+                    } else {
+                        // Fallback: manual entry
+                        uploadStatus.style.display = 'none';
+                        const manualUtr = prompt('⚠️ Could not detect UTR automatically.\n\nPlease enter the 12-digit UTR number from your payment app:');
+                        if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
+                            extractedUTR = manualUtr.replace(/\D/g, '');
+                            extractedUtr.textContent = extractedUTR;
+                            utrResult.style.display = 'block';
+                            finalSubmitBtn.style.display = 'block';
+                            
+                            // Upload screenshot to Google Drive
+                            await uploadScreenshotToDrive(file, extractedUTR);
+                        } else {
+                            alert('❌ Invalid UTR. Please try uploading the screenshot again.');
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                console.error('OCR Error:', error);
+                uploadStatus.style.display = 'none';
+                const manualUtr = prompt('⚠️ Error processing screenshot.\n\nPlease enter the 12-digit UTR number from your payment app:');
+                if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
+                    extractedUTR = manualUtr.replace(/\D/g, '');
+                    extractedUtr.textContent = extractedUTR;
+                    utrResult.style.display = 'block';
+                    finalSubmitBtn.style.display = 'block';
+                } else {
+                    alert('❌ Invalid UTR. Please try again.');
+                }
+            }
+        }
+
+        // ─── CONFIRM REGISTRATION ─────────────────────────────────────────
+        async function confirmRegistration() {
+            if (!extractedUTR) {
+                alert('⚠️ Please upload payment screenshot first.');
+                return;
+            }
+            
+            finalSubmitBtn.disabled = true;
+            finalSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+            
+            try {
+                const leaderName = getLeaderName();
+                const college = collegeInput.value.trim();
+                const total = getTotalAmount();
+                const participants = getParticipantsList();
+                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+                const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+                
+                const registrationData = {
+                    event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+                    event_sub: selectedEvent ? selectedEvent.sub : '',
+                    college: college,
+                    ug_pu: ugPuValue,
+                    team_leader: leaderName,
+                    email: participants[0]?.email || '',
+                    phone: participants[0]?.phone || '',
+                    total_amount: total,
+                    txn: extractedUTR,
+                    participants: participants,
+                    status: 'VERIFIED',
+                    registered_at: new Date().toISOString()
+                };
+                
+                // Save to Supabase
                 if (supabaseClient) {
                     const { error } = await supabaseClient.from('registrations').insert([registrationData]);
                     if (error) throw new Error(error.message);
                 }
-                // localStorage fallback
+                
+                // Local backup
                 const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-                db.push({
-                    email: leader.email,
-                    teamLeader: leader.name,
-                    college: registrationData.college,
-                    ug_pu: ugPuValue,
-                    phone: leader.phone,
-                    event: registrationData.event_name,
-                    heads: participants.length,
-                    amount: registrationData.total_amount,
-                    txn: registrationData.txn,
-                    participants: participants.map(p => p.name).join(', '),
-                    otherEvents: participants.filter(p => p.otherEvent && p.otherEvent !== 'No').map(p => p.otherEvent)
-                        .join(', ') || 'None'
-                });
+                db.push(registrationData);
                 localStorage.setItem('deplomat_db', JSON.stringify(db));
+                
+                // Show success
                 goToStep(5);
                 const details = document.getElementById('successDetails');
-                details.innerHTML = `<p><strong>Event:</strong> ${registrationData.event_name}</p><p><strong>College:</strong> ${registrationData.college}</p>
-                            <p><strong>Category:</strong> ${registrationData.ug_pu}</p><p><strong>Team Leader:</strong> ${leader.name}</p>
-                            <p><strong>Participants:</strong> ${participants.length}</p><p><strong>Total Paid:</strong> ₹${registrationData.total_amount}</p>
-                            <p><strong>UTR:</strong> ${registrationData.txn}</p><hr style="border-color:rgba(255,255,255,0.05);margin:10px 0;"/>
-                            <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);">✅ Registration saved · Confirmation sent to ${leader.email}</p>`;
-                resetUTRState();
-            } catch (err) {
-                alert(`❌ Submission failed: ${err.message}`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Confirm Registration 🔱';
-                submitBtn.classList.remove('btn-loading');
+                details.innerHTML = `
+                    <p><strong>🎉 Registration Complete!</strong></p>
+                    <p><strong>Payment Verified!</strong> ✅</p>
+                    <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${extractedUTR}</span></p>
+                    <p><strong>Event:</strong> ${registrationData.event_name}</p>
+                    <p><strong>Team Leader:</strong> ${leaderName}</p>
+                    <p><strong>College:</strong> ${college}</p>
+                    <p><strong>Amount Paid:</strong> ₹${total}</p>
+                    <p><strong>Participants:</strong> ${participants.length}</p>
+                    <hr style="border-color:rgba(255,255,255,0.05);margin:12px 0;"/>
+                    <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);">
+                        ✅ Payment verified automatically.<br>
+                        Confirmation sent to ${participants[0]?.email || 'your email'}.
+                    </p>
+                `;
+                
+                // Clean up
+                localStorage.removeItem('pending_registration');
+                sessionStorage.removeItem('returning_from_payment');
+                
+                // Reset UI
+                finalSubmitBtn.disabled = false;
+                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
+                
+            } catch (error) {
+                alert(`❌ Submission failed: ${error.message}`);
+                finalSubmitBtn.disabled = false;
+                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
             }
         }
 
@@ -1933,6 +1971,28 @@ function setupAutoSave() {
                 }
             } catch (_) {}
         }
+
+        // ─── DETECT RETURN FROM PAYMENT APP ─────────────────────────────
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                const returning = sessionStorage.getItem('returning_from_payment');
+                if (returning === 'true') {
+                    sessionStorage.removeItem('returning_from_payment');
+                    // Check if we're on step 4
+                    if (currentStep === 4) {
+                        const paid = confirm(
+                            '✅ Did you complete the payment in your app?\n\n' +
+                            '• Click "OK" if you have paid → Upload screenshot to auto-detect UTR\n' +
+                            '• Click "Cancel" if you haven\'t paid → Try again\n\n' +
+                            '⚠️ If you paid, take a screenshot of the transaction.'
+                        );
+                        if (!paid) {
+                            alert('⏳ No problem! Please complete the payment and upload the screenshot.');
+                        }
+                    }
+                }
+            }
+        });
 
         // ─── EVENT LISTENERS ─────────────────────────────────────────────
         ugPuRadios.forEach(radio => {
@@ -2010,17 +2070,6 @@ function setupAutoSave() {
             validateCategoryEventPair();
         });
 
-        txnInput.addEventListener('input', handleUTRInput);
-        txnInput.addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pasted = (e.clipboardData || window.clipboardData).getData('text');
-            const digits = pasted.replace(/\D/g, '');
-            if (digits.length <= 12) { this.value = digits;
-                handleUTRInput.call(this); } else { this.value = digits.slice(0, 12);
-                handleUTRInput.call(this);
-                alert('⚠️ Only first 12 digits pasted.'); }
-        });
-
         step1Next.addEventListener('click', function(e) { e.preventDefault();
             goToStep(2); });
         step2Back.addEventListener('click', () => goToStep(1));
@@ -2028,8 +2077,7 @@ function setupAutoSave() {
         addPlayerBtn.addEventListener('click', () => addPlayer(false));
         step3Back.addEventListener('click', () => goToStep(2));
         step3Next.addEventListener('click', () => goToStep(4));
-        step4Back.addEventListener('click', () => { resetUTRState();
-            goToStep(3); });
+        step4Back.addEventListener('click', () => goToStep(3));
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -2044,79 +2092,21 @@ function setupAutoSave() {
         });
 
         // ─── INIT ──────────────────────────────────────────────────────────
-
-// Try to restore saved state first
-const hasSavedState = restoreFormState();
-
-if (!hasSavedState) {
-    // If no saved state, do normal initialization
-    autoSelectEventFromURL();
-    txnInput.disabled = true;
-    paymentInteractionRequired.style.display = 'block';
-    
-    setTimeout(() => {
-        if (playersContainer.children.length === 0) {
-            for (let i = 0; i < Math.max(1, currentMin); i++) addPlayer(i === 0);
-        }
-        updateEventLimitInfo();
-        updateAddButtonState();
-        validateCategoryEventPair();
-    }, 100);
-} else {
-    // If restored, update UI
-    txnInput.disabled = true;
-    paymentInteractionRequired.style.display = 'block';
-    
-    setTimeout(() => {
-        updateEventLimitInfo();
-        updateAddButtonState();
-        validateCategoryEventPair();
+        autoSelectEventFromURL();
         
-        // Restore step if saved
-        if (window._restoreStep) {
-            goToStep(window._restoreStep);
-            delete window._restoreStep;
-        }
-    }, 200);
-}
+        setTimeout(() => {
+            if (playersContainer.children.length === 0) {
+                for (let i = 0; i < Math.max(1, currentMin); i++) addPlayer(i === 0);
+            }
+            updateEventLimitInfo();
+            updateAddButtonState();
+            validateCategoryEventPair();
+        }, 100);
 
-// Setup auto-save
-setupAutoSave();
-
-// Save state before opening payment app (MODIFY openPaymentApp)
-const originalOpenPaymentApp = window.openPaymentApp;
-window.openPaymentApp = function(app) {
-    saveFormState(); // Save before redirect
-    originalOpenPaymentApp(app);
-};
-
-// Save state on step changes
-const originalGoToStep = window.goToStep || goToStep;
-goToStep = function(step) {
-    originalGoToStep(step);
-    saveFormState();
-};
-
-// Clear state on successful submission
-const originalSubmitRegistration = window.submitRegistration || submitRegistration;
-submitRegistration = async function() {
-    await originalSubmitRegistration.call(this);
-    if (currentStep === 5) {
-        clearSavedState(); // Clear saved state on success
-    }
-};
-
-// Also save when switching between steps via buttons
-document.addEventListener('click', function(e) {
-    if (e.target.closest('.btn-primary') || e.target.closest('.btn-secondary')) {
-        setTimeout(saveFormState, 100);
-    }
-});
-
-setTimeout(() => updateQR(EVENT_FEE), 200);
-console.log('🔱 DEPLOMAT Registration · Auto-save enabled');
         setTimeout(() => updateQR(EVENT_FEE), 200);
-        console.log('🔱 DEPLOMAT Registration · UTR validation + anti-fake enabled');
+        console.log('🔱 DEPLOMAT Registration · Auto-UTR extraction via OCR enabled');
+        console.log('📸 Upload payment screenshot to auto-detect UTR');
+        console.log('☁️ Screenshots will be stored in Google Drive');
     </script>
 </body>
 </html>
