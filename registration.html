@@ -748,53 +748,6 @@
             height: 140px;
             display: block;
         }
-        /* ─── UPLOAD SECTION (Hidden until payment confirmed) ─── */
-        .upload-section {
-            display: none;
-            margin-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 20px;
-            animation: fadeStep 0.5s ease both;
-        }
-        .upload-section.show {
-            display: block;
-        }
-        .upload-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 16px;
-            background: rgba(255, 197, 61, 0.04);
-            padding: 14px 16px;
-            border-radius: 12px;
-            border-left: 3px solid #FFC53D;
-        }
-        .upload-header .icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        .upload-header .text {
-            flex: 1;
-        }
-        .upload-header .text h4 {
-            font-size: 0.9rem;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .upload-header .text p {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-            line-height: 1.5;
-        }
-        .upload-header .text .highlight {
-            color: #FFC53D;
-            font-weight: 900;
-            font-size: 0.9rem;
-            background: rgba(255, 197, 61, 0.15);
-            padding: 0 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 197, 61, 0.2);
-        }
         .upload-area {
             border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: 16px;
@@ -803,10 +756,16 @@
             background: rgba(255, 255, 255, 0.02);
             transition: 0.3s ease;
             cursor: pointer;
+            margin-top: 16px;
         }
         .upload-area.dragover {
             border-color: #65d8ff;
             background: rgba(101, 216, 255, 0.04);
+        }
+        .upload-area.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
         }
         .upload-area .icon-big {
             font-size: 3rem;
@@ -872,62 +831,8 @@
             font-weight: 700;
             font-family: monospace;
         }
-        .timer-display {
-            display: none;
-            background: rgba(255, 197, 61, 0.06);
-            border: 1px solid rgba(255, 197, 61, 0.15);
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 16px;
-        }
-        .timer-display.show {
-            display: block;
-        }
-        .timer-display .timer-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .timer-display .timer-row .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .timer-display .timer-row .left .icon {
-            font-size: 1.2rem;
-        }
-        .timer-display .timer-row .left .info {
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 0.05em;
-        }
-        .timer-display .timer-row .left .time {
-            font-size: 1.4rem;
-            font-weight: 900;
-            font-family: 'Courier New', monospace;
-            color: #65d8ff;
-        }
-        .timer-display .timer-row .badge {
-            font-size: 0.6rem;
-            background: rgba(101, 216, 255, 0.08);
-            color: #65d8ff;
-            padding: 2px 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(101, 216, 255, 0.1);
-        }
-        .timer-display .timer-row .warning {
-            display: none;
-            font-size: 0.7rem;
-            color: #ff6b8a;
-            background: rgba(255, 42, 109, 0.06);
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 42, 109, 0.1);
-        }
-        .timer-display .timer-row .warning.show {
-            display: block;
+        .utr-result .result-box .value.duplicate {
+            color: #ff2a6d;
         }
         .form-actions {
             display: flex;
@@ -1046,87 +951,79 @@
                 transform: rotate(360deg);
             }
         }
-        /* ─── TRANSACTION CONFIRMATION MODAL ─── */
-        .modal-overlay {
-            display: none;
+        .payment-confirm-modal {
             position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
+            display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            animation: fadeIn 0.3s ease;
+            animation: fadeStep 0.3s ease;
         }
-        .modal-overlay.show {
+        .payment-confirm-modal.active {
             display: flex;
         }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        .modal-box {
-            background: #1a1a2e;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .payment-confirm-modal .modal-box {
+            background: rgba(17, 24, 38, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 40px 36px;
-            max-width: 440px;
+            padding: 40px 32px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
         }
-        .modal-box .icon {
+        .payment-confirm-modal .modal-box .icon-big {
             font-size: 3.5rem;
-            display: block;
             margin-bottom: 12px;
         }
-        .modal-box h2 {
-            font-size: 1.3rem;
+        .payment-confirm-modal .modal-box h3 {
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #fff;
             margin-bottom: 8px;
+            color: #fff;
         }
-        .modal-box p {
+        .payment-confirm-modal .modal-box p {
             color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
             line-height: 1.5;
-            margin-bottom: 24px;
         }
-        .modal-box .btn-group {
+        .payment-confirm-modal .modal-box .btn-row {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            justify-content: center;
         }
-        .modal-box .btn-group .btn {
-            flex: none;
+        .payment-confirm-modal .modal-box .btn-row .btn {
+            flex: 1;
             min-width: 100px;
-            padding: 12px 28px;
         }
-        .modal-box .btn-group .btn-yes {
-            background: linear-gradient(135deg, #4caf50, #2e7d32);
-            color: #fff;
-        }
-        .modal-box .btn-group .btn-yes:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
-        }
-        .modal-box .btn-group .btn-no {
+        .payment-confirm-modal .modal-box .btn-row .btn-secondary {
             background: rgba(255, 255, 255, 0.06);
             color: rgba(255, 255, 255, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .modal-box .btn-group .btn-no:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .payment-confirm-modal .modal-box .btn-row .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
             color: #fff;
+        }
+        .payment-confirm-modal .modal-box .btn-row .btn-primary {
+            background: linear-gradient(135deg, #65d8ff, #3b7bff);
+            color: #0a0a0f;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ff2a6d, #b000ff);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 42, 109, 0.3);
         }
         @media (max-width: 768px) {
             .home-link {
@@ -1192,13 +1089,11 @@
                 padding: 6px 14px 6px 10px;
                 font-size: 0.8rem;
             }
-            .modal-box {
-                padding: 28px 20px;
+            .payment-confirm-modal .modal-box {
+                padding: 30px 20px;
             }
-            .modal-box .btn-group .btn {
-                min-width: 80px;
-                padding: 10px 20px;
-                font-size: 0.8rem;
+            .payment-confirm-modal .modal-box .btn-row {
+                flex-direction: column;
             }
         }
         @media (max-width: 480px) {
@@ -1291,29 +1186,112 @@
         .restore-banner .msg strong {
             color: #fff;
         }
-        .btn-pending {
-            display: none;
-            width: 100%;
-            padding: 14px;
+        .upload-instructions {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+            background: rgba(255, 197, 61, 0.04);
+            padding: 14px 16px;
             border-radius: 12px;
-            background: rgba(255, 197, 61, 0.08);
-            border: 1px solid rgba(255, 197, 61, 0.2);
-            color: #FFC53D;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s ease;
-            font-family: inherit;
-            margin-top: 12px;
+            border-left: 3px solid #FFC53D;
         }
-        .btn-pending.show {
+        .upload-instructions .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .upload-instructions .content h4 {
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .upload-instructions .content p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.5;
+        }
+        .upload-instructions .content p .highlight {
+            color: #FFC53D;
+            font-weight: 900;
+            font-size: 0.9rem;
+            background: rgba(255, 197, 61, 0.15);
+            padding: 0 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 197, 61, 0.2);
+        }
+        .upload-timer {
+            display: none;
+            background: rgba(255, 197, 61, 0.06);
+            border: 1px solid rgba(255, 197, 61, 0.15);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+        }
+        .upload-timer .timer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .upload-timer .timer-row .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .upload-timer .timer-row .left .timer-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.05em;
+        }
+        .upload-timer .timer-row .left .timer-display {
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-family: 'Courier New', monospace;
+            color: #65d8ff;
+        }
+        .upload-timer .timer-row .left .timer-status {
+            font-size: 0.6rem;
+            background: rgba(101, 216, 255, 0.08);
+            color: #65d8ff;
+            padding: 2px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+        }
+        .upload-timer .timer-row .timer-warning {
+            display: none;
+            font-size: 0.7rem;
+            color: #ff6b8a;
+            background: rgba(255, 42, 109, 0.06);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+        }
+        .upload-timer .timer-row .timer-warning.show {
             display: block;
         }
-        .btn-pending:hover {
-            background: rgba(255, 197, 61, 0.12);
+        .status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
         }
-        .btn-pending:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .status-badge.success {
+            background: rgba(76, 175, 80, 0.12);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.15);
+        }
+        .status-badge.pending {
+            background: rgba(255, 197, 61, 0.12);
+            color: #FFC53D;
+            border: 1px solid rgba(255, 197, 61, 0.15);
+        }
+        .status-badge.error {
+            background: rgba(255, 42, 109, 0.12);
+            color: #ff2a6d;
+            border: 1px solid rgba(255, 42, 109, 0.15);
         }
     </style>
 </head>
@@ -1424,7 +1402,7 @@
                             <button type="button" class="btn btn-primary" id="step3Next">Next →</button>
                         </div>
                     </div>
-                    <!-- STEP 4: PAYMENT + UPLOAD -->
+                    <!-- STEP 4: PAYMENT + SCREENSHOT UPLOAD -->
                     <div class="form-step" data-step="4">
                         <div class="payment-summary">
                             <div class="summary-row"><span>Event</span><span id="payEventName">—</span></div>
@@ -1449,11 +1427,13 @@
                             </div>
                         </div>
 
-                        <!-- ═══════ UPLOAD SECTION (Hidden until payment confirmed) ═══════ -->
-                        <div class="upload-section" id="uploadSection">
-                            <div class="upload-header">
+                        <!-- ═══════════ UPLOAD SECTION ═══════════ -->
+                        <div style="margin-top:24px;border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;">
+                            
+                            <!-- Upload Instructions -->
+                            <div class="upload-instructions" id="uploadInstructions">
                                 <span class="icon">📸</span>
-                                <div class="text">
+                                <div class="content">
                                     <h4>Upload Payment Screenshot</h4>
                                     <p>
                                         After payment, take a screenshot showing the 
@@ -1464,66 +1444,84 @@
                                     </p>
                                 </div>
                             </div>
-
+                            
                             <!-- Timer -->
-                            <div class="timer-display" id="timerDisplay">
+                            <div class="upload-timer" id="uploadTimer">
                                 <div class="timer-row">
                                     <div class="left">
-                                        <span class="icon">⏱️</span>
+                                        <span style="font-size:1.2rem;">⏱️</span>
                                         <div>
-                                            <div class="info">Time remaining to upload payment proof</div>
-                                            <span class="time" id="uploadTimerDisplay">05:00</span>
+                                            <div class="timer-label">Time remaining to upload payment proof</div>
+                                            <div style="display:flex;align-items:center;gap:10px;">
+                                                <span class="timer-display" id="timerDisplay">5:00</span>
+                                                <span class="timer-status" id="timerStatus">Active</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span class="badge" id="timerStatusBadge">Active</span>
-                                    <span class="warning" id="timerWarning">⚠️ <strong>Hurry!</strong> Timer expiring soon</span>
-                                </div>
-                            </div>
-
-                            <!-- Upload Area -->
-                            <div class="upload-area" id="dropZone">
-                                <div id="uploadPrompt">
-                                    <span class="icon-big">📤</span>
-                                    <p class="text-muted">Tap to upload screenshot</p>
-                                    <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
-                                </div>
-                                <div class="upload-preview" id="uploadPreview">
-                                    <img id="previewImage" src="" alt="Screenshot Preview" />
-                                    <p class="success-text">✅ Screenshot uploaded</p>
-                                </div>
-                                <input type="file" id="screenshotInput" accept="image/*,.pdf" style="display:none;" />
-                            </div>
-
-                            <!-- Upload Status -->
-                            <div class="upload-status" id="uploadStatus">
-                                <div class="status-box">
-                                    <span class="spinner"></span>
-                                    <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;" id="statusText">Processing screenshot & extracting UTR...</span>
-                                </div>
-                            </div>
-
-                            <!-- UTR Result -->
-                            <div class="utr-result" id="utrResult">
-                                <div class="result-box">
-                                    <div style="display:flex;align-items:center;gap:10px;">
-                                        <span style="color:#4caf50;font-size:1.2rem;">✅</span>
-                                        <div style="flex:1;">
-                                            <p class="label">Extracted UTR Number</p>
-                                            <p class="value" id="extractedUtr">—</p>
-                                        </div>
+                                    <div class="timer-warning" id="timerWarning">
+                                        ⚠️ <strong>Hurry!</strong> Timer expiring soon
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Pending Button -->
-                            <button type="button" class="btn-pending" id="submitPendingBtn" onclick="submitPendingRegistration()">
-                                ⏳ Submit as Pending (Contact Coordinator)
-                            </button>
+                            <!-- Payment Confirmation Prompt -->
+                            <div id="paymentConfirmArea" style="margin-bottom:16px;">
+                                <div style="background:rgba(101,216,255,0.04);border:1px solid rgba(101,216,255,0.1);border-radius:12px;padding:20px 24px;text-align:center;">
+                                    <p style="font-size:1.1rem;color:#fff;font-weight:600;margin-bottom:4px;">💳 Have you completed the payment?</p>
+                                    <p style="font-size:0.8rem;color:rgba(255,255,255,0.3);margin-bottom:16px;">After completing payment, upload the screenshot with UTR</p>
+                                    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                                        <button onclick="showUploadSection(true)" class="btn btn-primary" style="flex:0 1 auto;padding:12px 28px;">
+                                            ✅ Yes, I've Paid
+                                        </button>
+                                        <button onclick="showUploadSection(false)" class="btn btn-secondary" style="flex:0 1 auto;padding:12px 28px;">
+                                            ⏳ Not Yet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <!-- Confirm Button -->
-                            <button type="button" id="finalSubmitBtn" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:16px;padding:16px;display:none;" onclick="confirmRegistration()">
-                                🔱 Confirm Registration
-                            </button>
+                            <!-- Upload Area (hidden until user confirms payment) -->
+                            <div id="uploadSection" style="display:none;">
+                                <div class="upload-area" id="dropZone">
+                                    <div id="uploadPrompt">
+                                        <span class="icon-big">📤</span>
+                                        <p class="text-muted">Tap to upload screenshot</p>
+                                        <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
+                                    </div>
+                                    <div class="upload-preview" id="uploadPreview">
+                                        <img id="previewImage" src="" alt="Screenshot Preview" />
+                                        <p class="success-text">✅ Screenshot uploaded</p>
+                                    </div>
+                                    <input type="file" id="screenshotInput" accept="image/*,.pdf" style="display:none;" />
+                                </div>
+                                
+                                <div class="upload-status" id="uploadStatus">
+                                    <div class="status-box">
+                                        <span class="spinner"></span>
+                                        <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;" id="statusText">Processing screenshot & extracting UTR...</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="utr-result" id="utrResult">
+                                    <div class="result-box">
+                                        <div style="display:flex;align-items:center;gap:10px;">
+                                            <span style="color:#4caf50;font-size:1.2rem;" id="utrIcon">✅</span>
+                                            <div style="flex:1;">
+                                                <p class="label">Extracted UTR Number</p>
+                                                <p class="value" id="extractedUtr">—</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" id="submitPendingBtn" style="display:none;width:100%;padding:14px;border-radius:12px;background:rgba(255,197,61,0.08);border:1px solid rgba(255,197,61,0.2);color:#FFC53D;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:inherit;margin-top:12px;" onclick="submitPendingRegistration()">
+                                    ⏳ Submit as Pending (Contact Coordinator)
+                                </button>
+
+                                <button type="button" id="finalSubmitBtn" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:16px;padding:16px;display:none;" onclick="confirmRegistration()">
+                                    🔱 Confirm Registration
+                                </button>
+                            </div>
                         </div>
 
                         <div class="form-actions" style="margin-top:16px;">
@@ -1544,20 +1542,6 @@
             </div>
         </div>
     </main>
-
-    <!-- ═══════ TRANSACTION CONFIRMATION MODAL ═══════ -->
-    <div class="modal-overlay" id="paymentModal">
-        <div class="modal-box">
-            <span class="icon">💳</span>
-            <h2>Have you completed the payment?</h2>
-            <p>After confirming, you can upload the payment screenshot with UTR number for verification.</p>
-            <div class="btn-group">
-                <button class="btn btn-yes" onclick="confirmPaymentDone()">✅ Yes, I paid</button>
-                <button class="btn btn-no" onclick="closePaymentModal()">⏳ Not yet</button>
-            </div>
-        </div>
-    </div>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // ─── CONFIG ──────────────────────────────────────────────────────────
@@ -1568,7 +1552,7 @@
         const PAYEE_NAME = "DEPLOMAT";
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzTZEG_4kMrakDO9SRIzENGjYzzJXUGh0B-QNHE70f-iMozYMkLXucuPanRyfMuyqlW/exec';
         const UPLOAD_TIMER_SECONDS = 300; // 5 minutes
-
+        
         const EVENTS = [
             { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both' },
             { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5, category: 'both' },
@@ -1626,9 +1610,6 @@
         const blockNotice = document.getElementById('blockNotice');
         const blockMsg = document.getElementById('blockMsg');
         const restoreBanner = document.getElementById('restoreBanner');
-
-        // ─── UPLOAD DOM REFS ──────────────────────────────────────────────
-        const uploadSection = document.getElementById('uploadSection');
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('screenshotInput');
         const uploadPrompt = document.getElementById('uploadPrompt');
@@ -1638,14 +1619,12 @@
         const statusText = document.getElementById('statusText');
         const utrResult = document.getElementById('utrResult');
         const extractedUtr = document.getElementById('extractedUtr');
+        const uploadSection = document.getElementById('uploadSection');
+        const paymentConfirmArea = document.getElementById('paymentConfirmArea');
+        const uploadTimer = document.getElementById('uploadTimer');
         const timerDisplay = document.getElementById('timerDisplay');
-        const timerDisplayEl = document.getElementById('uploadTimerDisplay');
-        const timerStatusBadge = document.getElementById('timerStatusBadge');
+        const timerStatus = document.getElementById('timerStatus');
         const timerWarning = document.getElementById('timerWarning');
-        const submitPendingBtn = document.getElementById('submitPendingBtn');
-
-        // ─── MODAL REFS ────────────────────────────────────────────────────
-        const paymentModal = document.getElementById('paymentModal');
 
         // ─── STATE ──────────────────────────────────────────────────────────
         let currentStep = 1;
@@ -1657,11 +1636,13 @@
         let uploadedFile = null;
         let extractedUTR = null;
         let qrVisible = false;
-        let uploadTimer = null;
+        let uploadTimerInterval = null;
         let uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
         let isPendingSubmission = false;
         let timerStarted = false;
-        let paymentConfirmed = false;
+        let uploadDisabled = false;
+        let registrationComplete = false;
+        let usedUTRs = [];
 
         // ─── STATE PERSISTENCE ─────────────────────────────────────────────
         const STATE_EXPIRY = 10 * 60 * 1000;
@@ -1680,7 +1661,7 @@
             try {
                 localStorage.setItem('deplomat_registration_state', JSON.stringify(state));
                 sessionStorage.setItem('deplomat_registration_state_backup', JSON.stringify(state));
-            } catch (e) { console.warn('Could not save state:', e); }
+            } catch (e) {}
         }
 
         function restoreRegistrationState() {
@@ -1694,7 +1675,9 @@
                     sessionStorage.removeItem('deplomat_registration_state_backup');
                     return false;
                 }
-                if (!state.college && !state.eventId && (!state.participants || state.participants.length === 0)) return false;
+                if (!state.college && !state.eventId && (!state.participants || state.participants.length === 0)) {
+                    return false;
+                }
                 restoreBanner.classList.add('show');
                 if (state.college) document.getElementById('college').value = state.college;
                 if (state.category) {
@@ -1703,6 +1686,7 @@
                         selectedCategory = state.category; }
                 }
                 if (state.eventId !== null && state.eventId !== undefined) {
+                    const eventSelect = document.getElementById('eventSelect');
                     const eventIndex = state.eventId.toString();
                     if (Array.from(eventSelect.options).some(opt => opt.value === eventIndex)) {
                         eventSelect.value = eventIndex;
@@ -1749,11 +1733,25 @@
                             goToStep(4);
                             updatePaymentSummary();
                             if (localStorage.getItem('payment_initiated') === 'true') {
-                                // Show the modal to confirm payment
-                                showPaymentModal();
+                                // Show upload section if payment was initiated
+                                showUploadSection(true);
                             }
                         }, 600);
                     }
+                    setTimeout(() => {
+                        const paid = confirm(
+                            '✅ Welcome back!\n\n' +
+                            'Did you complete the payment in your app?\n\n' +
+                            '• Click "OK" if you have paid → Upload screenshot\n' +
+                            '• Click "Cancel" if you haven\'t paid → Try again'
+                        );
+                        if (paid) {
+                            showUploadSection(true);
+                            document.querySelector('.payment-side').scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                            localStorage.removeItem('payment_initiated');
+                        }
+                    }, 1200);
                 }
                 return true;
             } catch (e) {
@@ -1869,12 +1867,9 @@
                 if (!eventVal) { alert('Please select an event.'); return false; }
                 const cat = ugPuSelected.value;
                 const result = checkCategoryEventCompatibility(cat, eventVal);
-                if (!result.valid) {
-                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                if (!result.valid) { const cleanMsg = result.message.replace(/<[^>]*>/g, '');
                     alert(`⛔ ${cleanMsg}`);
-                    showBlockNotice(result.message);
-                    return false;
-                }
+                    showBlockNotice(result.message); return false; }
                 showBlockNotice('');
                 selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
                 if (!selectedEvent) { alert('Please select a valid event.'); return false; }
@@ -2018,7 +2013,7 @@
             });
         }
 
-        // ─── PAYMENT & UPLOAD ─────────────────────────────────────────────
+        // ─── PAYMENT & SCREENSHOT UPLOAD ──────────────────────────────────
         function updatePaymentSummary() {
             const count = playersContainer.children.length;
             const total = count * EVENT_FEE;
@@ -2045,115 +2040,69 @@
             if (qrVisible) updateQR(getTotalAmount());
         }
 
-        // ─── PAYMENT CONFIRMATION MODAL ──────────────────────────────────
-        function showPaymentModal() {
-            paymentModal.classList.add('show');
-        }
-
-        function closePaymentModal() {
-            paymentModal.classList.remove('show');
-        }
-
-        function confirmPaymentDone() {
-            closePaymentModal();
-            paymentConfirmed = true;
-            // Show upload section
-            uploadSection.classList.add('show');
-            // Start timer
-            startUploadTimer();
-            // Scroll to upload area
-            uploadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Save state
-            saveRegistrationState();
-        }
-
-        // ─── OPEN PAYMENT APP ─────────────────────────────────────────────
-        function openPaymentApp(app) {
-            const total = getTotalAmount();
-            const leaderName = getLeaderName();
-            const college = collegeInput.value.trim();
-            const participants = getParticipantsList();
-            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
-            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-
-            if (!leaderName || !college || participants.length === 0) {
-                alert('⚠️ Please complete all registration details first.');
+        // ─── PAYMENT CONFIRMATION ─────────────────────────────────────────
+        function showUploadSection(confirmed) {
+            if (uploadDisabled) {
+                alert('📌 Upload has been disabled. Registration already submitted.');
                 return;
             }
-
-            // Save state before redirect
-            saveRegistrationState();
-
-            const regData = {
-                leader_name: leaderName,
-                college: college,
-                event: selectedEvent ? selectedEvent.name : 'Unknown',
-                amount: total,
-                participants: participants,
-                timestamp: new Date().toISOString(),
-                category: ugPuValue,
-                eventId: selectedEvent ? selectedEvent.id : null
-            };
-            localStorage.setItem('pending_registration', JSON.stringify(regData));
-            sessionStorage.setItem('returning_from_payment', 'true');
-            localStorage.setItem('payment_initiated', 'true');
-
-            const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
-
-            // Try to open in a new tab
-            const newTab = window.open(upiLink, '_blank');
-
-            if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
-                if (confirm('⚠️ Could not open payment app in new tab.\n\nClick OK to redirect to payment app.\nYou will need to return to this page after payment.')) {
-                    window.location.href = upiLink;
-                }
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
+                return;
+            }
+            
+            if (confirmed) {
+                paymentConfirmArea.style.display = 'none';
+                uploadSection.style.display = 'block';
+                // Start timer
+                startUploadTimer();
+                localStorage.setItem('payment_initiated', 'true');
             } else {
-                // Show the payment confirmation modal
-                setTimeout(() => {
-                    showPaymentModal();
-                }, 1000);
+                paymentConfirmArea.style.display = 'block';
+                uploadSection.style.display = 'none';
+                localStorage.removeItem('payment_initiated');
             }
         }
 
         // ─── TIMER FUNCTIONS ──────────────────────────────────────────────
         function startUploadTimer() {
-            if (timerStarted) return;
+            if (timerStarted || uploadDisabled) return;
             timerStarted = true;
-
-            timerDisplay.classList.add('show');
+            
+            uploadTimer.style.display = 'block';
             uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
-
-            if (uploadTimer) clearInterval(uploadTimer);
-
-            uploadTimer = setInterval(() => {
+            
+            if (uploadTimerInterval) clearInterval(uploadTimerInterval);
+            
+            uploadTimerInterval = setInterval(() => {
                 uploadTimeRemaining--;
                 const minutes = Math.floor(uploadTimeRemaining / 60);
                 const seconds = uploadTimeRemaining % 60;
-                timerDisplayEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
+                timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
                 if (uploadTimeRemaining < 60 && uploadTimeRemaining > 0) {
                     timerWarning.classList.add('show');
-                    timerDisplayEl.style.color = '#ff6b8a';
-                    timerStatusBadge.textContent = 'Expiring';
-                    timerStatusBadge.style.background = 'rgba(255,42,109,0.08)';
-                    timerStatusBadge.style.color = '#ff6b8a';
+                    timerDisplay.style.color = '#ff6b8a';
+                    timerStatus.textContent = 'Expiring';
+                    timerStatus.style.background = 'rgba(255,42,109,0.08)';
+                    timerStatus.style.color = '#ff6b8a';
                 }
-
+                
                 if (uploadTimeRemaining <= 0) {
-                    clearInterval(uploadTimer);
-                    uploadTimer = null;
-                    timerDisplayEl.textContent = '00:00';
-                    timerDisplayEl.style.color = '#ff2a6d';
-                    timerStatusBadge.textContent = 'Expired';
-                    timerStatusBadge.style.background = 'rgba(255,42,109,0.12)';
-                    timerStatusBadge.style.color = '#ff2a6d';
+                    clearInterval(uploadTimerInterval);
+                    uploadTimerInterval = null;
+                    timerDisplay.textContent = '00:00';
+                    timerDisplay.style.color = '#ff2a6d';
+                    timerStatus.textContent = 'Expired';
+                    timerStatus.style.background = 'rgba(255,42,109,0.12)';
+                    timerStatus.style.color = '#ff2a6d';
                     timerWarning.innerHTML = '⏰ <strong>Time expired!</strong> Submit as Pending or contact coordinator.';
                     timerWarning.classList.add('show');
-
-                    submitPendingBtn.classList.add('show');
+                    
+                    document.getElementById('submitPendingBtn').style.display = 'block';
                     dropZone.style.opacity = '0.5';
                     dropZone.style.pointerEvents = 'none';
-
+                    
                     if (!isPendingSubmission) {
                         submitPendingRegistration();
                     }
@@ -2161,18 +2110,46 @@
             }, 1000);
         }
 
+        // ─── CHECK DUPLICATE UTR ──────────────────────────────────────────
+        async function checkDuplicateUTR(utr) {
+            try {
+                // Check local storage first
+                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                const localMatch = db.find(r => r.txn === utr && (r.status === 'VERIFIED' || r.status === 'PENDING'));
+                if (localMatch) return true;
+                
+                // Check Supabase
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('registrations')
+                        .select('txn')
+                        .eq('txn', utr)
+                        .in('status', ['VERIFIED', 'PENDING']);
+                    if (!error && data && data.length > 0) {
+                        return true;
+                    }
+                }
+                return false;
+            } catch (e) {
+                console.warn('Error checking duplicate UTR:', e);
+                return false;
+            }
+        }
+
         // ─── SCREENSHOT UPLOAD HANDLING ──────────────────────────────────
-        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('click', () => {
+            if (!uploadDisabled) fileInput.click();
+        });
 
         fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
+            if (e.target.files.length > 0 && !uploadDisabled) {
                 handleFile(e.target.files[0]);
             }
         });
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropZone.classList.add('dragover');
+            if (!uploadDisabled) dropZone.classList.add('dragover');
         });
 
         dropZone.addEventListener('dragleave', () => {
@@ -2182,12 +2159,21 @@
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
+            if (!uploadDisabled && e.dataTransfer.files.length > 0) {
                 handleFile(e.dataTransfer.files[0]);
             }
         });
 
         function handleFile(file) {
+            if (uploadDisabled) {
+                alert('📌 Upload has been disabled. Registration already submitted.');
+                return;
+            }
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
+                return;
+            }
+            
             const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
             if (!validTypes.includes(file.type)) {
                 alert('⚠️ Please upload PNG, JPG, or PDF files only.');
@@ -2197,9 +2183,9 @@
                 alert('⚠️ File size must be less than 5MB.');
                 return;
             }
-
+            
             uploadedFile = file;
-
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 previewImage.src = e.target.result;
@@ -2208,11 +2194,11 @@
                 dropZone.style.borderColor = '#4caf50';
             };
             reader.readAsDataURL(file);
-
+            
             processScreenshot(file);
         }
 
-        // ─── UPLOAD TO GOOGLE DRIVE ──────────────────────────────────────
+        // ─── UPLOAD SCREENSHOT TO GOOGLE DRIVE ──────────────────────────
         async function uploadScreenshotToDrive(file, utrNumber) {
             try {
                 const base64 = await fileToBase64(file);
@@ -2232,7 +2218,11 @@
             } catch (error) {
                 console.warn('Google Drive upload failed, storing locally:', error);
                 const screenshots = JSON.parse(localStorage.getItem('payment_screenshots') || '[]');
-                screenshots.push({ utr: utrNumber, timestamp: new Date().toISOString(), data: URL.createObjectURL(file) });
+                screenshots.push({
+                    utr: utrNumber,
+                    timestamp: new Date().toISOString(),
+                    data: URL.createObjectURL(file)
+                });
                 localStorage.setItem('payment_screenshots', JSON.stringify(screenshots));
             }
         }
@@ -2252,17 +2242,18 @@
             statusText.textContent = 'Processing screenshot & extracting UTR...';
             finalSubmitBtn.style.display = 'none';
             utrResult.style.display = 'none';
-
+            
             try {
                 const Tesseract = window.Tesseract;
                 if (!Tesseract) {
-                    throw new Error('OCR library not loaded. Please check internet connection.');
+                    throw new Error('OCR library not loaded.');
                 }
-
+                
                 const imageUrl = URL.createObjectURL(file);
                 const result = await Tesseract.recognize(
                     imageUrl,
-                    'eng', {
+                    'eng',
+                    {
                         logger: (m) => {
                             if (m.status === 'recognizing text') {
                                 statusText.textContent = `Processing... ${Math.round(m.progress * 100)}%`;
@@ -2270,36 +2261,105 @@
                         }
                     }
                 );
-
+                
                 const text = result.data.text;
                 console.log('📝 OCR Extracted Text:', text);
-
+                
                 const utrMatch = text.match(/\b\d{12}\b/);
-
+                
                 if (utrMatch) {
                     extractedUTR = utrMatch[0];
+                    
+                    // Check for duplicate UTR
+                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                    if (isDuplicate) {
+                        utrResult.style.display = 'block';
+                        const icon = document.getElementById('utrIcon');
+                        icon.textContent = '⚠️';
+                        icon.style.color = '#ff2a6d';
+                        extractedUtr.textContent = extractedUTR;
+                        extractedUtr.className = 'value duplicate';
+                        document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                        document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                        statusText.textContent = '⚠️ This UTR has already been used!';
+                        uploadStatus.style.display = 'none';
+                        document.getElementById('submitPendingBtn').style.display = 'block';
+                        document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
+                        return;
+                    }
+                    
                     extractedUtr.textContent = extractedUTR;
+                    extractedUtr.className = 'value';
+                    document.getElementById('utrIcon').textContent = '✅';
+                    document.getElementById('utrIcon').style.color = '#4caf50';
+                    document.querySelector('.utr-result .result-box .label').textContent = 'Extracted UTR Number';
                     utrResult.style.display = 'block';
                     finalSubmitBtn.style.display = 'block';
                     uploadStatus.style.display = 'none';
                     statusText.textContent = '✅ UTR extracted successfully!';
+                    
                     await uploadScreenshotToDrive(file, extractedUTR);
+                    
                 } else {
                     const upiMatch = text.match(/[A-Z0-9]{8,15}/);
                     if (upiMatch && upiMatch[0].length >= 8) {
                         extractedUTR = upiMatch[0];
+                        
+                        const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                        if (isDuplicate) {
+                            utrResult.style.display = 'block';
+                            const icon = document.getElementById('utrIcon');
+                            icon.textContent = '⚠️';
+                            icon.style.color = '#ff2a6d';
+                            extractedUtr.textContent = extractedUTR;
+                            extractedUtr.className = 'value duplicate';
+                            document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                            document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                            statusText.textContent = '⚠️ This UTR has already been used!';
+                            uploadStatus.style.display = 'none';
+                            document.getElementById('submitPendingBtn').style.display = 'block';
+                            document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
+                            return;
+                        }
+                        
                         extractedUtr.textContent = extractedUTR;
+                        extractedUtr.className = 'value';
+                        document.getElementById('utrIcon').textContent = '✅';
+                        document.getElementById('utrIcon').style.color = '#4caf50';
+                        document.querySelector('.utr-result .result-box .label').textContent = 'Transaction ID';
                         utrResult.style.display = 'block';
                         finalSubmitBtn.style.display = 'block';
                         uploadStatus.style.display = 'none';
                         statusText.textContent = '✅ Transaction ID extracted!';
+                        
                         await uploadScreenshotToDrive(file, extractedUTR);
                     } else {
                         uploadStatus.style.display = 'none';
                         const manualUtr = prompt('⚠️ Could not detect UTR automatically.\n\nPlease enter the 12-digit UTR number from your payment app:');
                         if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
                             extractedUTR = manualUtr.replace(/\D/g, '');
+                            
+                            const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                            if (isDuplicate) {
+                                utrResult.style.display = 'block';
+                                const icon = document.getElementById('utrIcon');
+                                icon.textContent = '⚠️';
+                                icon.style.color = '#ff2a6d';
+                                extractedUtr.textContent = extractedUTR;
+                                extractedUtr.className = 'value duplicate';
+                                document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                                document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                                statusText.textContent = '⚠️ This UTR has already been used!';
+                                document.getElementById('submitPendingBtn').style.display = 'block';
+                                document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
+                                return;
+                            }
+                            
                             extractedUtr.textContent = extractedUTR;
+                            extractedUtr.className = 'value';
+                            document.getElementById('utrIcon').textContent = '✅';
+                            document.getElementById('utrIcon').style.color = '#4caf50';
+                            document.querySelector('.utr-result .result-box .label').textContent = 'Manual UTR Entry';
                             utrResult.style.display = 'block';
                             finalSubmitBtn.style.display = 'block';
                             await uploadScreenshotToDrive(file, extractedUTR);
@@ -2308,16 +2368,37 @@
                         }
                     }
                 }
-
+                
             } catch (error) {
                 console.error('OCR Error:', error);
                 uploadStatus.style.display = 'none';
                 const manualUtr = prompt('⚠️ Error processing screenshot.\n\nPlease enter the 12-digit UTR number from your payment app:');
                 if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
                     extractedUTR = manualUtr.replace(/\D/g, '');
+                    
+                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                    if (isDuplicate) {
+                        utrResult.style.display = 'block';
+                        const icon = document.getElementById('utrIcon');
+                        icon.textContent = '⚠️';
+                        icon.style.color = '#ff2a6d';
+                        extractedUtr.textContent = extractedUTR;
+                        extractedUtr.className = 'value duplicate';
+                        document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                        document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                        document.getElementById('submitPendingBtn').style.display = 'block';
+                        document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
+                        return;
+                    }
+                    
                     extractedUtr.textContent = extractedUTR;
+                    extractedUtr.className = 'value';
+                    document.getElementById('utrIcon').textContent = '✅';
+                    document.getElementById('utrIcon').style.color = '#4caf50';
+                    document.querySelector('.utr-result .result-box .label').textContent = 'Manual UTR Entry';
                     utrResult.style.display = 'block';
                     finalSubmitBtn.style.display = 'block';
+                    await uploadScreenshotToDrive(file, extractedUTR);
                 } else {
                     alert('❌ Invalid UTR. Please try again.');
                 }
@@ -2330,10 +2411,21 @@
                 alert('⚠️ Please upload payment screenshot first.');
                 return;
             }
-
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
+                return;
+            }
+            
+            // Check duplicate one more time before final submission
+            const isDuplicate = await checkDuplicateUTR(extractedUTR);
+            if (isDuplicate) {
+                alert('❌ This UTR number has already been used for another registration.\n\nPlease use a different UTR or contact the coordinator.');
+                return;
+            }
+            
             finalSubmitBtn.disabled = true;
             finalSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
-
+            
             try {
                 const leaderName = getLeaderName();
                 const college = collegeInput.value.trim();
@@ -2341,7 +2433,7 @@
                 const participants = getParticipantsList();
                 const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
                 const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-
+                
                 const registrationData = {
                     event_name: selectedEvent ? selectedEvent.name : 'Unknown',
                     event_sub: selectedEvent ? selectedEvent.sub : '',
@@ -2359,16 +2451,25 @@
                     is_pending: false,
                     timeout_triggered: false
                 };
-
+                
                 if (supabaseClient) {
                     const { error } = await supabaseClient.from('registrations').insert([registrationData]);
                     if (error) throw new Error(error.message);
                 }
-
+                
                 const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                 db.push(registrationData);
                 localStorage.setItem('deplomat_db', JSON.stringify(db));
-
+                
+                // Mark as complete and disable upload
+                registrationComplete = true;
+                uploadDisabled = true;
+                dropZone.classList.add('disabled');
+                dropZone.style.pointerEvents = 'none';
+                dropZone.style.opacity = '0.5';
+                finalSubmitBtn.style.display = 'none';
+                document.getElementById('submitPendingBtn').style.display = 'none';
+                
                 goToStep(5);
                 const details = document.getElementById('successDetails');
                 details.innerHTML = `
@@ -2389,18 +2490,18 @@
                         </p>
                     </div>
                 `;
-
-                if (uploadTimer) { clearInterval(uploadTimer);
-                    uploadTimer = null; }
+                
+                if (uploadTimerInterval) { clearInterval(uploadTimerInterval);
+                    uploadTimerInterval = null; }
                 localStorage.removeItem('pending_registration');
                 localStorage.removeItem('payment_initiated');
                 sessionStorage.removeItem('returning_from_payment');
                 localStorage.removeItem('deplomat_registration_state');
                 sessionStorage.removeItem('deplomat_registration_state_backup');
-
+                
                 finalSubmitBtn.disabled = false;
                 finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
-
+                
             } catch (error) {
                 alert(`❌ Submission failed: ${error.message}`);
                 finalSubmitBtn.disabled = false;
@@ -2408,14 +2509,15 @@
             }
         }
 
-        // ─── SUBMIT AS PENDING ────────────────────────────────────────────
+        // ─── SUBMIT AS PENDING ──────────────────────────────────────────────
         async function submitPendingRegistration() {
-            if (isPendingSubmission) return;
+            if (isPendingSubmission || registrationComplete) return;
             isPendingSubmission = true;
-
-            submitPendingBtn.disabled = true;
-            submitPendingBtn.innerHTML = '<span class="spinner"></span> Submitting...';
-
+            
+            const btn = document.getElementById('submitPendingBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Submitting...';
+            
             try {
                 const leaderName = getLeaderName();
                 const college = collegeInput.value.trim();
@@ -2423,9 +2525,9 @@
                 const participants = getParticipantsList();
                 const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
                 const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-
+                
                 const pendingId = 'PND_' + Date.now().toString(36).toUpperCase();
-
+                
                 const registrationData = {
                     event_name: selectedEvent ? selectedEvent.name : 'Unknown',
                     event_sub: selectedEvent ? selectedEvent.sub : '',
@@ -2435,22 +2537,30 @@
                     email: participants[0]?.email || '',
                     phone: participants[0]?.phone || '',
                     total_amount: total,
-                    txn: pendingId,
+                    txn: extractedUTR || pendingId,
                     participants: participants,
                     status: 'PENDING',
                     registered_at: new Date().toISOString(),
                     pending_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
                 };
-
+                
                 if (supabaseClient) {
                     const { error } = await supabaseClient.from('registrations').insert([registrationData]);
                     if (error) throw new Error(error.message);
                 }
-
+                
                 const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                 db.push(registrationData);
                 localStorage.setItem('deplomat_db', JSON.stringify(db));
-
+                
+                registrationComplete = true;
+                uploadDisabled = true;
+                dropZone.classList.add('disabled');
+                dropZone.style.pointerEvents = 'none';
+                dropZone.style.opacity = '0.5';
+                finalSubmitBtn.style.display = 'none';
+                btn.style.display = 'none';
+                
                 goToStep(5);
                 const details = document.getElementById('successDetails');
                 details.innerHTML = `
@@ -2470,21 +2580,71 @@
                         </p>
                     </div>
                 `;
-
-                if (uploadTimer) { clearInterval(uploadTimer);
-                    uploadTimer = null; }
+                
+                if (uploadTimerInterval) { clearInterval(uploadTimerInterval);
+                    uploadTimerInterval = null; }
                 localStorage.removeItem('pending_registration');
                 localStorage.removeItem('payment_initiated');
                 sessionStorage.removeItem('returning_from_payment');
-
-                submitPendingBtn.classList.remove('show');
+                
                 isPendingSubmission = false;
-
+                
             } catch (error) {
                 alert(`❌ Submission failed: ${error.message}`);
-                submitPendingBtn.disabled = false;
-                submitPendingBtn.innerHTML = '⏳ Submit as Pending (Contact Coordinator)';
+                btn.disabled = false;
+                btn.innerHTML = '⏳ Submit as Pending (Contact Coordinator)';
                 isPendingSubmission = false;
+            }
+        }
+
+        // ─── openPaymentApp ──────────────────────────────────────────────
+        function openPaymentApp(app) {
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
+                return;
+            }
+            
+            const total = getTotalAmount();
+            const leaderName = getLeaderName();
+            const college = collegeInput.value.trim();
+            const participants = getParticipantsList();
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+            
+            if (!leaderName || !college || participants.length === 0) {
+                alert('⚠️ Please complete all registration details first.');
+                return;
+            }
+            
+            saveRegistrationState();
+            
+            const regData = {
+                leader_name: leaderName,
+                college: college,
+                event: selectedEvent ? selectedEvent.name : 'Unknown',
+                amount: total,
+                participants: participants,
+                timestamp: new Date().toISOString(),
+                category: ugPuValue,
+                eventId: selectedEvent ? selectedEvent.id : null
+            };
+            localStorage.setItem('pending_registration', JSON.stringify(regData));
+            sessionStorage.setItem('returning_from_payment', 'true');
+            localStorage.setItem('payment_initiated', 'true');
+            
+            const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
+            
+            // Show the upload section after payment
+            showUploadSection(true);
+            
+            const newTab = window.open(upiLink, '_blank');
+            
+            if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+                if (confirm('⚠️ Could not open payment app in new tab.\n\nClick OK to redirect to payment app.\nYou will need to return to this page after payment.')) {
+                    window.location.href = upiLink;
+                }
+            } else {
+                alert('📱 Payment app opened in new tab.\n\nComplete your payment and upload the screenshot with UTR.\n\n⏱️ You have 5 minutes to upload.');
             }
         }
 
@@ -2492,9 +2652,19 @@
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'visible') {
                 const returning = sessionStorage.getItem('returning_from_payment');
-                if (returning === 'true' && currentStep === 4) {
-                    // Show the payment confirmation modal
-                    showPaymentModal();
+                if (returning === 'true' && currentStep === 4 && !registrationComplete) {
+                    const paid = confirm(
+                        '✅ Did you complete the payment in your app?\n\n' +
+                        '• Click "OK" if you have paid → Upload screenshot\n' +
+                        '• Click "Cancel" if you haven\'t paid → Try again\n\n' +
+                        '⏱️ You have 5 minutes to upload.'
+                    );
+                    if (paid) {
+                        showUploadSection(true);
+                        document.querySelector('.payment-side').scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('⏳ No problem! Complete the payment and upload the screenshot.');
+                    }
                 }
             }
         });
@@ -2614,7 +2784,7 @@
         // ─── INIT ──────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function() {
             const restored = restoreRegistrationState();
-
+            
             if (!restored) {
                 autoSelectEventFromURL();
                 setTimeout(() => {
@@ -2627,14 +2797,13 @@
                     updateAddButtonState();
                 }, 200);
             }
-
+            
             setTimeout(() => updateQR(EVENT_FEE), 200);
             console.log('🔱 DEPLOMAT Registration · Auto-UTR extraction via OCR enabled');
             console.log('📸 Upload payment screenshot to auto-detect UTR');
-            console.log('☁️ Screenshots will be stored in Google Drive');
-            console.log('💾 State persistence enabled - your data is safe!');
-            console.log('⏱️ Upload timer set to 5 minutes');
-            console.log('💳 Payment confirmation modal added');
+            console.log('⏱️ 5 minute upload timer');
+            console.log('🔍 Duplicate UTR detection enabled');
+            console.log('💾 State persistence enabled');
         });
 
         function autoSelectEventFromURL() {
