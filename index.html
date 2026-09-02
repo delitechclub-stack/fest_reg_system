@@ -408,137 +408,116 @@
     .carousel-stage:active { cursor:grabbing; }
     .carousel-track {
       display:flex;
-      gap:10px;
+      gap: 12px;
       will-change:auto;
       transition:none;
-      padding:0 4px;
+      padding:0 8px;
       touch-action:pan-y;
+      align-items:center;
     }
+
     .carousel-track .event-card {
-  flex: 0 0 clamp(170px, 36vw, 260px);
-  aspect-ratio: 5 / 7;
-  min-height: 200px;
-  max-height: 400px;
-  background: linear-gradient(160deg, rgba(6,26,32,0.92), rgba(4,18,23,0.96));
-  border-radius: 14px;
-  border: 1px solid rgba(169,132,69,0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 16px 14px 12px 14px;
-  position: relative;
-  box-shadow: 0 16px 40px -12px rgba(0,0,0,0.9);
-  cursor: pointer;
-  will-change: auto;
-  transform: scale(0.92);
-  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              box-shadow 0.3s,
-              opacity 0.25s,
-              border-color 0.3s,
-              filter 0.2s;
-  -webkit-tap-highlight-color: transparent;
-  flex-shrink: 0;
-  contain: layout style;
-  touch-action: pan-y;
-}
-
-/* ─── GOLDEN EDGE OVERLAY (BOTTOM) ─── */
-.carousel-track .event-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40%;
-  background: linear-gradient(
-    to top,
-    rgba(169, 132, 69, 0.12) 0%,
-    rgba(169, 132, 69, 0.06) 40%,
-    rgba(169, 132, 69, 0.02) 70%,
-    transparent 100%
-  );
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  pointer-events: none;
-  z-index: 4;
-  border-radius: 0 0 14px 14px;
-}
-
-/* ─── GLOWING GOLDEN BOTTOM LINE ─── */
-.carousel-track .event-card::before {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 15%;
-  width: 70%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(169, 132, 69, 0.2) 20%,
-    rgba(192, 154, 82, 0.6) 50%,
-    rgba(169, 132, 69, 0.2) 80%,
-    transparent
-  );
-  filter: blur(3px);
-  z-index: 5;
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  transform: scaleX(0.8);
-  pointer-events: none;
-}
-
-/* ─── HOVER STATE (DESKTOP) ─── */
-.carousel-track .event-card:hover::after {
-  opacity: 1;
-}
-
-.carousel-track .event-card:hover::before {
-  opacity: 1;
-  transform: scaleX(1);
-}
-
-/* ─── ACTIVE/TAP STATE ─── */
-.carousel-track .event-card:active {
-  transform: scale(0.96);
-  border-color: rgba(169, 132, 69, 0.2);
-  box-shadow: 0 8px 40px rgba(169, 132, 69, 0.08);
-}
-
-.carousel-track .event-card:active::after {
-  opacity: 1;
-}
-
-.carousel-track .event-card:active::before {
-  opacity: 1;
-  transform: scaleX(1);
-}
-
-/* ─── ACTIVE CARD STATE (VIA JS) ─── */
-.carousel-track .event-card.active-card {
-  transform: scale(0.97);
-  border-color: rgba(169, 132, 69, 0.2);
-  box-shadow: 0 12px 50px rgba(169, 132, 69, 0.1);
-}
-
-.carousel-track .event-card.active-card::after {
-  opacity: 1;
-}
-
-.carousel-track .event-card.active-card::before {
-  opacity: 1;
-  transform: scaleX(1);
-}
-    .carousel-track .event-card::before {
-      content:'';
-      position:absolute;
-      inset:3px;
-      border-radius:11px;
-      border:1px solid rgba(169,132,69,0.04);
-      pointer-events:none;
-      z-index:3;
+      flex: 0 0 260px;
+      aspect-ratio: 4 / 5;
+      min-height: 220px;
+      max-height: 420px;
+      background: linear-gradient(160deg, rgba(6,26,32,0.92), rgba(4,18,23,0.96));
+      border-radius: 16px;
+      border: 1px solid rgba(169,132,69,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 16px 14px 12px 14px;
+      position: relative;
+      box-shadow: 0 16px 40px -12px rgba(0,0,0,0.9);
+      cursor: pointer;
+      will-change: auto;
+      transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                  box-shadow 0.3s,
+                  opacity 0.25s,
+                  border-color 0.3s,
+                  filter 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+      contain: layout style;
+      touch-action: pan-y;
     }
+
+    .carousel-track .event-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background: linear-gradient(
+        to top,
+        rgba(169, 132, 69, 0.12) 0%,
+        rgba(169, 132, 69, 0.06) 40%,
+        rgba(169, 132, 69, 0.02) 70%,
+        transparent 100%
+      );
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+      z-index: 4;
+      border-radius: 0 0 16px 16px;
+    }
+
+    .carousel-track .event-card::before {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 15%;
+      width: 70%;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(169, 132, 69, 0.2) 20%,
+        rgba(192, 154, 82, 0.6) 50%,
+        rgba(169, 132, 69, 0.2) 80%,
+        transparent
+      );
+      filter: blur(3px);
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: scaleX(0.8);
+      pointer-events: none;
+    }
+
+    .carousel-track .event-card:hover::after,
+    .carousel-track .event-card:hover::before {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    .carousel-track .event-card:active {
+      transform: scale(0.96);
+      border-color: rgba(169, 132, 69, 0.2);
+      box-shadow: 0 8px 40px rgba(169, 132, 69, 0.08);
+    }
+
+    .carousel-track .event-card:active::after,
+    .carousel-track .event-card:active::before {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    .carousel-track .event-card.active-card {
+      transform: scale(0.97);
+      border-color: rgba(169, 132, 69, 0.2);
+      box-shadow: 0 12px 50px rgba(169, 132, 69, 0.1);
+    }
+
+    .carousel-track .event-card.active-card::after,
+    .carousel-track .event-card.active-card::before {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
     .carousel-track .event-card .card-image {
       position:absolute;
       top:0;
@@ -567,7 +546,7 @@
       background-size:200% 100%;
       animation:shimmerAtlantis 2s ease-in-out infinite;
       z-index:1;
-      border-radius:14px;
+      border-radius:16px;
       pointer-events:none;
     }
     .carousel-track .event-card .card-image img.loaded ~ .img-placeholder {
@@ -585,7 +564,7 @@
       background:linear-gradient(to top, rgba(4,18,23,0.98) 0%, rgba(4,18,23,0.5) 50%, transparent 100%);
       margin: 0 -14px -12px -14px;
       padding: 28px 14px 14px 14px;
-      border-radius:0 0 14px 14px;
+      border-radius:0 0 16px 16px;
     }
     .carousel-track .event-card .card-name {
       font-family:'Cinzel',serif;
@@ -629,10 +608,6 @@
       touch-action:manipulation;
     }
     .carousel-track .event-card .card-explore-badge:active { transform:scale(0.92); }
-    .carousel-track .event-card.active-card {
-      border-color:rgba(169,132,69,0.2);
-      box-shadow:0 24px 60px -12px rgba(0,0,0,0.95),0 0 40px rgba(169,132,69,0.03);
-    }
     .carousel-track .event-card.active-card .card-image { opacity:0.65; }
     .carousel-track .event-card.active-card .card-explore-badge { opacity:0.85; border-color:rgba(169,132,69,0.15); }
 
@@ -1162,22 +1137,6 @@
 
     /* ─── RESPONSIVE ──────────────────────────────────── */
 
-    /* For tablets and smaller laptops */
-    @media (max-width: 1024px) {
-      .carousel-track .event-card { 
-        flex: 0 0 clamp(200px, 40vw, 320px);
-        aspect-ratio: 4/5;
-        min-height: 240px;
-        max-height: 460px;
-        border-radius: 16px;
-        padding: 18px 16px 14px 16px;
-      }
-      .carousel-track .event-card .card-name { 
-        font-size: clamp(0.9rem, 1.8vw, 1.2rem);
-      }
-    }
-
-    /* For phones - MUCH LARGER CARDS */
     @media (max-width: 768px) {
       .header { top:12px; left:12px; }
       .logo-emblem { width:34px; height:34px; }
@@ -1188,7 +1147,6 @@
       .explore-section { padding:50px 0 12px 0; }
       .explore-header { padding:0 12px 8px 12px; }
       
-      /* ═══ EPIC GAMES STYLE CARDS ═══ */
       .carousel-track {
         gap: 8px;
         padding: 0 4px;
@@ -1196,40 +1154,37 @@
       
       .carousel-track .event-card { 
         flex: 0 0 calc(100vw - 32px);
-        min-width: 280px;
-        max-width: 420px;
+        min-width: 200px;
+        max-width: 400px;
         aspect-ratio: 4/5;
-        min-height: 240px;
-        max-height: 480px;
-        padding: 16px 14px 12px 14px;
-        border-radius: 16px;
-        margin: 0 auto;
+        min-height: 200px;
+        max-height: 440px;
+        padding: 14px 12px 10px 12px;
+        border-radius: 14px;
       }
       
       .carousel-track .event-card .card-content { 
-        margin: 0 -14px -12px -14px;
-        padding: 32px 16px 16px 16px;
-        border-radius: 0 0 16px 16px;
+        margin: 0 -12px -10px -12px;
+        padding: 28px 12px 12px 12px;
+        border-radius: 0 0 14px 14px;
       }
       
       .carousel-track .event-card .card-name { 
-        font-size: clamp(1rem, 3.5vw, 1.4rem);
+        font-size: clamp(0.85rem, 3vw, 1.2rem);
         font-weight: 800;
         letter-spacing: 0.06em;
-        text-shadow: 0 4px 20px rgba(0,0,0,0.8);
       }
       
       .carousel-track .event-card .card-sub { 
-        font-size: clamp(0.55rem, 1.4vw, 0.75rem);
+        font-size: clamp(0.5rem, 1.2vw, 0.65rem);
         letter-spacing: 0.12em;
-        opacity: 0.9;
       }
       
       .carousel-track .event-card .card-explore-badge { 
-        font-size: clamp(0.4rem, 0.9vw, 0.55rem);
-        padding: 4px 14px;
-        bottom: 12px;
-        right: 12px;
+        font-size: clamp(0.35rem, 0.8vw, 0.5rem);
+        padding: 3px 12px;
+        bottom: 10px;
+        right: 10px;
         border-radius: 30px;
         background: rgba(4,18,23,0.85);
         backdrop-filter: blur(8px);
@@ -1264,42 +1219,42 @@
       .hero-center { top:8vh; }
     }
 
-    /* For smaller phones - EVEN LARGER */
     @media (max-width: 480px) {
       .carousel-track {
         gap: 6px;
+        padding: 0 2px;
       }
       
       .carousel-track .event-card { 
-        flex: 0 0 calc(100vw - 24px);
-        min-width: 240px;
-        max-width: 380px;
+        flex: 0 0 calc(100vw - 20px);
+        min-width: 160px;
+        max-width: 340px;
         aspect-ratio: 4/5;
-        min-height: 200px;
-        max-height: 440px;
-        border-radius: 14px;
-        padding: 12px 10px 10px 10px;
+        min-height: 180px;
+        max-height: 380px;
+        border-radius: 12px;
+        padding: 10px 8px 8px 8px;
       }
       
       .carousel-track .event-card .card-content { 
-        margin: 0 -10px -10px -10px;
-        padding: 26px 12px 12px 12px;
-        border-radius: 0 0 14px 14px;
+        margin: 0 -8px -8px -8px;
+        padding: 22px 8px 8px 8px;
+        border-radius: 0 0 12px 12px;
       }
       
       .carousel-track .event-card .card-name { 
-        font-size: clamp(0.9rem, 4vw, 1.2rem);
+        font-size: clamp(0.75rem, 3.5vw, 1rem);
       }
       
       .carousel-track .event-card .card-sub { 
-        font-size: clamp(0.45rem, 1.2vw, 0.6rem);
+        font-size: clamp(0.4rem, 1vw, 0.5rem);
       }
       
       .carousel-track .event-card .card-explore-badge {
-        font-size: clamp(0.35rem, 0.8vw, 0.45rem);
-        padding: 3px 12px;
-        bottom: 10px;
-        right: 10px;
+        font-size: clamp(0.3rem, 0.7vw, 0.4rem);
+        padding: 2px 10px;
+        bottom: 8px;
+        right: 8px;
       }
       
       .dots-container {
@@ -1325,27 +1280,26 @@
       .role-selector .role-btn .role-icon { font-size:0.7rem; }
     }
 
-    /* For very small phones (iPhone SE, etc.) */
     @media (max-width: 380px) {
       .carousel-track .event-card { 
         flex: 0 0 calc(100vw - 16px);
-        min-width: 200px;
-        max-width: 340px;
+        min-width: 140px;
+        max-width: 300px;
         aspect-ratio: 4/5;
-        min-height: 180px;
-        max-height: 400px;
-        border-radius: 12px;
-        padding: 10px 8px 8px 8px;
+        min-height: 150px;
+        max-height: 340px;
+        border-radius: 10px;
+        padding: 8px 6px 6px 6px;
       }
       
       .carousel-track .event-card .card-content { 
-        margin: 0 -8px -8px -8px;
-        padding: 20px 8px 8px 8px;
-        border-radius: 0 0 12px 12px;
+        margin: 0 -6px -6px -6px;
+        padding: 16px 6px 6px 6px;
+        border-radius: 0 0 10px 10px;
       }
       
       .carousel-track .event-card .card-name { 
-        font-size: clamp(0.75rem, 3.5vw, 1rem);
+        font-size: clamp(0.65rem, 3vw, 0.85rem);
       }
     }
 
@@ -1359,7 +1313,6 @@
       .promo-credits { padding-bottom: env(safe-area-inset-bottom); }
     }
 
-    /* ─── PERFORMANCE: REDUCE ANIMATIONS ON LOW-END ──── */
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
       .intro-seal svg { animation: sealReveal 0.5s ease forwards !important; }
@@ -1517,7 +1470,7 @@
 
   <script>
     // ═══════════════════════════════════════════════════════════
-    // 1. ATLANTIS INTRO — SIMPLE CROSSFADE
+    // 1. ATLANTIS INTRO
     // ═══════════════════════════════════════════════════════════
     (function() {
       const intro = document.getElementById('atlantisIntro');
@@ -1548,7 +1501,6 @@
         introEntered = true;
         if (e) e.preventDefault();
         
-        // Simple crossfade - just opacity + scale
         intro.classList.add('exit');
         
         setTimeout(() => {
@@ -1556,7 +1508,6 @@
           scrollContainer.style.overflowY = 'auto';
           document.body.style.overflow = '';
           intro.classList.add('hidden');
-          // Play hero video
           const video = document.querySelector('.hero-section video');
           if (video) video.play().catch(()=>{});
         }, prefersReducedMotion ? 400 : 800);
@@ -1566,7 +1517,7 @@
       sealWrapper.addEventListener('touchstart', (e) => { if(!introEntered){ e.preventDefault(); enterAtlantis(e); } }, { passive: false });
       sealWrapper.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); enterAtlantis(e); } });
       
-      console.log('🏛️ Atlantis Intro ready (crossfade)');
+      console.log('🏛️ Atlantis Intro ready');
     })();
 
     // ═══════════════════════════════════════════════════════════
@@ -1588,7 +1539,7 @@
     ];
 
     // ═══════════════════════════════════════════════════════════
-    // 3. CAROUSEL — RAPID IMAGE LOADING WITH PRIORITY
+    // 3. CAROUSEL — FIXED
     // ═══════════════════════════════════════════════════════════
     const track = document.getElementById('carouselTrack');
     const stage = document.getElementById('carouselStage');
@@ -1598,118 +1549,141 @@
     let isDragging = false, isSnapping = false, dragStartX = 0, dragStartIndex = 0, velocity = 0, lastMoveX = 0, lastMoveTime = 0;
     let snapTimer = null, rafId = null, resizeTimeout = null, activeOrigIdx = 0;
 
-    // Rapid image preload — load first 3 with high priority, rest lazy
+    function getGap() {
+      const styles = getComputedStyle(track);
+      const gap = parseFloat(styles.gap) || 12;
+      const padding = parseFloat(styles.paddingLeft) || 8;
+      return { gap, padding };
+    }
+
+    function measureCardWidth() {
+      const first = track.querySelector('.event-card');
+      if (first) {
+        cardWidth = first.offsetWidth || 220;
+        const { gap } = getGap();
+        cardWidthWithGap = cardWidth + gap;
+      } else {
+        cardWidth = 220;
+        cardWidthWithGap = 232;
+      }
+    }
+
     function preloadImagesWithPriority(eventData) {
       const firstBatch = eventData.slice(0, 3);
       const rest = eventData.slice(3);
       
-      // High priority for visible cards
-      firstBatch.forEach((e, i) => {
+      firstBatch.forEach((e) => {
         const img = new Image();
         img.fetchPriority = 'high';
         img.src = e.image;
       });
       
-      // Lazy load the rest
       rest.forEach((e) => {
         const img = new Image();
         img.loading = 'lazy';
         img.src = e.image;
       });
       
-      // Mark all as loaded after a short delay (they'll finish naturally)
       setTimeout(() => {
         document.querySelectorAll('.card-image img').forEach(el => el.classList.add('loaded'));
       }, 1500);
     }
 
     function createCardElement(evt, idx, globalIdx) {
-  const card = document.createElement('div');
-  card.className = 'event-card card-' + ((idx % N) + 1);
-  card.dataset.originalIndex = idx % N;
-  card.dataset.globalIndex = globalIdx;
-  card.innerHTML = `
-    <div class="card-image">
-      <img src="${evt.image}" alt="Event photo" loading="${idx < 3 ? 'eager' : 'lazy'}" fetchpriority="${idx < 3 ? 'high' : 'auto'}" />
-      <div class="img-placeholder"></div>
-    </div>
-    <div class="card-content">
-      <div class="card-name">${evt.name}</div>
-      <div class="card-sub">${evt.sub}</div>
-    </div>
-    <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
-  `;
-  const img = card.querySelector('img');
-  if (img.complete) img.classList.add('loaded');
-  img.addEventListener('load', () => img.classList.add('loaded'));
-  const badge = card.querySelector('.card-explore-badge');
-  badge.addEventListener('click', (e) => { e.stopPropagation(); if(isDragging||isSnapping)return; const oi=parseInt(badge.dataset.originalIndex); if(!isNaN(oi)) window.location.href='event-'+oi+'.html'; });
-  card.addEventListener('click', (e) => { if(e.target.closest('.card-explore-badge'))return; if(isDragging||isSnapping)return; const oi=parseInt(card.dataset.originalIndex); if(!isNaN(oi)) window.location.href='event-'+oi+'.html'; });
-  
-  // ─── ADD TAP/HOVER FEEDBACK (EPIC GAMES STYLE) ───
-  let tapTimer = null;
-  
-  // Touch events for mobile
-  card.addEventListener('touchstart', function(e) {
-    // Clear any existing timer
-    if (tapTimer) clearTimeout(tapTimer);
-    // Add active class immediately on touch
-    this.classList.add('active-card');
-  }, { passive: true });
-  
-  card.addEventListener('touchend', function(e) {
-    // Remove active class after a delay (shows the golden glow)
-    tapTimer = setTimeout(() => {
-      this.classList.remove('active-card');
-      tapTimer = null;
-    }, 350);
-  }, { passive: true });
-  
-  card.addEventListener('touchcancel', function(e) {
-    // If touch is cancelled (e.g., swiped away), remove the class
-    this.classList.remove('active-card');
-    if (tapTimer) {
-      clearTimeout(tapTimer);
-      tapTimer = null;
+      const card = document.createElement('div');
+      card.className = 'event-card card-' + ((idx % N) + 1);
+      card.dataset.originalIndex = idx % N;
+      card.dataset.globalIndex = globalIdx;
+      card.innerHTML = `
+        <div class="card-image">
+          <img src="${evt.image}" alt="Event photo" loading="${idx < 3 ? 'eager' : 'lazy'}" fetchpriority="${idx < 3 ? 'high' : 'auto'}" />
+          <div class="img-placeholder"></div>
+        </div>
+        <div class="card-content">
+          <div class="card-name">${evt.name}</div>
+          <div class="card-sub">${evt.sub}</div>
+        </div>
+        <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
+      `;
+      const img = card.querySelector('img');
+      if (img.complete) img.classList.add('loaded');
+      img.addEventListener('load', () => img.classList.add('loaded'));
+      const badge = card.querySelector('.card-explore-badge');
+      badge.addEventListener('click', (e) => { 
+        e.stopPropagation(); 
+        if(isDragging||isSnapping)return; 
+        const oi=parseInt(badge.dataset.originalIndex); 
+        if(!isNaN(oi)) window.location.href='event-'+oi+'.html'; 
+      });
+      card.addEventListener('click', (e) => { 
+        if(e.target.closest('.card-explore-badge'))return; 
+        if(isDragging||isSnapping)return; 
+        const oi=parseInt(card.dataset.originalIndex); 
+        if(!isNaN(oi)) window.location.href='event-'+oi+'.html'; 
+      });
+      
+      let tapTimer = null;
+      
+      card.addEventListener('touchstart', function(e) {
+        if (tapTimer) clearTimeout(tapTimer);
+        this.classList.add('active-card');
+      }, { passive: true });
+      
+      card.addEventListener('touchend', function(e) {
+        tapTimer = setTimeout(() => {
+          this.classList.remove('active-card');
+          tapTimer = null;
+        }, 350);
+      }, { passive: true });
+      
+      card.addEventListener('touchcancel', function(e) {
+        this.classList.remove('active-card');
+        if (tapTimer) {
+          clearTimeout(tapTimer);
+          tapTimer = null;
+        }
+      }, { passive: true });
+      
+      card.addEventListener('mousedown', function(e) {
+        this.classList.add('active-card');
+      });
+      
+      card.addEventListener('mouseup', function(e) {
+        tapTimer = setTimeout(() => {
+          this.classList.remove('active-card');
+          tapTimer = null;
+        }, 300);
+      });
+      
+      card.addEventListener('mouseleave', function(e) {
+        this.classList.remove('active-card');
+        if (tapTimer) {
+          clearTimeout(tapTimer);
+          tapTimer = null;
+        }
+      });
+      
+      return card;
     }
-  }, { passive: true });
-  
-  // Mouse events for desktop
-  card.addEventListener('mousedown', function(e) {
-    this.classList.add('active-card');
-  });
-  
-  card.addEventListener('mouseup', function(e) {
-    // Small delay for visual feedback before removing
-    tapTimer = setTimeout(() => {
-      this.classList.remove('active-card');
-      tapTimer = null;
-    }, 300);
-  });
-  
-  card.addEventListener('mouseleave', function(e) {
-    // Remove if mouse leaves the card
-    this.classList.remove('active-card');
-    if (tapTimer) {
-      clearTimeout(tapTimer);
-      tapTimer = null;
-    }
-  });
-  
-  return card;
-}
 
     function buildCarousel() {
       track.innerHTML = ''; dotsContainer.innerHTML = '';
       for (let copy=0; copy<3; copy++) events.forEach((evt,idx) => track.appendChild(createCardElement(evt, idx, copy*N+idx)));
-      for (let i=0; i<N; i++) { const dot = document.createElement('div'); dot.className = 'dot'+(i===0?' active':''); dot.dataset.index=i; dot.addEventListener('click', (e)=>{ e.preventDefault(); if(!isSnapping) snapToIndex(i+N); }); dotsContainer.appendChild(dot); }
-      requestAnimationFrame(() => { measureCardWidth(); index=N; updateCarousel(false); });
-    }
-
-    function measureCardWidth() {
-      const first = track.querySelector('.event-card');
-      if (first) { cardWidth = first.offsetWidth || 200; cardWidthWithGap = cardWidth + 10; }
-      else { cardWidth = 200; cardWidthWithGap = 210; }
+      for (let i=0; i<N; i++) { 
+        const dot = document.createElement('div'); 
+        dot.className = 'dot'+(i===0?' active':''); 
+        dot.dataset.index=i; 
+        dot.addEventListener('click', (e)=>{ 
+          e.preventDefault(); 
+          if(!isSnapping) snapToIndex(i+N); 
+        }); 
+        dotsContainer.appendChild(dot); 
+      }
+      requestAnimationFrame(() => { 
+        measureCardWidth(); 
+        index=N; 
+        updateCarousel(false); 
+      });
     }
 
     function updateCarousel(animate = true) {
@@ -1718,9 +1692,14 @@
       const stageWidth = stage.clientWidth || window.innerWidth;
       const halfStage = stageWidth / 2;
       const halfCard = cardWidth / 2;
-      const pos = -(index * cardWidthWithGap) + (stageWidth - cardWidth) / 2;
+      const { padding } = getGap();
+      
+      const offset = (stageWidth - cardWidth) / 2 - padding;
+      const pos = -(index * cardWidthWithGap) + offset;
+      
       track.style.transition = animate ? 'transform 0.4s cubic-bezier(0.23,1,0.32,1)' : 'none';
       track.style.transform = `translateX(${pos}px)`;
+      
       let closestOrigIdx = 0, closestDist = Infinity;
       cards.forEach((card, i) => {
         const cardCenter = pos + i * cardWidthWithGap + halfCard;
@@ -1732,7 +1711,10 @@
         card.style.transform = `scale(${scale})`;
         card.style.opacity = Math.max(0.5, opacity);
         card.style.zIndex = Math.round(scale * 10);
-        if (dist < closestDist) { closestDist = dist; closestOrigIdx = parseInt(card.dataset.originalIndex); }
+        if (dist < closestDist) { 
+          closestDist = dist; 
+          closestOrigIdx = parseInt(card.dataset.originalIndex); 
+        }
       });
       activeOrigIdx = closestOrigIdx;
       cards.forEach(card => card.classList.toggle('active-card', parseInt(card.dataset.originalIndex) === activeOrigIdx));
@@ -1800,12 +1782,24 @@
       stage.releasePointerCapture(e.pointerId);
     });
 
-    // Quick preload
     preloadImagesWithPriority(events);
 
-    window.addEventListener('resize', () => { if(resizeTimeout) clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 120); });
+    window.addEventListener('resize', () => { 
+      if(resizeTimeout) clearTimeout(resizeTimeout); 
+      resizeTimeout = setTimeout(() => { 
+        measureCardWidth(); 
+        updateCarousel(false); 
+      }, 120); 
+    });
+    
     if (window.ResizeObserver) {
-      const ro = new ResizeObserver(() => { if(resizeTimeout) clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 120); });
+      const ro = new ResizeObserver(() => { 
+        if(resizeTimeout) clearTimeout(resizeTimeout); 
+        resizeTimeout = setTimeout(() => { 
+          measureCardWidth(); 
+          updateCarousel(false); 
+        }, 120); 
+      });
       ro.observe(stage);
     }
 
@@ -1814,36 +1808,28 @@
       if (isDragging || isSnapping) return;
       e.preventDefault();
       if (wheelTimeout) clearTimeout(wheelTimeout);
-      wheelTimeout = setTimeout(() => { snapToIndex(Math.round(index) + (e.deltaX || e.deltaY > 0 ? 1 : -1), true); wheelTimeout = null; }, 60);
+      wheelTimeout = setTimeout(() => { 
+        snapToIndex(Math.round(index) + (e.deltaX || e.deltaY > 0 ? 1 : -1), true); 
+        wheelTimeout = null; 
+      }, 60);
     }, { passive: false });
 
     buildCarousel();
 
     // ═══════════════════════════════════════════════════════════
-    // 4. HERO — REMOVED GLITCHY PARALLAX, KEPT STATIC
-    // ═══════════════════════════════════════════════════════════
-    // Hero no longer has heavy parallax that causes glitches.
-    // The rays and particles still animate, but they're GPU-accelerated.
-    console.log('🌊 Hero static — no glitchy transforms');
-
-    // ═══════════════════════════════════════════════════════════
-    // 5. SCROLL — LIGHTWEIGHT (no complex transforms)
+    // 4. SCROLL
     // ═══════════════════════════════════════════════════════════
     let ticking = false;
     window.addEventListener('scroll', () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
           
-          // Simple opacity fade for hero
           const hero = document.getElementById('hero');
           if (hero) {
             hero.style.opacity = Math.max(0, 1 - scrollY * 0.001);
           }
           
-          // Simple reveal for explore
           const explore = document.getElementById('explore');
           if (explore) {
             const rect = explore.getBoundingClientRect();
@@ -1854,7 +1840,6 @@
             }
           }
           
-          // Simple reveal for promo
           const promo = document.getElementById('promo');
           if (promo) {
             const rect = promo.getBoundingClientRect();
@@ -1872,7 +1857,7 @@
     }, { passive: true });
 
     // ═══════════════════════════════════════════════════════════
-    // 6. DROPDOWN
+    // 5. DROPDOWN
     // ═══════════════════════════════════════════════════════════
     const trigger = document.getElementById('logoTrigger');
     const dropdown = document.getElementById('dropdownMenu');
@@ -1880,7 +1865,7 @@
     document.addEventListener('click', (e) => { if (!document.querySelector('.header').contains(e.target)) dropdown.classList.remove('open'); });
 
     // ═══════════════════════════════════════════════════════════
-    // 7. COUNTDOWN
+    // 6. COUNTDOWN
     // ═══════════════════════════════════════════════════════════
     const promoTarget = new Date('2026-09-25T00:00:00');
     function updatePromoCountdown() {
@@ -1893,7 +1878,7 @@
     updatePromoCountdown(); setInterval(updatePromoCountdown, 1000);
 
     // ═══════════════════════════════════════════════════════════
-    // 8. LOGIN SYSTEM
+    // 7. LOGIN SYSTEM
     // ═══════════════════════════════════════════════════════════
     const CREDENTIALS = {
       admin: { password: 'admin2026', dashboard: 'admindb.html', label: 'Admin' },
@@ -1978,7 +1963,7 @@
     loginPass.addEventListener('input', ()=>{ loginPass.classList.remove('error'); loginError.classList.remove('show'); });
     loginUser.addEventListener('input', ()=>{ loginError.classList.remove('show'); });
     setRole('admin');
-    console.log('🔱 DEPLOMAT · Fully optimized');
+    console.log('🔱 DEPLOMAT · Fixed & Optimized');
   </script>
 </body>
 </html>
