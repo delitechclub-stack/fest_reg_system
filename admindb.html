@@ -1311,7 +1311,7 @@
         <option value="4">👨‍👩‍👧‍👦 4 Members</option>
         <option value="5plus">👥 5+ Members</option>
     </select>
-    <!-- ═══ NEW: Status Filter ═══ -->
+    <!-- ⬇️ ADD THIS ONE LINE ⬇️ -->
     <select id="statusFilter">
         <option value="all">📋 All Status</option>
         <option value="VERIFIED">✅ Verified</option>
@@ -1335,9 +1335,9 @@
         <th>Category</th>
         <th>Participants</th>
         <th>UTR</th>
-        <th>Status</th>
+        <th>Status</th>    <!-- NEW -->
         <th>Amount</th>
-        <th>Actions</th>
+        <th>Actions</th>   <!-- NEW -->
     </tr>
 </thead>
                     <tbody id="tableBody">
@@ -1407,6 +1407,7 @@
         const eventFilter = document.getElementById('eventFilter');
         const categoryFilter = document.getElementById('categoryFilter');
         const teamSizeFilter = document.getElementById('teamSizeFilter');
+        const statusFilter = document.getElementById('statusFilter'); // ⬅️ ADD THIS
         const eventFilterDropdown = document.getElementById('eventFilterDropdown');
         const recordCount = document.getElementById('recordCount');
         const refreshBtn = document.getElementById('refreshBtn');
@@ -1567,7 +1568,8 @@
             const search = searchInput.value.toLowerCase().trim();
             const event = eventFilter.value;
             const category = categoryFilter.value;
-            const teamSize = teamSizeFilter.value;
+            
+                const status = statusFilter.value; // ⬅️ ADD THIS
 
             filteredRegistrations = allRegistrations.filter(r => {
                 // Search filter
@@ -1594,14 +1596,13 @@
                     if (category === 'mixed' && rCategory !== 'Mixed') return false;
                 }
 
-                // Team size filter
-                if (teamSize !== 'all') {
-                    const size = getTeamSize(r);
-                    if (teamSize === '5plus' && size < 5) return false;
-                    if (teamSize !== '5plus' && size !== parseInt(teamSize)) return false;
-                }
+                        // ⬇️ STATUS FILTER ⬇️
+        if (status !== 'all') {
+            const rStatus = r.status || 'VERIFIED';
+            if (rStatus !== status) return false;
+        }
 
-                return true;
+        return true;
             });
 
             selectedEventFilter = eventFilterDropdown.value;
@@ -1919,63 +1920,90 @@
         // ─── TABLE ────────────────────────────────────────────────────
 
         function renderTable() {
-            const regs = filteredRegistrations;
+    const regs = filteredRegistrations;
 
-            if (regs.length === 0) {
-                tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="9" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
-                                <i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
-                                ${allRegistrations.length === 0 ? 'No registrations loaded' : 'No matching records found'}
-                            </td>
-                        </tr>
-                    `;
-                return;
-            }
+    if (regs.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                    <i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                    ${allRegistrations.length === 0 ? 'No registrations loaded' : 'No matching records found'}
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
-            let html = '';
-            regs.forEach((r, idx) => {
-                const parts = getParticipantsArray(r);
-                const participantNames = parts.map(p => p.name || 'Unknown').join(', ');
+    let html = '';
+    regs.forEach((r, idx) => {
+        const parts = getParticipantsArray(r);
+        const participantNames = parts.map(p => p.name || 'Unknown').join(', ');
 
-                const eventName = r.event_name || 'Unknown';
-                const eventInfo = EVENTS.find(e => e.name === eventName);
+        const eventName = r.event_name || 'Unknown';
+        const cat = getEventCategory(eventName);
+        
+        let categoryDisplay = '—';
+        let tagClass = '';
+        if (cat === 'Mixed') { categoryDisplay = 'UG + PU'; tagClass = 'mixed'; } 
+        else if (cat === 'PU') { categoryDisplay = 'PU'; tagClass = 'pu'; } 
+        else { categoryDisplay = 'UG'; tagClass = 'ug'; }
 
-                const cat = getEventCategory(eventName);
-                let categoryDisplay = '—';
-                let tagClass = '';
-                if (cat === 'Mixed') { categoryDisplay = 'UG + PU';
-                    tagClass = 'mixed'; } else if (cat === 'PU') { categoryDisplay = 'PU';
-                    tagClass = 'pu'; } else if (cat === 'UG') { categoryDisplay = 'UG';
-                    tagClass = 'ug'; } else { categoryDisplay = 'UG';
-                    tagClass = 'ug'; }
-
-                // Team size badge
-                const teamSize = getTeamSize(r);
-                let sizeBadge = '';
-                if (teamSize === 1) sizeBadge = '👤';
-                else if (teamSize === 2) sizeBadge = '👥';
-                else if (teamSize >= 3) sizeBadge = `👥 ${teamSize}`;
-
-                html += `
-                        <tr>
-                            <td style="color:rgba(255,255,255,0.2);">${idx + 1}</td>
-                            <td><strong style="color:rgba(255,255,255,0.8);">${safeString(r.team_leader)}</strong></td>
-                            <td style="color:rgba(255,255,255,0.5);">${safeString(r.email)}</td>
-                            <td style="color:rgba(255,255,255,0.4);">${safeString(r.phone)}</td>
-                            <td><span class="tag event-tag">${eventName}</span></td>
-                            <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
-                            <td style="color:rgba(255,255,255,0.5);font-size:0.75rem;">
-                                ${sizeBadge} ${participantNames || '—'}
-                            </td>
-                            <td><span class="txn-code">${safeString(r.txn)}</span></td>
-                            <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
-                        </tr>
-                    `;
-            });
-
-            tableBody.innerHTML = html;
+        // ─── STATUS DISPLAY ───
+        const status = r.status || 'VERIFIED';
+        let statusDisplay = '';
+        let statusClass = '';
+        if (status === 'VERIFIED') { 
+            statusDisplay = '✅ Verified'; 
+            statusClass = 'verified'; 
+        } else if (status === 'PENDING') { 
+            statusDisplay = '⏳ Pending'; 
+            statusClass = 'pending'; 
+        } else if (status === 'REJECTED') { 
+            statusDisplay = '❌ Rejected'; 
+            statusClass = 'rejected'; 
+        } else { 
+            statusDisplay = '✅ Verified'; 
+            statusClass = 'verified'; 
         }
+
+        const teamSize = getTeamSize(r);
+        let sizeBadge = '';
+        if (teamSize === 1) sizeBadge = '👤';
+        else if (teamSize === 2) sizeBadge = '👥';
+        else if (teamSize >= 3) sizeBadge = `👥 ${teamSize}`;
+
+        // ─── ACTIONS - Only show for PENDING ───
+        let actionsHtml = '';
+        if (status === 'PENDING') {
+            actionsHtml = `
+                <button onclick="verifyRegistration('${r.id || idx}')" class="action-btn verify" title="Verify">✅</button>
+                <button onclick="rejectRegistration('${r.id || idx}')" class="action-btn reject" title="Reject">❌</button>
+            `;
+        } else {
+            actionsHtml = `<span style="color:rgba(255,255,255,0.15);font-size:0.6rem;">—</span>`;
+        }
+
+        html += `
+            <tr>
+                <td style="color:rgba(255,255,255,0.2);">${idx + 1}</td>
+                <td><strong style="color:rgba(255,255,255,0.8);">${safeString(r.team_leader)}</strong></td>
+                <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">${safeString(r.email)}</td>
+                <td style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${safeString(r.phone)}</td>
+                <td><span class="tag event-tag">${eventName}</span></td>
+                <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
+                <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">
+                    ${sizeBadge} ${participantNames || '—'}
+                </td>
+                <td><span class="txn-code">${safeString(r.txn)}</span></td>
+                <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
+                <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
+                <td>${actionsHtml}</td>
+            </tr>
+        `;
+    });
+
+    tableBody.innerHTML = html;
+}
 
         function updateRecordCount() {
             const count = filteredRegistrations.length;
@@ -2036,7 +2064,8 @@
         searchInput.addEventListener('input', debounce(applyFilters, 300));
         eventFilter.addEventListener('change', applyFilters);
         categoryFilter.addEventListener('change', applyFilters);
-        teamSizeFilter.addEventListener('change', applyFilters);
+        
+        statusFilter.addEventListener('change', applyFilters); // ⬅️ ADD THIS
         eventFilterDropdown.addEventListener('change', applyFilters);
         refreshBtn.addEventListener('click', refreshData);
 
@@ -2105,6 +2134,59 @@
         }
 
         init();
+        // ─── VERIFY REGISTRATION ────────────────────────────────────────────
+async function verifyRegistration(id) {
+    if (!confirm('✅ Verify this registration?')) return;
+    
+    try {
+        if (supabaseClient) {
+            const { error } = await supabaseClient
+                .from('registrations')
+                .update({ status: 'VERIFIED', verified_at: new Date().toISOString() })
+                .eq('id', id);
+            if (error) throw error;
+        }
+        
+        const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
+        if (reg) reg.status = 'VERIFIED';
+        
+        showTooltip('✅ Registration verified!', 'success');
+        await refreshData();
+        
+    } catch (e) {
+        showTooltip('❌ Failed: ' + e.message, 'error');
+    }
+}
+
+// ─── REJECT REGISTRATION ────────────────────────────────────────────
+async function rejectRegistration(id) {
+    const reason = prompt('❌ Reason for rejection:');
+    if (reason === null) return;
+    if (!confirm('Reject this registration?')) return;
+    
+    try {
+        if (supabaseClient) {
+            const { error } = await supabaseClient
+                .from('registrations')
+                .update({ 
+                    status: 'REJECTED', 
+                    rejection_reason: reason || 'Not specified',
+                    rejected_at: new Date().toISOString()
+                })
+                .eq('id', id);
+            if (error) throw error;
+        }
+        
+        const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
+        if (reg) reg.status = 'REJECTED';
+        
+        showTooltip('❌ Registration rejected', 'error');
+        await refreshData();
+        
+    } catch (e) {
+        showTooltip('❌ Failed: ' + e.message, 'error');
+    }
+}
     </script>
 
 </body>
