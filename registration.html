@@ -1206,58 +1206,65 @@
                             </div>
                         </div>
 
-                        <!-- Screenshot Upload Section -->
-                        <div style="margin-top:24px;border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;">
-                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                                <span style="font-size:1.5rem;">📸</span>
-                                <div>
-                                    <h4 style="font-size:0.9rem;color:#fff;">Upload Payment Screenshot</h4>
-                                    <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);">
-                                        After payment, take a screenshot and upload it here<br>
-                                        <span style="color:#FFC53D;font-size:0.65rem;">⏳ We'll auto-detect your UTR from the screenshot</span>
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <!-- Upload Area -->
-                            <div class="upload-area" id="dropZone">
-                                <div id="uploadPrompt">
-                                    <span class="icon-big">📤</span>
-                                    <p class="text-muted">Tap to upload screenshot</p>
-                                    <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
-                                </div>
-                                <div class="upload-preview" id="uploadPreview">
-                                    <img id="previewImage" src="" alt="Screenshot Preview" />
-                                    <p class="success-text">✅ Screenshot uploaded</p>
-                                </div>
-                                <input type="file" id="screenshotInput" accept="image/*,.pdf" style="display:none;" />
-                            </div>
-                            
-                            <!-- Upload Status -->
-                            <div class="upload-status" id="uploadStatus">
-                                <div class="status-box">
-                                    <span class="spinner"></span>
-                                    <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;" id="statusText">Processing screenshot & extracting UTR...</span>
-                                </div>
-                            </div>
-                            
-                            <!-- UTR Result -->
-                            <div class="utr-result" id="utrResult">
-                                <div class="result-box">
-                                    <div style="display:flex;align-items:center;gap:10px;">
-                                        <span style="color:#4caf50;font-size:1.2rem;">✅</span>
-                                        <div style="flex:1;">
-                                            <p class="label">Extracted UTR Number</p>
-                                            <p class="value" id="extractedUtr">—</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- ═══════════ SCREENSHOT UPLOAD (ENHANCED UI) ═══════════ -->
+<div style="margin-top:24px;border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;">
+    
+    <!-- Upload Instructions with UTR Highlighted -->
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;background:rgba(255,197,61,0.04);padding:14px 16px;border-radius:12px;border-left:3px solid #FFC53D;">
+        <span style="font-size:1.5rem;">📸</span>
+        <div>
+            <h4 style="font-size:0.9rem;color:#fff;margin-bottom:4px;">Upload Payment Screenshot</h4>
+            <p style="font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.5;">
+                After payment, take a screenshot showing the 
+                <span style="color:#FFC53D;font-weight:900;font-size:0.9rem;background:rgba(255,197,61,0.15);padding:0 8px;border-radius:4px;border:1px solid rgba(255,197,61,0.2);">UTR</span> 
+                number and upload it below
+            </p>
+            <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:4px;">
+                Accepted formats: PNG, JPG, PDF (Max 5MB)
+            </p>
+        </div>
+    </div>
+    
+    <!-- Upload Area -->
+    <div class="upload-area" id="dropZone">
+        <div id="uploadPrompt">
+            <span class="icon-big">📤</span>
+            <p class="text-muted">Tap to upload screenshot</p>
+            <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
+        </div>
+        <div class="upload-preview" id="uploadPreview">
+            <img id="previewImage" src="" alt="Screenshot Preview" />
+            <p class="success-text">✅ Screenshot uploaded</p>
+        </div>
+        <input type="file" id="screenshotInput" accept="image/*,.pdf" style="display:none;" />
+    </div>
+    
+    <!-- Upload Status -->
+    <div class="upload-status" id="uploadStatus">
+        <div class="status-box">
+            <span class="spinner"></span>
+            <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;" id="statusText">Processing screenshot & extracting UTR...</span>
+        </div>
+    </div>
+    
+    <!-- UTR Result -->
+    <div class="utr-result" id="utrResult">
+        <div class="result-box">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="color:#4caf50;font-size:1.2rem;">✅</span>
+                <div style="flex:1;">
+                    <p class="label">Extracted UTR Number</p>
+                    <p class="value" id="extractedUtr">—</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <button type="button" id="finalSubmitBtn" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:16px;padding:16px;display:none;" onclick="confirmRegistration()">
-                                🔱 Confirm Registration
-                            </button>
-                        </div>
+    <!-- Confirm Button -->
+    <button type="button" id="finalSubmitBtn" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:16px;padding:16px;display:none;" onclick="confirmRegistration()">
+        🔱 Confirm Registration
+    </button>
+</div>
 
                         <div class="form-actions" style="margin-top:16px;">
                             <button type="button" class="btn btn-secondary" id="step4Back">← Back</button>
@@ -1645,35 +1652,36 @@
             if (qrVisible) updateQR(getTotalAmount());
         }
 
-        // ─── OPEN PAYMENT APP ─────────────────────────────────────────────
         function openPaymentApp(app) {
-            const total = getTotalAmount();
-            const leaderName = getLeaderName();
-            const college = collegeInput.value.trim();
-            
-            if (!leaderName || !college) {
-                alert('Please complete all registration details first.');
-                return;
-            }
-            
-            const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
-            
-            // Store pending registration
-            const regData = {
-                leader_name: leaderName,
-                college: college,
-                event: selectedEvent ? selectedEvent.name : 'Unknown',
-                amount: total,
-                participants: getParticipantsList(),
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('pending_registration', JSON.stringify(regData));
-            sessionStorage.setItem('returning_from_payment', 'true');
-            
-            // Open payment app
-            window.location.href = upiLink;
-        }
-
+    const total = getTotalAmount();
+    const leaderName = getLeaderName();
+    const college = collegeInput.value.trim();
+    
+    if (!leaderName || !college) {
+        alert('Please complete all registration details first.');
+        return;
+    }
+    
+    const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
+    
+    // Store pending registration
+    const regData = {
+        leader_name: leaderName,
+        college: college,
+        event: selectedEvent ? selectedEvent.name : 'Unknown',
+        amount: total,
+        participants: getParticipantsList(),
+        timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('pending_registration', JSON.stringify(regData));
+    sessionStorage.setItem('returning_from_payment', 'true');
+    
+    // ═══ ADD THIS ONE LINE ═══
+    startUploadTimer();
+    
+    // Open payment app
+    window.location.href = upiLink;
+}
         // ─── SCREENSHOT UPLOAD HANDLING ──────────────────────────────────
         // Click to upload
         dropZone.addEventListener('click', () => fileInput.click());
@@ -2107,6 +2115,135 @@
         console.log('🔱 DEPLOMAT Registration · Auto-UTR extraction via OCR enabled');
         console.log('📸 Upload payment screenshot to auto-detect UTR');
         console.log('☁️ Screenshots will be stored in Google Drive');
+    // ─── TIMER VARIABLES ──────────────────────────────────────────────────
+let uploadTimer = null;
+let uploadTimeRemaining = 1800; // 30 minutes
+
+// ─── START TIMER ──────────────────────────────────────────────────────
+function startUploadTimer() {
+    const timerArea = document.getElementById('uploadTimerArea');
+    const timerDisplay = document.getElementById('uploadTimerDisplay');
+    const timerWarning = document.getElementById('timerWarning');
+    const statusBadge = document.getElementById('timerStatusBadge');
+    
+    timerArea.style.display = 'block';
+    uploadTimeRemaining = 1800;
+    
+    if (uploadTimer) clearInterval(uploadTimer);
+    
+    uploadTimer = setInterval(() => {
+        uploadTimeRemaining--;
+        const minutes = Math.floor(uploadTimeRemaining / 60);
+        const seconds = uploadTimeRemaining % 60;
+        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        
+        // Warning at 5 minutes
+        if (uploadTimeRemaining < 300 && uploadTimeRemaining > 0) {
+            timerWarning.style.display = 'block';
+            timerDisplay.style.color = '#ff6b8a';
+            statusBadge.textContent = 'Expiring';
+            statusBadge.style.background = 'rgba(255,42,109,0.08)';
+            statusBadge.style.color = '#ff6b8a';
+        }
+        
+        // Timer expired
+        if (uploadTimeRemaining <= 0) {
+            clearInterval(uploadTimer);
+            uploadTimer = null;
+            timerDisplay.textContent = '00:00';
+            timerDisplay.style.color = '#ff2a6d';
+            statusBadge.textContent = 'Expired';
+            statusBadge.style.background = 'rgba(255,42,109,0.12)';
+            statusBadge.style.color = '#ff2a6d';
+            timerWarning.innerHTML = '⏰ <strong>Time expired!</strong> Submit as Pending or contact coordinator.';
+            timerWarning.style.display = 'block';
+            
+            // Show pending button
+            document.getElementById('submitPendingBtn').style.display = 'block';
+            document.getElementById('dropZone').style.opacity = '0.5';
+            document.getElementById('dropZone').style.pointerEvents = 'none';
+        }
+    }, 1000);
+}
+// ─── SUBMIT AS PENDING ──────────────────────────────────────────────
+let isPendingSubmission = false;
+
+async function submitPendingRegistration() {
+    if (isPendingSubmission) return;
+    isPendingSubmission = true;
+    
+    const btn = document.getElementById('submitPendingBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Submitting...';
+    
+    try {
+        const leaderName = getLeaderName();
+        const college = collegeInput.value.trim();
+        const total = getTotalAmount();
+        const participants = getParticipantsList();
+        const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+        const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+        
+        const pendingId = 'PND_' + Date.now().toString(36).toUpperCase();
+        
+        const registrationData = {
+            event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+            event_sub: selectedEvent ? selectedEvent.sub : '',
+            college: college,
+            ug_pu: ugPuValue,
+            team_leader: leaderName,
+            email: participants[0]?.email || '',
+            phone: participants[0]?.phone || '',
+            total_amount: total,
+            txn: pendingId,
+            participants: participants,
+            status: 'PENDING',
+            registered_at: new Date().toISOString(),
+            pending_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+        };
+        
+        // Save to Supabase
+        if (supabaseClient) {
+            const { error } = await supabaseClient.from('registrations').insert([registrationData]);
+            if (error) throw new Error(error.message);
+        }
+        
+        // Local backup
+        const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+        db.push(registrationData);
+        localStorage.setItem('deplomat_db', JSON.stringify(db));
+        
+        // Show success
+        goToStep(5);
+        const details = document.getElementById('successDetails');
+        details.innerHTML = `
+            <p style="font-size:2rem;">⏳</p>
+            <h2 style="font-size:1.6rem;">Registration Pending</h2>
+            <p style="color:#FFC53D;">📌 Awaiting payment verification</p>
+            <div class="reg-details">
+                <p><strong>Event:</strong> ${registrationData.event_name}</p>
+                <p><strong>Team Leader:</strong> ${leaderName}</p>
+                <p><strong>Pending ID:</strong> <span style="color:#FFC53D;">${pendingId}</span></p>
+                <hr/>
+                <p style="font-size:0.75rem;color:#FFC53D;">
+                    ⏳ Contact coordinator within 24 hours with payment proof.<br>
+                    Otherwise registration will be cancelled.
+                </p>
+            </div>
+        `;
+        
+        // Cleanup
+        if (uploadTimer) { clearInterval(uploadTimer); uploadTimer = null; }
+        localStorage.removeItem('pending_registration');
+        sessionStorage.removeItem('returning_from_payment');
+        
+    } catch (error) {
+        alert(`❌ Submission failed: ${error.message}`);
+        btn.disabled = false;
+        btn.innerHTML = '⏳ Submit as Pending (Contact Coordinator)';
+        isPendingSubmission = false;
+    }
+}
     </script>
 </body>
 </html>
