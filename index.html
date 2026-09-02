@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
-    /* ─── RESET & BASE (optimized) ─────────────────────────────── */
+    /* ─── RESET & BASE ─────────────────────────────── */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
     body {
@@ -19,6 +19,8 @@
       -webkit-font-smoothing: antialiased;
       user-select: none;
       touch-action: pan-y;
+      min-height: 100dvh;
+      min-height: 100vh;
     }
     :root {
       --abyss: #041217;
@@ -34,7 +36,7 @@
     ::-webkit-scrollbar-track { background: var(--abyss); }
     ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
 
-    /* ─── FLOATING LOGO ─────────────────────────────────────────── */
+    /* ─── FLOATING LOGO ─────────────────────────────── */
     .header {
       position: fixed;
       top: 16px;
@@ -63,7 +65,7 @@
     }
     .trigger-wrapper:active .logo-emblem { transform: scale(0.92); }
 
-    /* ─── DROPDOWN ───────────────────────────────────────────────── */
+    /* ─── DROPDOWN ───────────────────────────────────── */
     .epic-dropdown {
       display: none;
       position: absolute;
@@ -139,25 +141,29 @@
     }
     .dropdown-item.login-item { color: rgba(232,217,184,0.85); }
 
-    /* ─── SCROLL CONTAINER ──────────────────────────────────────── */
+    /* ─── SCROLL CONTAINER ──────────────────────────── */
     .scroll-container {
       position: relative;
       z-index: 1;
+      height: 100dvh;
       height: 100vh;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       transform: translateZ(0);
+      will-change: auto;
     }
 
-    /* ─── HERO SECTION (GPU-accelerated) ───────────────────────── */
+    /* ─── HERO SECTION ──────────────────────────────── */
     .hero-section {
       position: relative;
       height: 100dvh;
+      height: 100vh;
       width: 100%;
       overflow: hidden;
       z-index: 1;
       transform: translateZ(0);
-      will-change: transform, opacity;
+      will-change: auto;
+      min-height: -webkit-fill-available;
     }
     .hero-section .video-container {
       position: absolute;
@@ -189,7 +195,7 @@
       pointer-events: none;
       overflow: hidden;
       opacity: 0.12;
-      will-change: transform;
+      will-change: auto;
       transform: translateZ(0);
     }
     .light-rays .ray {
@@ -201,7 +207,7 @@
       transform: rotate(var(--angle,10deg));
       left: var(--x,20%);
       animation: rayDrift var(--dur,14s) ease-in-out infinite alternate;
-      will-change: transform;
+      will-change: auto;
     }
     .light-rays .ray:nth-child(1) { --x:15%; --angle:8deg; --dur:14s; height:140%; }
     .light-rays .ray:nth-child(2) { --x:35%; --angle:-4deg; --dur:18s; height:110%; opacity:0.5; }
@@ -221,7 +227,7 @@
       animation: floatPart var(--dur,20s) ease-in-out infinite alternate;
       left: var(--x,10%);
       top: var(--y,10%);
-      will-change: transform;
+      will-change: auto;
     }
     .particles .part:nth-child(1) { --x:10%; --y:20%; --dur:22s; width:3px; height:3px; opacity:0.25; }
     .particles .part:nth-child(2) { --x:25%; --y:60%; --dur:18s; opacity:0.2; }
@@ -237,7 +243,7 @@
       100% { transform: translate(calc(var(--x,10%)*0.4), calc(var(--y,10%)*-0.3)) scale(1.5); opacity:0.05; }
     }
 
-    /* ─── HERO CONTENT ───────────────────────────────────────────── */
+    /* ─── HERO CONTENT ───────────────────────────────── */
     .hero-center {
       position: absolute;
       top: 10vh;
@@ -247,7 +253,7 @@
       text-align: center;
       padding: 0 16px;
       pointer-events: none;
-      will-change: transform;
+      will-change: auto;
       transform: translateZ(0);
     }
     .hero-title {
@@ -339,17 +345,18 @@
       50% { opacity:0.7; transform:translateY(-3px); }
     }
 
-    /* ─── EXPLORE SECTION ────────────────────────────────────────── */
+    /* ─── EXPLORE SECTION ────────────────────────────── */
     .explore-section {
       position: relative;
       z-index: 2;
       background: var(--abyss);
       min-height: 100dvh;
+      min-height: 100vh;
       padding: 60px 0 20px 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      will-change: transform, opacity;
+      will-change: auto;
       transform: translateZ(0);
     }
     .explore-section::before {
@@ -385,7 +392,7 @@
     }
     .explore-header h2 .gold-text { color:rgba(192,154,82,0.7); }
 
-    /* ─── CAROUSEL (touch-optimized) ────────────────────────────── */
+    /* ─── CAROUSEL ────────────────────────────────────── */
     .carousel-stage {
       position:relative;
       width:100%;
@@ -393,7 +400,7 @@
       overflow:hidden;
       touch-action:pan-y;
       cursor:grab;
-      will-change:transform;
+      will-change:auto;
       contain:layout style;
       z-index:1;
       -webkit-overflow-scrolling:touch;
@@ -402,7 +409,7 @@
     .carousel-track {
       display:flex;
       gap:10px;
-      will-change:transform;
+      will-change:auto;
       transition:none;
       padding:0 4px;
       touch-action:pan-y;
@@ -423,7 +430,7 @@
       position:relative;
       box-shadow:0 16px 40px -12px rgba(0,0,0,0.9);
       cursor:pointer;
-      will-change:transform,opacity;
+      will-change:auto;
       transform:scale(0.92);
       transition: transform 0.3s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s, opacity 0.25s, border-color 0.3s;
       -webkit-tap-highlight-color:transparent;
@@ -564,15 +571,17 @@
       border-color:rgba(169,132,69,0.1);
     }
 
-    /* ─── PROMO COUNTDOWN ────────────────────────────────────────── */
+    /* ─── PROMO COUNTDOWN ────────────────────────────── */
     .promo-section {
       position:relative;
       height:100dvh;
+      height:100vh;
       width:100%;
       overflow:hidden;
       z-index:2;
       background:var(--abyss);
       transform:translateZ(0);
+      min-height: -webkit-fill-available;
     }
     .promo-section .video-container {
       position:absolute;
@@ -720,7 +729,7 @@
     }
     .promo-credits .credit-line .highlight { color:var(--gold-light); font-weight:700; }
 
-    /* ─── LOGIN MODAL ────────────────────────────────────────────── */
+    /* ─── LOGIN MODAL ─────────────────────────────────── */
     .modal-overlay {
       position:fixed;
       inset:0;
@@ -734,10 +743,11 @@
       opacity:0;
       visibility:hidden;
       transition:opacity 0.3s, visibility 0.3s;
+      padding:16px;
     }
     .modal-overlay.open { opacity:1; visibility:visible; }
     .login-modal {
-      width:90%;
+      width:100%;
       max-width:360px;
       background:rgba(6,26,32,0.96);
       backdrop-filter:blur(24px);
@@ -749,6 +759,7 @@
       opacity:0;
       transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
       border:1px solid rgba(169,132,69,0.04);
+      position:relative;
     }
     .modal-overlay.open .login-modal { transform:scale(1) translateY(0); opacity:1; }
     .login-modal h3 {
@@ -933,7 +944,7 @@
     .login-toast.success { border-color:rgba(169,132,69,0.12); color:var(--gold-light); }
     .login-toast.error { border-color:rgba(200,100,100,0.1); color:rgba(232,217,184,0.4); }
 
-    /* ─── ATLANTIS INTRO ─────────────────────────────────────────── */
+    /* ─── ATLANTIS INTRO ─────────────────────────────── */
     #atlantisIntro {
       position:fixed;
       top:0;left:0;width:100%;height:100%;
@@ -944,16 +955,12 @@
       align-items:center;
       justify-content:center;
       pointer-events:all;
-      transition:none;
+      transition:opacity 0.8s ease, transform 0.8s ease;
     }
     #atlantisIntro.exit {
-      animation:immersiveZoomIn 1.6s cubic-bezier(0.16,1,0.3,1) forwards;
+      opacity:0;
+      transform:scale(1.05);
       pointer-events:none;
-    }
-    @keyframes immersiveZoomIn {
-      0% { opacity:1; transform:scale(1) translateY(0); border-radius:0; }
-      40% { opacity:1; transform:scale(1.3) translateY(0); border-radius:0; }
-      100% { opacity:0; transform:scale(2) translateY(0); border-radius:50%; }
     }
     #atlantisIntro.hidden { display:none; }
     .intro-bg {
@@ -1061,7 +1068,7 @@
       100%{transform:translate(var(--tx,40px),var(--ty,-60px)) scale(1.8);opacity:0.2}
     }
 
-    /* ─── RESPONSIVE ──────────────────────────────────────────────── */
+    /* ─── RESPONSIVE ──────────────────────────────────── */
     @media (max-width:768px) {
       .header { top:12px; left:12px; }
       .logo-emblem { width:34px; height:34px; }
@@ -1108,11 +1115,23 @@
     @media (min-width:1201px) {
       .carousel-track .event-card { flex:0 0 clamp(230px,20vw,290px); aspect-ratio:5/7; min-height:280px; max-height:460px; }
     }
+
+    /* ─── ANDROID SAFE AREA FIXES ─────────────────────── */
+    @supports (padding: max(0px)) {
+      .header { padding-left: env(safe-area-inset-left); padding-top: env(safe-area-inset-top); }
+      .promo-credits { padding-bottom: env(safe-area-inset-bottom); }
+    }
+
+    /* ─── PERFORMANCE: REDUCE ANIMATIONS ON LOW-END ──── */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      .intro-seal svg { animation: sealReveal 0.5s ease forwards !important; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ─── ATLANTIS INTRO ──────────────────────────────────────── -->
+  <!-- ─── ATLANTIS INTRO ──────────────────────────────── -->
   <div id="atlantisIntro" role="dialog" aria-label="Enter Atlantis">
     <div class="intro-bg"></div>
     <div class="intro-grid"></div>
@@ -1149,7 +1168,7 @@
     </div>
   </div>
 
-  <!-- ─── FLOATING LOGO ─────────────────────────────────────────── -->
+  <!-- ─── FLOATING LOGO ─────────────────────────────────── -->
   <header class="header">
     <div class="trigger-wrapper" id="logoTrigger">
       <svg class="logo-emblem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1178,7 +1197,7 @@
     </div>
   </header>
 
-  <!-- ─── SCROLL CONTAINER ──────────────────────────────────────── -->
+  <!-- ─── SCROLL CONTAINER ──────────────────────────────── -->
   <div class="scroll-container active" id="scrollContainer">
 
     <!-- HERO -->
@@ -1260,11 +1279,12 @@
   <div class="login-toast" id="loginToast"></div>
 
   <script>
-    // ─── ATLANTIS INTRO (optimized) ─────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 1. ATLANTIS INTRO — SIMPLE CROSSFADE
+    // ═══════════════════════════════════════════════════════════
     (function() {
       const intro = document.getElementById('atlantisIntro');
       const sealWrapper = document.getElementById('introSealWrapper');
-      const seal = document.getElementById('introSeal');
       const scrollContainer = document.getElementById('scrollContainer');
       let introEntered = false, isTransitioning = false;
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1290,33 +1310,31 @@
         isTransitioning = true;
         introEntered = true;
         if (e) e.preventDefault();
-        seal.style.transition = 'transform 0.2s';
-        seal.style.transform = 'scale(0.95)';
-        setTimeout(() => seal.style.transform = 'scale(1.05)', 120);
-        setTimeout(() => seal.style.transform = 'scale(1)', 250);
+        
+        // Simple crossfade - just opacity + scale
+        intro.classList.add('exit');
+        
         setTimeout(() => {
-          intro.classList.add('exit');
-          setTimeout(() => {
-            scrollContainer.classList.add('active');
-            scrollContainer.style.overflowY = 'auto';
-            document.body.style.overflow = '';
-            intro.classList.add('hidden');
-            const video = document.querySelector('.hero-section video');
-            if (video) video.play().catch(()=>{});
-          }, 1600);
-        }, prefersReducedMotion ? 200 : 500);
+          scrollContainer.classList.add('active');
+          scrollContainer.style.overflowY = 'auto';
+          document.body.style.overflow = '';
+          intro.classList.add('hidden');
+          // Play hero video
+          const video = document.querySelector('.hero-section video');
+          if (video) video.play().catch(()=>{});
+        }, prefersReducedMotion ? 400 : 800);
       }
 
       sealWrapper.addEventListener('click', enterAtlantis);
       sealWrapper.addEventListener('touchstart', (e) => { if(!introEntered){ e.preventDefault(); enterAtlantis(e); } }, { passive: false });
       sealWrapper.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); enterAtlantis(e); } });
-      if (prefersReducedMotion) {
-        document.querySelectorAll('.intro-seal svg, .intro-title, .intro-enter-text').forEach(el => el.style.animationDuration = '0.7s');
-      }
-      console.log('🏛️ Atlantis Intro ready');
+      
+      console.log('🏛️ Atlantis Intro ready (crossfade)');
     })();
 
-    // ─── EVENTS DATA ─────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 2. EVENTS DATA
+    // ═══════════════════════════════════════════════════════════
     const events = [
       { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://i.ibb.co/kVg16BJm/escape-room.png" },
       { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://i.ibb.co/hTrGXQK/treasure-hunt.png" },
@@ -1332,7 +1350,9 @@
       { name: "RIPTIDE RALLY", sub: ".throwball for U.G girls", image: "https://i.ibb.co/Q3V3dxYj/Gemini-Generated-Image-konq2tkonq2tkonq.png" }
     ];
 
-    // ─── CAROUSEL (touch-optimized) ──────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 3. CAROUSEL — RAPID IMAGE LOADING WITH PRIORITY
+    // ═══════════════════════════════════════════════════════════
     const track = document.getElementById('carouselTrack');
     const stage = document.getElementById('carouselStage');
     const dotsContainer = document.getElementById('dotsContainer');
@@ -1341,15 +1361,30 @@
     let isDragging = false, isSnapping = false, dragStartX = 0, dragStartIndex = 0, velocity = 0, lastMoveX = 0, lastMoveTime = 0;
     let snapTimer = null, rafId = null, resizeTimeout = null, activeOrigIdx = 0;
 
-    function preloadAllImages(eventData) {
-      let loaded = 0, total = eventData.length;
-      eventData.forEach((e,i) => {
+    // Rapid image preload — load first 3 with high priority, rest lazy
+    function preloadImagesWithPriority(eventData) {
+      const firstBatch = eventData.slice(0, 3);
+      const rest = eventData.slice(3);
+      
+      // High priority for visible cards
+      firstBatch.forEach((e, i) => {
         const img = new Image();
-        img.onload = img.onerror = () => { loaded++; if(loaded===total) document.querySelectorAll('.card-image img').forEach(el => el.classList.add('loaded')); };
+        img.fetchPriority = 'high';
         img.src = e.image;
       });
+      
+      // Lazy load the rest
+      rest.forEach((e) => {
+        const img = new Image();
+        img.loading = 'lazy';
+        img.src = e.image;
+      });
+      
+      // Mark all as loaded after a short delay (they'll finish naturally)
+      setTimeout(() => {
+        document.querySelectorAll('.card-image img').forEach(el => el.classList.add('loaded'));
+      }, 1500);
     }
-    preloadAllImages(events);
 
     function createCardElement(evt, idx, globalIdx) {
       const card = document.createElement('div');
@@ -1358,7 +1393,7 @@
       card.dataset.globalIndex = globalIdx;
       card.innerHTML = `
         <div class="card-image">
-          <img src="${evt.image}" alt="Event photo" loading="lazy" />
+          <img src="${evt.image}" alt="Event photo" loading="${idx < 3 ? 'eager' : 'lazy'}" fetchpriority="${idx < 3 ? 'high' : 'auto'}" />
           <div class="img-placeholder"></div>
         </div>
         <div class="card-content">
@@ -1428,7 +1463,7 @@
       snapTimer = setTimeout(() => { isSnapping = false; snapTimer = null; }, animate ? 500 : 40);
     }
 
-    // Touch / pointer events with passive handling
+    // Touch / pointer events
     stage.addEventListener('pointerdown', (e) => {
       if (isSnapping) return;
       isDragging = true; isSnapping = false;
@@ -1477,6 +1512,9 @@
       stage.releasePointerCapture(e.pointerId);
     });
 
+    // Quick preload
+    preloadImagesWithPriority(events);
+
     window.addEventListener('resize', () => { if(resizeTimeout) clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 120); });
     if (window.ResizeObserver) {
       const ro = new ResizeObserver(() => { if(resizeTimeout) clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { measureCardWidth(); updateCarousel(false); }, 120); });
@@ -1493,23 +1531,16 @@
 
     buildCarousel();
 
-    // ─── HERO PARALLAX (light) ───────────────────────────────────
-    const heroSection = document.getElementById('hero');
-    let isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (!isMobile) {
-      heroSection.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2;
-        const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        const rays = document.querySelector('.light-rays');
-        const particles = document.querySelector('.particles');
-        const center = document.querySelector('.hero-center');
-        if (rays) rays.style.transform = `translate(${x*10}px, ${y*10}px)`;
-        if (particles) particles.style.transform = `translate(${x*-6}px, ${y*-6}px)`;
-        if (center) center.style.transform = `translate(${x*-3}px, ${y*-3}px)`;
-      });
-    }
+    // ═══════════════════════════════════════════════════════════
+    // 4. HERO — REMOVED GLITCHY PARALLAX, KEPT STATIC
+    // ═══════════════════════════════════════════════════════════
+    // Hero no longer has heavy parallax that causes glitches.
+    // The rays and particles still animate, but they're GPU-accelerated.
+    console.log('🌊 Hero static — no glitchy transforms');
 
-    // ─── SCROLL INTERACTION (throttled) ──────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 5. SCROLL — LIGHTWEIGHT (no complex transforms)
+    // ═══════════════════════════════════════════════════════════
     let ticking = false;
     window.addEventListener('scroll', () => {
       if (!ticking) {
@@ -1517,44 +1548,52 @@
           const scrollY = window.scrollY;
           const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
           const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
+          
+          // Simple opacity fade for hero
           const hero = document.getElementById('hero');
+          if (hero) {
+            hero.style.opacity = Math.max(0, 1 - scrollY * 0.001);
+          }
+          
+          // Simple reveal for explore
           const explore = document.getElementById('explore');
-          const promo = document.getElementById('promo');
-          if (hero) { hero.style.transform = `scale(${Math.max(0.94, 1 - scrollY*0.00035)})`; hero.style.opacity = Math.max(0, 1 - scrollY*0.0012); }
           if (explore) {
             const rect = explore.getBoundingClientRect();
             const viewH = window.innerHeight;
             if (rect.top < viewH && rect.bottom > 0) {
               const p = Math.min(Math.max(1 - (rect.top / viewH), 0), 1);
-              explore.style.transform = `scale(${0.97 + p*0.03})`;
-              explore.style.opacity = 0.7 + p*0.3;
+              explore.style.opacity = 0.7 + p * 0.3;
             }
           }
+          
+          // Simple reveal for promo
+          const promo = document.getElementById('promo');
           if (promo) {
             const rect = promo.getBoundingClientRect();
             const viewH = window.innerHeight;
             if (rect.top < viewH && rect.bottom > 0) {
               const p = Math.min(Math.max(1 - (rect.top / viewH), 0), 1);
-              promo.style.transform = `scale(${0.97 + p*0.03})`;
-              promo.style.opacity = 0.7 + p*0.3;
+              promo.style.opacity = 0.7 + p * 0.3;
             }
           }
-          const tiltX = (progress - 0.5) * 2;
-          const tiltY = (progress - 0.5) * 1;
-          document.getElementById('scrollContainer').style.transform = `perspective(600px) rotateX(${tiltX*0.2}deg) rotateY(${tiltY*0.1}deg)`;
+          
           ticking = false;
         });
         ticking = true;
       }
     }, { passive: true });
 
-    // ─── DROPDOWN ─────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 6. DROPDOWN
+    // ═══════════════════════════════════════════════════════════
     const trigger = document.getElementById('logoTrigger');
     const dropdown = document.getElementById('dropdownMenu');
     trigger.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); });
     document.addEventListener('click', (e) => { if (!document.querySelector('.header').contains(e.target)) dropdown.classList.remove('open'); });
 
-    // ─── COUNTDOWN ─────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 7. COUNTDOWN
+    // ═══════════════════════════════════════════════════════════
     const promoTarget = new Date('2026-09-25T00:00:00');
     function updatePromoCountdown() {
       const diff = Math.max(0, promoTarget - Date.now());
@@ -1565,7 +1604,9 @@
     }
     updatePromoCountdown(); setInterval(updatePromoCountdown, 1000);
 
-    // ─── LOGIN SYSTEM ─────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    // 8. LOGIN SYSTEM
+    // ═══════════════════════════════════════════════════════════
     const CREDENTIALS = {
       admin: { password: 'admin2026', dashboard: 'admindb.html', label: 'Admin' },
       student: { password: 'student2026', dashboard: 'studentdb.html', label: 'Student Coordinator' },
@@ -1649,7 +1690,7 @@
     loginPass.addEventListener('input', ()=>{ loginPass.classList.remove('error'); loginError.classList.remove('show'); });
     loginUser.addEventListener('input', ()=>{ loginError.classList.remove('show'); });
     setRole('admin');
-    console.log('🔱 DEPLOMAT · Optimized for mobile');
+    console.log('🔱 DEPLOMAT · Fully optimized');
   </script>
 </body>
 </html>
