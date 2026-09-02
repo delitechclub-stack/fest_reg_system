@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,7 +18,7 @@
       background-image:
         radial-gradient(circle at 20% 30%, rgba(0, 180, 255, 0.08) 0%, transparent 35%),
         radial-gradient(circle at 80% 70%, rgba(255, 70, 150, 0.06) 0%, transparent 40%),
-        repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 6px);
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.01) 0px, rgba(255, 255, 255, 0.01) 2px, transparent 2px, transparent 6px);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #f0f4fc;
       padding: 2rem 1.5rem;
@@ -49,11 +50,11 @@
       box-shadow: 0 40px 80px -20px #000000cc, 0 0 0 1px rgba(100, 210, 255, 0.05) inset;
     }
 
-    .space-y-6 > * + * {
+    .space-y-6>*+* {
       margin-top: 2rem;
     }
 
-    .space-y-4 > * + * {
+    .space-y-4>*+* {
       margin-top: 1.2rem;
     }
 
@@ -260,14 +261,32 @@
     }
 
     @media (max-width: 640px) {
-      body { padding: 0.8rem; }
-      .glass-card { padding: 1.8rem 1.2rem; border-radius: 2rem; }
-      .flex-row { flex-direction: column; align-items: flex-start; }
-      .rule-item { border-radius: 20px; padding: 0.7rem 1rem; }
-      .grid-2col { grid-template-columns: 1fr; }
+      body {
+        padding: 0.8rem;
+      }
+
+      .glass-card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 2rem;
+      }
+
+      .flex-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .rule-item {
+        border-radius: 20px;
+        padding: 0.7rem 1rem;
+      }
+
+      .grid-2col {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="event-wrapper">
     <!-- main card -->
@@ -296,10 +315,14 @@
       <div class="space-y-4">
         <div style="display: flex; align-items: center; gap: 0.8rem;">
           <span style="font-weight: 600; letter-spacing: 0.02em;">📄 About Event</span>
-          <span style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
+          <span
+            style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
         </div>
-        <p style="color: #c6dbf5; line-height: 1.6; padding-left: 0.5rem; border-left: 3px solid #64d8ff; padding-left: 1.2rem;">
-          <strong>The Lost Relic</strong> — a thrilling treasure hunt across the campus. Teams of two will decipher cryptic clues, solve puzzles, and race against time to uncover the hidden relic. Stay sharp, work together, and claim the glory.
+        <p
+          style="color: #c6dbf5; line-height: 1.6; padding-left: 0.5rem; border-left: 3px solid #64d8ff; padding-left: 1.2rem;">
+          <strong>The Lost Relic</strong> — a thrilling treasure hunt across the campus. Teams of two will decipher
+          cryptic clues, solve puzzles, and race against time to uncover the hidden relic. Stay sharp, work together,
+          and claim the glory.
         </p>
       </div>
 
@@ -307,16 +330,23 @@
       <div class="space-y-3">
         <div style="display: flex; align-items: center; gap: 0.8rem;">
           <span style="font-weight: 600; letter-spacing: 0.02em;">📋 Rules &amp; Regulations</span>
-          <span style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
+          <span
+            style="flex:1; height:1px; background: linear-gradient(90deg, rgba(100,210,255,0.2), transparent);"></span>
         </div>
 
         <div class="rules-grid">
-          <div class="rule-item"><span class="num">❶</span> Teams must follow the clues in the given order. Skipping any clue is not permitted.</div>
-          <div class="rule-item"><span class="num">❷</span> Mobile phones and other electronic devices are strictly prohibited during the event.</div>
-          <div class="rule-item"><span class="num">❸</span> Participants must not tamper with, hide, or interfere with clues intended for other teams.</div>
-          <div class="rule-item"><span class="num">❹</span> Entry into restricted or unauthorized areas is strictly prohibited.</div>
-          <div class="rule-item"><span class="num">❺</span> Cheating, unfair practices, or any damage to college property will result in immediate disqualification.</div>
-          <div class="rule-item"><span class="num">❻</span> All participants must strictly adhere to the instructions given by the event coordinators. The decision of the event coordinators shall be final and binding.</div>
+          <div class="rule-item"><span class="num">❶</span> Teams must follow the clues in the given order. Skipping any
+            clue is not permitted.</div>
+          <div class="rule-item"><span class="num">❷</span> Mobile phones and other electronic devices are strictly
+            prohibited during the event.</div>
+          <div class="rule-item"><span class="num">❸</span> Participants must not tamper with, hide, or interfere with
+            clues intended for other teams.</div>
+          <div class="rule-item"><span class="num">❹</span> Entry into restricted or unauthorized areas is strictly
+            prohibited.</div>
+          <div class="rule-item"><span class="num">❺</span> Cheating, unfair practices, or any damage to college
+            property will result in immediate disqualification.</div>
+          <div class="rule-item"><span class="num">❻</span> All participants must strictly adhere to the instructions
+            given by the event coordinators. The decision of the event coordinators shall be final and binding.</div>
         </div>
       </div>
 
@@ -330,7 +360,7 @@
       <!-- action grid -->
       <div class="grid-2col">
         <a href="registration.html?event=1" class="action-btn"><span class="icon">📝</span> Register</a>
-        <a href="#" class="action-btn"><span class="icon">📞</span> Connect Co‑ordinator</a>
+        <a href="co.html?event=The%20Lost%20Relic" class="contact-btn">📞 Contact Coordinator</a>
         <a href="reg-status.html" class="action-btn"><span class="icon">📊</span> Check Registration</a>
         <a href="#" class="action-btn"><span class="icon">▶️</span> Watch Promo</a>
       </div>
@@ -343,4 +373,5 @@
     </div>
   </div>
 </body>
+
 </html>
