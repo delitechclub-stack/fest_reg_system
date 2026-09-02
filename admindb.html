@@ -12,6 +12,10 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <!-- SheetJS for Excel export (optional) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js">
+    </script>
+
     <style>
         /* ─── RESET & BASE ─────────────────────────────────────────── */
         * {
@@ -614,6 +618,34 @@
             color: #65d8ff;
         }
 
+        /* ─── DOWNLOAD BUTTON ───────────────────────────────────────── */
+        .download-btn {
+            background: rgba(101, 216, 255, 0.08);
+            border: 1px solid rgba(101, 216, 255, 0.15);
+            color: #65d8ff;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s ease;
+            margin-left: 10px;
+        }
+        .download-btn:hover {
+            background: rgba(101, 216, 255, 0.15);
+            border-color: rgba(101, 216, 255, 0.3);
+            transform: scale(1.04);
+        }
+        .download-btn:active {
+            transform: scale(0.95);
+        }
+        .download-btn i {
+            font-size: 0.8rem;
+        }
+
         .table-tools {
             display: flex;
             gap: 12px;
@@ -946,6 +978,10 @@
                 padding: 6px 10px;
                 min-width: 100px;
             }
+            .download-btn {
+                font-size: 0.55rem;
+                padding: 4px 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -995,6 +1031,14 @@
             .table-tools input,
             .table-tools select {
                 min-width: 100%;
+            }
+            .download-btn {
+                font-size: 0.5rem;
+                padding: 3px 8px;
+                margin-left: 4px;
+            }
+            .download-btn i {
+                font-size: 0.6rem;
             }
         }
 
@@ -1097,54 +1141,54 @@
         .college-rank-badge.pu-badge .num {
             color: #FFC53D;
         }
-        /* ─── STATUS BADGE STYLES ────────────────────────────────────────── */
-/* ─── STATUS BADGE STYLES ────────────────────────────────────────── */
-.status-badge {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 0.6rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-.status-badge.verified {
-    background: rgba(76, 175, 80, 0.15);
-    color: #4caf50;
-    border: 1px solid rgba(76, 175, 80, 0.1);
-}
-.status-badge.pending {
-    background: rgba(255, 197, 61, 0.15);
-    color: #FFC53D;
-    border: 1px solid rgba(255, 197, 61, 0.1);
-}
-.status-badge.rejected {
-    background: rgba(255, 42, 109, 0.15);
-    color: #ff2a6d;
-    border: 1px solid rgba(255, 42, 109, 0.1);
-}
 
-/* ─── ACTION BUTTON STYLES ───────────────────────────────────────── */
-.action-btn {
-    background: none;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: 0.2s ease;
-    opacity: 0.5;
-}
-.action-btn:hover {
-    opacity: 1;
-    transform: scale(1.15);
-}
-.action-btn.verify:hover {
-    background: rgba(76, 175, 80, 0.15);
-}
-.action-btn.reject:hover {
-    background: rgba(255, 42, 109, 0.15);
-}
+        /* ─── STATUS BADGE STYLES ────────────────────────────────────────── */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .status-badge.verified {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+        }
+        .status-badge.pending {
+            background: rgba(255, 197, 61, 0.15);
+            color: #FFC53D;
+            border: 1px solid rgba(255, 197, 61, 0.1);
+        }
+        .status-badge.rejected {
+            background: rgba(255, 42, 109, 0.15);
+            color: #ff2a6d;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+        }
+
+        /* ─── ACTION BUTTON STYLES ───────────────────────────────────────── */
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: 0.2s ease;
+            opacity: 0.5;
+        }
+        .action-btn:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+        .action-btn.verify:hover {
+            background: rgba(76, 175, 80, 0.15);
+        }
+        .action-btn.reject:hover {
+            background: rgba(255, 42, 109, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -1291,59 +1335,62 @@
             <div class="card-title">
                 <i class="fas fa-table"></i> Registration Records
                 <span style="margin-left:auto;font-size:0.55rem;color:rgba(255,255,255,0.15);" id="recordCount">0 records</span>
+                <!-- ═══ DOWNLOAD BUTTON ═══ -->
+                <button class="download-btn" id="downloadBtn" title="Download filtered data as CSV/Excel">
+                    <i class="fas fa-download"></i> Export
+                </button>
             </div>
 
             <div class="table-tools">
-    <input type="text" id="searchInput" placeholder="🔍 Search by name, email, UTR..." />
-    <select id="eventFilter">
-        <option value="">All Events</option>
-    </select>
-    <select id="categoryFilter">
-        <option value="all">🎓 All Categories</option>
-        <option value="ug">🎓 UG Only</option>
-        <option value="pu">🎓 PU Only</option>
-        <option value="mixed">🎓 Mixed (UG+PU)</option>
-    </select>
-    <select id="teamSizeFilter">
-        <option value="all">👥 All Team Sizes</option>
-        <option value="1">👤 Solo (1)</option>
-        <option value="2">👥 Pair (2)</option>
-        <option value="3">👨‍👩‍👦 3 Members</option>
-        <option value="4">👨‍👩‍👧‍👦 4 Members</option>
-        <option value="5plus">👥 5+ Members</option>
-    </select>
-    <!-- ⬇️ ADD THIS STATUS FILTER ⬇️ -->
-    <select id="statusFilter">
-        <option value="all">📋 All Status</option>
-        <option value="VERIFIED">✅ Verified</option>
-        <option value="PENDING">⏳ Pending</option>
-        <option value="REJECTED">❌ Rejected</option>
-    </select>
-</div>
+                <input type="text" id="searchInput" placeholder="🔍 Search by name, email, UTR..." />
+                <select id="eventFilter">
+                    <option value="">All Events</option>
+                </select>
+                <select id="categoryFilter">
+                    <option value="all">🎓 All Categories</option>
+                    <option value="ug">🎓 UG Only</option>
+                    <option value="pu">🎓 PU Only</option>
+                    <option value="mixed">🎓 Mixed (UG+PU)</option>
+                </select>
+                <select id="teamSizeFilter">
+                    <option value="all">👥 All Team Sizes</option>
+                    <option value="1">👤 Solo (1)</option>
+                    <option value="2">👥 Pair (2)</option>
+                    <option value="3">👨‍👩‍👦 3 Members</option>
+                    <option value="4">👨‍👩‍👧‍👦 4 Members</option>
+                    <option value="5plus">👥 5+ Members</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="all">📋 All Status</option>
+                    <option value="VERIFIED">✅ Verified</option>
+                    <option value="PENDING">⏳ Pending</option>
+                    <option value="REJECTED">❌ Rejected</option>
+                </select>
+            </div>
 
             <!-- ─── ACTIVE FILTERS DISPLAY ─── -->
             <div class="active-filters-info" id="activeFiltersInfo"></div>
 
             <div class="table-scroll">
                 <table>
-                  <thead>
-    <tr>
-        <th>#</th>
-        <th>Team Leader</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Event</th>
-        <th>Category</th>
-        <th>Participants</th>
-        <th>UTR</th>
-        <th>Status</th>
-        <th>Amount</th>
-        <th>Actions</th>
-    </tr>
-</thead>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Team Leader</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Event</th>
+                            <th>Category</th>
+                            <th>Participants</th>
+                            <th>UTR</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="9" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                            <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
                                 <i class="fas fa-spinner fa-spin" style="font-size:1.2rem;display:block;margin-bottom:8px;"></i>
                                 Loading registrations...
                             </td>
@@ -1408,12 +1455,13 @@
         const eventFilter = document.getElementById('eventFilter');
         const categoryFilter = document.getElementById('categoryFilter');
         const teamSizeFilter = document.getElementById('teamSizeFilter');
-        const statusFilter = document.getElementById('statusFilter'); // ⬅️ ADD THIS
+        const statusFilter = document.getElementById('statusFilter');
         const eventFilterDropdown = document.getElementById('eventFilterDropdown');
         const recordCount = document.getElementById('recordCount');
         const refreshBtn = document.getElementById('refreshBtn');
         const tooltip = document.getElementById('tooltip');
         const activeFiltersInfo = document.getElementById('activeFiltersInfo');
+        const downloadBtn = document.getElementById('downloadBtn');
 
         const ugColBar = document.getElementById('ugColBar');
         const puColBar = document.getElementById('puColBar');
@@ -1504,6 +1552,225 @@
             };
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        //  📥 DOWNLOAD FUNCTIONALITY
+        // ═══════════════════════════════════════════════════════════════
+
+        function getFilterSuffix() {
+            const parts = [];
+
+            const search = searchInput.value.trim();
+            if (search) parts.push(`search-${search.replace(/\s+/g, '_').substring(0, 20)}`);
+
+            const event = eventFilter.value;
+            if (event) {
+                const eventInfo = EVENTS.find(e => e.name === event);
+                parts.push(eventInfo ? eventInfo.type.replace(/\s+/g, '_') : event.replace(/\s+/g, '_').substring(0, 15));
+            }
+
+            const category = categoryFilter.value;
+            if (category !== 'all') {
+                const labels = { ug: 'UG', pu: 'PU', mixed: 'Mixed' };
+                parts.push(labels[category] || category);
+            }
+
+            const teamSize = teamSizeFilter.value;
+            if (teamSize !== 'all') {
+                const labels = { '1': 'solo', '2': 'pair', '3': '3mem', '4': '4mem', '5plus': '5plus' };
+                parts.push(labels[teamSize] || teamSize);
+            }
+
+            const status = statusFilter.value;
+            if (status !== 'all') {
+                parts.push(status.toLowerCase());
+            }
+
+            return parts.length > 0 ? parts.join('_') : 'all';
+        }
+
+        function downloadFilteredDataCSV() {
+            const data = filteredRegistrations;
+
+            if (data.length === 0) {
+                showTooltip('⚠️ No data to download', 'error');
+                return;
+            }
+
+            // Define CSV headers
+            const headers = [
+                'S.No',
+                'Team Leader',
+                'Email',
+                'Phone',
+                'College',
+                'Event Name',
+                'Event Type',
+                'Category',
+                'Team Size',
+                'Participants',
+                'UTR / Transaction ID',
+                'Amount (₹)',
+                'Registration Date',
+                'Status'
+            ];
+
+            // Map each registration to a clean row
+            const rows = data.map((r, idx) => {
+                const participants = getParticipantsArray(r);
+                const participantNames = participants.map(p => p.name || 'Unknown').join('; ');
+                const teamSize = participants.length || 1;
+
+                const eventInfo = EVENTS.find(e => e.name === r.event_name);
+                const eventType = eventInfo ? eventInfo.type : '—';
+
+                const cat = getEventCategory(r.event_name);
+                let categoryLabel = 'UG';
+                if (cat === 'PU') categoryLabel = 'PU';
+                else if (cat === 'Mixed') categoryLabel = 'UG + PU';
+
+                const status = r.status || 'VERIFIED';
+                let statusLabel = 'Verified';
+                if (status === 'PENDING') statusLabel = 'Pending';
+                else if (status === 'REJECTED') statusLabel = 'Rejected';
+
+                return [
+                    idx + 1,
+                    r.team_leader || '—',
+                    r.email || '—',
+                    r.phone || '—',
+                    r.college || '—',
+                    r.event_name || '—',
+                    eventType,
+                    categoryLabel,
+                    teamSize,
+                    participantNames || '—',
+                    r.txn || '—',
+                    r.total_amount || 0,
+                    r.registered_at ? new Date(r.registered_at).toLocaleString('en-IN') : '—',
+                    statusLabel
+                ];
+            });
+
+            // Build CSV content
+            let csvContent = headers.join(',') + '\n';
+
+            rows.forEach(row => {
+                const escapedRow = row.map(cell => {
+                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes(
+                            '\n'))) {
+                        return `"${cell.replace(/"/g, '""')}"`;
+                    }
+                    return cell;
+                });
+                csvContent += escapedRow.join(',') + '\n';
+            });
+
+            // Create download
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+            const filterSuffix = getFilterSuffix();
+            const filename = `deplomat_registrations_${filterSuffix}_${timestamp}.csv`;
+
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showTooltip(`✅ Downloaded ${data.length} records as CSV`, 'success');
+        }
+
+        function downloadFilteredDataExcel() {
+            const data = filteredRegistrations;
+
+            if (data.length === 0) {
+                showTooltip('⚠️ No data to download', 'error');
+                return;
+            }
+
+            // Check if SheetJS is loaded
+            if (typeof XLSX === 'undefined') {
+                // Fallback to CSV
+                downloadFilteredDataCSV();
+                return;
+            }
+
+            // Prepare data for Excel
+            const headers = ['S.No', 'Team Leader', 'Email', 'Phone', 'College',
+                'Event Name', 'Event Type', 'Category', 'Team Size',
+                'Participants', 'UTR / Transaction ID', 'Amount (₹)',
+                'Registration Date', 'Status'
+            ];
+
+            const rows = data.map((r, idx) => {
+                const participants = getParticipantsArray(r);
+                const participantNames = participants.map(p => p.name || 'Unknown').join('; ');
+                const teamSize = participants.length || 1;
+
+                const eventInfo = EVENTS.find(e => e.name === r.event_name);
+                const eventType = eventInfo ? eventInfo.type : '—';
+
+                const cat = getEventCategory(r.event_name);
+                let categoryLabel = 'UG';
+                if (cat === 'PU') categoryLabel = 'PU';
+                else if (cat === 'Mixed') categoryLabel = 'UG + PU';
+
+                const status = r.status || 'VERIFIED';
+                let statusLabel = 'Verified';
+                if (status === 'PENDING') statusLabel = 'Pending';
+                else if (status === 'REJECTED') statusLabel = 'Rejected';
+
+                return [
+                    idx + 1,
+                    r.team_leader || '—',
+                    r.email || '—',
+                    r.phone || '—',
+                    r.college || '—',
+                    r.event_name || '—',
+                    eventType,
+                    categoryLabel,
+                    teamSize,
+                    participantNames || '—',
+                    r.txn || '—',
+                    r.total_amount || 0,
+                    r.registered_at ? new Date(r.registered_at).toLocaleString('en-IN') : '—',
+                    statusLabel
+                ];
+            });
+
+            const wsData = [headers, ...rows];
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+            // Auto column widths
+            const colWidths = headers.map((h, i) => ({
+                wch: Math.max(h.length, ...rows.map(row => String(row[i] || '').length)) + 2
+            }));
+            ws['!cols'] = colWidths;
+
+            XLSX.utils.book_append_sheet(wb, ws, 'Registrations');
+
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+            const filterSuffix = getFilterSuffix();
+            const filename = `deplomat_registrations_${filterSuffix}_${timestamp}.xlsx`;
+
+            XLSX.writeFile(wb, filename);
+            showTooltip(`✅ Downloaded ${data.length} records as Excel`, 'success');
+        }
+
+        function handleDownload() {
+            // Try Excel first, fallback to CSV
+            if (typeof XLSX !== 'undefined') {
+                downloadFilteredDataExcel();
+            } else {
+                downloadFilteredDataCSV();
+            }
+        }
+
         // ─── LOAD DATA ────────────────────────────────────────────────
 
         async function loadData() {
@@ -1549,7 +1816,8 @@
                                 [{ name: item.teamLeader || 'Unknown', phone: item.phone || 'N/A',
                                     otherEvent: 'No' }],
                             cross_check: item.cross_check || [],
-                            registered_at: item.registered_at || new Date().toISOString()
+                            registered_at: item.registered_at || new Date().toISOString(),
+                            status: item.status || 'VERIFIED'
                         }));
                         console.log('📦 Loaded from localStorage:', data.length, 'records');
                     }
@@ -1569,8 +1837,8 @@
             const search = searchInput.value.toLowerCase().trim();
             const event = eventFilter.value;
             const category = categoryFilter.value;
-            
-                const status = statusFilter.value; // ⬅️ ADD THIS
+            const teamSize = teamSizeFilter.value;
+            const status = statusFilter.value;
 
             filteredRegistrations = allRegistrations.filter(r => {
                 // Search filter
@@ -1597,13 +1865,20 @@
                     if (category === 'mixed' && rCategory !== 'Mixed') return false;
                 }
 
-                        // ⬇️ STATUS FILTER ⬇️
-        if (status !== 'all') {
-            const rStatus = r.status || 'VERIFIED';
-            if (rStatus !== status) return false;
-        }
+                // Team size filter
+                if (teamSize !== 'all') {
+                    const size = getTeamSize(r);
+                    if (teamSize === '5plus' && size < 5) return false;
+                    if (teamSize !== '5plus' && size !== parseInt(teamSize)) return false;
+                }
 
-        return true;
+                // Status filter
+                if (status !== 'all') {
+                    const rStatus = r.status || 'VERIFIED';
+                    if (rStatus !== status) return false;
+                }
+
+                return true;
             });
 
             selectedEventFilter = eventFilterDropdown.value;
@@ -1619,6 +1894,7 @@
             const event = eventFilter.value;
             const category = categoryFilter.value;
             const teamSize = teamSizeFilter.value;
+            const status = statusFilter.value;
 
             if (search) filters.push({ label: `🔍 "${search}"`, type: 'search' });
             if (event) {
@@ -1634,10 +1910,14 @@
                     '5plus': '👥 5+ Members' };
                 filters.push({ label: labels[teamSize], type: 'teamSize' });
             }
+            if (status !== 'all') {
+                const labels = { VERIFIED: '✅ Verified', PENDING: '⏳ Pending', REJECTED: '❌ Rejected' };
+                filters.push({ label: labels[status] || status, type: 'status' });
+            }
 
             if (filters.length === 0) {
                 activeFiltersInfo.innerHTML =
-                '<span style="font-size:0.6rem;color:rgba(255,255,255,0.15);">No active filters</span>';
+                    '<span style="font-size:0.6rem;color:rgba(255,255,255,0.15);">No active filters</span>';
                 return;
             }
 
@@ -1660,6 +1940,7 @@
             if (type === 'event') eventFilter.value = '';
             if (type === 'category') categoryFilter.value = 'all';
             if (type === 'teamSize') teamSizeFilter.value = 'all';
+            if (type === 'status') statusFilter.value = 'all';
             applyFilters();
         }
 
@@ -1921,90 +2202,91 @@
         // ─── TABLE ────────────────────────────────────────────────────
 
         function renderTable() {
-    const regs = filteredRegistrations;
+            const regs = filteredRegistrations;
 
-    if (regs.length === 0) {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
-                    <i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
-                    ${allRegistrations.length === 0 ? 'No registrations loaded' : 'No matching records found'}
-                </td>
-            </tr>
-        `;
-        return;
-    }
+            if (regs.length === 0) {
+                tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                                <i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                                ${allRegistrations.length === 0 ? 'No registrations loaded' : 'No matching records found'}
+                            </td>
+                        </tr>
+                    `;
+                return;
+            }
 
-    let html = '';
-    regs.forEach((r, idx) => {
-        const parts = getParticipantsArray(r);
-        const participantNames = parts.map(p => p.name || 'Unknown').join(', ');
+            let html = '';
+            regs.forEach((r, idx) => {
+                const parts = getParticipantsArray(r);
+                const participantNames = parts.map(p => p.name || 'Unknown').join(', ');
 
-        const eventName = r.event_name || 'Unknown';
-        const cat = getEventCategory(eventName);
-        
-        let categoryDisplay = '—';
-        let tagClass = '';
-        if (cat === 'Mixed') { categoryDisplay = 'UG + PU'; tagClass = 'mixed'; } 
-        else if (cat === 'PU') { categoryDisplay = 'PU'; tagClass = 'pu'; } 
-        else { categoryDisplay = 'UG'; tagClass = 'ug'; }
+                const eventName = r.event_name || 'Unknown';
+                const cat = getEventCategory(eventName);
 
-        // ─── STATUS DISPLAY ───
-        const status = r.status || 'VERIFIED';
-        let statusDisplay = '';
-        let statusClass = '';
-        if (status === 'VERIFIED') { 
-            statusDisplay = '✅ Verified'; 
-            statusClass = 'verified'; 
-        } else if (status === 'PENDING') { 
-            statusDisplay = '⏳ Pending'; 
-            statusClass = 'pending'; 
-        } else if (status === 'REJECTED') { 
-            statusDisplay = '❌ Rejected'; 
-            statusClass = 'rejected'; 
-        } else { 
-            statusDisplay = '✅ Verified'; 
-            statusClass = 'verified'; 
+                let categoryDisplay = '—';
+                let tagClass = '';
+                if (cat === 'Mixed') { categoryDisplay = 'UG + PU';
+                    tagClass = 'mixed'; } else if (cat === 'PU') { categoryDisplay = 'PU';
+                    tagClass = 'pu'; } else { categoryDisplay = 'UG';
+                    tagClass = 'ug'; }
+
+                // ─── STATUS DISPLAY ───
+                const status = r.status || 'VERIFIED';
+                let statusDisplay = '';
+                let statusClass = '';
+                if (status === 'VERIFIED') {
+                    statusDisplay = '✅ Verified';
+                    statusClass = 'verified';
+                } else if (status === 'PENDING') {
+                    statusDisplay = '⏳ Pending';
+                    statusClass = 'pending';
+                } else if (status === 'REJECTED') {
+                    statusDisplay = '❌ Rejected';
+                    statusClass = 'rejected';
+                } else {
+                    statusDisplay = '✅ Verified';
+                    statusClass = 'verified';
+                }
+
+                const teamSize = getTeamSize(r);
+                let sizeBadge = '';
+                if (teamSize === 1) sizeBadge = '👤';
+                else if (teamSize === 2) sizeBadge = '👥';
+                else if (teamSize >= 3) sizeBadge = `👥 ${teamSize}`;
+
+                // ─── ACTIONS - Only show for PENDING ───
+                let actionsHtml = '';
+                if (status === 'PENDING') {
+                    actionsHtml = `
+                            <button onclick="verifyRegistration('${r.id || idx}')" class="action-btn verify" title="Verify">✅</button>
+                            <button onclick="rejectRegistration('${r.id || idx}')" class="action-btn reject" title="Reject">❌</button>
+                        `;
+                } else {
+                    actionsHtml = `<span style="color:rgba(255,255,255,0.15);font-size:0.6rem;">—</span>`;
+                }
+
+                html += `
+                        <tr>
+                            <td style="color:rgba(255,255,255,0.2);">${idx + 1}</td>
+                            <td><strong style="color:rgba(255,255,255,0.8);">${safeString(r.team_leader)}</strong></td>
+                            <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">${safeString(r.email)}</td>
+                            <td style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${safeString(r.phone)}</td>
+                            <td><span class="tag event-tag">${eventName}</span></td>
+                            <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
+                            <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">
+                                ${sizeBadge} ${participantNames || '—'}
+                            </td>
+                            <td><span class="txn-code">${safeString(r.txn)}</span></td>
+                            <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
+                            <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
+                            <td>${actionsHtml}</td>
+                        </tr>
+                    `;
+            });
+
+            tableBody.innerHTML = html;
         }
-
-        const teamSize = getTeamSize(r);
-        let sizeBadge = '';
-        if (teamSize === 1) sizeBadge = '👤';
-        else if (teamSize === 2) sizeBadge = '👥';
-        else if (teamSize >= 3) sizeBadge = `👥 ${teamSize}`;
-
-        // ─── ACTIONS - Only show for PENDING ───
-        let actionsHtml = '';
-        if (status === 'PENDING') {
-            actionsHtml = `
-                <button onclick="verifyRegistration('${r.id || idx}')" class="action-btn verify" title="Verify">✅</button>
-                <button onclick="rejectRegistration('${r.id || idx}')" class="action-btn reject" title="Reject">❌</button>
-            `;
-        } else {
-            actionsHtml = `<span style="color:rgba(255,255,255,0.15);font-size:0.6rem;">—</span>`;
-        }
-
-        html += `
-            <tr>
-                <td style="color:rgba(255,255,255,0.2);">${idx + 1}</td>
-                <td><strong style="color:rgba(255,255,255,0.8);">${safeString(r.team_leader)}</strong></td>
-                <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">${safeString(r.email)}</td>
-                <td style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${safeString(r.phone)}</td>
-                <td><span class="tag event-tag">${eventName}</span></td>
-                <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
-                <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">
-                    ${sizeBadge} ${participantNames || '—'}
-                </td>
-                <td><span class="txn-code">${safeString(r.txn)}</span></td>
-                <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
-                <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
-                <td>${actionsHtml}</td>
-            </tr>
-        `;
-    });
-
-    tableBody.innerHTML = html;
-}
 
         function updateRecordCount() {
             const count = filteredRegistrations.length;
@@ -2065,15 +2347,21 @@
         searchInput.addEventListener('input', debounce(applyFilters, 300));
         eventFilter.addEventListener('change', applyFilters);
         categoryFilter.addEventListener('change', applyFilters);
-        
-        statusFilter.addEventListener('change', applyFilters); // ⬅️ ADD THIS
+        teamSizeFilter.addEventListener('change', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
         eventFilterDropdown.addEventListener('change', applyFilters);
         refreshBtn.addEventListener('click', refreshData);
+        downloadBtn.addEventListener('click', handleDownload);
 
         document.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
                 e.preventDefault();
                 refreshData();
+            }
+            // Ctrl+Shift+E for export
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
+                e.preventDefault();
+                handleDownload();
             }
         });
 
@@ -2099,6 +2387,66 @@
             }, 200);
         }
 
+        // ─── VERIFY REGISTRATION ─────────────────────────────────────
+
+        async function verifyRegistration(id) {
+            if (!confirm('✅ Verify this registration?')) return;
+
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('registrations')
+                        .update({ status: 'VERIFIED', verified_at: new Date().toISOString() })
+                        .eq('id', id);
+                    if (error) throw error;
+                }
+
+                const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
+                if (reg) reg.status = 'VERIFIED';
+
+                showTooltip('✅ Registration verified!', 'success');
+                await refreshData();
+
+            } catch (e) {
+                showTooltip('❌ Failed: ' + e.message, 'error');
+            }
+        }
+
+        // ─── REJECT REGISTRATION ─────────────────────────────────────
+
+        async function rejectRegistration(id) {
+            const reason = prompt('❌ Reason for rejection:');
+            if (reason === null) return;
+            if (!confirm('Reject this registration?')) return;
+
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('registrations')
+                        .update({
+                            status: 'REJECTED',
+                            rejection_reason: reason || 'Not specified',
+                            rejected_at: new Date().toISOString()
+                        })
+                        .eq('id', id);
+                    if (error) throw error;
+                }
+
+                const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
+                if (reg) reg.status = 'REJECTED';
+
+                showTooltip('❌ Registration rejected', 'error');
+                await refreshData();
+
+            } catch (e) {
+                showTooltip('❌ Failed: ' + e.message, 'error');
+            }
+        }
+
+        // Make functions globally accessible
+        window.verifyRegistration = verifyRegistration;
+        window.rejectRegistration = rejectRegistration;
+
         // ─── INIT ─────────────────────────────────────────────────────
 
         async function init() {
@@ -2106,7 +2454,7 @@
 
             tableBody.innerHTML = `
                     <tr>
-                        <td colspan="9" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                        <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
                             <i class="fas fa-spinner fa-spin" style="font-size:1.2rem;display:block;margin-bottom:8px;"></i>
                             Loading registrations...
                         </td>
@@ -2129,65 +2477,13 @@
                 refreshData();
             }, 1500);
 
-            console.log('📊 DEPLOMAT Dashboard v2.2 - Enhanced Filters');
+            console.log('📊 DEPLOMAT Dashboard v2.3 - With Download Feature');
             console.log(`📈 Loaded ${allRegistrations.length} registrations`);
-            console.log('🎯 New filters: Category (UG/PU/Mixed) + Team Size');
+            console.log('🎯 New: Download filtered data as CSV/Excel');
+            console.log('⌨️  Keyboard shortcut: Ctrl+Shift+E to export');
         }
 
         init();
-        // ─── VERIFY REGISTRATION ────────────────────────────────────────────
-async function verifyRegistration(id) {
-    if (!confirm('✅ Verify this registration?')) return;
-    
-    try {
-        if (supabaseClient) {
-            const { error } = await supabaseClient
-                .from('registrations')
-                .update({ status: 'VERIFIED', verified_at: new Date().toISOString() })
-                .eq('id', id);
-            if (error) throw error;
-        }
-        
-        const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
-        if (reg) reg.status = 'VERIFIED';
-        
-        showTooltip('✅ Registration verified!', 'success');
-        await refreshData();
-        
-    } catch (e) {
-        showTooltip('❌ Failed: ' + e.message, 'error');
-    }
-}
-
-// ─── REJECT REGISTRATION ────────────────────────────────────────────
-async function rejectRegistration(id) {
-    const reason = prompt('❌ Reason for rejection:');
-    if (reason === null) return;
-    if (!confirm('Reject this registration?')) return;
-    
-    try {
-        if (supabaseClient) {
-            const { error } = await supabaseClient
-                .from('registrations')
-                .update({ 
-                    status: 'REJECTED', 
-                    rejection_reason: reason || 'Not specified',
-                    rejected_at: new Date().toISOString()
-                })
-                .eq('id', id);
-            if (error) throw error;
-        }
-        
-        const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
-        if (reg) reg.status = 'REJECTED';
-        
-        showTooltip('❌ Registration rejected', 'error');
-        await refreshData();
-        
-    } catch (e) {
-        showTooltip('❌ Failed: ' + e.message, 'error');
-    }
-}
     </script>
 
 </body>
