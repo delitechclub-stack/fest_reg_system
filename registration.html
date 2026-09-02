@@ -1225,6 +1225,25 @@
         </div>
     </div>
     
+    <!-- ⬇️ NEW: TIMER DISPLAY ⬇️ -->
+    <div id="uploadTimerArea" style="display:none;background:rgba(255,197,61,0.06);border:1px solid rgba(255,197,61,0.15);border-radius:12px;padding:14px 18px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <span style="font-size:1.2rem;">⏱️</span>
+                <div>
+                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);letter-spacing:0.05em;">Time remaining to upload payment proof</div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span id="uploadTimerDisplay" style="font-size:1.4rem;font-weight:900;font-family:'Courier New',monospace;color:#65d8ff;">30:00</span>
+                        <span id="timerStatusBadge" style="font-size:0.6rem;background:rgba(101,216,255,0.08);color:#65d8ff;padding:2px 12px;border-radius:12px;border:1px solid rgba(101,216,255,0.1);">Active</span>
+                    </div>
+                </div>
+            </div>
+            <div id="timerWarning" style="display:none;font-size:0.7rem;color:#ff6b8a;background:rgba(255,42,109,0.06);padding:6px 12px;border-radius:8px;border:1px solid rgba(255,42,109,0.1);">
+                ⚠️ <strong>Hurry!</strong> Timer expiring soon
+            </div>
+        </div>
+    </div>
+    
     <!-- Upload Area -->
     <div class="upload-area" id="dropZone">
         <div id="uploadPrompt">
@@ -1259,6 +1278,11 @@
             </div>
         </div>
     </div>
+
+    <!-- ⬇️ NEW: SUBMIT PENDING BUTTON ⬇️ -->
+    <button type="button" id="submitPendingBtn" style="display:none;width:100%;padding:14px;border-radius:12px;background:rgba(255,197,61,0.08);border:1px solid rgba(255,197,61,0.2);color:#FFC53D;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:inherit;margin-top:12px;" onclick="submitPendingRegistration()">
+        ⏳ Submit as Pending (Contact Coordinator)
+    </button>
 
     <!-- Confirm Button -->
     <button type="button" id="finalSubmitBtn" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:16px;padding:16px;display:none;" onclick="confirmRegistration()">
@@ -1652,7 +1676,7 @@
             if (qrVisible) updateQR(getTotalAmount());
         }
 
-        function openPaymentApp(app) {
+       function openPaymentApp(app) {
     const total = getTotalAmount();
     const leaderName = getLeaderName();
     const college = collegeInput.value.trim();
@@ -1676,7 +1700,7 @@
     localStorage.setItem('pending_registration', JSON.stringify(regData));
     sessionStorage.setItem('returning_from_payment', 'true');
     
-    // ═══ ADD THIS ONE LINE ═══
+    // ⬇️ NEW: START THE TIMER ⬇️
     startUploadTimer();
     
     // Open payment app
@@ -1883,81 +1907,87 @@
 
         // ─── CONFIRM REGISTRATION ─────────────────────────────────────────
         async function confirmRegistration() {
-            if (!extractedUTR) {
-                alert('⚠️ Please upload payment screenshot first.');
-                return;
-            }
-            
-            finalSubmitBtn.disabled = true;
-            finalSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
-            
-            try {
-                const leaderName = getLeaderName();
-                const college = collegeInput.value.trim();
-                const total = getTotalAmount();
-                const participants = getParticipantsList();
-                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
-                const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-                
-                const registrationData = {
-                    event_name: selectedEvent ? selectedEvent.name : 'Unknown',
-                    event_sub: selectedEvent ? selectedEvent.sub : '',
-                    college: college,
-                    ug_pu: ugPuValue,
-                    team_leader: leaderName,
-                    email: participants[0]?.email || '',
-                    phone: participants[0]?.phone || '',
-                    total_amount: total,
-                    txn: extractedUTR,
-                    participants: participants,
-                    status: 'VERIFIED',
-                    registered_at: new Date().toISOString()
-                };
-                
-                // Save to Supabase
-                if (supabaseClient) {
-                    const { error } = await supabaseClient.from('registrations').insert([registrationData]);
-                    if (error) throw new Error(error.message);
-                }
-                
-                // Local backup
-                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-                db.push(registrationData);
-                localStorage.setItem('deplomat_db', JSON.stringify(db));
-                
-                // Show success
-                goToStep(5);
-                const details = document.getElementById('successDetails');
-                details.innerHTML = `
-                    <p><strong>🎉 Registration Complete!</strong></p>
-                    <p><strong>Payment Verified!</strong> ✅</p>
-                    <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${extractedUTR}</span></p>
-                    <p><strong>Event:</strong> ${registrationData.event_name}</p>
-                    <p><strong>Team Leader:</strong> ${leaderName}</p>
-                    <p><strong>College:</strong> ${college}</p>
-                    <p><strong>Amount Paid:</strong> ₹${total}</p>
-                    <p><strong>Participants:</strong> ${participants.length}</p>
-                    <hr style="border-color:rgba(255,255,255,0.05);margin:12px 0;"/>
-                    <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);">
-                        ✅ Payment verified automatically.<br>
-                        Confirmation sent to ${participants[0]?.email || 'your email'}.
-                    </p>
-                `;
-                
-                // Clean up
-                localStorage.removeItem('pending_registration');
-                sessionStorage.removeItem('returning_from_payment');
-                
-                // Reset UI
-                finalSubmitBtn.disabled = false;
-                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
-                
-            } catch (error) {
-                alert(`❌ Submission failed: ${error.message}`);
-                finalSubmitBtn.disabled = false;
-                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
-            }
+    if (!extractedUTR) {
+        alert('⚠️ Please upload payment screenshot first.');
+        return;
+    }
+    
+    finalSubmitBtn.disabled = true;
+    finalSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+    
+    try {
+        const leaderName = getLeaderName();
+        const college = collegeInput.value.trim();
+        const total = getTotalAmount();
+        const participants = getParticipantsList();
+        const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+        const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+        
+        const registrationData = {
+            event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+            event_sub: selectedEvent ? selectedEvent.sub : '',
+            college: college,
+            ug_pu: ugPuValue,
+            team_leader: leaderName,
+            email: participants[0]?.email || '',
+            phone: participants[0]?.phone || '',
+            total_amount: total,
+            txn: extractedUTR,
+            participants: participants,
+            status: 'VERIFIED',  // ⬅️ Set to VERIFIED since UTR is present
+            registered_at: new Date().toISOString(),
+            verified_at: new Date().toISOString(),
+            is_pending: false,
+            timeout_triggered: false
+        };
+        
+        // Save to Supabase
+        if (supabaseClient) {
+            const { error } = await supabaseClient.from('registrations').insert([registrationData]);
+            if (error) throw new Error(error.message);
         }
+        
+        // Local backup
+        const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+        db.push(registrationData);
+        localStorage.setItem('deplomat_db', JSON.stringify(db));
+        
+        // Show success
+        goToStep(5);
+        const details = document.getElementById('successDetails');
+        details.innerHTML = `
+            <p style="font-size:2rem;">✅</p>
+            <h2 style="font-size:1.6rem;">Registration Complete!</h2>
+            <p style="color:#4caf50;">🎉 Payment Verified Successfully!</p>
+            <div class="reg-details">
+                <p><strong>Event:</strong> ${registrationData.event_name}</p>
+                <p><strong>Team Leader:</strong> ${leaderName}</p>
+                <p><strong>College:</strong> ${college}</p>
+                <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${extractedUTR}</span></p>
+                <p><strong>Amount Paid:</strong> ₹${total}</p>
+                <p><strong>Participants:</strong> ${participants.length}</p>
+                <hr style="border-color:rgba(255,255,255,0.05);margin:12px 0;"/>
+                <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);">
+                    ✅ Payment verified automatically.<br>
+                    Confirmation sent to ${participants[0]?.email || 'your email'}.
+                </p>
+            </div>
+        `;
+        
+        // Clean up
+        if (uploadTimer) { clearInterval(uploadTimer); uploadTimer = null; }
+        localStorage.removeItem('pending_registration');
+        sessionStorage.removeItem('returning_from_payment');
+        
+        finalSubmitBtn.disabled = false;
+        finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
+        
+    } catch (error) {
+        alert(`❌ Submission failed: ${error.message}`);
+        finalSubmitBtn.disabled = false;
+        finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
+    }
+}
 
         // ─── AUTO-SELECT EVENT ──────────────────────────────────────────
         function autoSelectEventFromURL() {
@@ -2117,10 +2147,16 @@
         console.log('☁️ Screenshots will be stored in Google Drive');
     // ─── TIMER VARIABLES ──────────────────────────────────────────────────
 let uploadTimer = null;
-let uploadTimeRemaining = 1800; // 30 minutes
+let uploadTimeRemaining = 1800;
+let isPendingSubmission = false;
+let timerStarted = false; // 30 minutes
 
 // ─── START TIMER ──────────────────────────────────────────────────────
 function startUploadTimer() {
+    
+    // Prevent multiple timers
+    if (timerStarted) return;
+    timerStarted = true;
     const timerArea = document.getElementById('uploadTimerArea');
     const timerDisplay = document.getElementById('uploadTimerDisplay');
     const timerWarning = document.getElementById('timerWarning');
@@ -2162,11 +2198,16 @@ function startUploadTimer() {
             document.getElementById('submitPendingBtn').style.display = 'block';
             document.getElementById('dropZone').style.opacity = '0.5';
             document.getElementById('dropZone').style.pointerEvents = 'none';
+         
+            // Auto-submit as pending
+            if (!isPendingSubmission) {
+                submitPendingRegistration();
+            }
         }
     }, 1000);
 }
 // ─── SUBMIT AS PENDING ──────────────────────────────────────────────
-let isPendingSubmission = false;
+
 
 async function submitPendingRegistration() {
     if (isPendingSubmission) return;
@@ -2213,21 +2254,23 @@ async function submitPendingRegistration() {
         db.push(registrationData);
         localStorage.setItem('deplomat_db', JSON.stringify(db));
         
-        // Show success
+        // Show success with pending status
         goToStep(5);
         const details = document.getElementById('successDetails');
         details.innerHTML = `
             <p style="font-size:2rem;">⏳</p>
-            <h2 style="font-size:1.6rem;">Registration Pending</h2>
-            <p style="color:#FFC53D;">📌 Awaiting payment verification</p>
+            <h2 style="font-size:1.6rem;">Registration Submitted</h2>
+            <p style="color:#FFC53D;">📌 Awaiting Payment Verification</p>
             <div class="reg-details">
                 <p><strong>Event:</strong> ${registrationData.event_name}</p>
                 <p><strong>Team Leader:</strong> ${leaderName}</p>
-                <p><strong>Pending ID:</strong> <span style="color:#FFC53D;">${pendingId}</span></p>
+                <p><strong>College:</strong> ${college}</p>
+                <p><strong>Status:</strong> <span style="color:#FFC53D;">⏳ Pending</span></p>
                 <hr/>
                 <p style="font-size:0.75rem;color:#FFC53D;">
-                    ⏳ Contact coordinator within 24 hours with payment proof.<br>
-                    Otherwise registration will be cancelled.
+                    ⏳ Payment proof not uploaded within time limit.<br>
+                    Please contact coordinator with payment proof.<br>
+                    <strong>Pending ID:</strong> ${pendingId}
                 </p>
             </div>
         `;
@@ -2236,6 +2279,11 @@ async function submitPendingRegistration() {
         if (uploadTimer) { clearInterval(uploadTimer); uploadTimer = null; }
         localStorage.removeItem('pending_registration');
         sessionStorage.removeItem('returning_from_payment');
+
+         // Reset UI
+        btn.style.display = 'none';
+        isPendingSubmission = false;
+        
         
     } catch (error) {
         alert(`❌ Submission failed: ${error.message}`);
@@ -2244,6 +2292,7 @@ async function submitPendingRegistration() {
         isPendingSubmission = false;
     }
 }
+     
     </script>
 </body>
 </html>
