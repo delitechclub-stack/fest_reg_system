@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>DEPLOMAT · Dashboard</title>
+    <title>DEPLOMAT · Admin Dashboard</title>
 
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
@@ -12,7 +12,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- SheetJS for Excel export (optional) -->
+    <!-- SheetJS for Excel export -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js">
     </script>
 
@@ -212,6 +212,32 @@
             font-size: 0.65rem;
             letter-spacing: 0.1em;
             margin-top: 8px;
+        }
+
+        .connection-status {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-top: 8px;
+        }
+        .connection-status.online {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+        }
+        .connection-status.offline {
+            background: rgba(255, 42, 109, 0.15);
+            color: #ff2a6d;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+        }
+        .connection-status.syncing {
+            background: rgba(255, 197, 61, 0.15);
+            color: #FFC53D;
+            border: 1px solid rgba(255, 197, 61, 0.1);
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
         /* ─── STATS GRID ───────────────────────────────────────────── */
@@ -484,16 +510,6 @@
             letter-spacing: 0.05em;
         }
 
-        .column-chart-container .col-label .reg-badge {
-            display: inline-block;
-            font-size: 0.5rem;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 0 8px;
-            border-radius: 10px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 2px;
-        }
-
         /* ─── EXTRA ANALYTICS ──────────────────────────────────────── */
         .extra-analytics {
             display: grid;
@@ -682,7 +698,7 @@
             color: #fff;
         }
 
-        /* ─── NEW: Filter Badge Indicators ─────────────────────────── */
+        /* ─── FILTER BADGE INDICATORS ──────────────────────────────── */
         .filter-badge {
             display: inline-flex;
             align-items: center;
@@ -706,18 +722,6 @@
         .filter-badge.mixed {
             background: rgba(176, 0, 255, 0.15);
             color: #b000ff;
-        }
-        .filter-badge.size-1 {
-            background: rgba(76, 175, 80, 0.15);
-            color: #4caf50;
-        }
-        .filter-badge.size-2 {
-            background: rgba(255, 138, 101, 0.15);
-            color: #ff8a65;
-        }
-        .filter-badge.size-3 {
-            background: rgba(255, 42, 109, 0.15);
-            color: #ff2a6d;
         }
 
         .active-filters-info {
@@ -810,10 +814,6 @@
             background: rgba(255, 197, 61, 0.12);
             color: #FFC53D;
         }
-        .tag.mixed {
-            background: rgba(176, 0, 255, 0.12);
-            color: #b000ff;
-        }
 
         .tag.event-tag {
             background: rgba(176, 0, 255, 0.1);
@@ -846,6 +846,54 @@
         }
         .empty-state p {
             font-size: 0.85rem;
+        }
+
+        /* ─── STATUS BADGE STYLES ──────────────────────────────────── */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .status-badge.verified {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+        }
+        .status-badge.pending {
+            background: rgba(255, 197, 61, 0.15);
+            color: #FFC53D;
+            border: 1px solid rgba(255, 197, 61, 0.1);
+        }
+        .status-badge.rejected {
+            background: rgba(255, 42, 109, 0.15);
+            color: #ff2a6d;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+        }
+
+        /* ─── ACTION BUTTON STYLES ─────────────────────────────────── */
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: 0.2s ease;
+            opacity: 0.5;
+        }
+        .action-btn:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+        .action-btn.verify:hover {
+            background: rgba(76, 175, 80, 0.15);
+        }
+        .action-btn.reject:hover {
+            background: rgba(255, 42, 109, 0.15);
         }
 
         /* ─── TOOLTIP ───────────────────────────────────────────────── */
@@ -883,6 +931,10 @@
         .tooltip.error {
             border-color: rgba(255, 42, 109, 0.3);
             color: #ff6b8a;
+        }
+        .tooltip.info {
+            border-color: rgba(101, 216, 255, 0.3);
+            color: #65d8ff;
         }
 
         /* ─── RESPONSIVE ────────────────────────────────────────────── */
@@ -1015,16 +1067,6 @@
             .table-card {
                 padding: 14px;
             }
-            .table-card .table-tools input,
-            .table-card .table-tools select {
-                font-size: 0.7rem;
-                padding: 6px 10px;
-                min-width: 100px;
-            }
-            .analytics-card .card-title .filter-select {
-                max-width: 140px;
-                font-size: 0.55rem;
-            }
             .table-tools {
                 flex-direction: column;
             }
@@ -1068,126 +1110,9 @@
             animation: fadeIn 0.6s ease both;
         }
 
-        /* ─── LOADING SHIMMER ──────────────────────────────────────── */
-        .shimmer {
-            background: linear-gradient(90deg,
-                    rgba(255, 255, 255, 0.02) 25%,
-                    rgba(255, 255, 255, 0.06) 50%,
-                    rgba(255, 255, 255, 0.02) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        .loading-placeholder {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding: 4px 0;
-        }
-
-        .loading-placeholder .row {
-            height: 28px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.03);
-            animation: pulse 1.2s ease-in-out infinite;
-        }
-
         @keyframes pulse {
-            0%,
-            100% {
-                opacity: 0.3;
-            }
-            50% {
-                opacity: 0.8;
-            }
-        }
-
-        /* ─── COLLEGE RANKING BADGE ────────────────────────────────── */
-        .college-rank-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 2px 10px 2px 6px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            color: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .college-rank-badge .num {
-            font-weight: 700;
-            color: #fff;
-            font-size: 0.75rem;
-        }
-        .college-rank-badge.ug-badge {
-            border-color: rgba(101, 216, 255, 0.15);
-        }
-        .college-rank-badge.ug-badge .num {
-            color: #65d8ff;
-        }
-        .college-rank-badge.pu-badge {
-            border-color: rgba(255, 197, 61, 0.15);
-        }
-        .college-rank-badge.pu-badge .num {
-            color: #FFC53D;
-        }
-
-        /* ─── STATUS BADGE STYLES ────────────────────────────────────────── */
-        .status-badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.6rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .status-badge.verified {
-            background: rgba(76, 175, 80, 0.15);
-            color: #4caf50;
-            border: 1px solid rgba(76, 175, 80, 0.1);
-        }
-        .status-badge.pending {
-            background: rgba(255, 197, 61, 0.15);
-            color: #FFC53D;
-            border: 1px solid rgba(255, 197, 61, 0.1);
-        }
-        .status-badge.rejected {
-            background: rgba(255, 42, 109, 0.15);
-            color: #ff2a6d;
-            border: 1px solid rgba(255, 42, 109, 0.1);
-        }
-
-        /* ─── ACTION BUTTON STYLES ───────────────────────────────────────── */
-        .action-btn {
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 6px;
-            transition: 0.2s ease;
-            opacity: 0.5;
-        }
-        .action-btn:hover {
-            opacity: 1;
-            transform: scale(1.15);
-        }
-        .action-btn.verify:hover {
-            background: rgba(76, 175, 80, 0.15);
-        }
-        .action-btn.reject:hover {
-            background: rgba(255, 42, 109, 0.15);
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
@@ -1211,9 +1136,10 @@
 
         <div class="dashboard-header">
             <p class="eyebrow"><i class="fas fa-chart-pie"></i> DEPLOMAT · 2026</p>
-            <h1>ANALYTICS DASHBOARD</h1>
+            <h1>ADMIN DASHBOARD</h1>
             <p class="sub">Live registration insights &amp; event performance</p>
             <p class="last-updated" id="lastUpdated">Last updated: —</p>
+            <span class="connection-status" id="connectionStatus">🔄 Connecting...</span>
         </div>
 
         <div class="stats-grid" id="statsGrid">
@@ -1335,7 +1261,6 @@
             <div class="card-title">
                 <i class="fas fa-table"></i> Registration Records
                 <span style="margin-left:auto;font-size:0.55rem;color:rgba(255,255,255,0.15);" id="recordCount">0 records</span>
-                <!-- ═══ DOWNLOAD BUTTON ═══ -->
                 <button class="download-btn" id="downloadBtn" title="Download filtered data as CSV/Excel">
                     <i class="fas fa-download"></i> Export
                 </button>
@@ -1350,7 +1275,6 @@
                     <option value="all">🎓 All Categories</option>
                     <option value="ug">🎓 UG Only</option>
                     <option value="pu">🎓 PU Only</option>
-                    <option value="mixed">🎓 Mixed (UG+PU)</option>
                 </select>
                 <select id="teamSizeFilter">
                     <option value="all">👥 All Team Sizes</option>
@@ -1368,7 +1292,6 @@
                 </select>
             </div>
 
-            <!-- ─── ACTIVE FILTERS DISPLAY ─── -->
             <div class="active-filters-info" id="activeFiltersInfo"></div>
 
             <div class="table-scroll">
@@ -1411,34 +1334,37 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
 
         let supabaseClient = null;
+        let isSupabaseConnected = false;
+
         try {
             if (typeof supabase !== 'undefined' && supabase.createClient) {
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized');
             } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase client initialized (window)');
+            } else {
+                console.warn('⚠️ Supabase library not loaded');
             }
         } catch (e) {
-            console.warn('⚠️ Supabase not available, using localStorage.');
+            console.error('❌ Failed to initialize Supabase:', e);
         }
 
         // ─── EVENT DATA ──────────────────────────────────────────────
         const EVENTS = [
-            { id: 0, name: 'THE ATLANTEAN TRIALS', type: 'Escape Room', category: 'UG' },
-            { id: 1, name: 'THE LOST RELIC', type: 'Treasure Hunt', category: 'UG' },
-            { id: 2, name: 'THE TRIDENT WAR', type: 'Free Fire', category: 'UG' },
-            { id: 3, name: 'COURT OF THE DEEP', type: 'Moot Court', category: 'UG' },
-            { id: 4, name: 'THE SIREN\'S ACT', type: 'Reels Making', category: 'UG' },
-            { id: 5, name: 'ECHOS OF ATLANTIS', type: 'Solo Singing', category: 'UG' },
-            { id: 6, name: 'THE MERMAID\'S WALTZ', type: 'Solo Dance', category: 'UG' },
-            { id: 7, name: 'TIDES OF RYTHM', type: 'Group Dance', category: 'UG' },
-            { id: 8, name: 'RUNWAY OF REALMS', type: 'Rampwalk', category: 'UG' },
-            { id: 9, name: 'THE KRAKEN\'S PITCH', type: 'Cricket (UG & PU Boys)', category: 'Mixed' },
-            { id: 10, name: 'POSEIDON\'S CUP', type: 'Football (PU Boys)', category: 'PU' },
-            { id: 11, name: 'RIPTIDE RALLY', type: 'Throwball (UG Girls)', category: 'UG' }
+            { id: 0, name: 'THE ATLANTEAN TRIALS', type: 'Escape Room' },
+            { id: 1, name: 'THE LOST RELIC', type: 'Treasure Hunt' },
+            { id: 2, name: 'THE TRIDENT WAR', type: 'Free Fire' },
+            { id: 3, name: 'COURT OF THE DEEP', type: 'Moot Court' },
+            { id: 4, name: 'THE SIREN\'S ACT', type: 'Reels Making' },
+            { id: 5, name: 'ECHOS OF ATLANTIS', type: 'Solo Singing' },
+            { id: 6, name: 'THE MERMAID\'S WALTZ', type: 'Solo Dance' },
+            { id: 7, name: 'TIDES OF RYTHM', type: 'Group Dance' },
+            { id: 8, name: 'RUNWAY OF REALMS', type: 'Rampwalk' },
+            { id: 9, name: 'THE KRAKEN\'S PITCH', type: 'Cricket (UG & PU Boys)' },
+            { id: 10, name: 'POSEIDON\'S CUP', type: 'Football (PU Boys)' },
+            { id: 11, name: 'RIPTIDE RALLY', type: 'Throwball (UG Girls)' }
         ];
-
-        const EVENT_CATEGORY_MAP = {};
-        EVENTS.forEach(e => { EVENT_CATEGORY_MAP[e.name] = e.category; });
 
         // ─── DOM REFS ─────────────────────────────────────────────────
         const totalRegsEl = document.getElementById('totalRegs');
@@ -1449,6 +1375,7 @@
         const puCollegesEl = document.getElementById('puColleges');
         const crossRegsEl = document.getElementById('crossRegs');
         const lastUpdatedEl = document.getElementById('lastUpdated');
+        const connectionStatus = document.getElementById('connectionStatus');
         const eventBarList = document.getElementById('eventBarList');
         const tableBody = document.getElementById('tableBody');
         const searchInput = document.getElementById('searchInput');
@@ -1485,6 +1412,7 @@
         let selectedEventFilter = 'all';
         let isRefreshing = false;
         let renderScheduled = false;
+        let dataSource = 'localStorage';
 
         // ─── POPULATE DROPDOWNS ──────────────────────────────────────
 
@@ -1504,25 +1432,48 @@
 
         // ─── HELPERS ──────────────────────────────────────────────────
 
+        /**
+         * 🔧 FIX: Use the database's `ug_pu` column as the source of truth
+         * for UG/PU classification instead of the hardcoded event map.
+         */
+        function getRegistrationCategory(registration) {
+            // Use the database column directly - this is the single source of truth
+            const category = registration.ug_pu || 'UG';
+            // Normalize to uppercase for consistent comparison
+            return category.toUpperCase();
+        }
+
         function getParticipantsArray(registration) {
             const r = registration;
             if (!r) return [];
+            
+            // If participants is already an array
             if (r.participants && Array.isArray(r.participants)) return r.participants;
+            
+            // If participants is a JSON string
             if (typeof r.participants === 'string' && r.participants.trim()) {
-                return r.participants.split(',').map(p => ({ name: p.trim(), phone: 'N/A', otherEvent: 'No' }));
+                try {
+                    const parsed = JSON.parse(r.participants);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {
+                    // If JSON parse fails, try splitting by comma
+                    return r.participants.split(',').map(p => ({ 
+                        name: p.trim(), 
+                        phone: 'N/A', 
+                        otherEvent: 'No' 
+                    }));
+                }
             }
+            
+            // Fallback: use team_leader
             if (r.team_leader) {
                 return [{ name: r.team_leader, phone: r.phone || 'N/A', otherEvent: 'No' }];
             }
+            
             return [];
         }
 
-        function getEventCategory(eventName) {
-            return EVENT_CATEGORY_MAP[eventName] || 'UG';
-        }
-
         function getCategoryDisplay(category) {
-            if (category === 'Mixed') return 'Mixed';
             if (category === 'PU') return 'PU';
             return 'UG';
         }
@@ -1552,82 +1503,104 @@
             };
         }
 
+        // ─── CONNECTION STATUS ──────────────────────────────────────
+
+        function updateConnectionStatus(status, message) {
+            connectionStatus.textContent = message || 'Connected';
+            connectionStatus.className = 'connection-status';
+            if (status === 'online') {
+                connectionStatus.classList.add('online');
+                isSupabaseConnected = true;
+            } else if (status === 'offline') {
+                connectionStatus.classList.add('offline');
+                isSupabaseConnected = false;
+            } else if (status === 'syncing') {
+                connectionStatus.classList.add('syncing');
+            }
+        }
+
+        // ─── TEST SUPABASE CONNECTION ───────────────────────────────
+
+        async function testSupabaseConnection() {
+            if (!supabaseClient) {
+                updateConnectionStatus('offline', '⚠️ No Supabase client');
+                return false;
+            }
+
+            try {
+                const { data, error, status } = await supabaseClient
+                    .from('registrations')
+                    .select('count', { count: 'exact', head: true });
+                    
+                if (error) {
+                    console.error('❌ Supabase connection test failed:', error);
+                    updateConnectionStatus('offline', `❌ ${error.message || 'Connection failed'}`);
+                    return false;
+                }
+                
+                console.log('✅ Supabase connection test passed. Records:', data);
+                updateConnectionStatus('online', `✅ Connected (${data || 0} records)`);
+                return true;
+            } catch (e) {
+                console.error('❌ Supabase connection test error:', e);
+                updateConnectionStatus('offline', '⚠️ Connection error');
+                return false;
+            }
+        }
+
         // ═══════════════════════════════════════════════════════════════
         //  📥 DOWNLOAD FUNCTIONALITY
         // ═══════════════════════════════════════════════════════════════
 
         function getFilterSuffix() {
             const parts = [];
-
             const search = searchInput.value.trim();
             if (search) parts.push(`search-${search.replace(/\s+/g, '_').substring(0, 20)}`);
-
             const event = eventFilter.value;
             if (event) {
                 const eventInfo = EVENTS.find(e => e.name === event);
                 parts.push(eventInfo ? eventInfo.type.replace(/\s+/g, '_') : event.replace(/\s+/g, '_').substring(0, 15));
             }
-
             const category = categoryFilter.value;
             if (category !== 'all') {
-                const labels = { ug: 'UG', pu: 'PU', mixed: 'Mixed' };
+                const labels = { ug: 'UG', pu: 'PU' };
                 parts.push(labels[category] || category);
             }
-
             const teamSize = teamSizeFilter.value;
             if (teamSize !== 'all') {
                 const labels = { '1': 'solo', '2': 'pair', '3': '3mem', '4': '4mem', '5plus': '5plus' };
                 parts.push(labels[teamSize] || teamSize);
             }
-
             const status = statusFilter.value;
             if (status !== 'all') {
                 parts.push(status.toLowerCase());
             }
-
             return parts.length > 0 ? parts.join('_') : 'all';
         }
 
         function downloadFilteredDataCSV() {
             const data = filteredRegistrations;
-
             if (data.length === 0) {
                 showTooltip('⚠️ No data to download', 'error');
                 return;
             }
 
-            // Define CSV headers
             const headers = [
-                'S.No',
-                'Team Leader',
-                'Email',
-                'Phone',
-                'College',
-                'Event Name',
-                'Event Type',
-                'Category',
-                'Team Size',
-                'Participants',
-                'UTR / Transaction ID',
-                'Amount (₹)',
-                'Registration Date',
-                'Status'
+                'S.No', 'Team Leader', 'Email', 'Phone', 'College',
+                'Event Name', 'Event Type', 'Category', 'Team Size',
+                'Participants', 'UTR / Transaction ID', 'Amount (₹)',
+                'Registration Date', 'Status'
             ];
 
-            // Map each registration to a clean row
             const rows = data.map((r, idx) => {
                 const participants = getParticipantsArray(r);
                 const participantNames = participants.map(p => p.name || 'Unknown').join('; ');
                 const teamSize = participants.length || 1;
-
                 const eventInfo = EVENTS.find(e => e.name === r.event_name);
                 const eventType = eventInfo ? eventInfo.type : '—';
-
-                const cat = getEventCategory(r.event_name);
-                let categoryLabel = 'UG';
-                if (cat === 'PU') categoryLabel = 'PU';
-                else if (cat === 'Mixed') categoryLabel = 'UG + PU';
-
+                // 🔧 FIX: Use the database category
+                const cat = getRegistrationCategory(r);
+                const categoryLabel = cat === 'PU' ? 'PU' : 'UG';
                 const status = r.status || 'VERIFIED';
                 let statusLabel = 'Verified';
                 if (status === 'PENDING') statusLabel = 'Pending';
@@ -1651,13 +1624,10 @@
                 ];
             });
 
-            // Build CSV content
             let csvContent = headers.join(',') + '\n';
-
             rows.forEach(row => {
                 const escapedRow = row.map(cell => {
-                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes(
-                            '\n'))) {
+                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
                         return `"${cell.replace(/"/g, '""')}"`;
                     }
                     return cell;
@@ -1665,11 +1635,9 @@
                 csvContent += escapedRow.join(',') + '\n';
             });
 
-            // Create download
             const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-
             const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
             const filterSuffix = getFilterSuffix();
             const filename = `deplomat_registrations_${filterSuffix}_${timestamp}.csv`;
@@ -1686,20 +1654,16 @@
 
         function downloadFilteredDataExcel() {
             const data = filteredRegistrations;
-
             if (data.length === 0) {
                 showTooltip('⚠️ No data to download', 'error');
                 return;
             }
 
-            // Check if SheetJS is loaded
             if (typeof XLSX === 'undefined') {
-                // Fallback to CSV
                 downloadFilteredDataCSV();
                 return;
             }
 
-            // Prepare data for Excel
             const headers = ['S.No', 'Team Leader', 'Email', 'Phone', 'College',
                 'Event Name', 'Event Type', 'Category', 'Team Size',
                 'Participants', 'UTR / Transaction ID', 'Amount (₹)',
@@ -1710,15 +1674,11 @@
                 const participants = getParticipantsArray(r);
                 const participantNames = participants.map(p => p.name || 'Unknown').join('; ');
                 const teamSize = participants.length || 1;
-
                 const eventInfo = EVENTS.find(e => e.name === r.event_name);
                 const eventType = eventInfo ? eventInfo.type : '—';
-
-                const cat = getEventCategory(r.event_name);
-                let categoryLabel = 'UG';
-                if (cat === 'PU') categoryLabel = 'PU';
-                else if (cat === 'Mixed') categoryLabel = 'UG + PU';
-
+                // 🔧 FIX: Use the database category
+                const cat = getRegistrationCategory(r);
+                const categoryLabel = cat === 'PU' ? 'PU' : 'UG';
                 const status = r.status || 'VERIFIED';
                 let statusLabel = 'Verified';
                 if (status === 'PENDING') statusLabel = 'Pending';
@@ -1745,13 +1705,10 @@
             const wsData = [headers, ...rows];
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-            // Auto column widths
             const colWidths = headers.map((h, i) => ({
                 wch: Math.max(h.length, ...rows.map(row => String(row[i] || '').length)) + 2
             }));
             ws['!cols'] = colWidths;
-
             XLSX.utils.book_append_sheet(wb, ws, 'Registrations');
 
             const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
@@ -1763,7 +1720,6 @@
         }
 
         function handleDownload() {
-            // Try Excel first, fallback to CSV
             if (typeof XLSX !== 'undefined') {
                 downloadFilteredDataExcel();
             } else {
@@ -1775,51 +1731,67 @@
 
         async function loadData() {
             let data = [];
+            let fromSupabase = false;
 
+            // Try Supabase first
             if (supabaseClient) {
                 try {
+                    updateConnectionStatus('syncing', '🔄 Fetching from Supabase...');
+                    console.log('🔄 Fetching from Supabase...');
+                    
                     const { data: supabaseData, error } = await supabaseClient
                         .from('registrations')
                         .select('*')
                         .order('registered_at', { ascending: false });
 
-                    if (!error && supabaseData) {
+                    if (error) {
+                        console.error('❌ Supabase error:', error);
+                        throw new Error(error.message);
+                    } else if (supabaseData && supabaseData.length > 0) {
                         data = supabaseData;
+                        fromSupabase = true;
+                        dataSource = 'Supabase';
                         console.log('✅ Loaded from Supabase:', data.length, 'records');
+                        console.log('📋 Sample record:', data[0]);
+                        
+                        // Log category distribution for debugging
+                        const ugCount = data.filter(r => getRegistrationCategory(r) === 'UG').length;
+                        const puCount = data.filter(r => getRegistrationCategory(r) === 'PU').length;
+                        console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
+                        
+                        // Save to localStorage as backup
+                        try {
+                            localStorage.setItem('deplomat_db', JSON.stringify(data));
+                            localStorage.setItem('deplomat_db_timestamp', new Date().toISOString());
+                            console.log('💾 Saved to localStorage as backup');
+                        } catch (e) {
+                            console.warn('⚠️ Could not save to localStorage:', e);
+                        }
+                        
+                        updateConnectionStatus('online', `✅ ${data.length} records from Supabase`);
                     } else {
-                        console.warn('⚠️ Supabase error:', error);
+                        console.warn('⚠️ No data returned from Supabase');
+                        updateConnectionStatus('offline', '⚠️ No data in Supabase');
                     }
                 } catch (e) {
-                    console.warn('⚠️ Supabase fetch failed:', e);
+                    console.error('❌ Supabase fetch failed:', e);
+                    updateConnectionStatus('offline', `❌ ${e.message || 'Connection failed'}`);
                 }
             }
 
-            // Fallback: localStorage
+            // If Supabase failed or returned no data, try localStorage
             if (data.length === 0) {
                 try {
                     const localData = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                     if (localData.length > 0) {
-                        data = localData.map((item, idx) => ({
-                            id: idx + 1,
-                            event_name: item.event || 'Unknown',
-                            event_sub: item.eventSub || '',
-                            college: item.college || '',
-                            team_leader: item.teamLeader || '',
-                            email: item.email || '',
-                            phone: item.phone || '',
-                            total_amount: item.amount || item.total_amount || 0,
-                            txn: item.txn || 'N/A',
-                            participants: item.participants ?
-                                (Array.isArray(item.participants) ? item.participants :
-                                    item.participants.split(', ').map(p => ({ name: p, phone: 'N/A',
-                                        otherEvent: 'No' }))) :
-                                [{ name: item.teamLeader || 'Unknown', phone: item.phone || 'N/A',
-                                    otherEvent: 'No' }],
-                            cross_check: item.cross_check || [],
-                            registered_at: item.registered_at || new Date().toISOString(),
-                            status: item.status || 'VERIFIED'
-                        }));
-                        console.log('📦 Loaded from localStorage:', data.length, 'records');
+                        console.log('📦 Loaded from localStorage:', localData.length, 'records');
+                        data = localData;
+                        dataSource = 'localStorage';
+                        updateConnectionStatus('offline', `📦 ${data.length} records (cached)`);
+                        showTooltip(`📦 Using cached data (${data.length} records)`, 'info');
+                    } else {
+                        console.warn('⚠️ No data in localStorage either');
+                        updateConnectionStatus('offline', '⚠️ No data available');
                     }
                 } catch (e) {
                     console.warn('⚠️ localStorage read failed:', e);
@@ -1827,8 +1799,25 @@
             }
 
             allRegistrations = data;
-            applyFilters();
-            updateLastUpdated();
+            
+            if (data.length === 0) {
+                showTooltip('⚠️ No data found. Please check your connection.', 'error');
+                // Show empty state in table
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                            <i class="fas fa-database" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                            No registrations found<br>
+                            <span style="font-size:0.7rem;color:rgba(255,255,255,0.1);">
+                                ${supabaseClient ? 'Check Supabase connection' : 'Supabase not initialized'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                applyFilters();
+                updateLastUpdated();
+            }
         }
 
         // ─── FILTERING ───────────────────────────────────────────────
@@ -1857,12 +1846,11 @@
                 // Event filter
                 if (event && r.event_name !== event) return false;
 
-                // Category filter
+                // 🔧 FIX: Category filter using database column
                 if (category !== 'all') {
-                    const rCategory = getEventCategory(r.event_name);
-                    if (category === 'ug' && rCategory !== 'UG' && rCategory !== 'Mixed') return false;
-                    if (category === 'pu' && rCategory !== 'PU' && rCategory !== 'Mixed') return false;
-                    if (category === 'mixed' && rCategory !== 'Mixed') return false;
+                    const rCategory = getRegistrationCategory(r);
+                    if (category === 'ug' && rCategory !== 'UG') return false;
+                    if (category === 'pu' && rCategory !== 'PU') return false;
                 }
 
                 // Team size filter
@@ -1902,7 +1890,7 @@
                 filters.push({ label: `📋 ${eventInfo ? eventInfo.type : event}`, type: 'event' });
             }
             if (category !== 'all') {
-                const labels = { ug: '🎓 UG Only', pu: '🎓 PU Only', mixed: '🎓 Mixed (UG+PU)' };
+                const labels = { ug: '🎓 UG Only', pu: '🎓 PU Only' };
                 filters.push({ label: labels[category], type: 'category' });
             }
             if (teamSize !== 'all') {
@@ -1944,7 +1932,6 @@
             applyFilters();
         }
 
-        // Make clearFilter globally accessible
         window.clearFilter = clearFilter;
 
         // ─── SCHEDULED RENDER ────────────────────────────────────────
@@ -1987,17 +1974,18 @@
             regs.forEach(r => { revenue += (r.total_amount || 0); });
             totalRevenueEl.textContent = '₹' + revenue.toLocaleString();
 
-            // UG and PU colleges (unique)
+            // 🔧 FIX: UG and PU colleges using database column
             const ugCollegeSet = new Set();
             const puCollegeSet = new Set();
 
             regs.forEach(r => {
                 const college = r.college ? r.college.trim() : '';
                 if (!college) return;
-                const cat = getEventCategory(r.event_name);
-                if (cat === 'UG' || cat === 'Mixed') ugCollegeSet.add(college);
-                if (cat === 'PU' || cat === 'Mixed') puCollegeSet.add(college);
-                if (cat !== 'UG' && cat !== 'PU' && cat !== 'Mixed') ugCollegeSet.add(college);
+                const cat = getRegistrationCategory(r);
+                if (cat === 'UG') ugCollegeSet.add(college);
+                if (cat === 'PU') puCollegeSet.add(college);
+                // If category is neither UG nor PU, default to UG
+                if (cat !== 'UG' && cat !== 'PU') ugCollegeSet.add(college);
             });
 
             const ugCount = ugCollegeSet.size;
@@ -2009,12 +1997,14 @@
             const crossSet = new Set();
             regs.forEach(r => {
                 const crossCheck = r.cross_check || [];
-                crossCheck.forEach(c => {
-                    if (c && c.checked === true) {
-                        const key = `${r.id || r.email || ''}-${c.eventId || ''}`;
-                        crossSet.add(key);
-                    }
-                });
+                if (Array.isArray(crossCheck)) {
+                    crossCheck.forEach(c => {
+                        if (c && c.checked === true) {
+                            const key = `${r.id || r.email || ''}-${c.eventId || ''}`;
+                            crossSet.add(key);
+                        }
+                    });
+                }
                 const parts = getParticipantsArray(r);
                 parts.forEach(p => {
                     if (p && p.otherEvent && p.otherEvent !== 'No') {
@@ -2106,14 +2096,13 @@
         function renderColumnChart() {
             const regs = filteredRegistrations;
 
-            let ug = 0,
-                pu = 0;
+            let ug = 0, pu = 0;
 
             regs.forEach(r => {
-                const cat = getEventCategory(r.event_name);
-                if (cat === 'UG' || cat === 'Mixed') ug++;
-                if (cat === 'PU' || cat === 'Mixed') pu++;
-                if (cat !== 'UG' && cat !== 'PU' && cat !== 'Mixed') ug++;
+                const cat = getRegistrationCategory(r);
+                if (cat === 'UG') ug++;
+                else if (cat === 'PU') pu++;
+                else ug++; // Default to UG if unknown
             });
 
             const maxVal = Math.max(ug, pu, 1);
@@ -2145,10 +2134,10 @@
                 }
                 collegeStats[college].total++;
 
-                const cat = getEventCategory(r.event_name);
-                if (cat === 'UG' || cat === 'Mixed') collegeStats[college].ug++;
-                if (cat === 'PU' || cat === 'Mixed') collegeStats[college].pu++;
-                if (cat !== 'UG' && cat !== 'PU' && cat !== 'Mixed') collegeStats[college].ug++;
+                const cat = getRegistrationCategory(r);
+                if (cat === 'UG') collegeStats[college].ug++;
+                else if (cat === 'PU') collegeStats[college].pu++;
+                else collegeStats[college].ug++; // Default to UG
             });
 
             let topUg = { name: '—', count: 0 };
@@ -2222,16 +2211,19 @@
                 const participantNames = parts.map(p => p.name || 'Unknown').join(', ');
 
                 const eventName = r.event_name || 'Unknown';
-                const cat = getEventCategory(eventName);
+                // 🔧 FIX: Use database category for table display
+                const cat = getRegistrationCategory(r);
 
                 let categoryDisplay = '—';
                 let tagClass = '';
-                if (cat === 'Mixed') { categoryDisplay = 'UG + PU';
-                    tagClass = 'mixed'; } else if (cat === 'PU') { categoryDisplay = 'PU';
-                    tagClass = 'pu'; } else { categoryDisplay = 'UG';
-                    tagClass = 'ug'; }
+                if (cat === 'PU') {
+                    categoryDisplay = 'PU';
+                    tagClass = 'pu';
+                } else {
+                    categoryDisplay = 'UG';
+                    tagClass = 'ug';
+                }
 
-                // ─── STATUS DISPLAY ───
                 const status = r.status || 'VERIFIED';
                 let statusDisplay = '';
                 let statusClass = '';
@@ -2255,12 +2247,12 @@
                 else if (teamSize === 2) sizeBadge = '👥';
                 else if (teamSize >= 3) sizeBadge = `👥 ${teamSize}`;
 
-                // ─── ACTIONS - Only show for PENDING ───
                 let actionsHtml = '';
                 if (status === 'PENDING') {
+                    const id = r.id || idx;
                     actionsHtml = `
-                            <button onclick="verifyRegistration('${r.id || idx}')" class="action-btn verify" title="Verify">✅</button>
-                            <button onclick="rejectRegistration('${r.id || idx}')" class="action-btn reject" title="Reject">❌</button>
+                            <button onclick="verifyRegistration('${id}')" class="action-btn verify" title="Verify">✅</button>
+                            <button onclick="rejectRegistration('${id}')" class="action-btn reject" title="Reject">❌</button>
                         `;
                 } else {
                     actionsHtml = `<span style="color:rgba(255,255,255,0.15);font-size:0.6rem;">—</span>`;
@@ -2303,7 +2295,7 @@
                 minute: '2-digit',
                 second: '2-digit'
             });
-            lastUpdatedEl.textContent = `Last updated: ${timeStr}`;
+            lastUpdatedEl.textContent = `Last updated: ${timeStr} from ${dataSource}`;
         }
 
         // ─── TOOLTIP ──────────────────────────────────────────────────
@@ -2315,9 +2307,10 @@
             tooltip.className = 'tooltip show';
             if (type === 'success') tooltip.classList.add('success');
             if (type === 'error') tooltip.classList.add('error');
+            if (type === 'info') tooltip.classList.add('info');
             clearTimeout(tooltipTimeout);
             tooltipTimeout = setTimeout(() => {
-                tooltip.classList.remove('show', 'success', 'error');
+                tooltip.classList.remove('show', 'success', 'error', 'info');
             }, 3200);
         }
 
@@ -2342,6 +2335,75 @@
             }
         }
 
+        // ─── VERIFY REGISTRATION ─────────────────────────────────────
+
+        async function verifyRegistration(id) {
+            if (!confirm('✅ Verify this registration?')) return;
+
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('registrations')
+                        .update({ 
+                            status: 'VERIFIED', 
+                            verified_at: new Date().toISOString() 
+                        })
+                        .eq('id', id);
+                    if (error) throw error;
+                    
+                    // Update local data
+                    const reg = allRegistrations.find(r => String(r.id) === String(id));
+                    if (reg) reg.status = 'VERIFIED';
+                    
+                    showTooltip('✅ Registration verified!', 'success');
+                    await refreshData();
+                } else {
+                    showTooltip('⚠️ Cannot verify: Supabase not connected', 'error');
+                }
+            } catch (e) {
+                showTooltip('❌ Failed: ' + e.message, 'error');
+                console.error('Verify error:', e);
+            }
+        }
+
+        // ─── REJECT REGISTRATION ─────────────────────────────────────
+
+        async function rejectRegistration(id) {
+            const reason = prompt('❌ Reason for rejection (optional):');
+            if (reason === null) return;
+            if (!confirm('Reject this registration?')) return;
+
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('registrations')
+                        .update({
+                            status: 'REJECTED',
+                            rejection_reason: reason || 'Not specified',
+                            rejected_at: new Date().toISOString()
+                        })
+                        .eq('id', id);
+                    if (error) throw error;
+                    
+                    // Update local data
+                    const reg = allRegistrations.find(r => String(r.id) === String(id));
+                    if (reg) reg.status = 'REJECTED';
+                    
+                    showTooltip('❌ Registration rejected', 'error');
+                    await refreshData();
+                } else {
+                    showTooltip('⚠️ Cannot reject: Supabase not connected', 'error');
+                }
+            } catch (e) {
+                showTooltip('❌ Failed: ' + e.message, 'error');
+                console.error('Reject error:', e);
+            }
+        }
+
+        // Make functions globally accessible
+        window.verifyRegistration = verifyRegistration;
+        window.rejectRegistration = rejectRegistration;
+
         // ─── EVENT LISTENERS ─────────────────────────────────────────
 
         searchInput.addEventListener('input', debounce(applyFilters, 300));
@@ -2358,7 +2420,6 @@
                 e.preventDefault();
                 refreshData();
             }
-            // Ctrl+Shift+E for export
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
                 e.preventDefault();
                 handleDownload();
@@ -2373,7 +2434,7 @@
                 if (!document.hidden) {
                     refreshData();
                 }
-            }, 30000);
+            }, 60000); // 1 minute
         }
 
         // ─── WINDOW RESIZE HANDLER ──────────────────────────────────
@@ -2387,70 +2448,11 @@
             }, 200);
         }
 
-        // ─── VERIFY REGISTRATION ─────────────────────────────────────
-
-        async function verifyRegistration(id) {
-            if (!confirm('✅ Verify this registration?')) return;
-
-            try {
-                if (supabaseClient) {
-                    const { error } = await supabaseClient
-                        .from('registrations')
-                        .update({ status: 'VERIFIED', verified_at: new Date().toISOString() })
-                        .eq('id', id);
-                    if (error) throw error;
-                }
-
-                const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
-                if (reg) reg.status = 'VERIFIED';
-
-                showTooltip('✅ Registration verified!', 'success');
-                await refreshData();
-
-            } catch (e) {
-                showTooltip('❌ Failed: ' + e.message, 'error');
-            }
-        }
-
-        // ─── REJECT REGISTRATION ─────────────────────────────────────
-
-        async function rejectRegistration(id) {
-            const reason = prompt('❌ Reason for rejection:');
-            if (reason === null) return;
-            if (!confirm('Reject this registration?')) return;
-
-            try {
-                if (supabaseClient) {
-                    const { error } = await supabaseClient
-                        .from('registrations')
-                        .update({
-                            status: 'REJECTED',
-                            rejection_reason: reason || 'Not specified',
-                            rejected_at: new Date().toISOString()
-                        })
-                        .eq('id', id);
-                    if (error) throw error;
-                }
-
-                const reg = allRegistrations.find(r => r.id === id || r.id === parseInt(id));
-                if (reg) reg.status = 'REJECTED';
-
-                showTooltip('❌ Registration rejected', 'error');
-                await refreshData();
-
-            } catch (e) {
-                showTooltip('❌ Failed: ' + e.message, 'error');
-            }
-        }
-
-        // Make functions globally accessible
-        window.verifyRegistration = verifyRegistration;
-        window.rejectRegistration = rejectRegistration;
-
         // ─── INIT ─────────────────────────────────────────────────────
 
         async function init() {
             populateDropdowns();
+            updateConnectionStatus('syncing', '🔄 Initializing...');
 
             tableBody.innerHTML = `
                     <tr>
@@ -2461,6 +2463,10 @@
                     </tr>
                 `;
 
+            // Test Supabase connection
+            await testSupabaseConnection();
+            
+            // Load data
             await loadData();
 
             window.addEventListener('resize', handleResize);
@@ -2477,12 +2483,18 @@
                 refreshData();
             }, 1500);
 
-            console.log('📊 DEPLOMAT Dashboard v2.3 - With Download Feature');
-            console.log(`📈 Loaded ${allRegistrations.length} registrations`);
-            console.log('🎯 New: Download filtered data as CSV/Excel');
-            console.log('⌨️  Keyboard shortcut: Ctrl+Shift+E to export');
+            console.log('📊 DEPLOMAT Admin Dashboard v3.0');
+            console.log(`📈 Loaded ${allRegistrations.length} registrations from ${dataSource}`);
+            console.log('🎯 Features: Filters, Search, Export, Verification');
+            console.log('⌨️  Keyboard shortcuts: Ctrl+R (refresh), Ctrl+Shift+E (export)');
+            
+            // Log category distribution for debugging
+            const ugCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'UG').length;
+            const puCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'PU').length;
+            console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
         }
 
+        // Start the dashboard
         init();
     </script>
 
