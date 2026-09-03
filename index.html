@@ -27,18 +27,21 @@
       --gold: #A98445;
       --gold-light: #C09A52;
       --gold-bright: #D0AF69;
-      --gold-glow: rgba(169,132,69,0.3);
+      --gold-brilliant: #E8C875;
+      --gold-glow: rgba(169,132,69,0.4);
+      --gold-glow-intense: rgba(208,175,105,0.6);
       --bronze: #70552F;
       --parchment: #E8D9B8;
       --ivory: #F4EBDD;
       --shadow-deep: 0 20px 60px rgba(0,0,0,0.85);
-      --gradient-gold: linear-gradient(135deg, #A98445, #D0AF69, #A98445);
+      --gradient-gold: linear-gradient(135deg, #A98445, #D0AF69, #F4E8B0, #C09A52, #A98445);
+      --gradient-gold-radiant: linear-gradient(135deg, #C09A52, #E8C875, #F4E8B0, #D0AF69, #A98445);
     }
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--abyss); }
     ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
 
-    /* ─── FLOATING HAMBURGER MENU (GOLD THEME) ────────── */
+    /* ─── FLOATING HAMBURGER MENU ────────── */
     .header {
       position: fixed;
       top: 16px;
@@ -147,8 +150,14 @@
       font-family: 'Cinzel',serif;
       touch-action: manipulation;
       cursor: pointer;
+      position: relative;
     }
-    .dropdown-item:active { background: rgba(169,132,69,0.08); transform: scale(0.97); }
+    .dropdown-item:active { 
+      background: rgba(169,132,69,0.12); 
+      transform: scale(0.97);
+      color: var(--gold-bright);
+      border-left-color: var(--gold);
+    }
     .dropdown-item .icon {
       display: inline-flex;
       align-items: center;
@@ -161,6 +170,11 @@
       color: rgba(169,132,69,0.4);
       flex-shrink: 0;
       font-style: normal;
+      transition: 0.3s;
+    }
+    .dropdown-item:active .icon {
+      color: var(--gold-bright);
+      background: rgba(169,132,69,0.15);
     }
     .dropdown-item.login-item { color: rgba(232,217,184,0.85); }
 
@@ -211,6 +225,7 @@
     }
     .nav-item:active {
       transform: scale(0.92);
+      color: var(--gold-bright);
     }
     .nav-item .nav-badge {
       display: inline-block;
@@ -583,18 +598,15 @@
     .carousel-stage.is-dragging .event-card {
       transition: none !important;
     }
-    
     .carousel-stage.is-dragging .event-card .glow-aura {
       transition: none !important;
       opacity: 0 !important;
     }
-    
     .carousel-stage.is-dragging .event-card::after,
     .carousel-stage.is-dragging .event-card::before {
       transition: none !important;
       opacity: 0 !important;
     }
-    
     .carousel-stage.is-dragging .event-card .card-image {
       filter: none !important;
     }
@@ -604,41 +616,39 @@
       transition: none !important;
       opacity: 0 !important;
     }
-    
     .carousel-stage.is-snapping .event-card::after,
     .carousel-stage.is-snapping .event-card::before {
       transition: none !important;
       opacity: 0 !important;
     }
-    
     .carousel-stage.is-snapping .event-card .card-image {
       filter: none !important;
     }
 
-    /* ─── GOLDEN GLOW AURA ─── */
+    /* ─── GOLDEN GLOW AURA - INTENSIFIED FOR VIBRANCY ─── */
     .carousel-track .event-card .glow-aura {
       position: absolute;
       bottom: -30px;
       left: -20%;
       width: 140%;
-      height: 60%;
+      height: 70%;
       background: radial-gradient(
         ellipse at bottom center,
-        rgba(169, 132, 69, 0.08) 0%,
-        rgba(169, 132, 69, 0.04) 30%,
-        rgba(169, 132, 69, 0.01) 60%,
+        rgba(208, 175, 105, 0.15) 0%,
+        rgba(169, 132, 69, 0.08) 30%,
+        rgba(169, 132, 69, 0.03) 60%,
         transparent 100%
       );
       pointer-events: none;
       z-index: 0;
       opacity: 0;
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.6s ease, transform 0.6s ease;
       transform: scaleY(0.3) scaleX(0.8);
-      filter: blur(30px);
+      filter: blur(40px);
       will-change: opacity, transform;
     }
 
-    /* ─── GOLDEN GLOW - BOTTOM TO TOP ─── */
+    /* ─── GOLDEN GLOW - BOTTOM TO TOP (BRIGHTER) ─── */
     .carousel-track .event-card::after {
       content: '';
       position: absolute;
@@ -648,48 +658,48 @@
       height: 0%;
       background: linear-gradient(
         to top,
-        rgba(169, 132, 69, 0.35) 0%,
-        rgba(169, 132, 69, 0.20) 20%,
-        rgba(169, 132, 69, 0.12) 40%,
-        rgba(169, 132, 69, 0.06) 60%,
-        rgba(169, 132, 69, 0.02) 80%,
+        rgba(208, 175, 105, 0.45) 0%,
+        rgba(208, 175, 105, 0.30) 20%,
+        rgba(169, 132, 69, 0.20) 40%,
+        rgba(169, 132, 69, 0.10) 60%,
+        rgba(169, 132, 69, 0.04) 80%,
         transparent 100%
       );
       opacity: 0;
-      transition: opacity 0.5s ease, height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: opacity 0.4s ease, height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
       z-index: 4;
       border-radius: 0 0 16px 16px;
       box-shadow: 
-        inset 0 -80px 120px rgba(169, 132, 69, 0.04),
-        inset 0 -40px 60px rgba(169, 132, 69, 0.02);
+        inset 0 -80px 120px rgba(208, 175, 105, 0.08),
+        inset 0 -40px 60px rgba(169, 132, 69, 0.04);
     }
 
-    /* ─── GOLDEN GLOW BOTTOM LINE ─── */
+    /* ─── GOLDEN GLOW BOTTOM LINE (BRIGHTER) ─── */
     .carousel-track .event-card::before {
       content: '';
       position: absolute;
       bottom: -1px;
       left: 5%;
       width: 90%;
-      height: 3px;
+      height: 4px;
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(169, 132, 69, 0.4) 15%,
-        rgba(192, 154, 82, 0.6) 35%,
-        rgba(208, 175, 105, 1) 50%,
-        rgba(192, 154, 82, 0.6) 65%,
-        rgba(169, 132, 69, 0.4) 85%,
+        rgba(208, 175, 105, 0.5) 15%,
+        rgba(232, 200, 117, 0.8) 35%,
+        rgba(244, 232, 176, 1) 50%,
+        rgba(232, 200, 117, 0.8) 65%,
+        rgba(208, 175, 105, 0.5) 85%,
         transparent
       );
-      filter: blur(4px);
+      filter: blur(6px);
       z-index: 5;
       opacity: 0;
       transition: opacity 0.4s ease, transform 0.4s ease;
-      transform: scaleX(0.4);
+      transform: scaleX(0.3);
       pointer-events: none;
-      box-shadow: 0 0 40px rgba(169, 132, 69, 0.15);
+      box-shadow: 0 0 60px rgba(208, 175, 105, 0.25), 0 0 120px rgba(208, 175, 105, 0.1);
     }
 
     /* ─── FULL GOLDEN GLOW EFFECT (ACTIVE) ─── */
@@ -706,29 +716,33 @@
       transform: scaleY(1) scaleX(1);
     }
     .carousel-track .event-card.glow-effect {
-      border-color: rgba(169, 132, 69, 0.25);
+      border-color: rgba(208, 175, 105, 0.35);
       box-shadow: 
-        0 0 80px rgba(169, 132, 69, 0.06),
-        0 0 160px rgba(169, 132, 69, 0.03),
+        0 0 100px rgba(208, 175, 105, 0.1),
+        0 0 200px rgba(208, 175, 105, 0.05),
         0 20px 60px rgba(0, 0, 0, 0.9);
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
     .carousel-track .event-card.glow-effect .card-image {
-      opacity: 0.7;
-      filter: brightness(1.1) saturate(1.05);
+      opacity: 0.6;
+      filter: brightness(1.2) saturate(1.1) contrast(1.05);
     }
     .carousel-track .event-card.glow-effect .card-explore-badge {
       opacity: 1;
-      border-color: rgba(169, 132, 69, 0.3);
+      border-color: rgba(208, 175, 105, 0.4);
       background: rgba(4, 18, 23, 0.9);
-      color: var(--gold-bright);
-      box-shadow: 0 0 30px rgba(169, 132, 69, 0.08);
+      color: var(--gold-brilliant);
+      box-shadow: 0 0 40px rgba(208, 175, 105, 0.15);
     }
     .carousel-track .event-card.glow-effect .card-name {
-      text-shadow: 0 0 50px rgba(169, 132, 69, 0.15);
+      text-shadow: 0 0 60px rgba(208, 175, 105, 0.2), 0 0 120px rgba(208, 175, 105, 0.1);
+      color: #FFF8E7;
+    }
+    .carousel-track .event-card.glow-effect .card-sub {
+      color: var(--gold-brilliant);
     }
 
-    /* ─── HOVER STATE (DESKTOP) ─── */
+    /* ─── HOVER STATE (DESKTOP) - INTENSIFIED ─── */
     .carousel-track .event-card:hover::after {
       opacity: 1;
       height: 100%;
@@ -742,22 +756,26 @@
       transform: scaleY(1) scaleX(1);
     }
     .carousel-track .event-card:hover {
-      border-color: rgba(169, 132, 69, 0.25);
+      border-color: rgba(208, 175, 105, 0.35);
       box-shadow: 
-        0 0 80px rgba(169, 132, 69, 0.06),
-        0 0 160px rgba(169, 132, 69, 0.03),
+        0 0 100px rgba(208, 175, 105, 0.1),
+        0 0 200px rgba(208, 175, 105, 0.05),
         0 20px 60px rgba(0, 0, 0, 0.9);
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
     .carousel-track .event-card:hover .card-image {
-      opacity: 0.7;
-      filter: brightness(1.1) saturate(1.05);
+      opacity: 0.6;
+      filter: brightness(1.2) saturate(1.1) contrast(1.05);
     }
     .carousel-track .event-card:hover .card-explore-badge {
       opacity: 1;
-      border-color: rgba(169, 132, 69, 0.3);
+      border-color: rgba(208, 175, 105, 0.4);
       background: rgba(4, 18, 23, 0.9);
-      color: var(--gold-bright);
+      color: var(--gold-brilliant);
+    }
+    .carousel-track .event-card:hover .card-name {
+      text-shadow: 0 0 60px rgba(208, 175, 105, 0.2);
+      color: #FFF8E7;
     }
 
     .carousel-track .event-card .card-image {
@@ -818,7 +836,7 @@
       text-shadow: 0 4px 30px rgba(0,0,0,0.9);
       line-height: 1.1;
       margin-bottom: 2px;
-      transition: text-shadow 0.4s ease;
+      transition: text-shadow 0.4s ease, color 0.4s ease;
     }
     .carousel-track .event-card .card-sub {
       font-family:'Cormorant Garamond',serif;
@@ -828,6 +846,7 @@
       color: rgba(192,154,82,0.85);
       font-weight: 700;
       text-shadow: 0 2px 20px rgba(0,0,0,0.7);
+      transition: color 0.4s ease;
     }
     .carousel-track .event-card .card-explore-badge {
       position:absolute;
@@ -853,7 +872,12 @@
       box-shadow:0 4px 20px rgba(0,0,0,0.3);
       touch-action:manipulation;
     }
-    .carousel-track .event-card .card-explore-badge:active { transform:scale(0.92); }
+    .carousel-track .event-card .card-explore-badge:active { 
+      transform:scale(0.92); 
+      background: rgba(208,175,105,0.15);
+      border-color: var(--gold);
+      color: var(--gold-brilliant);
+    }
 
     .dots-container {
       display:flex;
@@ -922,7 +946,7 @@
       overflow: hidden;
       min-height: 360px;
       background: var(--abyss);
-      border: 1px solid rgba(169, 132, 69, 0.08);
+      border: 1px solid rgba(169,132,69,0.08);
       box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169,132,69,0.03);
       transition: border-color 0.5s ease, box-shadow 0.5s ease;
       cursor: pointer;
@@ -947,6 +971,9 @@
     .kingdom-featured-main .featured-bg.active {
       opacity: 1;
       transform: scale(1);
+    }
+    .kingdom-featured-main .featured-bg.loading {
+      opacity: 0.3;
     }
     .kingdom-featured-main .featured-overlay {
       position: absolute;
@@ -1008,8 +1035,8 @@
     }
     .kingdom-featured-main .featured-content .fc-cta:active {
       transform: scale(0.95);
-      border-color: var(--gold);
-      color: var(--gold-bright);
+      border-color: var(--gold-brilliant);
+      color: var(--gold-brilliant);
     }
 
     /* RIGHT: SELECTOR LIST */
@@ -1049,6 +1076,8 @@
     }
     .kingdom-featured-item:active {
       transform: scale(0.97);
+      border-color: rgba(208,175,105,0.15);
+      background: rgba(169,132,69,0.06);
     }
     .kingdom-featured-item .ki-thumb {
       width: 48px;
@@ -1065,6 +1094,10 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: opacity 0.3s ease;
+    }
+    .kingdom-featured-item .ki-thumb img:not(.loaded) {
+      opacity: 0.3;
     }
     .kingdom-featured-item .ki-info {
       flex: 1;
@@ -1100,28 +1133,28 @@
       text-overflow: ellipsis;
     }
 
-    /* ACTIVE STATE */
+    /* ACTIVE STATE - BRIGHTER */
     .kingdom-featured-item.active {
-      background: rgba(169,132,69,0.04);
-      border-color: rgba(169,132,69,0.08);
-      box-shadow: 0 0 30px rgba(169,132,69,0.02);
+      background: rgba(208,175,105,0.06);
+      border-color: rgba(208,175,105,0.12);
+      box-shadow: 0 0 40px rgba(208,175,105,0.04), inset 0 0 60px rgba(208,175,105,0.02);
     }
     .kingdom-featured-item.active::after {
       opacity: 1;
-      background: linear-gradient(90deg, rgba(169,132,69,0.06), transparent 60%);
+      background: linear-gradient(90deg, rgba(208,175,105,0.08), transparent 60%);
     }
     .kingdom-featured-item.active .ki-thumb {
-      border-color: rgba(169,132,69,0.15);
+      border-color: rgba(208,175,105,0.2);
     }
     .kingdom-featured-item.active .ki-title {
-      color: var(--gold-light);
+      color: var(--gold-brilliant);
     }
     .kingdom-featured-item.active .ki-divider {
       width: 40px;
-      background: rgba(169,132,69,0.15);
+      background: rgba(208,175,105,0.2);
     }
     .kingdom-featured-item.active .ki-sub {
-      color: rgba(232,217,184,0.4);
+      color: rgba(232,217,184,0.5);
     }
 
     /* ─── RESPONSIVE: KINGDOM FEATURED ─────────────────── */
@@ -1366,7 +1399,11 @@
       touch-action:manipulation;
       user-select:none;
     }
-    .promo-cta:active { transform:scale(0.96); }
+    .promo-cta:active { 
+      transform:scale(0.96); 
+      border-color: rgba(208,175,105,0.15);
+      color: var(--gold-brilliant);
+    }
     .promo-cta .arrow-link { display:inline-block; margin-left:6px; transition:0.2s; color:rgba(169,132,69,0.2); }
     .promo-cta:active .arrow-link { transform:translateX(4px); color:var(--gold-light); }
 
@@ -1567,7 +1604,7 @@
       transition:0.25s;
       touch-action:manipulation;
     }
-    .login-submit:active { transform:scale(0.97); }
+    .login-submit:active { transform:scale(0.97); background:rgba(169,132,69,0.06); }
     .login-submit:disabled { opacity:0.3; transform:none !important; cursor:not-allowed; }
     .login-submit .spinner {
       display:none;
@@ -1614,6 +1651,7 @@
       font-family:'Segoe UI',sans-serif;
       touch-action:manipulation;
     }
+    .modal-close:active { background:rgba(169,132,69,0.06); color:var(--gold-light); }
     .login-error {
       background:rgba(200,100,100,0.03);
       border:1px solid rgba(200,100,100,0.08);
@@ -1938,6 +1976,23 @@
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
       .intro-seal svg { animation: sealReveal 0.5s ease forwards !important; }
     }
+
+    /* ─── SPARKLE TRAIL FOR INTERACTIVE CARDS ─────────── */
+    .sparkle-particle {
+      position: fixed;
+      pointer-events: none;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244,232,176,0.8), rgba(208,175,105,0.4));
+      box-shadow: 0 0 8px rgba(208,175,105,0.3);
+      z-index: 9999;
+      animation: sparkleFade 0.8s ease-out forwards;
+    }
+    @keyframes sparkleFade {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.1) translateY(-20px); }
+    }
   </style>
 </head>
 <body>
@@ -2222,11 +2277,11 @@
       { name: "RUNWAY OF REALMS", sub: ".rampwalk", image: "https://i.ibb.co/B2H22DT8/file-0000000008508208a226434e0d4903f1.png", href: "event-8.html" },
       { name: "THE KRAKEN'S PITCH", sub: ".cricket(both PU/UG boys)", image: "https://i.ibb.co/ns5gw2QG/IMG-3639.png", href: "event-9.html" },
       { name: "POSEIDON'S CUP", sub: ".football(for P.U boys)", image: "https://i.ibb.co/M5DDh2zX/file-00000000440081fa80241e782087817e.png", href: "event-10.html" },
-      { name: "RIPTIDE RALLY", sub: ".throwball for U.G girls", image: "https://i.ibb.co/nMg9ttBR/IMG-20260902-190933-jpg.jpg", href: "event-11.html" }
+      { name: "RIPTIDE RALLY", sub: ".throwball for U.G girls", image: "https://i.ibb.co/p6qjN9D0/file-000000008fd081fab90e61eea05f061e.png", href: "event-11.html" }
     ];
 
     // ═══════════════════════════════════════════════════════════
-    // 3. CAROUSEL - NO AUTO-SCROLL, PURE USER INTERACTION
+    // 3. CAROUSEL - VIBRANT INTERACTION ENHANCED
     // ═══════════════════════════════════════════════════════════
     (function() {
       const track = document.getElementById('carouselTrack');
@@ -2234,12 +2289,10 @@
       const dotsContainer = document.getElementById('dotsContainer');
       const N = events.length;
       
-      // ─── CONSTANTS ─────────────────────────────────────────
       const SNAP_DURATION = 700;
       const SNAP_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
       const VELOCITY_THRESHOLD = 0.15;
       
-      // ─── STATE ──────────────────────────────────────────────
       let cardWidth = 0;
       let cardGap = 12;
       let cardWidthWithGap = 0;
@@ -2260,8 +2313,25 @@
       
       let resizeTimeout = null;
       let currentGlowCard = null;
-      
-      // ─── MEASUREMENTS ──────────────────────────────────────
+
+      // ─── SPARKLE EFFECT ──────────────────────────────────
+      function createSparkles(x, y, count = 12) {
+        for (let i = 0; i < count; i++) {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle-particle';
+          const angle = Math.random() * 2 * Math.PI;
+          const dist = 10 + Math.random() * 50;
+          const dx = Math.cos(angle) * dist;
+          const dy = Math.sin(angle) * dist - 20;
+          sparkle.style.left = (x + dx) + 'px';
+          sparkle.style.top = (y + dy) + 'px';
+          sparkle.style.width = (2 + Math.random() * 4) + 'px';
+          sparkle.style.height = sparkle.style.width;
+          document.body.appendChild(sparkle);
+          setTimeout(() => sparkle.remove(), 800);
+        }
+      }
+
       function getGap() {
         const styles = getComputedStyle(track);
         return parseFloat(styles.gap) || 12;
@@ -2294,7 +2364,6 @@
         return cardWidth;
       }
       
-      // ─── POSITION CALCULATIONS ────────────────────────────
       function getPixelPositionForCard(index) {
         const offset = getTrackOffset();
         return -(index * cardWidthWithGap) + offset;
@@ -2311,7 +2380,6 @@
         return Math.round(index);
       }
       
-      // ─── RENDER ────────────────────────────────────────────
       function renderTrack(pixelPos, animate = false, duration = SNAP_DURATION, easing = SNAP_EASING) {
         const minPos = -(N * 3 - 1) * cardWidthWithGap + getTrackOffset();
         const maxPos = getTrackOffset();
@@ -2329,7 +2397,7 @@
         updateCardVisuals(clampedPos);
       }
       
-      // ─── UPDATE CARD VISUALS ─────────────────────────────
+      // ─── UPDATE CARD VISUALS - EXTRA VIBRANT ────────────
       function updateCardVisuals(pixelPos) {
         const cards = track.querySelectorAll('.event-card');
         if (!cards.length || cardWidthWithGap === 0) return;
@@ -2347,8 +2415,8 @@
           const dist = Math.abs(cardCenter - halfStage);
           const maxDist = stageWidth / 2 + cardWidth;
           const norm = Math.min(dist / maxDist, 1);
-          const scale = 1 - norm * 0.15;
-          const opacity = 1 - norm * 0.25;
+          const scale = 1 - norm * 0.12;
+          const opacity = 1 - norm * 0.20;
           
           card.style.transform = `scale(${scale})`;
           card.style.opacity = Math.max(0.5, opacity);
@@ -2370,7 +2438,7 @@
         });
       }
       
-      // ─── GLOW MANAGEMENT ──────────────────────────────────
+      // ─── GLOW MANAGEMENT - INTENSIFIED ──────────────────
       function applyGlow(card) {
         if (currentGlowCard && currentGlowCard !== card) {
           currentGlowCard.classList.remove('glow-effect');
@@ -2390,7 +2458,6 @@
         }
       }
       
-      // ─── VELOCITY ──────────────────────────────────────────
       function addVelocitySample(deltaX, deltaTime) {
         if (deltaTime < 10) return;
         const velocity = deltaX / deltaTime;
@@ -2418,7 +2485,6 @@
         velocitySamples = [];
       }
       
-      // ─── SNAP ──────────────────────────────────────────────
       function snapToIndex(targetIndex, animate = true, duration = SNAP_DURATION) {
         if (isSnapping) {
           if (snapTimeout) {
@@ -2446,7 +2512,6 @@
           stage.classList.remove('is-snapping');
           snapTimeout = null;
           
-          // Silent normalization if we're at the edge
           if (currentLogicalIndex < N + 1 || currentLogicalIndex >= 2 * N - 1) {
             const normalizedIndex = ((currentLogicalIndex % N) + N) % (3 * N);
             if (normalizedIndex !== currentLogicalIndex) {
@@ -2462,7 +2527,6 @@
       
       // ─── DRAG HANDLING ─────────────────────────────────────
       function handlePointerDown(e) {
-        // Cancel any ongoing snap
         if (isSnapping) {
           if (snapTimeout) {
             clearTimeout(snapTimeout);
@@ -2526,14 +2590,18 @@
         let targetIndex;
         
         if (dist < 8) {
-          // Tap: stay on nearest card and navigate
           targetIndex = getNearestCardIndex(currentPixelPos);
-          // Check for card click - use the href from events data
           const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.event-card');
           if (card) {
+            // Create sparkles on tap
+            const rect = card.getBoundingClientRect();
+            createSparkles(e.clientX, e.clientY, 16);
+            
             const oi = parseInt(card.dataset.originalIndex);
             if (!isNaN(oi) && events[oi] && events[oi].href) {
-              window.location.href = events[oi].href;
+              setTimeout(() => {
+                window.location.href = events[oi].href;
+              }, 300);
               return;
             }
           }
@@ -2542,17 +2610,14 @@
           const absVelocity = Math.abs(avgVelocity);
           
           if (absVelocity > VELOCITY_THRESHOLD) {
-            // Directional swipe - limited to ONE card
             const direction = avgVelocity > 0 ? -1 : 1;
             targetIndex = Math.round(currentIndex + direction);
           } else {
-            // Nearest card
             targetIndex = Math.round(currentIndex);
           }
         }
         
         targetIndex = Math.max(N - 1, Math.min(2 * N, targetIndex));
-        
         snapToIndex(targetIndex, true);
       }
       
@@ -2600,7 +2665,6 @@
         card.className = 'event-card card-' + ((idx % N) + 1);
         card.dataset.originalIndex = idx % N;
         card.dataset.globalIndex = globalIdx;
-        // Store the href directly on the card element
         card.dataset.href = evt.href || ('event-' + (idx % N) + '.html');
         card.innerHTML = `
           <div class="card-image">
@@ -2619,25 +2683,41 @@
         if (img.complete) img.classList.add('loaded');
         img.addEventListener('load', () => img.classList.add('loaded'));
         
+        // ─── CARD INTERACTION: SPARKLES + NAVIGATION ────
         const badge = card.querySelector('.card-explore-badge');
         badge.addEventListener('click', (e) => {
           e.stopPropagation();
           if (isDragging || isSnapping) return;
+          const rect = card.getBoundingClientRect();
+          createSparkles(e.clientX, e.clientY, 20);
           const oi = parseInt(badge.dataset.originalIndex);
           if (!isNaN(oi) && events[oi] && events[oi].href) {
-            window.location.href = events[oi].href;
+            setTimeout(() => {
+              window.location.href = events[oi].href;
+            }, 300);
           }
         });
         
-        // Card click handler - uses the href from events data
         card.addEventListener('click', (e) => {
           if (e.target.closest('.card-explore-badge')) return;
           if (isDragging || isSnapping) return;
+          // Only navigate if not dragging
+          const rect = card.getBoundingClientRect();
+          createSparkles(rect.left + rect.width/2, rect.top + rect.height/2, 14);
           const oi = parseInt(card.dataset.originalIndex);
           if (!isNaN(oi) && events[oi] && events[oi].href) {
-            window.location.href = events[oi].href;
+            setTimeout(() => {
+              window.location.href = events[oi].href;
+            }, 300);
           }
         });
+        
+        // ─── TOUCH SPARKLE ON TAP ──────────────────────────
+        card.addEventListener('touchstart', (e) => {
+          const touch = e.touches[0];
+          const rect = card.getBoundingClientRect();
+          createSparkles(touch.clientX, touch.clientY, 10);
+        }, { passive: true });
         
         return card;
       }
@@ -2660,6 +2740,9 @@
             e.preventDefault();
             if (!isSnapping) {
               snapToIndex(i + N, true);
+              // Sparkle on dot click
+              const rect = dot.getBoundingClientRect();
+              createSparkles(rect.left + rect.width/2, rect.top + rect.height/2, 8);
             }
           });
           dotsContainer.appendChild(dot);
@@ -2675,7 +2758,7 @@
           updateCardVisuals(initialPos);
         });
         
-        console.log('🏛️ Carousel initialized - NO AUTO-SCROLL');
+        console.log('🏛️ Carousel initialized - VIBRANT INTERACTION ENABLED');
       }
       
       // ─── PRELOAD IMAGES ──────────────────────────────────
@@ -2709,7 +2792,6 @@
         stage.addEventListener('pointermove', handlePointerMove);
         stage.addEventListener('pointerup', handlePointerUp);
         stage.addEventListener('pointercancel', handlePointerCancel);
-        
         stage.addEventListener('wheel', handleWheel, { passive: false });
         
         window.addEventListener('resize', handleResize);
@@ -2719,7 +2801,7 @@
           ro.observe(stage);
         }
         
-        console.log('🏛️ Carousel ready - user interaction only');
+        console.log('🏛️ Carousel ready - VIBRANT INTERACTION');
       }
       
       window.carouselSnapTo = snapToIndex;
@@ -2904,10 +2986,10 @@
     loginPass.addEventListener('input', ()=>{ loginPass.classList.remove('error'); loginError.classList.remove('show'); });
     loginUser.addEventListener('input', ()=>{ loginError.classList.remove('show'); });
     setRole('admin');
-    console.log('🔱 DEPLOMAT · Golden Glow Effect Active');
+    console.log('🔱 DEPLOMAT · Golden Glow Effect Active - VIBRANT INTERACTION');
 
     // ═══════════════════════════════════════════════════════════
-    // 8. KINGDOM FEATURED NAVIGATION (NEW COMPONENT)
+    // 8. KINGDOM FEATURED NAVIGATION
     // ═══════════════════════════════════════════════════════════
     (function() {
       const navItems = [
@@ -2955,26 +3037,37 @@
 
       let currentIndex = 0;
       let isTransitioning = false;
+      
+      function preloadFeaturedImages() {
+        navItems.forEach(item => {
+          const img = new Image();
+          img.src = item.image;
+          img.onload = () => {
+            document.querySelectorAll('.ki-thumb img').forEach(el => {
+              if (el.src === item.image) {
+                el.classList.add('loaded');
+              }
+            });
+          };
+        });
+      }
 
       function setActive(index) {
         if (isTransitioning) return;
         if (index === currentIndex) return;
         isTransitioning = true;
 
-        const prev = currentIndex;
         currentIndex = index;
 
-        // Update selector items
         document.querySelectorAll('.kingdom-featured-item').forEach((el, i) => {
           el.classList.toggle('active', i === index);
         });
 
         const item = navItems[index];
 
-        // Fade out old image
         featuredBg.classList.remove('active');
+        featuredBg.classList.add('loading');
 
-        // After a short delay, swap content
         setTimeout(() => {
           featuredBg.src = item.image;
           fcLabel.textContent = item.label;
@@ -2982,14 +3075,21 @@
           fcDesc.textContent = item.desc;
           fcCta.textContent = 'EXPLORE →';
 
-          // Fade in new image
-          featuredBg.classList.add('active');
+          featuredBg.onload = () => {
+            featuredBg.classList.remove('loading');
+            featuredBg.classList.add('active');
+            isTransitioning = false;
+          };
+          
+          setTimeout(() => {
+            featuredBg.classList.remove('loading');
+            featuredBg.classList.add('active');
+            isTransitioning = false;
+          }, 2000);
 
-          // Update CTA link
           featuredMain.dataset.href = item.href;
 
-          isTransitioning = false;
-        }, 400);
+        }, 300);
       }
 
       function buildSelector() {
@@ -3013,30 +3113,39 @@
       }
 
       function initFeatured() {
+        preloadFeaturedImages();
         buildSelector();
-        // Set initial content
+        
         const first = navItems[0];
         featuredBg.src = first.image;
         featuredBg.classList.add('active');
+        featuredBg.onload = () => {
+          featuredBg.classList.remove('loading');
+          featuredBg.classList.add('active');
+        };
         fcLabel.textContent = first.label;
         fcTitle.textContent = first.title;
         fcDesc.textContent = first.desc;
         fcCta.textContent = 'EXPLORE →';
         featuredMain.dataset.href = first.href;
 
-        // Click on main card navigates
         featuredMain.addEventListener('click', (e) => {
           const href = featuredMain.dataset.href;
           if (href) window.location.href = href;
         });
 
-        console.log('🏛️ Kingdom Featured Navigation initialized');
+        console.log('🏛️ Kingdom Featured Navigation initialized with VIBRANT INTERACTION');
       }
 
-      initFeatured();
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFeatured);
+      } else {
+        initFeatured();
+      }
     })();
 
-    console.log('🔱 DEPLOMAT · Kingdom Featured Section Active');
+    console.log('🔱 DEPLOMAT · VIBRANT INTERACTION FULLY ACTIVE');
+    console.log('✨ Every card now glows, sparkles, and shines on interaction!');
   </script>
 </body>
 </html>
