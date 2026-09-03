@@ -882,6 +882,338 @@
       border-color:rgba(169,132,69,0.1);
     }
 
+    /* ─── NEW FEATURED NAVIGATION SECTION ────────────── */
+    .kingdom-featured {
+      position: relative;
+      z-index: 2;
+      background: var(--abyss);
+      padding: 40px 20px 60px 20px;
+    }
+
+    .kingdom-featured .kingdom-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.6rem, 1.2vw, 0.9rem);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.35);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .kingdom-featured .kingdom-heading .orn {
+      display: inline-block;
+      margin: 0 10px;
+      opacity: 0.3;
+    }
+
+    .kingdom-featured-stage {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: stretch;
+    }
+
+    /* LEFT: FEATURED CARD */
+    .kingdom-featured-main {
+      flex: 0 0 70%;
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 360px;
+      background: var(--abyss);
+      border: 1px solid rgba(169, 132, 69, 0.08);
+      box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169,132,69,0.03);
+      transition: border-color 0.5s ease, box-shadow 0.5s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-end;
+    }
+    .kingdom-featured-main:hover {
+      border-color: rgba(169,132,69,0.15);
+      box-shadow: var(--shadow-deep), 0 0 40px rgba(169,132,69,0.03);
+    }
+    .kingdom-featured-main .featured-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      opacity: 0;
+      transform: scale(1.02);
+    }
+    .kingdom-featured-main .featured-bg.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .kingdom-featured-main .featured-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to top, rgba(4,18,23,0.85) 0%, rgba(4,18,23,0.3) 50%, transparent 80%);
+      pointer-events: none;
+    }
+    .kingdom-featured-main .featured-content {
+      position: relative;
+      z-index: 2;
+      padding: 30px 28px 24px 28px;
+      width: 100%;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .kingdom-featured-main .featured-content .fc-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(192, 154, 82, 0.4);
+      margin-bottom: 4px;
+    }
+    .kingdom-featured-main .featured-content .fc-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ivory);
+      text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .kingdom-featured-main .featured-content .fc-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.7rem, 1.1vw, 1rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: rgba(232,217,184,0.7);
+      max-width: 80%;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+    .kingdom-featured-main .featured-content .fc-cta {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(169,132,69,0.15);
+      transition: 0.3s ease;
+      cursor: pointer;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+    .kingdom-featured-main .featured-content .fc-cta:active {
+      transform: scale(0.95);
+      border-color: var(--gold);
+      color: var(--gold-bright);
+    }
+
+    /* RIGHT: SELECTOR LIST */
+    .kingdom-featured-selector {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .kingdom-featured-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(169,132,69,0.04);
+      background: rgba(4,18,23,0.3);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      touch-action: manipulation;
+      position: relative;
+      overflow: hidden;
+    }
+    .kingdom-featured-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(169,132,69,0.02), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .kingdom-featured-item:hover::after {
+      opacity: 1;
+    }
+    .kingdom-featured-item:active {
+      transform: scale(0.97);
+    }
+    .kingdom-featured-item .ki-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid rgba(169,132,69,0.06);
+      background: var(--abyss);
+      transition: border-color 0.4s ease;
+    }
+    .kingdom-featured-item .ki-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .kingdom-featured-item .ki-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .kingdom-featured-item .ki-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(232,217,184,0.5);
+      transition: color 0.4s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .kingdom-featured-item .ki-divider {
+      width: 20px;
+      height: 1px;
+      background: rgba(169,132,69,0.04);
+      margin: 2px 0;
+      transition: width 0.4s ease, background 0.4s ease;
+    }
+    .kingdom-featured-item .ki-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.05em;
+      color: rgba(232,217,184,0.2);
+      transition: color 0.4s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ACTIVE STATE */
+    .kingdom-featured-item.active {
+      background: rgba(169,132,69,0.04);
+      border-color: rgba(169,132,69,0.08);
+      box-shadow: 0 0 30px rgba(169,132,69,0.02);
+    }
+    .kingdom-featured-item.active::after {
+      opacity: 1;
+      background: linear-gradient(90deg, rgba(169,132,69,0.06), transparent 60%);
+    }
+    .kingdom-featured-item.active .ki-thumb {
+      border-color: rgba(169,132,69,0.15);
+    }
+    .kingdom-featured-item.active .ki-title {
+      color: var(--gold-light);
+    }
+    .kingdom-featured-item.active .ki-divider {
+      width: 40px;
+      background: rgba(169,132,69,0.15);
+    }
+    .kingdom-featured-item.active .ki-sub {
+      color: rgba(232,217,184,0.4);
+    }
+
+    /* ─── RESPONSIVE: KINGDOM FEATURED ─────────────────── */
+    @media (max-width: 768px) {
+      .kingdom-featured {
+        padding: 30px 16px 40px 16px;
+      }
+      .kingdom-featured-stage {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .kingdom-featured-main {
+        flex: 0 0 auto;
+        min-height: 260px;
+        border-radius: 14px;
+      }
+      .kingdom-featured-main .featured-content {
+        padding: 20px 16px 16px 16px;
+      }
+      .kingdom-featured-main .featured-content .fc-desc {
+        max-width: 100%;
+        font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+      }
+      .kingdom-featured-main .featured-content .fc-title {
+        font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+      }
+      .kingdom-featured-selector {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+      }
+      .kingdom-featured-item {
+        flex: 1 1 calc(50% - 6px);
+        min-width: 100px;
+        padding: 8px 10px;
+        gap: 10px;
+        border-radius: 10px;
+      }
+      .kingdom-featured-item .ki-thumb {
+        width: 40px;
+        height: 40px;
+      }
+      .kingdom-featured-item .ki-title {
+        font-size: 0.55rem;
+        white-space: normal;
+        line-height: 1.2;
+      }
+      .kingdom-featured-item .ki-sub {
+        font-size: 0.45rem;
+      }
+      .kingdom-featured-item .ki-divider {
+        width: 16px;
+      }
+      .kingdom-featured-item.active .ki-divider {
+        width: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .kingdom-featured-main {
+        min-height: 200px;
+      }
+      .kingdom-featured-main .featured-content {
+        padding: 14px 12px 12px 12px;
+      }
+      .kingdom-featured-main .featured-content .fc-title {
+        font-size: clamp(0.9rem, 3vw, 1.3rem);
+      }
+      .kingdom-featured-main .featured-content .fc-desc {
+        font-size: clamp(0.5rem, 1vw, 0.65rem);
+      }
+      .kingdom-featured-main .featured-content .fc-cta {
+        font-size: 0.45rem;
+      }
+      .kingdom-featured-item {
+        flex: 1 1 100%;
+        padding: 6px 8px;
+        gap: 8px;
+      }
+      .kingdom-featured-item .ki-thumb {
+        width: 32px;
+        height: 32px;
+      }
+      .kingdom-featured-item .ki-title {
+        font-size: 0.5rem;
+      }
+      .kingdom-featured-item .ki-sub {
+        font-size: 0.4rem;
+      }
+    }
+
     /* ─── PROMO COUNTDOWN ────────────────────────────── */
     .promo-section {
       position:relative;
@@ -1658,14 +1990,14 @@
       <div class="epic-dropdown" id="dropdownMenu">
         <div class="dropdown-section-title">✦ Navigate</div>
         <a class="dropdown-item" data-action="home"><span class="icon">⌂</span> Home</a>
-        <a class="dropdown-item" data-action="redirect" data-url="/about.html"><span class="icon">◈</span> About Us</a>
-        <a class="dropdown-item" data-action="redirect" data-url="/connect.html"><span class="icon">✦</span> Connect</a>
-        <a class="dropdown-item" data-action="redirect" data-url="/legacy.html"><span class="icon">⚜</span> Legacy</a>
+        <a class="dropdown-item" data-action="redirect" data-url="about.html"><span class="icon">◈</span> About Us</a>
+        <a class="dropdown-item" data-action="redirect" data-url="connect.html"><span class="icon">✦</span> Connect</a>
+        <a class="dropdown-item" data-action="redirect" data-url="legacy.html"><span class="icon">⚜</span> Legacy</a>
         <hr class="dropdown-divider" />
         <div class="dropdown-section-title">⟡ Access</div>
         <a class="dropdown-item login-item" data-action="login"><span class="icon">⟡</span> Login</a>
         <a class="dropdown-item" data-action="explore-event"><span class="icon">▸</span> Explore Event</a>
-        <a class="dropdown-item" data-action="redirect" data-url="/campus.html"><span class="icon">◈</span> Explore Campus</a>
+        <a class="dropdown-item" data-action="redirect" data-url="campus.html"><span class="icon">◈</span> Explore Campus</a>
       </div>
     </div>
   </header>
@@ -1715,6 +2047,37 @@
         <div class="carousel-track" id="carouselTrack"></div>
       </div>
       <div class="dots-container" id="dotsContainer"></div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="section-divider">
+      <span class="divider-ornament">✦ ✦ ✦</span>
+    </div>
+
+    <!-- ─── NEW FEATURED NAVIGATION SECTION ─────────────── -->
+    <section class="kingdom-featured" id="kingdomFeatured">
+      <div class="kingdom-heading">
+        <span class="orn">✦</span> DISCOVER THE KINGDOM <span class="orn">✦</span>
+      </div>
+
+      <div class="kingdom-featured-stage">
+        <!-- LEFT: Featured Card -->
+        <div class="kingdom-featured-main" id="featuredMain">
+          <img class="featured-bg active" id="featuredBg" src="https://i.ibb.co/zT8ZPvH0/IMG-4504.png" alt="Featured" />
+          <div class="featured-overlay"></div>
+          <div class="featured-content" id="featuredContent">
+            <div class="fc-label" id="fcLabel">✦ Explore</div>
+            <div class="fc-title" id="fcTitle">EXPLORE CAMPUS</div>
+            <div class="fc-desc" id="fcDesc">Discover the hidden wonders of the Atlantis campus.</div>
+            <span class="fc-cta" id="fcCta">EXPLORE →</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Selector -->
+        <div class="kingdom-featured-selector" id="kingdomSelector">
+          <!-- Items injected by JavaScript -->
+        </div>
+      </div>
     </section>
 
     <!-- DIVIDER -->
@@ -1845,21 +2208,21 @@
     })();
 
     // ═══════════════════════════════════════════════════════════
-    // 2. EVENTS DATA
+    // 2. EVENTS DATA - NOW INCLUDES href
     // ═══════════════════════════════════════════════════════════
     const events = [
-      { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://i.ibb.co/zT8ZPvH0/IMG-4504.png" },
-      { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://i.ibb.co/gBCDmNx/IMG-0408.jpg" },
-      { name: "THE TRIDENT WAR", sub: ".free fire", image: "https://i.ibb.co/sJqQc4b0/IMG-6725.png" },
-      { name: "COURT OF THE DEEP", sub: ".moot court", image: "https://i.ibb.co/d05gLjbv/IMG-20260901-WA0020-jpg-1.jpg" },
-      { name: "THE SIREN'S ACT", sub: ".reels making", image: "https://i.ibb.co/BJCygGN/file-000000007efc8211966fe245dd8630cd.png" },
-      { name: "ECHOS OF ATLANTIS", sub: ".solo singing", image: "https://i.ibb.co/MkC0Z3t6/IMG-20260902-WA0002-jpg.jpg" },
-      { name: "THE MERMAID'S WALTZ", sub: ".solo dance", image: "https://i.ibb.co/cKxmw8nh/3e20a06c-a16d-425c-bd11-97213273ae65.png" },
-      { name: "TIDES OF RYTHM", sub: ".group dance", image: "https://i.ibb.co/Hpzsqx6Q/IMG-0830.png" },
-      { name: "RUNWAY OF REALMS", sub: ".rampwalk", image: "https://i.ibb.co/B2H22DT8/file-0000000008508208a226434e0d4903f1.png" },
-      { name: "THE KRAKEN'S PITCH", sub: ".cricket(both PU/UG boys)", image: "https://i.ibb.co/ns5gw2QG/IMG-3639.png" },
-      { name: "POSEIDON'S CUP", sub: ".football(for P.U boys)", image: "https://i.ibb.co/BH5fjDtn/IMG-5335.png" },
-      { name: "RIPTIDE RALLY", sub: ".throwball for U.G girls", image: "https://i.ibb.co/nMg9ttBR/IMG-20260902-190933-jpg.jpg" }
+      { name: "THE ATLANTEAN TRIALS", sub: ".escape room", image: "https://i.ibb.co/zT8ZPvH0/IMG-4504.png", href: "event-0.html" },
+      { name: "THE LOST RELIC", sub: ".treasure hunt", image: "https://i.ibb.co/gBCDmNx/IMG-0408.jpg", href: "event-1.html" },
+      { name: "THE TRIDENT WAR", sub: ".free fire", image: "https://i.ibb.co/sJqQc4b0/IMG-6725.png", href: "event-2.html" },
+      { name: "COURT OF THE DEEP", sub: ".moot court", image: "https://i.ibb.co/d05gLjbv/IMG-20260901-WA0020-jpg-1.jpg", href: "event-3.html" },
+      { name: "THE SIREN'S ACT", sub: ".reels making", image: "https://i.ibb.co/BJCygGN/file-000000007efc8211966fe245dd8630cd.png", href: "event-4.html" },
+      { name: "ECHOS OF ATLANTIS", sub: ".solo singing", image: "https://i.ibb.co/MkC0Z3t6/IMG-20260902-WA0002-jpg.jpg", href: "event-5.html" },
+      { name: "THE MERMAID'S WALTZ", sub: ".solo dance", image: "https://i.ibb.co/cKxmw8nh/3e20a06c-a16d-425c-bd11-97213273ae65.png", href: "event-6.html" },
+      { name: "TIDES OF RYTHM", sub: ".group dance", image: "https://i.ibb.co/Hpzsqx6Q/IMG-0830.png", href: "event-7.html" },
+      { name: "RUNWAY OF REALMS", sub: ".rampwalk", image: "https://i.ibb.co/B2H22DT8/file-0000000008508208a226434e0d4903f1.png", href: "event-8.html" },
+      { name: "THE KRAKEN'S PITCH", sub: ".cricket(both PU/UG boys)", image: "https://i.ibb.co/ns5gw2QG/IMG-3639.png", href: "event-9.html" },
+      { name: "POSEIDON'S CUP", sub: ".football(for P.U boys)", image: "https://i.ibb.co/M5DDh2zX/file-00000000440081fa80241e782087817e.png", href: "event-10.html" },
+      { name: "RIPTIDE RALLY", sub: ".throwball for U.G girls", image: "https://i.ibb.co/nMg9ttBR/IMG-20260902-190933-jpg.jpg", href: "event-11.html" }
     ];
 
     // ═══════════════════════════════════════════════════════════
@@ -2163,14 +2526,14 @@
         let targetIndex;
         
         if (dist < 8) {
-          // Tap: stay on nearest card
+          // Tap: stay on nearest card and navigate
           targetIndex = getNearestCardIndex(currentPixelPos);
-          // Check for card click
+          // Check for card click - use the href from events data
           const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.event-card');
           if (card) {
             const oi = parseInt(card.dataset.originalIndex);
-            if (!isNaN(oi)) {
-              window.location.href = 'event-' + oi + '.html';
+            if (!isNaN(oi) && events[oi] && events[oi].href) {
+              window.location.href = events[oi].href;
               return;
             }
           }
@@ -2237,6 +2600,8 @@
         card.className = 'event-card card-' + ((idx % N) + 1);
         card.dataset.originalIndex = idx % N;
         card.dataset.globalIndex = globalIdx;
+        // Store the href directly on the card element
+        card.dataset.href = evt.href || ('event-' + (idx % N) + '.html');
         card.innerHTML = `
           <div class="card-image">
             <img src="${evt.image}" alt="Event photo" loading="${idx < 3 ? 'eager' : 'lazy'}" fetchpriority="${idx < 3 ? 'high' : 'auto'}" />
@@ -2259,14 +2624,19 @@
           e.stopPropagation();
           if (isDragging || isSnapping) return;
           const oi = parseInt(badge.dataset.originalIndex);
-          if (!isNaN(oi)) window.location.href = 'event-' + oi + '.html';
+          if (!isNaN(oi) && events[oi] && events[oi].href) {
+            window.location.href = events[oi].href;
+          }
         });
         
+        // Card click handler - uses the href from events data
         card.addEventListener('click', (e) => {
           if (e.target.closest('.card-explore-badge')) return;
           if (isDragging || isSnapping) return;
           const oi = parseInt(card.dataset.originalIndex);
-          if (!isNaN(oi)) window.location.href = 'event-' + oi + '.html';
+          if (!isNaN(oi) && events[oi] && events[oi].href) {
+            window.location.href = events[oi].href;
+          }
         });
         
         return card;
@@ -2535,6 +2905,138 @@
     loginUser.addEventListener('input', ()=>{ loginError.classList.remove('show'); });
     setRole('admin');
     console.log('🔱 DEPLOMAT · Golden Glow Effect Active');
+
+    // ═══════════════════════════════════════════════════════════
+    // 8. KINGDOM FEATURED NAVIGATION (NEW COMPONENT)
+    // ═══════════════════════════════════════════════════════════
+    (function() {
+      const navItems = [
+        {
+          id: 'explore-campus',
+          title: 'EXPLORE CAMPUS',
+          desc: 'Discover the hidden wonders of the Atlantis campus.',
+          image: 'https://i.ibb.co/zT8ZPvH0/IMG-4504.png',
+          label: '✦ Explore',
+          href: 'campus.html'
+        },
+        {
+          id: 'connect',
+          title: 'CONNECT',
+          desc: 'Forge alliances and build your network in the deep.',
+          image: 'https://i.ibb.co/gBCDmNx/IMG-0408.jpg',
+          label: '✦ Connect',
+          href: 'connect.html'
+        },
+        {
+          id: 'legacy',
+          title: 'LEGACY',
+          desc: 'Honor the traditions of the lost kingdom.',
+          image: 'https://i.ibb.co/sJqQc4b0/IMG-6725.png',
+          label: '✦ Legacy',
+          href: 'legacy.html'
+        },
+        {
+          id: 'about-us',
+          title: 'ABOUT US',
+          desc: 'Learn the story behind DEPLOMAT 2K26.',
+          image: 'https://i.ibb.co/d05gLjbv/IMG-20260901-WA0020-jpg-1.jpg',
+          label: '✦ About',
+          href: 'about.html'
+        }
+      ];
+
+      const selector = document.getElementById('kingdomSelector');
+      const featuredBg = document.getElementById('featuredBg');
+      const fcTitle = document.getElementById('fcTitle');
+      const fcDesc = document.getElementById('fcDesc');
+      const fcLabel = document.getElementById('fcLabel');
+      const fcCta = document.getElementById('fcCta');
+      const featuredMain = document.getElementById('featuredMain');
+
+      let currentIndex = 0;
+      let isTransitioning = false;
+
+      function setActive(index) {
+        if (isTransitioning) return;
+        if (index === currentIndex) return;
+        isTransitioning = true;
+
+        const prev = currentIndex;
+        currentIndex = index;
+
+        // Update selector items
+        document.querySelectorAll('.kingdom-featured-item').forEach((el, i) => {
+          el.classList.toggle('active', i === index);
+        });
+
+        const item = navItems[index];
+
+        // Fade out old image
+        featuredBg.classList.remove('active');
+
+        // After a short delay, swap content
+        setTimeout(() => {
+          featuredBg.src = item.image;
+          fcLabel.textContent = item.label;
+          fcTitle.textContent = item.title;
+          fcDesc.textContent = item.desc;
+          fcCta.textContent = 'EXPLORE →';
+
+          // Fade in new image
+          featuredBg.classList.add('active');
+
+          // Update CTA link
+          featuredMain.dataset.href = item.href;
+
+          isTransitioning = false;
+        }, 400);
+      }
+
+      function buildSelector() {
+        selector.innerHTML = '';
+        navItems.forEach((item, index) => {
+          const el = document.createElement('div');
+          el.className = 'kingdom-featured-item' + (index === 0 ? ' active' : '');
+          el.dataset.index = index;
+          el.innerHTML = `
+            <div class="ki-thumb"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
+            <div class="ki-info">
+              <div class="ki-title">${item.title}</div>
+              <div class="ki-divider"></div>
+              <div class="ki-sub">${item.label.replace('✦ ', '')}</div>
+            </div>
+          `;
+          el.addEventListener('click', () => setActive(index));
+          el.addEventListener('touchend', (e) => { e.preventDefault(); setActive(index); });
+          selector.appendChild(el);
+        });
+      }
+
+      function initFeatured() {
+        buildSelector();
+        // Set initial content
+        const first = navItems[0];
+        featuredBg.src = first.image;
+        featuredBg.classList.add('active');
+        fcLabel.textContent = first.label;
+        fcTitle.textContent = first.title;
+        fcDesc.textContent = first.desc;
+        fcCta.textContent = 'EXPLORE →';
+        featuredMain.dataset.href = first.href;
+
+        // Click on main card navigates
+        featuredMain.addEventListener('click', (e) => {
+          const href = featuredMain.dataset.href;
+          if (href) window.location.href = href;
+        });
+
+        console.log('🏛️ Kingdom Featured Navigation initialized');
+      }
+
+      initFeatured();
+    })();
+
+    console.log('🔱 DEPLOMAT · Kingdom Featured Section Active');
   </script>
 </body>
 </html>
