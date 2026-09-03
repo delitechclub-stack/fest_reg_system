@@ -27,16 +27,18 @@
       --gold: #A98445;
       --gold-light: #C09A52;
       --gold-bright: #D0AF69;
+      --gold-glow: rgba(169,132,69,0.3);
       --bronze: #70552F;
       --parchment: #E8D9B8;
       --ivory: #F4EBDD;
       --shadow-deep: 0 20px 60px rgba(0,0,0,0.85);
+      --gradient-gold: linear-gradient(135deg, #A98445, #D0AF69, #A98445);
     }
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--abyss); }
     ::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: 6px; }
 
-    /* ─── FLOATING LOGO ─────────────────────────────── */
+    /* ─── FLOATING HAMBURGER MENU (GOLD THEME) ────────── */
     .header {
       position: fixed;
       top: 16px;
@@ -44,40 +46,61 @@
       z-index: 999;
       touch-action: manipulation;
     }
-    .trigger-wrapper {
+    .menu-wrapper {
       position: relative;
       display: flex;
       align-items: center;
       cursor: pointer;
     }
-    .logo-emblem {
-      display: block;
-      width: 40px;
-      height: 40px;
-      transition: transform 0.2s;
-      filter: drop-shadow(0 4px 20px rgba(0,0,0,0.8));
-      border-radius: 50%;
-      border: 1.5px solid rgba(169,132,69,0.25);
-      padding: 4px;
-      background: rgba(4,18,23,0.7);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+    .hamburger-icon {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 10px 10px;
+      background: rgba(4,18,23,0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 12px;
+      border: 1.5px solid rgba(169,132,69,0.2);
+      transition: transform 0.2s, border-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 30px rgba(169,132,69,0.03);
     }
-    .trigger-wrapper:active .logo-emblem { transform: scale(0.92); }
+    .hamburger-icon .bar {
+      width: 24px;
+      height: 2.5px;
+      background: var(--gold-light);
+      border-radius: 3px;
+      transition: 0.3s ease;
+      transform-origin: center;
+      box-shadow: 0 0 8px rgba(169,132,69,0.1);
+    }
+    .hamburger-icon .bar:nth-child(2) { 
+      width: 18px; 
+      background: var(--gold-bright);
+    }
+    .hamburger-icon .bar:nth-child(3) { 
+      width: 12px;
+      background: var(--gold);
+    }
+    .menu-wrapper:hover .hamburger-icon {
+      border-color: rgba(169,132,69,0.3);
+      box-shadow: 0 0 40px rgba(169,132,69,0.06);
+    }
+    .menu-wrapper:active .hamburger-icon { transform: scale(0.92); }
 
-    /* ─── DROPDOWN ───────────────────────────────────── */
+    /* ─── DROPDOWN MENU ───────────────────────────────────── */
     .epic-dropdown {
       display: none;
       position: absolute;
       left: 0;
-      top: 50px;
-      min-width: 170px;
-      padding: 8px 0;
-      border-radius: 12px;
+      top: 60px;
+      min-width: 200px;
+      padding: 10px 0;
+      border-radius: 14px;
       background: rgba(6,26,32,0.96);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169,132,69,0.1);
+      box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169,132,69,0.08);
       z-index: 100;
       flex-direction: column;
       opacity: 0;
@@ -114,7 +137,7 @@
       gap: 10px;
       color: rgba(232,217,184,0.75);
       text-decoration: none;
-      padding: 6px 18px;
+      padding: 8px 18px;
       font-size: 11px;
       font-weight: 400;
       letter-spacing: 0.3px;
@@ -141,6 +164,75 @@
     }
     .dropdown-item.login-item { color: rgba(232,217,184,0.85); }
 
+    /* ─── TOP NAVIGATION BAR ──────────────────────────────── */
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 998;
+      padding: 16px 20px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      background: transparent;
+    }
+    .nav-item {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(232,217,184,0.25);
+      text-decoration: none;
+      cursor: pointer;
+      transition: 0.3s ease;
+      padding: 4px 0;
+      position: relative;
+      touch-action: manipulation;
+      font-weight: 600;
+    }
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      width: 0%;
+      height: 2px;
+      background: var(--gradient-gold);
+      transition: 0.3s ease;
+      transform: translateX(-50%);
+      border-radius: 2px;
+      filter: blur(2px);
+    }
+    .nav-item.active {
+      color: var(--gold-light);
+    }
+    .nav-item.active::after {
+      width: 80%;
+    }
+    .nav-item:active {
+      transform: scale(0.92);
+    }
+    .nav-item .nav-badge {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background: var(--gold-bright);
+      border-radius: 50%;
+      margin-left: 4px;
+      box-shadow: 0 0 12px rgba(169,132,69,0.3);
+      animation: pulseBadge 2s ease-in-out infinite;
+      vertical-align: middle;
+    }
+    @keyframes pulseBadge {
+      0%,100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .nav-divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(169,132,69,0.08);
+    }
+
     /* ─── SCROLL CONTAINER ──────────────────────────── */
     .scroll-container {
       position: relative;
@@ -151,6 +243,7 @@
       -webkit-overflow-scrolling: touch;
       transform: translateZ(0);
       will-change: auto;
+      padding-bottom: 20px;
     }
 
     /* ─── HERO SECTION ──────────────────────────────── */
@@ -345,6 +438,27 @@
       50% { opacity:0.7; transform:translateY(-3px); }
     }
 
+    /* ─── SECTION DIVIDER ────────────────────────────── */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(169,132,69,0.15), rgba(169,132,69,0.3), rgba(169,132,69,0.15), transparent);
+      position: relative;
+      z-index: 2;
+    }
+    .section-divider .divider-ornament {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--abyss);
+      padding: 0 16px;
+      font-size: 0.6rem;
+      color: rgba(169,132,69,0.2);
+      letter-spacing: 0.5em;
+      font-family: 'Cinzel', serif;
+    }
+
     /* ─── EXPLORE SECTION ────────────────────────────── */
     .explore-section {
       position: relative;
@@ -352,7 +466,7 @@
       background: var(--abyss);
       min-height: 100dvh;
       min-height: 100vh;
-      padding: 60px 0 20px 0;
+      padding: 80px 0 40px 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -369,10 +483,11 @@
       background:linear-gradient(90deg,transparent,rgba(169,132,69,0.15),transparent);
     }
     .explore-header {
-      padding: 0 20px 10px 20px;
+      padding: 0 20px 20px 20px;
       border-bottom: 1px solid rgba(169,132,69,0.06);
       position:relative;
       z-index:1;
+      text-align: center;
     }
     .explore-header .section-label {
       font-family:'Cinzel',serif;
@@ -380,6 +495,15 @@
       letter-spacing:0.35em;
       text-transform:uppercase;
       color:rgba(192,154,82,0.35);
+      position: relative;
+      display: inline-block;
+    }
+    .explore-header .section-label::before,
+    .explore-header .section-label::after {
+      content: '✦';
+      opacity: 0.2;
+      margin: 0 8px;
+      font-size: 0.4rem;
     }
     .explore-header h2 {
       font-family:'Cinzel',serif;
@@ -389,14 +513,23 @@
       text-transform:uppercase;
       color:rgba(232,217,184,0.08);
       line-height:1;
+      background: linear-gradient(180deg, rgba(232,217,184,0.15), rgba(192,154,82,0.4));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .explore-header h2 .gold-text { color:rgba(192,154,82,0.7); }
+    .explore-header h2 .gold-text { 
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
     /* ─── CAROUSEL ────────────────────────────────────── */
     .carousel-stage {
       position:relative;
       width:100%;
-      padding: 12px 0 4px 0;
+      padding: 20px 0 10px 0;
       overflow:hidden;
       touch-action:pan-y;
       cursor:grab;
@@ -433,18 +566,41 @@
       box-shadow: 0 16px 40px -12px rgba(0,0,0,0.9);
       cursor: pointer;
       will-change: auto;
-      transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-                  box-shadow 0.3s,
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+                  box-shadow 0.4s ease,
                   opacity 0.25s,
                   border-color 0.3s,
-                  filter 0.2s;
+                  filter 0.3s;
       -webkit-tap-highlight-color: transparent;
       flex-shrink: 0;
       contain: layout style;
       touch-action: pan-y;
     }
 
-    /* ─── GLOW EFFECT - BOTTOM TO TOP ─── */
+    /* ─── GOLDEN GLOW AURA ─── */
+    .carousel-track .event-card .glow-aura {
+      position: absolute;
+      bottom: -30px;
+      left: -20%;
+      width: 140%;
+      height: 60%;
+      background: radial-gradient(
+        ellipse at bottom center,
+        rgba(169, 132, 69, 0.08) 0%,
+        rgba(169, 132, 69, 0.04) 30%,
+        rgba(169, 132, 69, 0.01) 60%,
+        transparent 100%
+      );
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: scaleY(0.3) scaleX(0.8);
+      filter: blur(30px);
+      will-change: opacity, transform;
+    }
+
+    /* ─── GOLDEN GLOW - BOTTOM TO TOP ─── */
     .carousel-track .event-card::after {
       content: '';
       position: absolute;
@@ -454,92 +610,116 @@
       height: 0%;
       background: linear-gradient(
         to top,
-        rgba(169, 132, 69, 0.25) 0%,
-        rgba(169, 132, 69, 0.15) 30%,
-        rgba(169, 132, 69, 0.08) 60%,
-        rgba(169, 132, 69, 0.02) 100%
+        rgba(169, 132, 69, 0.35) 0%,
+        rgba(169, 132, 69, 0.20) 20%,
+        rgba(169, 132, 69, 0.12) 40%,
+        rgba(169, 132, 69, 0.06) 60%,
+        rgba(169, 132, 69, 0.02) 80%,
+        transparent 100%
       );
       opacity: 0;
-      transition: opacity 0.4s ease, height 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: opacity 0.5s ease, height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
       z-index: 4;
       border-radius: 0 0 16px 16px;
-      box-shadow: inset 0 -40px 80px rgba(169, 132, 69, 0.05);
+      box-shadow: 
+        inset 0 -80px 120px rgba(169, 132, 69, 0.04),
+        inset 0 -40px 60px rgba(169, 132, 69, 0.02);
     }
 
+    /* ─── GOLDEN GLOW BOTTOM LINE ─── */
     .carousel-track .event-card::before {
       content: '';
       position: absolute;
       bottom: -1px;
-      left: 10%;
-      width: 80%;
+      left: 5%;
+      width: 90%;
       height: 3px;
       background: linear-gradient(
         90deg,
         transparent,
-        rgba(192, 154, 82, 0.8) 20%,
-        rgba(169, 132, 69, 0.6) 50%,
-        rgba(192, 154, 82, 0.8) 80%,
+        rgba(169, 132, 69, 0.4) 15%,
+        rgba(192, 154, 82, 0.6) 35%,
+        rgba(208, 175, 105, 1) 50%,
+        rgba(192, 154, 82, 0.6) 65%,
+        rgba(169, 132, 69, 0.4) 85%,
         transparent
       );
       filter: blur(4px);
       z-index: 5;
       opacity: 0;
       transition: opacity 0.4s ease, transform 0.4s ease;
-      transform: scaleX(0.6);
+      transform: scaleX(0.4);
       pointer-events: none;
+      box-shadow: 0 0 40px rgba(169, 132, 69, 0.15);
     }
 
-    /* ─── FULL GLOW EFFECT (ACTIVE/HOVER) ─── */
+    /* ─── FULL GOLDEN GLOW EFFECT (ACTIVE) ─── */
     .carousel-track .event-card.glow-effect::after {
       opacity: 1;
       height: 100%;
     }
-
     .carousel-track .event-card.glow-effect::before {
       opacity: 1;
       transform: scaleX(1);
     }
-
+    .carousel-track .event-card.glow-effect .glow-aura {
+      opacity: 1;
+      transform: scaleY(1) scaleX(1);
+    }
     .carousel-track .event-card.glow-effect {
       border-color: rgba(169, 132, 69, 0.25);
-      box-shadow: 0 0 60px rgba(169, 132, 69, 0.08), 0 20px 60px rgba(0,0,0,0.9);
+      box-shadow: 
+        0 0 80px rgba(169, 132, 69, 0.06),
+        0 0 160px rgba(169, 132, 69, 0.03),
+        0 20px 60px rgba(0, 0, 0, 0.9);
       transform: scale(0.98);
     }
-
     .carousel-track .event-card.glow-effect .card-image {
       opacity: 0.7;
+      filter: brightness(1.1) saturate(1.05);
     }
-
     .carousel-track .event-card.glow-effect .card-explore-badge {
       opacity: 1;
       border-color: rgba(169, 132, 69, 0.3);
-      background: rgba(4,18,23,0.9);
+      background: rgba(4, 18, 23, 0.9);
+      color: var(--gold-bright);
+      box-shadow: 0 0 30px rgba(169, 132, 69, 0.08);
+    }
+    .carousel-track .event-card.glow-effect .card-name {
+      text-shadow: 0 0 50px rgba(169, 132, 69, 0.15);
     }
 
     /* ─── HOVER STATE (DESKTOP) ─── */
-    .carousel-track .event-card:hover::after,
-    .carousel-track .event-card:hover::before {
-      opacity: 1;
-    }
     .carousel-track .event-card:hover::after {
+      opacity: 1;
       height: 100%;
     }
     .carousel-track .event-card:hover::before {
+      opacity: 1;
       transform: scaleX(1);
+    }
+    .carousel-track .event-card:hover .glow-aura {
+      opacity: 1;
+      transform: scaleY(1) scaleX(1);
     }
     .carousel-track .event-card:hover {
       border-color: rgba(169, 132, 69, 0.25);
-      box-shadow: 0 0 60px rgba(169, 132, 69, 0.08), 0 20px 60px rgba(0,0,0,0.9);
+      box-shadow: 
+        0 0 80px rgba(169, 132, 69, 0.06),
+        0 0 160px rgba(169, 132, 69, 0.03),
+        0 20px 60px rgba(0, 0, 0, 0.9);
       transform: scale(0.98);
     }
     .carousel-track .event-card:hover .card-image {
       opacity: 0.7;
+      filter: brightness(1.1) saturate(1.05);
     }
     .carousel-track .event-card:hover .card-explore-badge {
       opacity: 1;
       border-color: rgba(169, 132, 69, 0.3);
-      background: rgba(4,18,23,0.9);
+      background: rgba(4, 18, 23, 0.9);
+      color: var(--gold-bright);
     }
 
     /* ─── ACTIVE/TAP STATE ─── */
@@ -551,25 +731,25 @@
       opacity: 1;
       transform: scaleX(1);
     }
+    .carousel-track .event-card:active .glow-aura {
+      opacity: 1;
+      transform: scaleY(1) scaleX(1);
+    }
     .carousel-track .event-card:active {
       border-color: rgba(169, 132, 69, 0.3);
-      box-shadow: 0 0 80px rgba(169, 132, 69, 0.12), 0 8px 40px rgba(0,0,0,0.8);
+      box-shadow: 
+        0 0 120px rgba(169, 132, 69, 0.08),
+        0 0 200px rgba(169, 132, 69, 0.04),
+        0 8px 40px rgba(0, 0, 0, 0.8);
       transform: scale(0.96);
     }
     .carousel-track .event-card:active .card-image {
-      opacity: 0.75;
+      opacity: 0.8;
+      filter: brightness(1.15) saturate(1.1);
     }
     .carousel-track .event-card:active .card-explore-badge {
       opacity: 1;
     }
-
-    /* ─── ACTIVE CARD STATE (VIA JS) ─── */
-    .carousel-track .event-card.active-card {
-      border-color: rgba(169, 132, 69, 0.2);
-      box-shadow: 0 12px 50px rgba(169, 132, 69, 0.1);
-    }
-    .carousel-track .event-card.active-card .card-image { opacity:0.65; }
-    .carousel-track .event-card.active-card .card-explore-badge { opacity:0.85; border-color:rgba(169,132,69,0.15); }
 
     .carousel-track .event-card .card-image {
       position:absolute;
@@ -579,7 +759,7 @@
       height:100%;
       z-index:0;
       opacity:0.45;
-      transition:opacity 0.5s ease;
+      transition:opacity 0.5s ease, filter 0.5s ease;
       background:var(--abyss);
       display:flex;
       align-items:center;
@@ -629,6 +809,7 @@
       text-shadow: 0 4px 30px rgba(0,0,0,0.9);
       line-height: 1.1;
       margin-bottom: 2px;
+      transition: text-shadow 0.4s ease;
     }
     .carousel-track .event-card .card-sub {
       font-family:'Cormorant Garamond',serif;
@@ -670,7 +851,7 @@
       justify-content:center;
       gap:8px;
       margin-top:8px;
-      padding:4px 0;
+      padding:4px 0 20px 0;
       z-index:2;
       position:relative;
     }
@@ -717,6 +898,7 @@
       height:100%;
       object-fit:cover;
       pointer-events:none;
+      filter: brightness(0.7) saturate(0.8);
     }
     .promo-section .vignette-left,
     .promo-section .vignette-right,
@@ -748,6 +930,19 @@
       padding:16px;
       text-align:center;
       pointer-events:none;
+    }
+    .promo-content .promo-badge {
+      font-family:'Cinzel',serif;
+      font-size:0.45rem;
+      letter-spacing:0.3em;
+      text-transform:uppercase;
+      color:rgba(192,154,82,0.3);
+      margin-bottom:8px;
+      background: rgba(4,18,23,0.3);
+      padding:4px 16px;
+      border-radius:30px;
+      border:1px solid rgba(169,132,69,0.05);
+      backdrop-filter:blur(4px);
     }
     .event-date-display {
       font-family:'Cinzel',serif;
@@ -788,6 +983,7 @@
       border:1px solid rgba(169,132,69,0.06);
       box-shadow:0 0 30px rgba(0,0,0,0.3);
       position:relative;
+      transition:0.3s ease;
     }
     .promo-countdown .cd-item span {
       display:block;
@@ -808,6 +1004,7 @@
       margin-top:2px;
     }
     .promo-countdown .cd-item.accent span { color:var(--gold-light); }
+    .promo-countdown .cd-item.accent { border-color:rgba(169,132,69,0.1); }
     .promo-cta {
       font-family:'Cinzel',serif;
       font-size:0.6rem;
@@ -831,24 +1028,76 @@
     .promo-cta:active { transform:scale(0.96); }
     .promo-cta .arrow-link { display:inline-block; margin-left:6px; transition:0.2s; color:rgba(169,132,69,0.2); }
     .promo-cta:active .arrow-link { transform:translateX(4px); color:var(--gold-light); }
-    .promo-credits {
-      position:absolute;
-      bottom:16px;
-      left:0;
-      width:100%;
-      text-align:center;
-      z-index:4;
-      font-family:'Cinzel',serif;
-      font-size:0.4rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:rgba(192,154,82,0.15);
-      font-weight:400;
-      padding:0 12px;
-      pointer-events:none;
-      text-shadow:0 2px 16px rgba(0,0,0,0.7);
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    .site-footer {
+      position: relative;
+      z-index: 2;
+      background: var(--abyss);
+      border-top: 1px solid rgba(169,132,69,0.06);
+      padding: 30px 20px 20px 20px;
+      text-align: center;
     }
-    .promo-credits .credit-line .highlight { color:var(--gold-light); font-weight:700; }
+    .site-footer .footer-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .site-footer .footer-logo span {
+      font-weight: 400;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      display: block;
+      background: linear-gradient(180deg, #E6C875, #A98445);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .site-footer .footer-divider {
+      width: 60px;
+      height: 1px;
+      margin: 12px auto;
+      background: linear-gradient(90deg, transparent, rgba(169,132,69,0.2), transparent);
+    }
+    .site-footer .footer-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      color: rgba(232,217,184,0.15);
+      line-height: 1.6;
+    }
+    .site-footer .footer-text .highlight {
+      color: var(--gold-light);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+    }
+    .site-footer .footer-text .copyright {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.45rem;
+      letter-spacing: 0.15em;
+      color: rgba(232,217,184,0.08);
+    }
+    .site-footer .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 12px 0;
+    }
+    .site-footer .footer-social a {
+      color: rgba(232,217,184,0.1);
+      text-decoration: none;
+      font-size: 0.7rem;
+      transition: 0.3s;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.1em;
+    }
+    .site-footer .footer-social a:active { color: var(--gold-light); transform: scale(0.9); }
 
     /* ─── LOGIN MODAL ─────────────────────────────────── */
     .modal-overlay {
@@ -1041,7 +1290,7 @@
     @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
     .login-toast {
       position:fixed;
-      bottom:24px;
+      bottom:80px;
       left:50%;
       transform:translateX(-50%) translateY(16px);
       background:rgba(6,26,32,0.95);
@@ -1193,19 +1442,23 @@
 
     @media (max-width: 768px) {
       .header { top:12px; left:12px; }
-      .logo-emblem { width:34px; height:34px; }
-      .epic-dropdown { top:44px; min-width:140px; max-width:calc(100vw - 32px); padding:4px 0; }
-      .dropdown-item { font-size:10px; padding:5px 14px; gap:8px; }
+      .hamburger-icon { padding:8px 8px; border-radius:10px; gap:4px; }
+      .hamburger-icon .bar { width:20px; height:2px; }
+      .hamburger-icon .bar:nth-child(2) { width:14px; }
+      .hamburger-icon .bar:nth-child(3) { width:8px; }
+      .epic-dropdown { top:50px; min-width:160px; max-width:calc(100vw - 32px); padding:6px 0; }
+      .dropdown-item { font-size:10px; padding:6px 14px; gap:8px; }
       .dropdown-item .icon { width:16px; height:16px; font-size:7px; }
       .dropdown-section-title { font-size:6px; padding:3px 14px 1px 14px; }
-      .explore-section { padding:50px 0 12px 0; }
-      .explore-header { padding:0 12px 8px 12px; }
       
-      .carousel-track {
-        gap: 8px;
-        padding: 0 4px;
-      }
+      .nav-bar { padding: 12px 16px; gap: 16px; }
+      .nav-item { font-size: 0.5rem; letter-spacing: 0.12em; }
+      .nav-divider { height: 10px; }
       
+      .explore-section { padding:60px 0 30px 0; }
+      .explore-header { padding:0 12px 12px 12px; }
+      
+      .carousel-track { gap: 8px; padding: 0 4px; }
       .carousel-track .event-card { 
         flex: 0 0 calc(100vw - 32px);
         min-width: 200px;
@@ -1216,53 +1469,33 @@
         padding: 14px 12px 10px 12px;
         border-radius: 14px;
       }
-      
+      .carousel-track .event-card .glow-aura { bottom: -20px; height: 50%; }
       .carousel-track .event-card .card-content { 
         margin: 0 -12px -10px -12px;
         padding: 28px 12px 12px 12px;
         border-radius: 0 0 14px 14px;
       }
-      
       .carousel-track .event-card .card-name { 
         font-size: clamp(1.2rem, 4.5vw, 1.8rem);
         font-weight: 900;
         letter-spacing: 0.08em;
       }
-      
       .carousel-track .event-card .card-sub { 
         font-size: clamp(0.7rem, 1.8vw, 0.95rem);
         letter-spacing: 0.12em;
       }
-      
       .carousel-track .event-card .card-explore-badge { 
         font-size: clamp(0.4rem, 1vw, 0.55rem);
         padding: 4px 14px;
         bottom: 10px;
         right: 10px;
-        border-radius: 30px;
-        background: rgba(4,18,23,0.85);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(169,132,69,0.15);
-        letter-spacing: 0.15em;
-        font-weight: 700;
       }
       
-      .dots-container {
-        gap: 10px;
-        margin-top: 14px;
-        padding: 4px 0;
-      }
-      .dot {
-        width: 6px;
-        height: 6px;
-      }
-      .dot.active {
-        width: 24px;
-        height: 6px;
-        border-radius: 4px;
-      }
+      .dots-container { gap: 10px; margin-top: 14px; padding: 4px 0 16px 0; }
+      .dot { width: 6px; height: 6px; }
+      .dot.active { width: 24px; height: 6px; border-radius: 4px; }
       
+      .promo-content .promo-badge { font-size:0.4rem; padding:3px 12px; }
       .event-date-display { font-size:clamp(0.7rem, 2.4vw, 1.1rem); letter-spacing:0.06em; margin-bottom:12px; }
       .promo-countdown { gap:6px; }
       .promo-countdown .cd-item { padding:8px 10px; min-width:44px; }
@@ -1271,14 +1504,17 @@
       .hero-title { font-size:clamp(1.8rem, 7vw, 3.5rem); }
       .hero-subtitle { font-size:clamp(0.6rem, 1.5vw, 0.9rem); letter-spacing:0.15em; }
       .hero-center { top:8vh; }
+      
+      .site-footer { padding: 20px 16px 16px 16px; }
+      .site-footer .footer-logo { font-size:1rem; }
     }
 
     @media (max-width: 480px) {
-      .carousel-track {
-        gap: 6px;
-        padding: 0 2px;
-      }
+      .nav-bar { padding: 10px 12px; gap: 12px; }
+      .nav-item { font-size: 0.45rem; letter-spacing: 0.1em; }
+      .nav-divider { height: 8px; }
       
+      .carousel-track { gap: 6px; padding: 0 2px; }
       .carousel-track .event-card { 
         flex: 0 0 calc(100vw - 20px);
         min-width: 160px;
@@ -1289,22 +1525,19 @@
         border-radius: 12px;
         padding: 10px 8px 8px 8px;
       }
-      
+      .carousel-track .event-card .glow-aura { bottom: -15px; height: 40%; }
       .carousel-track .event-card .card-content { 
         margin: 0 -8px -8px -8px;
         padding: 22px 8px 8px 8px;
         border-radius: 0 0 12px 12px;
       }
-      
       .carousel-track .event-card .card-name { 
         font-size: clamp(1rem, 4vw, 1.4rem);
         font-weight: 900;
       }
-      
       .carousel-track .event-card .card-sub { 
         font-size: clamp(0.6rem, 1.5vw, 0.8rem);
       }
-      
       .carousel-track .event-card .card-explore-badge {
         font-size: clamp(0.35rem, 0.8vw, 0.45rem);
         padding: 3px 12px;
@@ -1312,18 +1545,9 @@
         right: 8px;
       }
       
-      .dots-container {
-        gap: 8px;
-        margin-top: 12px;
-      }
-      .dot {
-        width: 5px;
-        height: 5px;
-      }
-      .dot.active {
-        width: 20px;
-        height: 5px;
-      }
+      .dots-container { gap: 8px; margin-top: 12px; }
+      .dot { width: 5px; height: 5px; }
+      .dot.active { width: 20px; height: 5px; }
       
       .event-date-display { font-size:clamp(0.6rem, 2.2vw, 0.85rem); }
       .promo-countdown .cd-item span { font-size:1.2rem; }
@@ -1346,17 +1570,14 @@
         border-radius: 10px;
         padding: 8px 6px 6px 6px;
       }
-      
       .carousel-track .event-card .card-content { 
         margin: 0 -6px -6px -6px;
         padding: 16px 6px 6px 6px;
         border-radius: 0 0 10px 10px;
       }
-      
       .carousel-track .event-card .card-name { 
         font-size: clamp(0.8rem, 3.5vw, 1.1rem);
       }
-      
       .carousel-track .event-card .card-sub { 
         font-size: clamp(0.5rem, 1.2vw, 0.65rem);
       }
@@ -1369,7 +1590,7 @@
     /* ─── ANDROID SAFE AREA FIXES ─────────────────────── */
     @supports (padding: max(0px)) {
       .header { padding-left: env(safe-area-inset-left); padding-top: env(safe-area-inset-top); }
-      .promo-credits { padding-bottom: env(safe-area-inset-bottom); }
+      .nav-bar { padding-right: env(safe-area-inset-right); padding-top: env(safe-area-inset-top); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1417,20 +1638,14 @@
     </div>
   </div>
 
-  <!-- ─── FLOATING LOGO ─────────────────────────────────── -->
+  <!-- ─── FLOATING HAMBURGER MENU ───────────────────────── -->
   <header class="header">
-    <div class="trigger-wrapper" id="logoTrigger">
-      <svg class="logo-emblem" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="24" cy="24" r="20" fill="rgba(6,26,32,0.6)" stroke="rgba(169,132,69,0.15)" stroke-width="1.5" />
-        <path d="M24 8 L24 40 M8 24 L40 24" stroke="rgba(169,132,69,0.1)" stroke-width="1" />
-        <path d="M14 14 L34 34 M34 14 L14 34" stroke="rgba(169,132,69,0.08)" stroke-width="0.8" />
-        <path d="M24 12 L24 36 M18 20 L24 28 L30 20" stroke="rgba(169,132,69,0.2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-        <circle cx="24" cy="10" r="1.5" fill="rgba(169,132,69,0.1)" />
-        <circle cx="24" cy="38" r="1.5" fill="rgba(169,132,69,0.1)" />
-        <circle cx="10" cy="24" r="1.5" fill="rgba(169,132,69,0.1)" />
-        <circle cx="38" cy="24" r="1.5" fill="rgba(169,132,69,0.1)" />
-        <path d="M16 30 Q20 26 24 30 Q28 34 32 30" stroke="rgba(169,132,69,0.08)" stroke-width="0.8" fill="none" />
-      </svg>
+    <div class="menu-wrapper" id="menuTrigger">
+      <div class="hamburger-icon">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
       <div class="epic-dropdown" id="dropdownMenu">
         <div class="dropdown-section-title">✦ Navigate</div>
         <a class="dropdown-item" data-action="home"><span class="icon">⌂</span> Home</a>
@@ -1445,6 +1660,15 @@
       </div>
     </div>
   </header>
+
+  <!-- ─── TOP NAVIGATION BAR ─────────────────────────────── -->
+  <nav class="nav-bar" id="navBar">
+    <a class="nav-item active" data-action="home" id="navHome">Home</a>
+    <span class="nav-divider"></span>
+    <a class="nav-item" data-action="explore-event" id="navExplore">
+      Explore <span class="nav-badge"></span>
+    </a>
+  </nav>
 
   <!-- ─── SCROLL CONTAINER ──────────────────────────────── -->
   <div class="scroll-container active" id="scrollContainer">
@@ -1467,10 +1691,15 @@
       <div class="explore-cta"><span>Descend</span><div class="mouse-line"></div></div>
     </section>
 
+    <!-- DIVIDER -->
+    <div class="section-divider">
+      <span class="divider-ornament">✦ ✦ ✦</span>
+    </div>
+
     <!-- EXPLORE -->
     <section class="explore-section" id="explore">
       <div class="explore-header">
-        <div class="section-label">⟡ The Realms of Atlantis</div>
+        <div class="section-label">The Realms of Atlantis</div>
         <h2>DISCOVER <span class="gold-text">THE KINGDOM</span></h2>
       </div>
       <div class="carousel-stage" id="carouselStage">
@@ -1478,6 +1707,11 @@
       </div>
       <div class="dots-container" id="dotsContainer"></div>
     </section>
+
+    <!-- DIVIDER -->
+    <div class="section-divider">
+      <span class="divider-ornament">✦ ✦ ✦</span>
+    </div>
 
     <!-- PROMO COUNTDOWN -->
     <section class="promo-section" id="promo">
@@ -1490,6 +1724,7 @@
       <div class="vignette-right"></div>
       <div class="vignette-bottom"></div>
       <div class="promo-content">
+        <div class="promo-badge">✦ Countdown to Atlantis ✦</div>
         <div class="event-date-display">25TH – 26TH OF SEPTEMBER 2026 <span class="accent-dot">·</span> FRIDAY / SATURDAY</div>
         <div class="promo-countdown" id="promoCountdown">
           <div class="cd-item accent"><span id="pDays">00</span><small>Days</small></div>
@@ -1499,8 +1734,29 @@
         </div>
         <div class="promo-cta" id="promoCta">watch the prophecy <span class="arrow-link">→</span></div>
       </div>
-      <div class="promo-credits"><span class="credit-line">POWERED BY <span class="highlight">DELITECH I.T CLUB</span> · DE PAUL COLLEGE MYSORE</span></div>
     </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-logo">
+        DEPLOMAT
+        <span>2K26</span>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-social">
+        <a href="#">Instagram</a>
+        <a href="#">YouTube</a>
+        <a href="#">Twitter</a>
+      </div>
+      <div class="footer-text">
+        <span class="highlight">✦ POWERED BY DELITECH I.T CLUB ✦</span>
+        <span class="copyright">© 2026 DELITECH I.T CLUB · DE PAUL COLLEGE MYSORE</span>
+        <span class="copyright" style="font-size:0.35rem; letter-spacing:0.2em; color:rgba(232,217,184,0.05);">
+          Designed with ❤️ for the Lost Kingdom
+        </span>
+      </div>
+    </footer>
+
   </div>
 
   <!-- LOGIN MODAL -->
@@ -1598,7 +1854,7 @@
     ];
 
     // ═══════════════════════════════════════════════════════════
-    // 3. CAROUSEL — FIXED WITH GLOW EFFECT
+    // 3. CAROUSEL
     // ═══════════════════════════════════════════════════════════
     const track = document.getElementById('carouselTrack');
     const stage = document.getElementById('carouselStage');
@@ -1628,7 +1884,6 @@
       }
     }
 
-    // ─── GLOW EFFECT FUNCTIONS ───
     function applyGlow(card) {
       if (currentGlowCard && currentGlowCard !== card) {
         currentGlowCard.classList.remove('glow-effect');
@@ -1679,6 +1934,7 @@
           <img src="${evt.image}" alt="Event photo" loading="${idx < 3 ? 'eager' : 'lazy'}" fetchpriority="${idx < 3 ? 'high' : 'auto'}" />
           <div class="img-placeholder"></div>
         </div>
+        <div class="glow-aura"></div>
         <div class="card-content">
           <div class="card-name">${evt.name}</div>
           <div class="card-sub">${evt.sub}</div>
@@ -1804,7 +2060,6 @@
       
       activeOrigIdx = closestOrigIdx;
       
-      // Apply glow to the closest card (center card)
       if (closestCard && !isDragging) {
         applyGlow(closestCard);
       }
@@ -1825,7 +2080,6 @@
       snapTimer = setTimeout(() => { isSnapping = false; snapTimer = null; }, animate ? 500 : 40);
     }
 
-    // ─── SMOOTH TOUCH EVENTS (NO setPointerCapture) ───
     stage.addEventListener('pointerdown', (e) => {
       if (isSnapping) return;
       isDragging = true;
@@ -1836,7 +2090,6 @@
       lastMoveTime = performance.now();
       if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       track.style.transition = 'none';
-      // Remove glow while dragging
       clearGlow();
     });
 
@@ -1914,7 +2167,61 @@
     buildCarousel();
 
     // ═══════════════════════════════════════════════════════════
-    // 4. SCROLL
+    // 4. NAVIGATION
+    // ═══════════════════════════════════════════════════════════
+    const menuTrigger = document.getElementById('menuTrigger');
+    const dropdown = document.getElementById('dropdownMenu');
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    menuTrigger.addEventListener('click', (e) => { 
+      e.stopPropagation(); 
+      dropdown.classList.toggle('open'); 
+    });
+    
+    document.addEventListener('click', (e) => { 
+      if (!document.querySelector('.header').contains(e.target)) dropdown.classList.remove('open'); 
+    });
+
+    function navigateTo(action, url) {
+      dropdown.classList.remove('open');
+      // Update nav active state
+      navItems.forEach(item => item.classList.remove('active'));
+      const targetNav = document.querySelector(`.nav-item[data-action="${action}"]`);
+      if (targetNav) targetNav.classList.add('active');
+      
+      if (action === 'home') {
+        document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+      } else if (action === 'explore-event') {
+        document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
+      } else if (action === 'login') {
+        openLogin();
+      } else if (action === 'redirect' && url) {
+        window.location.href = url;
+      }
+    }
+
+    // Nav bar clicks
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = item.getAttribute('data-action');
+        const url = item.getAttribute('data-url');
+        navigateTo(action, url);
+      });
+    });
+
+    // Dropdown items
+    dropdown.querySelectorAll('.dropdown-item').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = link.getAttribute('data-action');
+        const url = link.getAttribute('data-url');
+        navigateTo(action, url);
+      });
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // 5. SCROLL
     // ═══════════════════════════════════════════════════════════
     let ticking = false;
     window.addEventListener('scroll', () => {
@@ -1952,14 +2259,6 @@
         ticking = true;
       }
     }, { passive: true });
-
-    // ═══════════════════════════════════════════════════════════
-    // 5. DROPDOWN
-    // ═══════════════════════════════════════════════════════════
-    const trigger = document.getElementById('logoTrigger');
-    const dropdown = document.getElementById('dropdownMenu');
-    trigger.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); });
-    document.addEventListener('click', (e) => { if (!document.querySelector('.header').contains(e.target)) dropdown.classList.remove('open'); });
 
     // ═══════════════════════════════════════════════════════════
     // 6. COUNTDOWN
@@ -2019,19 +2318,6 @@
     loginOverlay.addEventListener('click', (e) => { if (e.target === loginOverlay) closeLogin(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLogin(); });
 
-    dropdown.querySelectorAll('.dropdown-item').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const action = link.getAttribute('data-action');
-        const url = link.getAttribute('data-url');
-        dropdown.classList.remove('open');
-        if (action === 'home') document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
-        else if (action === 'redirect' && url) window.location.href = url;
-        else if (action === 'login') openLogin();
-        else if (action === 'explore-event') document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-
     forgotLink.addEventListener('click', (e) => { e.preventDefault(); showToast('🔑 Contact the administrator to reset your password.','info'); });
 
     loginForm.addEventListener('submit', async (e) => {
@@ -2060,7 +2346,7 @@
     loginPass.addEventListener('input', ()=>{ loginPass.classList.remove('error'); loginError.classList.remove('show'); });
     loginUser.addEventListener('input', ()=>{ loginError.classList.remove('show'); });
     setRole('admin');
-    console.log('🔱 DEPLOMAT · Epic Games Style with Glow Effect');
+    console.log('🔱 DEPLOMAT · Golden Glow Effect Active');
   </script>
 </body>
 </html>
