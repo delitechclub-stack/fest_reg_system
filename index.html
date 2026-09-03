@@ -537,7 +537,6 @@
       contain:layout style;
       z-index:1;
       -webkit-overflow-scrolling:touch;
-      /* Prevent default touch behaviors that interfere */
       -webkit-touch-callout: none;
       -webkit-user-select: none;
     }
@@ -549,9 +548,7 @@
       transition:none;
       padding:0 8px;
       align-items:center;
-      /* Use transform for positioning */
       transform: translate3d(0, 0, 0);
-      /* Prevent layout thrashing */
       contain: layout style;
     }
 
@@ -575,27 +572,18 @@
       transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
                   box-shadow 0.4s ease,
                   opacity 0.25s,
-                  border-color 0.3s,
-                  filter 0.3s;
+                  border-color 0.3s;
       -webkit-tap-highlight-color: transparent;
       flex-shrink: 0;
       contain: layout style;
       touch-action: pan-y;
-      /* Disable expensive effects during drag */
-      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
-                  box-shadow 0.4s ease,
-                  opacity 0.25s,
-                  border-color 0.3s;
     }
     
-    /* When dragging, disable expensive transitions */
+    /* ─── DRAGGING STATE ─── */
     .carousel-stage.is-dragging .event-card {
       transition: none !important;
-      /* Reduce expensive effects during drag */
-      filter: none !important;
     }
     
-    /* Also reduce glow effects during drag */
     .carousel-stage.is-dragging .event-card .glow-aura {
       transition: none !important;
       opacity: 0 !important;
@@ -605,6 +593,26 @@
     .carousel-stage.is-dragging .event-card::before {
       transition: none !important;
       opacity: 0 !important;
+    }
+    
+    .carousel-stage.is-dragging .event-card .card-image {
+      filter: none !important;
+    }
+
+    /* ─── SNAPPING STATE ─── */
+    .carousel-stage.is-snapping .event-card .glow-aura {
+      transition: none !important;
+      opacity: 0 !important;
+    }
+    
+    .carousel-stage.is-snapping .event-card::after,
+    .carousel-stage.is-snapping .event-card::before {
+      transition: none !important;
+      opacity: 0 !important;
+    }
+    
+    .carousel-stage.is-snapping .event-card .card-image {
+      filter: none !important;
     }
 
     /* ─── GOLDEN GLOW AURA ─── */
@@ -750,35 +758,6 @@
       border-color: rgba(169, 132, 69, 0.3);
       background: rgba(4, 18, 23, 0.9);
       color: var(--gold-bright);
-    }
-
-    /* ─── ACTIVE/TAP STATE ─── */
-    .carousel-track .event-card:active::after {
-      opacity: 1;
-      height: 100%;
-    }
-    .carousel-track .event-card:active::before {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-    .carousel-track .event-card:active .glow-aura {
-      opacity: 1;
-      transform: scaleY(1) scaleX(1);
-    }
-    .carousel-track .event-card:active {
-      border-color: rgba(169, 132, 69, 0.3);
-      box-shadow: 
-        0 0 120px rgba(169, 132, 69, 0.08),
-        0 0 200px rgba(169, 132, 69, 0.04),
-        0 8px 40px rgba(0, 0, 0, 0.8);
-      transform: scale(0.96);
-    }
-    .carousel-track .event-card:active .card-image {
-      opacity: 0.8;
-      filter: brightness(1.15) saturate(1.1);
-    }
-    .carousel-track .event-card:active .card-explore-badge {
-      opacity: 1;
     }
 
     .carousel-track .event-card .card-image {
@@ -1884,7 +1863,7 @@
     ];
 
     // ═══════════════════════════════════════════════════════════
-    // 3. CAROUSEL - COMPLETELY REFACTORED FOR SMOOTH TOUCH
+    // 3. CAROUSEL - NO AUTO-SCROLL, PURE USER INTERACTION
     // ═══════════════════════════════════════════════════════════
     (function() {
       const track = document.getElementById('carouselTrack');
@@ -1892,40 +1871,34 @@
       const dotsContainer = document.getElementById('dotsContainer');
       const N = events.length;
       
+      // ─── CONSTANTS ─────────────────────────────────────────
+      const SNAP_DURATION = 700;
+      const SNAP_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      const VELOCITY_THRESHOLD = 0.15;
+      
       // ─── STATE ──────────────────────────────────────────────
       let cardWidth = 0;
       let cardGap = 12;
       let cardWidthWithGap = 0;
-      let totalCards = N * 3; // 3 copies for infinite
       
-      // The current logical index (0 = first card, N = first card in middle copy)
-      let logicalIndex = N;
-      
-      // Pixel position of the track (translateX value)
       let currentPixelPos = 0;
+      let currentLogicalIndex = N;
       
-      // Drag state
       let isDragging = false;
       let isSnapping = false;
-      let dragStartX = 0;
-      let dragStartPixelPos = 0;
-      let dragStartLogicalIndex = 0;
+      let snapTimeout = null;
       
-      // Velocity tracking with sample window
+      let pointerDownX = 0;
+      let pointerDownPixelPos = 0;
+      
       let velocitySamples = [];
       let lastMoveTime = 0;
       let lastMoveX = 0;
       
-      // Animation frame
-      let rafId = null;
-      
-      // Resize debounce
       let resizeTimeout = null;
-      
-      // Glow tracking
       let currentGlowCard = null;
       
-      // ─── HELPERS ──────────────────────────────────────────
+      // ─── MEASUREMENTS ──────────────────────────────────────
       function getGap() {
         const styles = getComputedStyle(track);
         return parseFloat(styles.gap) || 12;
@@ -1934,6 +1907,16 @@
       function getPadding() {
         const styles = getComputedStyle(track);
         return parseFloat(styles.paddingLeft) || 8;
+      }
+      
+      function getStageWidth() {
+        return stage.clientWidth || window.innerWidth;
+      }
+      
+      function getTrackOffset() {
+        const stageWidth = getStageWidth();
+        const padding = getPadding();
+        return (stageWidth - cardWidth) / 2 - padding;
       }
       
       function measureCardWidth() {
@@ -1948,46 +1931,42 @@
         return cardWidth;
       }
       
-      function getStageWidth() {
-        return stage.clientWidth || window.innerWidth;
-      }
-      
-      function getTrackOffset() {
-        // Center the active card
-        const stageWidth = getStageWidth();
-        const padding = getPadding();
-        return (stageWidth - cardWidth) / 2 - padding;
-      }
-      
-      // ─── PIXEL POSITION TO LOGICAL INDEX ──────────────────
-      function pixelToLogicalIndex(pixelPos) {
-        // Reverse of getPixelPositionFromIndex
-        const offset = getTrackOffset();
-        return -(pixelPos - offset) / cardWidthWithGap;
-      }
-      
-      function getPixelPositionFromIndex(index) {
+      // ─── POSITION CALCULATIONS ────────────────────────────
+      function getPixelPositionForCard(index) {
         const offset = getTrackOffset();
         return -(index * cardWidthWithGap) + offset;
       }
       
-      // ─── UPDATE TRACK POSITION ──────────────────────────
-      function updateTrackPosition(pixelPos, animate = false) {
-        currentPixelPos = pixelPos;
+      function getCardIndexFromPixel(pixelPos) {
+        const offset = getTrackOffset();
+        return -(pixelPos - offset) / cardWidthWithGap;
+      }
+      
+      function getNearestCardIndex(pixelPos) {
+        const offset = getTrackOffset();
+        const index = -(pixelPos - offset) / cardWidthWithGap;
+        return Math.round(index);
+      }
+      
+      // ─── RENDER ────────────────────────────────────────────
+      function renderTrack(pixelPos, animate = false, duration = SNAP_DURATION, easing = SNAP_EASING) {
+        const minPos = -(N * 3 - 1) * cardWidthWithGap + getTrackOffset();
+        const maxPos = getTrackOffset();
+        const clampedPos = Math.max(minPos, Math.min(maxPos, pixelPos));
+        
+        currentPixelPos = clampedPos;
         
         if (animate) {
-          track.style.transition = 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
+          track.style.transition = `transform ${duration}ms ${easing}`;
         } else {
           track.style.transition = 'none';
         }
         
-        track.style.transform = `translate3d(${pixelPos}px, 0, 0)`;
-        
-        // Update card scaling and glow
-        updateCardVisuals(pixelPos);
+        track.style.transform = `translate3d(${clampedPos}px, 0, 0)`;
+        updateCardVisuals(clampedPos);
       }
       
-      // ─── UPDATE CARD VISUALS ──────────────────────────────
+      // ─── UPDATE CARD VISUALS ─────────────────────────────
       function updateCardVisuals(pixelPos) {
         const cards = track.querySelectorAll('.event-card');
         if (!cards.length || cardWidthWithGap === 0) return;
@@ -1995,7 +1974,6 @@
         const stageWidth = getStageWidth();
         const halfStage = stageWidth / 2;
         const halfCard = cardWidth / 2;
-        const offset = getTrackOffset();
         
         let closestDist = Infinity;
         let closestCard = null;
@@ -2020,12 +1998,10 @@
           }
         });
         
-        // Update glow on closest card (only when not dragging)
-        if (!isDragging && closestCard) {
+        if (!isDragging && !isSnapping && closestCard) {
           applyGlow(closestCard);
         }
         
-        // Update dots
         dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
           dot.classList.toggle('active', i === closestOrigIdx);
         });
@@ -2051,69 +2027,24 @@
         }
       }
       
-      // ─── SNAP TO INDEX ─────────────────────────────────────
-      function snapToIndex(targetIndex, animate = true) {
-        if (isSnapping) return;
-        
-        // Normalize targetIndex to stay within bounds
-        // We keep the index between N and 2N-1 for the middle copy
-        const totalCards = N * 3;
-        if (targetIndex < N) {
-          targetIndex = 2 * N - 1;
-        } else if (targetIndex >= 2 * N) {
-          targetIndex = N;
-        }
-        targetIndex = Math.max(0, Math.min(totalCards - 1, targetIndex));
-        
-        logicalIndex = targetIndex;
-        const targetPixelPos = getPixelPositionFromIndex(targetIndex);
-        
-        isSnapping = true;
-        updateTrackPosition(targetPixelPos, animate);
-        
-        // Silently normalize if we're near the boundaries (after animation)
-        setTimeout(() => {
-          isSnapping = false;
-          // If we're at the edge of the middle copy, silently reposition
-          if (logicalIndex < N + 1 || logicalIndex >= 2 * N - 1) {
-            const normalizedIndex = ((logicalIndex % N) + N) % (3 * N);
-            if (normalizedIndex !== logicalIndex) {
-              logicalIndex = normalizedIndex;
-              const silentPixelPos = getPixelPositionFromIndex(logicalIndex);
-              // No animation for silent reposition
-              track.style.transition = 'none';
-              track.style.transform = `translate3d(${silentPixelPos}px, 0, 0)`;
-              currentPixelPos = silentPixelPos;
-              // Force transition back on for next animation
-              requestAnimationFrame(() => {
-                track.style.transition = 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
-              });
-            }
-          }
-        }, animate ? 450 : 50);
-      }
-      
-      // ─── VELOCITY CALCULATION ─────────────────────────────
+      // ─── VELOCITY ──────────────────────────────────────────
       function addVelocitySample(deltaX, deltaTime) {
         if (deltaTime < 10) return;
         const velocity = deltaX / deltaTime;
         velocitySamples.push({ velocity, time: performance.now() });
-        
-        // Keep only last 5 samples
-        if (velocitySamples.length > 5) {
+        if (velocitySamples.length > 8) {
           velocitySamples.shift();
         }
       }
       
       function getAverageVelocity() {
         if (velocitySamples.length === 0) return 0;
-        // Weight more recent samples higher
         let totalWeight = 0;
         let weightedSum = 0;
         const now = performance.now();
-        velocitySamples.forEach((sample, i) => {
+        velocitySamples.forEach((sample) => {
           const age = now - sample.time;
-          const weight = Math.max(0, 1 - age / 100); // Decay over 100ms
+          const weight = Math.max(0, 1 - age / 150);
           weightedSum += sample.velocity * weight;
           totalWeight += weight;
         });
@@ -2124,51 +2055,86 @@
         velocitySamples = [];
       }
       
+      // ─── SNAP ──────────────────────────────────────────────
+      function snapToIndex(targetIndex, animate = true, duration = SNAP_DURATION) {
+        if (isSnapping) {
+          if (snapTimeout) {
+            clearTimeout(snapTimeout);
+            snapTimeout = null;
+          }
+        }
+        
+        const totalCards = N * 3;
+        if (targetIndex < N) targetIndex = 2 * N - 1;
+        if (targetIndex >= 2 * N) targetIndex = N;
+        targetIndex = Math.max(0, Math.min(totalCards - 1, targetIndex));
+        
+        currentLogicalIndex = targetIndex;
+        const targetPixelPos = getPixelPositionForCard(targetIndex);
+        
+        isSnapping = true;
+        stage.classList.add('is-snapping');
+        
+        renderTrack(targetPixelPos, animate, duration);
+        
+        const delay = animate ? duration + 50 : 50;
+        snapTimeout = setTimeout(() => {
+          isSnapping = false;
+          stage.classList.remove('is-snapping');
+          snapTimeout = null;
+          
+          // Silent normalization if we're at the edge
+          if (currentLogicalIndex < N + 1 || currentLogicalIndex >= 2 * N - 1) {
+            const normalizedIndex = ((currentLogicalIndex % N) + N) % (3 * N);
+            if (normalizedIndex !== currentLogicalIndex) {
+              currentLogicalIndex = normalizedIndex;
+              const silentPos = getPixelPositionForCard(currentLogicalIndex);
+              track.style.transition = 'none';
+              track.style.transform = `translate3d(${silentPos}px, 0, 0)`;
+              currentPixelPos = silentPos;
+            }
+          }
+        }, delay);
+      }
+      
       // ─── DRAG HANDLING ─────────────────────────────────────
       function handlePointerDown(e) {
-        if (isSnapping) return;
+        // Cancel any ongoing snap
+        if (isSnapping) {
+          if (snapTimeout) {
+            clearTimeout(snapTimeout);
+            snapTimeout = null;
+          }
+          isSnapping = false;
+          stage.classList.remove('is-snapping');
+        }
         
         isDragging = true;
         stage.classList.add('is-dragging');
         
-        // Use pointer capture for reliable event delivery
         stage.setPointerCapture(e.pointerId);
         
-        dragStartX = e.clientX;
-        dragStartPixelPos = currentPixelPos;
-        dragStartLogicalIndex = logicalIndex;
+        pointerDownX = e.clientX;
+        pointerDownPixelPos = currentPixelPos;
         
         clearVelocitySamples();
         lastMoveX = e.clientX;
         lastMoveTime = performance.now();
         
-        // Disable transitions during drag
         track.style.transition = 'none';
-        
-        // Clear glow during drag
         clearGlow();
         
-        // Prevent default to avoid scroll interference
         e.preventDefault();
       }
       
       function handlePointerMove(e) {
         if (!isDragging) return;
         
-        // Prevent default to stop page scroll during horizontal drag
         e.preventDefault();
         
-        const deltaX = e.clientX - dragStartX;
-        const newPixelPos = dragStartPixelPos + deltaX;
+        const deltaX = e.clientX - pointerDownX;
+        const newPixelPos = pointerDownPixelPos + deltaX;
         
-        // Update position
-        currentPixelPos = newPixelPos;
-        track.style.transform = `translate3d(${newPixelPos}px, 0, 0)`;
-        
-        // Update visuals (cards scaling, etc.)
-        updateCardVisuals(newPixelPos);
-        
-        // Update velocity
         const now = performance.now();
         const dt = now - lastMoveTime;
         if (dt > 0) {
@@ -2178,8 +2144,9 @@
         lastMoveTime = now;
         lastMoveX = e.clientX;
         
-        // Update logical index for reference (not used for position, just tracking)
-        logicalIndex = pixelToLogicalIndex(newPixelPos);
+        currentPixelPos = newPixelPos;
+        track.style.transform = `translate3d(${newPixelPos}px, 0, 0)`;
+        updateCardVisuals(newPixelPos);
       }
       
       function handlePointerUp(e) {
@@ -2188,20 +2155,17 @@
         isDragging = false;
         stage.classList.remove('is-dragging');
         
-        // Release pointer capture
         stage.releasePointerCapture(e.pointerId);
         
-        // Calculate final velocity
         const avgVelocity = getAverageVelocity();
-        const dist = Math.abs(e.clientX - dragStartX);
+        const dist = Math.abs(e.clientX - pointerDownX);
         
-        // Determine target index
         let targetIndex;
         
         if (dist < 8) {
-          // Tap: go to nearest card
-          targetIndex = Math.round(logicalIndex);
-          // Check if it was a tap on a card
+          // Tap: stay on nearest card
+          targetIndex = getNearestCardIndex(currentPixelPos);
+          // Check for card click
           const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.event-card');
           if (card) {
             const oi = parseInt(card.dataset.originalIndex);
@@ -2211,24 +2175,31 @@
             }
           }
         } else {
-          // Determine based on velocity and distance
-          const velocityThreshold = 0.3; // pixels per ms
+          const currentIndex = getCardIndexFromPixel(currentPixelPos);
           const absVelocity = Math.abs(avgVelocity);
           
-          if (absVelocity > velocityThreshold) {
-            // Fast swipe: go in direction of swipe
+          if (absVelocity > VELOCITY_THRESHOLD) {
+            // Directional swipe - limited to ONE card
             const direction = avgVelocity > 0 ? -1 : 1;
-            targetIndex = Math.round(logicalIndex + direction * 1.5);
+            targetIndex = Math.round(currentIndex + direction);
           } else {
-            // Slow drag: nearest card
-            targetIndex = Math.round(logicalIndex);
+            // Nearest card
+            targetIndex = Math.round(currentIndex);
           }
         }
         
-        // Ensure target is within valid range
         targetIndex = Math.max(N - 1, Math.min(2 * N, targetIndex));
         
         snapToIndex(targetIndex, true);
+      }
+      
+      function handlePointerCancel(e) {
+        if (isDragging) {
+          isDragging = false;
+          stage.classList.remove('is-dragging');
+          stage.releasePointerCapture(e.pointerId);
+          snapToIndex(getNearestCardIndex(currentPixelPos), true);
+        }
       }
       
       // ─── WHEEL HANDLING ──────────────────────────────────
@@ -2241,21 +2212,21 @@
         if (wheelTimeout) clearTimeout(wheelTimeout);
         wheelTimeout = setTimeout(() => {
           const direction = (e.deltaX || e.deltaY) > 0 ? 1 : -1;
-          snapToIndex(Math.round(logicalIndex) + direction, true);
+          snapToIndex(currentLogicalIndex + direction, true);
           wheelTimeout = null;
         }, 60);
       }
       
-      // ─── RESIZE HANDLING ──────────────────────────────────
+      // ─── RESIZE ──────────────────────────────────────────
       function handleResize() {
         if (resizeTimeout) clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
           measureCardWidth();
-          const newPixelPos = getPixelPositionFromIndex(logicalIndex);
-          currentPixelPos = newPixelPos;
+          const newPos = getPixelPositionForCard(currentLogicalIndex);
+          currentPixelPos = newPos;
           track.style.transition = 'none';
-          track.style.transform = `translate3d(${newPixelPos}px, 0, 0)`;
-          updateCardVisuals(newPixelPos);
+          track.style.transform = `translate3d(${newPos}px, 0, 0)`;
+          updateCardVisuals(newPos);
           resizeTimeout = null;
         }, 120);
       }
@@ -2305,41 +2276,36 @@
         track.innerHTML = '';
         dotsContainer.innerHTML = '';
         
-        // Create 3 copies for infinite loop
         for (let copy = 0; copy < 3; copy++) {
           events.forEach((evt, idx) => {
             track.appendChild(createCardElement(evt, idx, copy * N + idx));
           });
         }
         
-        // Create dots
         for (let i = 0; i < N; i++) {
           const dot = document.createElement('div');
           dot.className = 'dot' + (i === 0 ? ' active' : '');
           dot.dataset.index = i;
           dot.addEventListener('click', (e) => {
             e.preventDefault();
-            if (!isSnapping) snapToIndex(i + N, true);
+            if (!isSnapping) {
+              snapToIndex(i + N, true);
+            }
           });
           dotsContainer.appendChild(dot);
         }
         
-        // Measure and position
         requestAnimationFrame(() => {
           measureCardWidth();
-          logicalIndex = N;
-          const initialPos = getPixelPositionFromIndex(logicalIndex);
+          currentLogicalIndex = N;
+          const initialPos = getPixelPositionForCard(N);
           currentPixelPos = initialPos;
           track.style.transition = 'none';
           track.style.transform = `translate3d(${initialPos}px, 0, 0)`;
           updateCardVisuals(initialPos);
-          // Re-enable transitions after initial position
-          requestAnimationFrame(() => {
-            track.style.transition = 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
-          });
         });
         
-        console.log('🏛️ Carousel built with ' + (N * 3) + ' cards');
+        console.log('🏛️ Carousel initialized - NO AUTO-SCROLL');
       }
       
       // ─── PRELOAD IMAGES ──────────────────────────────────
@@ -2369,40 +2335,25 @@
         preloadImagesWithPriority(events);
         buildCarousel();
         
-        // ─── EVENT LISTENERS ──────────────────────────────
-        // Use pointer events with capture
         stage.addEventListener('pointerdown', handlePointerDown);
         stage.addEventListener('pointermove', handlePointerMove);
         stage.addEventListener('pointerup', handlePointerUp);
-        stage.addEventListener('pointercancel', (e) => {
-          if (isDragging) {
-            isDragging = false;
-            stage.classList.remove('is-dragging');
-            stage.releasePointerCapture(e.pointerId);
-            snapToIndex(Math.round(logicalIndex), true);
-          }
-        });
+        stage.addEventListener('pointercancel', handlePointerCancel);
         
-        // Wheel for desktop
         stage.addEventListener('wheel', handleWheel, { passive: false });
         
-        // Resize
         window.addEventListener('resize', handleResize);
         
-        // ResizeObserver for more responsive resizing
         if (window.ResizeObserver) {
           const ro = new ResizeObserver(() => handleResize());
           ro.observe(stage);
         }
         
-        console.log('🏛️ Carousel initialized with pixel-based drag');
+        console.log('🏛️ Carousel ready - user interaction only');
       }
       
-      // ─── PUBLIC API ──────────────────────────────────────
-      // Expose snapToIndex for external use (dots, navigation)
       window.carouselSnapTo = snapToIndex;
       
-      // Start
       init();
     })();
 
