@@ -1826,40 +1826,91 @@
     }
 
     /* ─── RESPONSIVE ──────────────────────────────────── */
+    /* ─── MOBILE OPTIMIZATIONS - COMPACT LAYOUT ─── */
 
     @media (max-width: 768px) {
+      /* HEADER */
       .header { top:12px; left:12px; }
       .hamburger-icon { padding:10px 10px; border-radius:12px; gap:5px; }
       .hamburger-icon .bar { width:22px; height:2.5px; }
       .hamburger-icon .bar:nth-child(2) { width:18px; }
       .hamburger-icon .bar:nth-child(3) { width:14px; }
       .epic-dropdown { top:56px; min-width:180px; max-width:calc(100vw - 32px); padding:8px 0; }
-      .dropdown-item { font-size:11px; padding:8px 16px; gap:10px; }
+      .dropdown-item { font-size:11px; padding:8px 16px; gap:10px; min-height:44px; }
       .dropdown-item .icon { width:20px; height:20px; font-size:8px; }
       .dropdown-section-title { font-size:7px; padding:4px 16px 2px 16px; }
       
+      /* NAV BAR */
       .nav-bar { padding: 14px 18px; gap: 18px; }
-      .nav-item { font-size: 0.55rem; letter-spacing: 0.14em; }
+      .nav-item { font-size: 0.55rem; letter-spacing: 0.14em; padding: 6px 0; }
       .nav-divider { height: 12px; }
       
-      .explore-section { padding:60px 0 30px 0; }
-      .explore-header { padding:0 12px 12px 12px; }
+      /* HERO - COMPACT */
+      .hero-section {
+        height: 85svh;
+        min-height: 600px;
+      }
+      .hero-center {
+        top: 6vh;
+      }
+      .hero-title {
+        font-size: clamp(1.8rem, 7vw, 3.5rem);
+      }
+      .hero-subtitle {
+        font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+        letter-spacing: 0.15em;
+      }
+      .explore-cta {
+        bottom: 16px;
+        opacity: 0.3;
+      }
+      .explore-cta .mouse-line {
+        height: 16px;
+      }
       
-      .carousel-track { gap: 8px; padding: 0 4px; }
+      /* SECTION DIVIDER - COMPACT */
+      .section-divider {
+        height: 0.5px;
+      }
+      .section-divider .divider-ornament {
+        font-size: 0.4rem;
+        padding: 0 10px;
+      }
+      
+      /* EXPLORE SECTION - COMPACT */
+      .explore-section {
+        min-height: auto;
+        padding: 32px 0 16px 0;
+      }
+      .explore-header {
+        padding: 0 16px 8px 16px;
+      }
+      .explore-header h2 {
+        font-size: clamp(1rem, 4vw, 1.8rem);
+      }
+      
+      /* CAROUSEL - COMPACT */
+      .carousel-stage {
+        padding: 8px 0 4px 0;
+      }
+      .carousel-track {
+        gap: 8px;
+        padding: 0 4px;
+      }
       .carousel-track .event-card { 
         flex: 0 0 calc(100vw - 32px);
         min-width: 200px;
         max-width: 400px;
         aspect-ratio: 4/5;
-        min-height: 200px;
-        max-height: 440px;
+        min-height: 180px;
+        max-height: 380px;
         padding: 14px 12px 10px 12px;
         border-radius: 14px;
       }
       .carousel-track .event-card .glow-aura { bottom: -20px; height: 50%; }
       .carousel-track .event-card .card-content { 
         margin: 0 -12px -10px -12px;
-        padding: 28px 12px 12px 12px;
+        padding: 22px 12px 10px 12px;
         border-radius: 0 0 14px 14px;
       }
       .carousel-track .event-card .card-name { 
@@ -1876,46 +1927,187 @@
         padding: 4px 14px;
         bottom: 10px;
         right: 10px;
+        min-height: 32px;
       }
       
-      .dots-container { gap: 10px; margin-top: 14px; padding: 4px 0 16px 0; }
+      .dots-container {
+        gap: 10px;
+        margin-top: 8px;
+        padding: 4px 0 12px 0;
+      }
       .dot { width: 6px; height: 6px; }
       .dot.active { width: 24px; height: 6px; border-radius: 4px; }
       
-      .promo-content .promo-badge { font-size:0.4rem; padding:3px 12px; }
-      .event-date-display { font-size:clamp(0.7rem, 2.4vw, 1.1rem); letter-spacing:0.06em; margin-bottom:12px; }
-      .promo-countdown { gap:6px; }
-      .promo-countdown .cd-item { padding:8px 10px; min-width:44px; }
-      .promo-countdown .cd-item span { font-size:1.5rem; }
-      .promo-countdown .cd-item small { font-size:0.35rem; }
-      .hero-title { font-size:clamp(1.8rem, 7vw, 3.5rem); }
-      .hero-subtitle { font-size:clamp(0.6rem, 1.5vw, 0.9rem); letter-spacing:0.15em; }
-      .hero-center { top:8vh; }
+      /* KINGDOM FEATURED - COMPACT */
+      .kingdom-featured {
+        padding: 24px 16px 30px 16px;
+      }
+      .kingdom-featured .kingdom-heading {
+        margin-bottom: 14px;
+        font-size: clamp(0.5rem, 1vw, 0.7rem);
+      }
+      .kingdom-featured-stage {
+        gap: 12px;
+      }
+      .kingdom-featured-main {
+        min-height: 200px;
+        border-radius: 14px;
+      }
+      .kingdom-featured-main .featured-content {
+        padding: 14px 14px 12px 14px;
+      }
+      .kingdom-featured-main .featured-content .fc-desc {
+        max-width: 100%;
+        font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+      }
+      .kingdom-featured-main .featured-content .fc-title {
+        font-size: clamp(1rem, 3.5vw, 1.5rem);
+      }
+      .kingdom-featured-main .featured-content .fc-label {
+        font-size: 0.4rem;
+      }
+      .kingdom-featured-main .featured-content .fc-cta {
+        font-size: 0.45rem;
+        padding: 6px 0;
+        min-height: 32px;
+      }
+      .kingdom-featured-selector {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+      }
+      .kingdom-featured-item {
+        flex: 1 1 calc(50% - 4px);
+        min-width: 100px;
+        padding: 6px 8px;
+        gap: 8px;
+        border-radius: 10px;
+      }
+      .kingdom-featured-item .ki-thumb {
+        width: 36px;
+        height: 36px;
+      }
+      .kingdom-featured-item .ki-title {
+        font-size: 0.5rem;
+        white-space: normal;
+        line-height: 1.2;
+      }
+      .kingdom-featured-item .ki-sub {
+        font-size: 0.4rem;
+      }
+      .kingdom-featured-item .ki-divider {
+        width: 14px;
+      }
+      .kingdom-featured-item.active .ki-divider {
+        width: 20px;
+      }
       
-      .site-footer { padding: 20px 16px 16px 16px; }
-      .site-footer .footer-logo { font-size:1rem; }
+      /* PROMO - COMPACT */
+      .promo-section {
+        height: auto;
+        min-height: 420px;
+        padding: 40px 0 20px 0;
+      }
+      .promo-section .video-container {
+        position: absolute;
+        height: 100%;
+      }
+      .promo-content {
+        position: relative;
+        padding: 20px 16px;
+        justify-content: flex-start;
+        gap: 6px;
+      }
+      .promo-content .promo-badge {
+        font-size: 0.35rem;
+        padding: 3px 12px;
+        margin-bottom: 4px;
+      }
+      .event-date-display {
+        font-size: clamp(0.6rem, 2.2vw, 0.9rem);
+        letter-spacing: 0.06em;
+        margin-bottom: 8px;
+        line-height: 1.3;
+      }
+      .promo-countdown {
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .promo-countdown .cd-item {
+        padding: 6px 8px;
+        min-width: 40px;
+      }
+      .promo-countdown .cd-item span {
+        font-size: 1.2rem;
+      }
+      .promo-countdown .cd-item small {
+        font-size: 0.3rem;
+      }
+      .promo-cta {
+        font-size: 0.5rem;
+        padding: 8px 16px;
+        min-height: 40px;
+      }
+      
+      /* FOOTER - COMPACT */
+      .site-footer {
+        padding: 16px 16px 12px 16px;
+      }
+      .site-footer .footer-logo {
+        font-size: 1rem;
+      }
+      .site-footer .footer-divider {
+        margin: 8px auto;
+      }
+      .site-footer .footer-social {
+        margin: 8px 0;
+        gap: 12px;
+      }
+      .site-footer .footer-social a {
+        font-size: 0.6rem;
+        padding: 4px 0;
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+      }
+      .site-footer .footer-text {
+        font-size: 0.45rem;
+      }
+      .site-footer .footer-text .copyright {
+        font-size: 0.4rem;
+      }
     }
 
     @media (max-width: 480px) {
       .nav-bar { padding: 12px 14px; gap: 14px; }
-      .nav-item { font-size: 0.5rem; letter-spacing: 0.12em; }
+      .nav-item { font-size: 0.5rem; letter-spacing: 0.12em; padding: 6px 0; }
       .nav-divider { height: 10px; }
       
+      /* HERO - FURTHER COMPACT */
+      .hero-section {
+        height: 80svh;
+        min-height: 500px;
+      }
+      .hero-center { top: 5vh; }
+      .hero-title { font-size: clamp(1.4rem, 6vw, 2.4rem); }
+      
+      /* CAROUSEL - FURTHER COMPACT */
       .carousel-track { gap: 6px; padding: 0 2px; }
       .carousel-track .event-card { 
         flex: 0 0 calc(100vw - 20px);
         min-width: 160px;
         max-width: 340px;
         aspect-ratio: 4/5;
-        min-height: 180px;
-        max-height: 380px;
+        min-height: 160px;
+        max-height: 340px;
         border-radius: 12px;
         padding: 10px 8px 8px 8px;
       }
       .carousel-track .event-card .glow-aura { bottom: -15px; height: 40%; }
       .carousel-track .event-card .card-content { 
         margin: 0 -8px -8px -8px;
-        padding: 22px 8px 8px 8px;
+        padding: 18px 8px 8px 8px;
         border-radius: 0 0 12px 12px;
       }
       .carousel-track .event-card .card-name { 
@@ -1930,19 +2122,72 @@
         padding: 3px 12px;
         bottom: 8px;
         right: 8px;
+        min-height: 28px;
       }
       
-      .dots-container { gap: 8px; margin-top: 12px; }
+      .dots-container { gap: 8px; margin-top: 6px; padding: 2px 0 8px 0; }
       .dot { width: 5px; height: 5px; }
       .dot.active { width: 20px; height: 5px; }
       
-      .event-date-display { font-size:clamp(0.6rem, 2.2vw, 0.85rem); }
-      .promo-countdown .cd-item span { font-size:1.2rem; }
-      .hero-title { font-size:clamp(1.4rem, 6vw, 2.4rem); }
-      .hero-center { top:6vh; }
+      /* KINGDOM FEATURED - FURTHER COMPACT */
+      .kingdom-featured-main {
+        min-height: 180px;
+      }
+      .kingdom-featured-main .featured-content {
+        padding: 12px 12px 10px 12px;
+      }
+      .kingdom-featured-main .featured-content .fc-title {
+        font-size: clamp(0.85rem, 3vw, 1.2rem);
+      }
+      .kingdom-featured-main .featured-content .fc-desc {
+        font-size: clamp(0.45rem, 1vw, 0.6rem);
+      }
+      .kingdom-featured-main .featured-content .fc-cta {
+        font-size: 0.4rem;
+        padding: 4px 0;
+        min-height: 28px;
+      }
+      .kingdom-featured-item {
+        flex: 1 1 100%;
+        padding: 6px 8px;
+        gap: 6px;
+      }
+      .kingdom-featured-item .ki-thumb {
+        width: 28px;
+        height: 28px;
+      }
+      .kingdom-featured-item .ki-title {
+        font-size: 0.45rem;
+      }
+      .kingdom-featured-item .ki-sub {
+        font-size: 0.35rem;
+      }
+      
+      /* PROMO - FURTHER COMPACT */
+      .promo-section {
+        min-height: 360px;
+        padding: 30px 0 16px 0;
+      }
+      .event-date-display {
+        font-size: clamp(0.5rem, 2vw, 0.75rem);
+      }
+      .promo-countdown .cd-item span {
+        font-size: 1rem;
+      }
+      .promo-countdown .cd-item {
+        padding: 4px 6px;
+        min-width: 34px;
+      }
+      .promo-cta {
+        font-size: 0.45rem;
+        padding: 6px 14px;
+        min-height: 36px;
+      }
+      
+      /* LOGIN */
       .login-modal { padding:20px 14px 16px 14px; }
       .login-modal h3 { font-size:1.3rem; }
-      .role-selector .role-btn { min-width:40px; padding:4px 2px; font-size:0.35rem; }
+      .role-selector .role-btn { min-width:40px; padding:4px 2px; font-size:0.35rem; min-height:36px; }
       .role-selector .role-btn .role-icon { font-size:0.7rem; }
     }
 
@@ -1952,14 +2197,14 @@
         min-width: 140px;
         max-width: 300px;
         aspect-ratio: 4/5;
-        min-height: 150px;
-        max-height: 340px;
+        min-height: 140px;
+        max-height: 300px;
         border-radius: 10px;
         padding: 8px 6px 6px 6px;
       }
       .carousel-track .event-card .card-content { 
         margin: 0 -6px -6px -6px;
-        padding: 16px 6px 6px 6px;
+        padding: 14px 6px 6px 6px;
         border-radius: 0 0 10px 10px;
       }
       .carousel-track .event-card .card-name { 
@@ -1967,6 +2212,17 @@
       }
       .carousel-track .event-card .card-sub { 
         font-size: clamp(0.5rem, 1.2vw, 0.65rem);
+      }
+      
+      .hero-section {
+        height: 75svh;
+        min-height: 440px;
+      }
+      .hero-title { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+      .hero-subtitle { font-size: clamp(0.5rem, 1.2vw, 0.65rem); }
+      
+      .promo-section {
+        min-height: 320px;
       }
     }
 
