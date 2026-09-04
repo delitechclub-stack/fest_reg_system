@@ -246,84 +246,6 @@
         .block-notice .msg strong {
             color: #fff;
         }
-        /* ─── IN-APP BROWSER BANNER ──────────────────────────────────────── */
-        .inapp-banner {
-            display: none;
-            background: rgba(255, 197, 61, 0.12);
-            border: 1px solid rgba(255, 197, 61, 0.3);
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 20px;
-            animation: fadeStep 0.4s ease both;
-            position: relative;
-        }
-        .inapp-banner.show {
-            display: block;
-        }
-        .inapp-banner .banner-icon {
-            font-size: 2rem;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-        .inapp-banner h4 {
-            color: #FFC53D;
-            font-size: 1rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 6px;
-        }
-        .inapp-banner p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.85rem;
-            text-align: center;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-        .inapp-banner .banner-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .inapp-banner .banner-actions .btn-copy {
-            padding: 10px 24px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 197, 61, 0.2);
-            background: rgba(255, 197, 61, 0.06);
-            color: #FFC53D;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.3s ease;
-            font-family: inherit;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .inapp-banner .banner-actions .btn-copy:hover {
-            background: rgba(255, 197, 61, 0.12);
-        }
-        .inapp-banner .banner-actions .btn-copy:active {
-            transform: scale(0.96);
-        }
-        .inapp-banner .banner-actions .btn-open {
-            padding: 10px 24px;
-            border-radius: 10px;
-            border: none;
-            background: linear-gradient(135deg, #FFC53D, #f5a623);
-            color: #0a0a0f;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.3s ease;
-            font-family: inherit;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .inapp-banner .banner-actions .btn-open:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255, 197, 61, 0.2);
-        }
-        .inapp-banner .banner-actions .btn-open:active {
-            transform: scale(0.96);
-        }
         .step-indicator {
             display: flex;
             justify-content: center;
@@ -578,95 +500,6 @@
             border: 1px solid rgba(101, 216, 255, 0.1);
             margin-left: 8px;
         }
-        .cross-check-entry {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 14px;
-            padding: 18px 16px;
-            margin-bottom: 12px;
-            transition: 0.3s ease;
-        }
-        .cross-check-entry:hover {
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-        .cross-check-entry .player-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .cross-check-entry .player-number {
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.3);
-            font-weight: 600;
-        }
-        .cross-check-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .cross-check-row label {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .cross-check-row label input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #65d8ff;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .cross-check-row select {
-            flex: 1;
-            min-width: 180px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.04);
-            color: #fff;
-            font-size: 0.85rem;
-            font-family: inherit;
-            transition: 0.25s ease;
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-        }
-        .cross-check-row select:focus {
-            border-color: rgba(101, 216, 255, 0.3);
-            background: rgba(101, 216, 255, 0.04);
-            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
-        }
-        .cross-check-row select option {
-            background: #1a1a2e;
-            color: #fff;
-        }
-        .cross-check-row select:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        .cross-check-row .event-badge {
-            display: inline-block;
-            background: rgba(255, 197, 61, 0.12);
-            color: #FFC53D;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            border: 1px solid rgba(255, 197, 61, 0.1);
-        }
         .add-player-btn {
             width: 100%;
             padding: 12px;
@@ -762,18 +595,6 @@
             color: rgba(255, 255, 255, 0.4);
             margin-bottom: 15px;
         }
-        .payment-side .receiver-name {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 16px;
-            padding: 8px 12px;
-            background: rgba(101, 216, 255, 0.04);
-            border-radius: 8px;
-            border: 1px solid rgba(101, 216, 255, 0.06);
-        }
-        .payment-side .receiver-name strong {
-            color: #65d8ff;
-        }
         .pay-btn {
             display: flex;
             align-items: center;
@@ -827,18 +648,21 @@
             text-decoration: underline;
         }
         .qr-container {
-            display: block;
+            display: none;
             margin-top: 15px;
             animation: fadeStep 0.3s ease;
         }
-        .qr-container .qr-frame {
+        .qr-container.active {
+            display: block;
+        }
+        .qr-frame {
             display: inline-block;
             background: #fff;
             padding: 10px;
             border-radius: 10px;
             border: 2px solid #FFC53D;
         }
-        .qr-container .qr-frame img {
+        .qr-frame img {
             width: 160px;
             height: 160px;
             display: block;
@@ -1069,10 +893,12 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
             padding: 40px 32px;
-            max-width: 440px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .payment-confirm-modal .modal-box .icon-big {
             font-size: 4rem;
@@ -1094,11 +920,105 @@
             color: #FFC53D;
             font-weight: 700;
         }
+        .payment-confirm-modal .modal-box .timer-info {
+            background: rgba(255, 197, 61, 0.06);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 12px 0;
+            border: 1px solid rgba(255, 197, 61, 0.1);
+        }
+        .payment-confirm-modal .modal-box .timer-info span {
+            color: #FFC53D;
+            font-weight: 700;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            transition: 0.3s ease;
+            cursor: pointer;
+            margin: 12px 0;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area.dragover {
+            border-color: #65d8ff;
+            background: rgba(101, 216, 255, 0.04);
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area .icon-big {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area .text-muted {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area .text-small {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.6rem;
+            margin-top: 2px;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area .upload-preview {
+            display: none;
+            margin-top: 8px;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area .upload-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            border: 2px solid #4caf50;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-area .upload-preview .success-text {
+            color: #4caf50;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-status {
+            display: none;
+            margin-top: 8px;
+        }
+        .payment-confirm-modal .modal-box .modal-upload-status .status-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(101, 216, 255, 0.06);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .payment-confirm-modal .modal-box .modal-utr-result {
+            display: none;
+            margin-top: 8px;
+        }
+        .payment-confirm-modal .modal-box .modal-utr-result .result-box {
+            background: rgba(76, 175, 80, 0.06);
+            border: 1px solid rgba(76, 175, 80, 0.15);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .payment-confirm-modal .modal-box .modal-utr-result .result-box .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .payment-confirm-modal .modal-box .modal-utr-result .result-box .value {
+            color: #4caf50;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+        .payment-confirm-modal .modal-box .modal-utr-result .result-box .value.duplicate {
+            color: #ff2a6d;
+        }
         .payment-confirm-modal .modal-box .btn-row {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 16px;
         }
         .payment-confirm-modal .modal-box .btn-row .btn {
             flex: 1;
@@ -1117,6 +1037,14 @@
         .payment-confirm-modal .modal-box .btn-row .btn-primary {
             background: linear-gradient(135deg, #65d8ff, #3b7bff);
             color: #0a0a0f;
+        }
+        .payment-confirm-modal .modal-box .btn-row .btn-success {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: #fff;
+        }
+        .payment-confirm-modal .modal-box .btn-row .btn-success:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
         @media (max-width: 768px) {
             .home-link {
@@ -1140,14 +1068,6 @@
             .player-entry .player-fields.leader-fields {
                 grid-template-columns: 1fr;
             }
-            .cross-check-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-            .cross-check-row select {
-                min-width: 100%;
-            }
             .step-line {
                 width: 16px;
             }
@@ -1165,7 +1085,7 @@
             .payment-side {
                 padding: 20px 16px;
             }
-            .qr-container .qr-frame img {
+            .qr-frame img {
                 width: 120px;
                 height: 120px;
             }
@@ -1212,12 +1132,9 @@
             .step-line {
                 width: 10px;
             }
-            .qr-container .qr-frame img {
+            .qr-frame img {
                 width: 100px;
                 height: 100px;
-            }
-            .cross-check-row label {
-                font-size: 0.7rem;
             }
             .event-banner .icon {
                 font-size: 1.2rem;
@@ -1225,15 +1142,8 @@
             .event-banner .info strong {
                 font-size: 0.9rem;
             }
-            .inapp-banner {
-                padding: 14px 16px;
-            }
-            .inapp-banner .banner-actions {
-                flex-direction: column;
-            }
-            .inapp-banner .banner-actions .btn-copy,
-            .inapp-banner .banner-actions .btn-open {
-                width: 100%;
+            .payment-confirm-modal .modal-box .modal-upload-area {
+                padding: 14px;
             }
         }
         .text-center {
@@ -1285,140 +1195,6 @@
         .restore-banner .msg strong {
             color: #fff;
         }
-        .upload-instructions {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 16px;
-            background: rgba(255, 197, 61, 0.04);
-            padding: 14px 16px;
-            border-radius: 12px;
-            border-left: 3px solid #FFC53D;
-        }
-        .upload-instructions .icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        .upload-instructions .content h4 {
-            font-size: 0.9rem;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .upload-instructions .content p {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-            line-height: 1.5;
-        }
-        .upload-instructions .content p .highlight {
-            color: #FFC53D;
-            font-weight: 900;
-            font-size: 0.9rem;
-            background: rgba(255, 197, 61, 0.15);
-            padding: 0 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 197, 61, 0.2);
-        }
-        .upload-timer {
-            display: none;
-            background: rgba(255, 197, 61, 0.06);
-            border: 1px solid rgba(255, 197, 61, 0.15);
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 16px;
-        }
-        .upload-timer .timer-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .upload-timer .timer-row .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .upload-timer .timer-row .left .timer-label {
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 0.05em;
-        }
-        .upload-timer .timer-row .left .timer-display {
-            font-size: 1.4rem;
-            font-weight: 900;
-            font-family: 'Courier New', monospace;
-            color: #65d8ff;
-        }
-        .upload-timer .timer-row .left .timer-status {
-            font-size: 0.6rem;
-            background: rgba(101, 216, 255, 0.08);
-            color: #65d8ff;
-            padding: 2px 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(101, 216, 255, 0.1);
-        }
-        .upload-timer .timer-row .timer-warning {
-            display: none;
-            font-size: 0.7rem;
-            color: #ff6b8a;
-            background: rgba(255, 42, 109, 0.06);
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 42, 109, 0.1);
-        }
-        .upload-timer .timer-row .timer-warning.show {
-            display: block;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-        }
-        .status-badge.success {
-            background: rgba(76, 175, 80, 0.12);
-            color: #4caf50;
-            border: 1px solid rgba(76, 175, 80, 0.15);
-        }
-        .status-badge.pending {
-            background: rgba(255, 197, 61, 0.12);
-            color: #FFC53D;
-            border: 1px solid rgba(255, 197, 61, 0.15);
-        }
-        .status-badge.error {
-            background: rgba(255, 42, 109, 0.12);
-            color: #ff2a6d;
-            border: 1px solid rgba(255, 42, 109, 0.15);
-        }
-        #uploadSection {
-            display: none;
-        }
-        #uploadSection.active {
-            display: block;
-        }
-        .payment-confirm-modal .modal-box .timer-info {
-            background: rgba(255, 197, 61, 0.06);
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin: 12px 0;
-            border: 1px solid rgba(255, 197, 61, 0.1);
-        }
-        .payment-confirm-modal .modal-box .timer-info span {
-            color: #FFC53D;
-            font-weight: 700;
-        }
-        .payment-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-        }
-        .payment-actions .btn {
-            flex: 1;
-            min-width: 140px;
-        }
         .warning-text {
             font-size: 0.7rem;
             color: rgba(255, 197, 61, 0.5);
@@ -1430,6 +1206,62 @@
         }
         .warning-text strong {
             color: #FFC53D;
+        }
+        /* Modal styles for upload */
+        .modal-upload-area .upload-preview {
+            display: none;
+            margin-top: 8px;
+        }
+        .modal-upload-area .upload-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            border: 2px solid #4caf50;
+        }
+        .modal-upload-area .upload-preview .success-text {
+            color: #4caf50;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+        .modal-upload-status {
+            display: none;
+            margin-top: 8px;
+        }
+        .modal-upload-status .status-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(101, 216, 255, 0.06);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .modal-utr-result {
+            display: none;
+            margin-top: 8px;
+        }
+        .modal-utr-result .result-box {
+            background: rgba(76, 175, 80, 0.06);
+            border: 1px solid rgba(76, 175, 80, 0.15);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .modal-utr-result .result-box .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .modal-utr-result .result-box .value {
+            color: #4caf50;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+        .modal-utr-result .result-box .value.duplicate {
+            color: #ff2a6d;
         }
     </style>
 </head>
@@ -1469,9 +1301,7 @@
                     <span class="step-line"></span>
                     <div class="step-dot" data-step="2"><span class="dot"></span><span>Team</span></div>
                     <span class="step-line"></span>
-                    <div class="step-dot" data-step="3"><span class="dot"></span><span>Check</span></div>
-                    <span class="step-line"></span>
-                    <div class="step-dot" data-step="4"><span class="dot"></span><span>Payment</span></div>
+                    <div class="step-dot" data-step="3"><span class="dot"></span><span>Payment</span></div>
                 </div>
                 <form id="registrationForm" novalidate>
                     <!-- STEP 1 -->
@@ -1529,37 +1359,8 @@
                             <button type="button" class="btn btn-primary" id="step2Next">Next →</button>
                         </div>
                     </div>
-                    <!-- STEP 3 -->
+                    <!-- STEP 3: PAYMENT + SCREENSHOT UPLOAD (formerly step 4) -->
                     <div class="form-step" data-step="3">
-                        <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-bottom: 16px; letter-spacing: 0.05em;">
-                            🔍 Please select if any participant has registered for other events.
-                        </p>
-                        <div id="crossCheckContainer"></div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" id="step3Back">← Back</button>
-                            <button type="button" class="btn btn-primary" id="step3Next">Next →</button>
-                        </div>
-                    </div>
-                    <!-- STEP 4: PAYMENT + SCREENSHOT UPLOAD -->
-                    <div class="form-step" data-step="4">
-                        <!-- ════════════════════════════════════════════════════════════════ -->
-                        <!--  IN-APP BROWSER BANNER - SHOWN WHEN IN-APP WEBVIEW DETECTED   -->
-                        <!-- ════════════════════════════════════════════════════════════════ -->
-                        <div class="inapp-banner" id="inappBanner">
-                            <div class="banner-icon">📱</div>
-                            <h4>⚠️ Payment Link Blocked in In-App Browser</h4>
-                            <p>
-                                WhatsApp, Instagram, and other in-app browsers <strong>cannot</strong> open UPI payment links.
-                                <br />
-                                Please tap the <strong>⋮</strong> or <strong>•••</strong> menu and choose 
-                                <strong>"Open in Chrome"</strong> (Android) or <strong>"Open in Safari"</strong> (iPhone).
-                            </p>
-                            <div class="banner-actions">
-                                <button class="btn-copy" onclick="copyRegistrationLink()">📋 Copy Registration Link</button>
-                                <button class="btn-open" onclick="openInExternalBrowser()">🌐 Open in Browser</button>
-                            </div>
-                        </div>
-
                         <div class="payment-summary">
                             <div class="summary-row"><span>Event</span><span id="payEventName">—</span></div>
                             <div class="summary-row"><span>Team Leader</span><span id="payTeamLeader">—</span></div>
@@ -1574,126 +1375,27 @@
                             <h5 id="payhead">PAY ₹0</h5>
                             <p>Complete your payment via UPI</p>
                             
-                            <div class="receiver-name">
-                                📤 <strong>Receiver:</strong> <span id="receiverDisplay">Loading...</span>
-                            </div>
-                            
                             <div class="payment-actions">
-                                <!-- ══════════════════════════════════════════════════════ -->
-                                <!--  "Pay via UPI" button - HIDDEN in in-app browsers     -->
-                                <!--  because deep links don't work reliably there          -->
-                                <!-- ══════════════════════════════════════════════════════ -->
                                 <button class="pay-btn btn-upi" id="payUPIBtn" onclick="launchUPIPayment()">
                                     💳 PAY ₹<span id="payBtnAmount">0</span> VIA UPI
                                 </button>
-                                
-                                <!-- QR Code button - ALWAYS visible, PRIMARY method -->
                                 <button class="pay-btn btn-qr" onclick="toggleQR()">
                                     📱 SCAN QR CODE
                                 </button>
                             </div>
                             
-                            <!-- QR Code - ALWAYS visible, PRIMARY payment method -->
                             <div class="qr-container" id="qrArea">
                                 <div class="qr-frame"><img id="qrImage" src="" alt="QR Code" /></div>
-                                <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;">
-                                    ✅ Scan with any UPI app — <strong>always works</strong>
-                                </p>
-                            </div>
-                            
-                            <div class="warning-text">
-                                ⚠️ <strong>Important:</strong> Before paying, verify the recipient name shown in your UPI app matches 
-                                <strong id="warningReceiver">Loading...</strong>
-                            </div>
-                        </div>
-
-                        <!-- ═══════════ UPLOAD SECTION ═══════════ -->
-                        <div style="margin-top:24px;border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;">
-                            
-                            <!-- Upload Instructions -->
-                            <div class="upload-instructions">
-                                <span class="icon">📸</span>
-                                <div class="content">
-                                    <h4>Upload Payment Screenshot</h4>
-                                    <p>
-                                        After payment, take a screenshot showing the 
-                                        <span class="highlight">UTR</span> number and upload it below
-                                    </p>
-                                    <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:4px;">
-                                        Accepted formats: PNG, JPG, PDF (Max 5MB)
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <!-- Timer -->
-                            <div class="upload-timer" id="uploadTimer">
-                                <div class="timer-row">
-                                    <div class="left">
-                                        <span style="font-size:1.2rem;">⏱️</span>
-                                        <div>
-                                            <div class="timer-label">Time remaining to upload payment proof</div>
-                                            <div style="display:flex;align-items:center;gap:10px;">
-                                                <span class="timer-display" id="timerDisplay">5:00</span>
-                                                <span class="timer-status" id="timerStatus">Active</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="timer-warning" id="timerWarning">
-                                        ⚠️ <strong>Hurry!</strong> Timer expiring soon
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Upload Area -->
-                            <div id="uploadSection">
-                                <div class="upload-area" id="dropZone">
-                                    <div id="uploadPrompt">
-                                        <span class="icon-big">📤</span>
-                                        <p class="text-muted">Tap to upload screenshot</p>
-                                        <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
-                                    </div>
-                                    <div class="upload-preview" id="uploadPreview">
-                                        <img id="previewImage" src="" alt="Screenshot Preview" />
-                                        <p class="success-text">✅ Screenshot uploaded</p>
-                                    </div>
-                                    <input type="file" id="screenshotInput" accept="image/*,.pdf" style="display:none;" />
-                                </div>
-                                
-                                <div class="upload-status" id="uploadStatus">
-                                    <div class="status-box">
-                                        <span class="spinner"></span>
-                                        <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;" id="statusText">Processing screenshot & extracting UTR...</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="utr-result" id="utrResult">
-                                    <div class="result-box">
-                                        <div style="display:flex;align-items:center;gap:10px;">
-                                            <span style="color:#4caf50;font-size:1.2rem;" id="utrIcon">✅</span>
-                                            <div style="flex:1;">
-                                                <p class="label">Extracted UTR Number</p>
-                                                <p class="value" id="extractedUtr">—</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="button" id="submitPendingBtn" style="display:none;width:100%;padding:14px;border-radius:12px;background:rgba(255,197,61,0.08);border:1px solid rgba(255,197,61,0.2);color:#FFC53D;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:inherit;margin-top:12px;" onclick="submitPendingRegistration()">
-                                    ⏳ Submit as Pending (Contact Coordinator)
-                                </button>
-
-                                <button type="button" id="finalSubmitBtn" class="btn btn-gold" style="width:100%;border-radius:12px;margin-top:16px;padding:16px;display:none;" onclick="confirmRegistration()">
-                                    🔱 Confirm Registration
-                                </button>
+                                <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;">Scan with any UPI app</p>
                             </div>
                         </div>
 
                         <div class="form-actions" style="margin-top:16px;">
-                            <button type="button" class="btn btn-secondary" id="step4Back">← Back</button>
+                            <button type="button" class="btn btn-secondary" id="step3Back">← Back</button>
                         </div>
                     </div>
-                    <!-- STEP 5: SUCCESS -->
-                    <div class="form-step" data-step="5">
+                    <!-- STEP 4: SUCCESS -->
+                    <div class="form-step" data-step="4">
                         <div class="success-state">
                             <span class="check">✅</span>
                             <h2>Registration Complete!</h2>
@@ -1707,21 +1409,66 @@
         </div>
     </main>
     
-    <!-- PAYMENT CONFIRMATION MODAL -->
+    <!-- PAYMENT CONFIRMATION MODAL WITH UPLOAD -->
     <div class="payment-confirm-modal" id="paymentConfirmModal">
         <div class="modal-box">
             <div class="icon-big">💳</div>
             <h3>Did you complete the payment?</h3>
             <p>Please confirm if you have successfully paid <span class="highlight" id="modalAmount">₹0</span></p>
+            
             <div class="timer-info">
                 ⏱️ You have <span id="modalTimerDisplay">5:00</span> to upload the screenshot
             </div>
-            <p style="font-size:0.7rem;color:rgba(255,255,255,0.25);margin-top:4px;">
-                After payment, upload the screenshot showing the UTR number
+            
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin:8px 0;">
+                📸 After payment, upload the screenshot showing the UTR number below
             </p>
+            
+            <!-- Upload inside modal -->
+            <div id="modalUploadSection">
+                <div class="modal-upload-area" id="modalDropZone">
+                    <div id="modalUploadPrompt">
+                        <span class="icon-big">📤</span>
+                        <p class="text-muted">Tap to upload payment screenshot</p>
+                        <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
+                    </div>
+                    <div class="upload-preview" id="modalUploadPreview">
+                        <img id="modalPreviewImage" src="" alt="Screenshot Preview" />
+                        <p class="success-text">✅ Screenshot uploaded</p>
+                    </div>
+                    <input type="file" id="modalScreenshotInput" accept="image/*,.pdf" style="display:none;" />
+                </div>
+                
+                <div class="modal-upload-status" id="modalUploadStatus">
+                    <div class="status-box">
+                        <span class="spinner"></span>
+                        <span id="modalStatusText">Processing screenshot & extracting UTR...</span>
+                    </div>
+                </div>
+                
+                <div class="modal-utr-result" id="modalUtrResult">
+                    <div class="result-box">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="color:#4caf50;font-size:1.2rem;" id="modalUtrIcon">✅</span>
+                            <div style="flex:1;">
+                                <p class="label">Extracted UTR Number</p>
+                                <p class="value" id="modalExtractedUtr">—</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="btn-row">
-                <button class="btn btn-primary" onclick="confirmPaymentDone()">✅ Yes, I've Paid</button>
-                <button class="btn btn-secondary" onclick="confirmPaymentNotDone()">⏳ Not Yet</button>
+                <button class="btn btn-success" id="modalConfirmBtn" onclick="modalConfirmRegistration()" disabled>
+                    🔱 Confirm Registration
+                </button>
+                <button class="btn btn-secondary" onclick="modalRetryPayment()">⏳ Retry Payment</button>
+            </div>
+            <div style="margin-top:8px;">
+                <button class="btn btn-secondary" style="width:100%;padding:10px;font-size:0.7rem;" onclick="modalSubmitPending()">
+                    ⏳ Submit as Pending (Contact Coordinator)
+                </button>
             </div>
         </div>
     </div>
@@ -1733,7 +1480,6 @@
         // ═══════════════════════════════════════════════════════════════════
         const PAYMENT_CONFIG = {
             upiId: "7349231368@ptyes",
-            payeeName: "JESWIN JOSEPH",
             pricePerParticipant: 250,
             currency: "INR",
             transactionNote: "DEPLOMAT Registration"
@@ -1743,8 +1489,8 @@
         const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLUutqWQYDswqXG4LzJaCd8krpKAykq1LEY';
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzTZEG_4kMrakDO9SRIzENGjYzzJXUGh0B-QNHE70f-iMozYMkLXucuPanRyfMuyqlW/exec';
-        const UPLOAD_TIMER_SECONDS = 300; // 5 minutes
-        
+        const UPLOAD_TIMER_SECONDS = 300;
+
         const EVENTS = [
             { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both' },
             { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5, category: 'both' },
@@ -1783,9 +1529,7 @@
         const step2Next = document.getElementById('step2Next');
         const limitText = document.getElementById('limitText');
         const eventLimitInfo = document.getElementById('eventLimitInfo');
-        const crossCheckContainer = document.getElementById('crossCheckContainer');
         const step3Back = document.getElementById('step3Back');
-        const step3Next = document.getElementById('step3Next');
         const payEventName = document.getElementById('payEventName');
         const payTeamLeader = document.getElementById('payTeamLeader');
         const payUgPu = document.getElementById('payUgPu');
@@ -1795,35 +1539,29 @@
         const payBtnAmount = document.getElementById('payBtnAmount');
         const qrImage = document.getElementById('qrImage');
         const qrArea = document.getElementById('qrArea');
-        const step4Back = document.getElementById('step4Back');
-        const finalSubmitBtn = document.getElementById('finalSubmitBtn');
         const eventBanner = document.getElementById('eventBanner');
         const bannerEventName = document.getElementById('bannerEventName');
         const bannerEventSub = document.getElementById('bannerEventSub');
         const blockNotice = document.getElementById('blockNotice');
         const blockMsg = document.getElementById('blockMsg');
         const restoreBanner = document.getElementById('restoreBanner');
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('screenshotInput');
-        const uploadPrompt = document.getElementById('uploadPrompt');
-        const uploadPreview = document.getElementById('uploadPreview');
-        const previewImage = document.getElementById('previewImage');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const statusText = document.getElementById('statusText');
-        const utrResult = document.getElementById('utrResult');
-        const extractedUtr = document.getElementById('extractedUtr');
-        const uploadSection = document.getElementById('uploadSection');
-        const uploadTimer = document.getElementById('uploadTimer');
-        const timerDisplay = document.getElementById('timerDisplay');
-        const timerStatus = document.getElementById('timerStatus');
-        const timerWarning = document.getElementById('timerWarning');
         const paymentConfirmModal = document.getElementById('paymentConfirmModal');
         const modalAmount = document.getElementById('modalAmount');
         const modalTimerDisplay = document.getElementById('modalTimerDisplay');
-        const receiverDisplay = document.getElementById('receiverDisplay');
-        const warningReceiver = document.getElementById('warningReceiver');
         const payUPIBtn = document.getElementById('payUPIBtn');
-        const inappBanner = document.getElementById('inappBanner');
+        
+        // Modal upload elements
+        const modalDropZone = document.getElementById('modalDropZone');
+        const modalFileInput = document.getElementById('modalScreenshotInput');
+        const modalUploadPrompt = document.getElementById('modalUploadPrompt');
+        const modalUploadPreview = document.getElementById('modalUploadPreview');
+        const modalPreviewImage = document.getElementById('modalPreviewImage');
+        const modalUploadStatus = document.getElementById('modalUploadStatus');
+        const modalStatusText = document.getElementById('modalStatusText');
+        const modalUtrResult = document.getElementById('modalUtrResult');
+        const modalExtractedUtr = document.getElementById('modalExtractedUtr');
+        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        const modalUtrIcon = document.getElementById('modalUtrIcon');
 
         // ─── STATE ──────────────────────────────────────────────────────────
         let currentStep = 1;
@@ -1834,126 +1572,35 @@
         let selectedCategory = null;
         let uploadedFile = null;
         let extractedUTR = null;
-        let qrVisible = true; // QR is PRIMARY - always visible
+        let qrVisible = false;
         let uploadTimerInterval = null;
         let uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
         let isPendingSubmission = false;
-        let timerStarted = false;
-        let uploadDisabled = false;
         let registrationComplete = false;
         let paymentInitiated = false;
         let modalVisible = false;
         let paymentStartTime = null;
         let isPaymentButtonDisabled = false;
+        let isModalUploadProcessed = false;
 
         // ═══════════════════════════════════════════════════════════════════
-        //  IN-APP BROWSER DETECTION
-        // ═══════════════════════════════════════════════════════════════════
-        function detectInAppBrowser() {
-            const ua = navigator.userAgent || '';
-            const vendor = navigator.vendor || '';
-            const platform = navigator.platform || '';
-            
-            // Check for known in-app browser patterns
-            const inAppPatterns = [
-                'wv',                          // WebView
-                'FBAV',                        // Facebook App
-                'FBAN',                        // Facebook App
-                'Instagram',                   // Instagram
-                'Line',                        // Line
-                'WhatsApp',                    // WhatsApp
-                'Messenger',                   // Facebook Messenger
-                'Snapchat',                    // Snapchat
-                'Twitter',                     // Twitter/X
-                'LinkedIn',                    // LinkedIn
-                'Pinterest',                   // Pinterest
-                'TikTok',                      // TikTok
-                'WeChat',                      // WeChat
-                'Kakao',                       // KakaoTalk
-                /; wv\)/,                      // Android WebView
-                /; fb_iab\)/,                  // Facebook in-app browser
-                /; instagram\)/,               // Instagram in-app browser
-                /; WhatsApp\)/,                // WhatsApp in-app browser
-                /; Messenger\)/,               // Messenger in-app browser
-                /; Line\)/,                    // Line in-app browser
-                /; Snapchat\)/,                // Snapchat in-app browser
-                /; Twitter\)/,                 // Twitter/X in-app browser
-                /; LinkedIn\)/,                // LinkedIn in-app browser
-                /; Pinterest\)/,               // Pinterest in-app browser
-                /; TikTok\)/,                  // TikTok in-app browser
-                /; WeChat\)/,                  // WeChat in-app browser
-            ];
-            
-            // Check user-agent
-            for (const pattern of inAppPatterns) {
-                if (typeof pattern === 'string') {
-                    if (ua.includes(pattern)) return true;
-                } else if (pattern.test(ua)) {
-                    return true;
-                }
-            }
-            
-            // Check for navigator properties
-            // @ts-ignore - these are non-standard properties
-            if (navigator.standalone === true) return true; // iOS standalone mode
-            
-            // Check for window properties
-            // @ts-ignore
-            if (window._phantom || window.callPhantom) return true;
-            
-            // Check for WebView specific features
-            // @ts-ignore
-            if (window.navigator && window.navigator.standalone) return true;
-            
-            // Check for Android WebView
-            if (ua.includes('Android') && ua.includes('wv')) return true;
-            
-            // Check for iOS WebView
-            if (ua.includes('iPhone') || ua.includes('iPad')) {
-                // @ts-ignore
-                if (window.webkit && window.webkit.messageHandlers) return true;
-                if (ua.includes('Safari') && !ua.includes('CriOS') && !ua.includes('FxiOS')) {
-                    // Might be in-app browser if no Chrome/Firefox but has Safari UA
-                    // Additional check: if no address bar or toolbar (hard to detect)
-                }
-            }
-            
-            return false;
-        }
-
-        function isAndroid() {
-            return /Android/i.test(navigator.userAgent);
-        }
-
-        function isIOS() {
-            return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-        }
-
-        // ═══════════════════════════════════════════════════════════════════
-        //  PAYMENT FUNCTIONS - SINGLE IMPLEMENTATION
+        //  PAYMENT FUNCTIONS
         // ═══════════════════════════════════════════════════════════════════
 
         function calculatePaymentAmount(participantCount) {
             const count = Number(participantCount);
-            if (!Number.isInteger(count) || count <= 0) {
-                return 0;
-            }
+            if (!Number.isInteger(count) || count <= 0) return 0;
             return count * PAYMENT_CONFIG.pricePerParticipant;
         }
 
-        // ═══════════════════════════════════════════════════════════════════
-        //  FIXED: generateUPILink - Manual encoding with %20 for spaces
-        // ═══════════════════════════════════════════════════════════════════
         function generateUPILink(amount) {
-            // Manually construct the UPI URL with proper encoding
-            // Spaces in 'pn' must be %20, not +
-            const pa = encodeURIComponent(PAYMENT_CONFIG.upiId);
-            const pn = encodeURIComponent(PAYMENT_CONFIG.payeeName).replace(/\+/g, '%20');
-            const am = Number(amount).toFixed(2);
-            const cu = PAYMENT_CONFIG.currency;
-            const tn = encodeURIComponent(PAYMENT_CONFIG.transactionNote).replace(/\+/g, '%20');
-            
-            return `upi://pay?pa=${pa}&pn=${pn}&am=${am}&cu=${cu}&tn=${tn}`;
+            const params = new URLSearchParams({
+                pa: PAYMENT_CONFIG.upiId,
+                am: Number(amount).toFixed(2),
+                cu: PAYMENT_CONFIG.currency,
+                tn: PAYMENT_CONFIG.transactionNote
+            });
+            return `upi://pay?${params.toString()}`;
         }
 
         function getTotalAmount() {
@@ -1961,14 +1608,11 @@
             return calculatePaymentAmount(count);
         }
 
-        // ─── LAUNCH UPI PAYMENT (SINGLE ENTRY POINT) ─────────────────────
         function launchUPIPayment() {
-            // Prevent double-click / repeated launches
             if (isPaymentButtonDisabled) {
                 alert('⏳ Payment is already in progress. Please complete or cancel it.');
                 return;
             }
-            
             if (registrationComplete) {
                 alert('✅ Registration already complete.');
                 return;
@@ -1980,7 +1624,6 @@
                 return;
             }
             
-            // Validate registration data
             const leaderName = getLeaderName();
             const college = collegeInput.value.trim();
             const participants = getParticipantsList();
@@ -1992,12 +1635,10 @@
                 return;
             }
             
-            // Double-click protection
             isPaymentButtonDisabled = true;
             payUPIBtn.disabled = true;
             payUPIBtn.innerHTML = '<span class="spinner"></span> Opening UPI...';
             
-            // Save payment state
             paymentInitiated = true;
             paymentStartTime = Date.now();
             saveRegistrationState();
@@ -2018,100 +1659,19 @@
             localStorage.setItem('payment_initiated', 'true');
             localStorage.setItem('payment_start_time', paymentStartTime.toString());
             
-            // ═══════════════════════════════════════════════════════════════
-            //  ENHANCED: Multi-strategy UPI launch
-            //  Strategy 1: Direct navigation (works in most browsers)
-            //  Strategy 2: Android intent:// fallback for Chrome
-            //  Strategy 3: window.location.assign as fallback
-            // ═══════════════════════════════════════════════════════════════
             const upiLink = generateUPILink(total);
             
-            // Check if we're in an in-app browser - if so, don't even try the UPI link
-            if (detectInAppBrowser()) {
-                // Show the in-app banner and scroll to it
-                inappBanner.classList.add('show');
-                inappBanner.scrollIntoView({ behavior: 'smooth' });
-                
-                // Re-enable button
-                isPaymentButtonDisabled = false;
-                payUPIBtn.disabled = false;
-                const totalAmount = getTotalAmount();
-                payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
-                
-                // Also show QR code prominently
-                qrArea.style.display = 'block';
-                qrVisible = true;
-                updateQR(totalAmount);
-                
-                alert('📱 Please use the QR code to pay, or open this page in Chrome/Safari.');
-                return;
-            }
-            
-            // Determine if Android for intent:// fallback
-            const isAndroidDevice = isAndroid();
-            
             try {
-                if (isAndroidDevice) {
-                    // ═══════════════════════════════════════════════════════
-                    //  ANDROID: Use intent:// URL with package fallback
-                    //  This reliably triggers the UPI app chooser on Chrome
-                    // ═══════════════════════════════════════════════════════
-                    
-                    // Parse the UPI link to get parameters
-                    const upiUrl = new URL(upiLink);
-                    const params = upiUrl.searchParams;
-                    
-                    // Build the intent URL
-                    const packageName = 'in.org.npci.upiapp'; // UPI reference app
-                    const intentUrl = `intent://pay?${params.toString()}#Intent;scheme=upi;action=android.intent.action.VIEW;package=${packageName};S.browser_fallback_url=${encodeURIComponent(window.location.href)};end;`;
-                    
-                    // Try intent:// first
-                    window.location.href = intentUrl;
-                    
-                    // Fallback: if intent fails, try the regular UPI link after a delay
-                    setTimeout(() => {
-                        // Check if still on the page (intent didn't redirect)
-                        window.location.href = upiLink;
-                    }, 2500);
-                    
-                    // Re-enable button after 8 seconds
-                    setTimeout(() => {
-                        isPaymentButtonDisabled = false;
-                        payUPIBtn.disabled = false;
-                        const totalAmount = getTotalAmount();
-                        payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
-                    }, 8000);
-                    
-                } else {
-                    // ═══════════════════════════════════════════════════════
-                    //  iOS / Other: Direct navigation
-                    // ═══════════════════════════════════════════════════════
-                    window.location.href = upiLink;
-                    
-                    // Re-enable button after 8 seconds (in case user returns quickly)
-                    setTimeout(() => {
-                        isPaymentButtonDisabled = false;
-                        payUPIBtn.disabled = false;
-                        const totalAmount = getTotalAmount();
-                        payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
-                    }, 8000);
-                }
+                window.location.href = upiLink;
+                setTimeout(() => {
+                    isPaymentButtonDisabled = false;
+                    payUPIBtn.disabled = false;
+                    const totalAmount = getTotalAmount();
+                    payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
+                }, 8000);
             } catch (e) {
-                // Fallback if URL parsing fails
                 console.warn('UPI launch fallback:', e);
-                
-                try {
-                    if (isAndroidDevice) {
-                        const intentUrl = `intent://pay?${new URL(upiLink).searchParams.toString()}#Intent;scheme=upi;action=android.intent.action.VIEW;end;`;
-                        window.location.assign(intentUrl);
-                    } else {
-                        window.location.assign(upiLink);
-                    }
-                } catch (e2) {
-                    // Last resort
-                    window.location.assign(upiLink);
-                }
-                
+                window.location.assign(upiLink);
                 setTimeout(() => {
                     isPaymentButtonDisabled = false;
                     payUPIBtn.disabled = false;
@@ -2121,67 +1681,6 @@
             }
         }
 
-        // ─── COPY REGISTRATION LINK (for in-app browser users) ──────────
-        function copyRegistrationLink() {
-            const url = window.location.href;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('✅ Registration link copied!\n\nOpen it in Chrome or Safari to pay via UPI.');
-                }).catch(() => {
-                    fallbackCopyLink(url);
-                });
-            } else {
-                fallbackCopyLink(url);
-            }
-        }
-
-        function fallbackCopyLink(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.top = '-9999px';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                alert('✅ Registration link copied!\n\nOpen it in Chrome or Safari to pay via UPI.');
-            } catch (e) {
-                alert('📋 Please copy this link manually:\n\n' + text);
-            }
-            document.body.removeChild(textarea);
-        }
-
-        // ─── OPEN IN EXTERNAL BROWSER ────────────────────────────────────
-        function openInExternalBrowser() {
-            const url = window.location.href;
-            
-            // Try to use the native "Open in Browser" intent on Android
-            if (isAndroid()) {
-                try {
-                    // Try using the WebView's "Open in Browser" capability
-                    // @ts-ignore
-                    if (window.Android && window.Android.openInBrowser) {
-                        // @ts-ignore
-                        window.Android.openInBrowser(url);
-                        return;
-                    }
-                } catch (e) {}
-                
-                // Fallback: show instructions
-                alert('📱 Please tap the ⋮ (menu) icon in the top-right, then select "Open in Chrome" or "Open in Browser".');
-                return;
-            }
-            
-            if (isIOS()) {
-                alert('📱 Please tap the share icon (📤 or ⬆️), then select "Open in Safari".');
-                return;
-            }
-            
-            // Generic fallback
-            alert('📱 Please open this page in your device\'s browser (Chrome/Safari) to pay via UPI.');
-        }
-
-        // ─── HELPER FUNCTIONS ─────────────────────────────────────────────
         function getLeaderName() {
             const firstEntry = playersContainer.querySelector('.player-entry');
             if (firstEntry) {
@@ -2236,8 +1735,8 @@
         }
 
         function showBlockNotice(message) {
-            if (message) { blockMsg.innerHTML = message;
-                blockNotice.classList.add('show'); } else { blockNotice.classList.remove('show'); }
+            if (message) { blockMsg.innerHTML = message; blockNotice.classList.add('show'); } 
+            else { blockNotice.classList.remove('show'); }
         }
 
         // ─── STEP MANAGEMENT ──────────────────────────────────────────────
@@ -2256,25 +1755,8 @@
                 else if (num < step) dot.classList.add('done');
             });
             currentStep = step;
-            if (step === 2) { initializePlayers();
-                updateEventLimitInfo();
-                validateCategoryEventPair(); }
-            if (step === 3) { initializeCrossCheck(); }
-            if (step === 4) { 
-                updatePaymentSummary();
-                // Show in-app banner if detected
-                if (detectInAppBrowser()) {
-                    inappBanner.classList.add('show');
-                    // Hide the UPI button in in-app browser
-                    payUPIBtn.style.display = 'none';
-                } else {
-                    inappBanner.classList.remove('show');
-                    payUPIBtn.style.display = 'flex';
-                }
-                // Make QR always visible
-                qrArea.style.display = 'block';
-                qrVisible = true;
-            }
+            if (step === 2) { initializePlayers(); updateEventLimitInfo(); validateCategoryEventPair(); }
+            if (step === 3) { updatePaymentSummary(); }
             saveRegistrationState();
         }
 
@@ -2288,9 +1770,7 @@
                 if (!eventVal) { alert('Please select an event.'); return false; }
                 const cat = ugPuSelected.value;
                 const result = checkCategoryEventCompatibility(cat, eventVal);
-                if (!result.valid) { const cleanMsg = result.message.replace(/<[^>]*>/g, '');
-                    alert(`⛔ ${cleanMsg}`);
-                    showBlockNotice(result.message); return false; }
+                if (!result.valid) { const cleanMsg = result.message.replace(/<[^>]*>/g, ''); alert(`⛔ ${cleanMsg}`); showBlockNotice(result.message); return false; }
                 showBlockNotice('');
                 selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
                 if (!selectedEvent) { alert('Please select a valid event.'); return false; }
@@ -2316,6 +1796,16 @@
                 return true;
             }
             return true;
+        }
+
+        function validateCategoryEventPair() {
+            const cat = getSelectedCategory();
+            const val = eventSelect.value;
+            if (cat && val) {
+                const result = checkCategoryEventCompatibility(cat, val);
+                if (!result.valid) showBlockNotice(result.message);
+                else showBlockNotice('');
+            }
         }
 
         // ─── PLAYERS ───────────────────────────────────────────────────────
@@ -2349,10 +1839,8 @@
             div.innerHTML = headerHtml + fieldsHtml;
             if (!isFirst) {
                 div.querySelector('.remove-btn').addEventListener('click', () => {
-                    if (playersContainer.children.length > currentMin) { div.remove();
-                        updatePlayerNumbers();
-                        updateAddButtonState();
-                        saveRegistrationState(); } else { alert(`Minimum ${currentMin} participant(s) required.`); }
+                    if (playersContainer.children.length > currentMin) { div.remove(); updatePlayerNumbers(); updateAddButtonState(); saveRegistrationState(); } 
+                    else { alert(`Minimum ${currentMin} participant(s) required.`); }
                 });
             }
             playersContainer.appendChild(div);
@@ -2367,9 +1855,8 @@
                 const isFirst = index === 0;
                 const numSpan = entry.querySelector('.player-number');
                 if (numSpan) {
-                    if (isFirst) { numSpan.innerHTML = '👑 Team Leader <span class="leader-badge">Leader</span>';
-                        numSpan.className = 'player-number leader'; } else { numSpan.textContent = `Player ${index+1}`;
-                        numSpan.className = 'player-number'; }
+                    if (isFirst) { numSpan.innerHTML = '👑 Team Leader <span class="leader-badge">Leader</span>'; numSpan.className = 'player-number leader'; } 
+                    else { numSpan.textContent = `Player ${index+1}`; numSpan.className = 'player-number'; }
                 }
                 const removeBtn = entry.querySelector('.remove-btn');
                 if (removeBtn) { removeBtn.style.display = isFirst ? 'none' : 'block'; }
@@ -2379,9 +1866,8 @@
 
         function updateAddButtonState() {
             const count = playersContainer.children.length;
-            if (count >= currentMax) { addPlayerBtn.disabled = true;
-                addPlayerBtn.textContent = `✓ Max ${currentMax} players reached`; } else { addPlayerBtn.disabled = false;
-                addPlayerBtn.textContent = '+ Add Player'; }
+            if (count >= currentMax) { addPlayerBtn.disabled = true; addPlayerBtn.textContent = `✓ Max ${currentMax} players reached`; } 
+            else { addPlayerBtn.disabled = false; addPlayerBtn.textContent = '+ Add Player'; }
         }
 
         function updateEventLimitInfo() {
@@ -2392,49 +1878,17 @@
             currentMax = limits.max;
             let catLabel = limits.category === 'pu' ? '🔵 PU Only' : limits.category === 'ug' ? '🟣 UG Only' : '🟢 UG + PU';
             if (limits.min === limits.max) {
-                limitText.innerHTML =
-                    `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)`;
+                limitText.innerHTML = `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)`;
             } else {
-                limitText.innerHTML =
-                    `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed (including Team Leader)`;
+                limitText.innerHTML = `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed (including Team Leader)`;
             }
             const currentCount = playersContainer.children.length;
-            if (currentCount > currentMax) { while (playersContainer.children.length > currentMax) playersContainer.lastChild.remove();
-                updatePlayerNumbers(); } else if (currentCount < currentMin) { while (playersContainer.children.length <
-                    currentMin) addPlayer(playersContainer.children.length === 0); }
+            if (currentCount > currentMax) { while (playersContainer.children.length > currentMax) playersContainer.lastChild.remove(); updatePlayerNumbers(); } 
+            else if (currentCount < currentMin) { while (playersContainer.children.length < currentMin) addPlayer(playersContainer.children.length === 0); }
             updateAddButtonState();
         }
 
-        // ─── CROSS-CHECK ──────────────────────────────────────────────────
-        function initializeCrossCheck() {
-            crossCheckContainer.innerHTML = '';
-            const entries = playersContainer.querySelectorAll('.player-entry');
-            const currentEventId = selectedEvent ? selectedEvent.id : -1;
-
-            function getEventOptions(excludeId) {
-                let options = '<option value="">— Select —</option>';
-                EVENTS.forEach(e => { if (e.id !== excludeId) options += `<option value="${e.id}">${e.name} · ${e.sub}</option>`; });
-                return options;
-            }
-            entries.forEach((entry, index) => {
-                const nameInput = entry.querySelector('.player-name');
-                const displayName = nameInput ? nameInput.value.trim() || `Player ${index+1}` : `Player ${index+1}`;
-                const isLeader = index === 0;
-                const div = document.createElement('div');
-                div.className = 'cross-check-entry';
-                div.innerHTML =
-                    `<div class="player-header"><span class="player-number">${isLeader?'👑 ':''}${displayName}${isLeader?'<span class="leader-badge">Leader</span>':''}</span><span class="event-badge">${selectedEvent?selectedEvent.name:'Current Event'}</span></div>
-                            <div class="cross-check-row"><label><input type="checkbox" class="cross-check-input" /> Registered for other event?</label>
-                            <select class="cross-check-select" disabled>${getEventOptions(currentEventId)}</select></div>`;
-                const check = div.querySelector('.cross-check-input');
-                const select = div.querySelector('.cross-check-select');
-                check.addEventListener('change', () => { select.disabled = !check.checked; if (!check.checked) select.value =
-                        ''; });
-                crossCheckContainer.appendChild(div);
-            });
-        }
-
-        // ─── PAYMENT & SCREENSHOT UPLOAD ──────────────────────────────────
+        // ─── PAYMENT SUMMARY ──────────────────────────────────────────────
         function updatePaymentSummary() {
             const count = playersContainer.children.length;
             const total = calculatePaymentAmount(count);
@@ -2448,21 +1902,7 @@
             payTotal.textContent = `₹${total}`;
             payhead.textContent = `PAY ₹${total}`;
             payBtnAmount.textContent = total;
-            
-            // Update receiver display
-            receiverDisplay.textContent = PAYMENT_CONFIG.payeeName;
-            warningReceiver.textContent = PAYMENT_CONFIG.payeeName;
-            
             updateQR(total);
-            
-            // Show/hide UPI button based on in-app browser detection
-            if (detectInAppBrowser()) {
-                payUPIBtn.style.display = 'none';
-                inappBanner.classList.add('show');
-            } else {
-                payUPIBtn.style.display = 'flex';
-                inappBanner.classList.remove('show');
-            }
         }
 
         function updateQR(amount) {
@@ -2472,19 +1912,18 @@
 
         function toggleQR() {
             qrVisible = !qrVisible;
-            qrArea.style.display = qrVisible ? 'block' : 'none';
+            qrArea.classList.toggle('active', qrVisible);
             if (qrVisible) updateQR(getTotalAmount());
         }
 
         // ─── PAYMENT CONFIRMATION MODAL ───────────────────────────────────
         function showPaymentConfirmModal() {
-            if (registrationComplete || uploadDisabled) return;
+            if (registrationComplete) return;
             if (modalVisible) return;
             
             const total = getTotalAmount();
             modalAmount.textContent = `₹${total}`;
             
-            // Calculate remaining time from original start
             let remaining = UPLOAD_TIMER_SECONDS;
             if (paymentStartTime) {
                 const elapsed = Math.floor((Date.now() - paymentStartTime) / 1000);
@@ -2493,109 +1932,38 @@
             uploadTimeRemaining = remaining;
             modalTimerDisplay.textContent = formatTime(remaining);
             
+            // Reset modal upload state
+            isModalUploadProcessed = false;
+            modalConfirmBtn.disabled = true;
+            modalUploadPreview.style.display = 'none';
+            modalUploadStatus.style.display = 'none';
+            modalUtrResult.style.display = 'none';
+            modalUploadPrompt.style.display = 'block';
+            modalDropZone.style.borderColor = 'rgba(255,255,255,0.1)';
+            uploadedFile = null;
+            extractedUTR = null;
+            
             paymentConfirmModal.classList.add('active');
             modalVisible = true;
             
-            // Update timer in modal every second
-            if (uploadTimerInterval) {
-                clearInterval(uploadTimerInterval);
-            }
+            if (uploadTimerInterval) clearInterval(uploadTimerInterval);
             uploadTimerInterval = setInterval(() => {
                 uploadTimeRemaining--;
                 if (uploadTimeRemaining < 0) uploadTimeRemaining = 0;
                 modalTimerDisplay.textContent = formatTime(uploadTimeRemaining);
                 if (uploadTimeRemaining <= 0) {
                     clearInterval(uploadTimerInterval);
-                    paymentConfirmModal.classList.remove('active');
-                    modalVisible = false;
-                    alert('⏰ Time expired! Please contact the coordinator.');
-                    submitPendingRegistration();
+                    uploadTimerInterval = null;
+                    if (!isModalUploadProcessed && !registrationComplete) {
+                        modalTimerDisplay.textContent = '00:00';
+                        modalTimerDisplay.style.color = '#ff2a6d';
+                        alert('⏰ Time expired! Please contact the coordinator.');
+                        paymentConfirmModal.classList.remove('active');
+                        modalVisible = false;
+                        submitPendingRegistration();
+                    }
                 }
             }, 1000);
-        }
-
-        function confirmPaymentDone() {
-            paymentConfirmModal.classList.remove('active');
-            modalVisible = false;
-            if (uploadTimerInterval) clearInterval(uploadTimerInterval);
-            
-            // Show upload section and start timer
-            uploadSection.style.display = 'block';
-            uploadSection.classList.add('active');
-            uploadTimer.style.display = 'block';
-            
-            // Use the remaining time from the modal
-            timerDisplay.textContent = formatTime(uploadTimeRemaining);
-            timerStarted = true;
-            
-            // Start the timer if not already running
-            if (!uploadTimerInterval) {
-                uploadTimerInterval = setInterval(() => {
-                    uploadTimeRemaining--;
-                    timerDisplay.textContent = formatTime(uploadTimeRemaining);
-                    
-                    if (uploadTimeRemaining < 60 && uploadTimeRemaining > 0) {
-                        timerWarning.classList.add('show');
-                        timerDisplay.style.color = '#ff6b8a';
-                        timerStatus.textContent = 'Expiring';
-                        timerStatus.style.background = 'rgba(255,42,109,0.08)';
-                        timerStatus.style.color = '#ff6b8a';
-                    }
-                    
-                    if (uploadTimeRemaining <= 0) {
-                        clearInterval(uploadTimerInterval);
-                        uploadTimerInterval = null;
-                        timerDisplay.textContent = '00:00';
-                        timerDisplay.style.color = '#ff2a6d';
-                        timerStatus.textContent = 'Expired';
-                        timerStatus.style.background = 'rgba(255,42,109,0.12)';
-                        timerStatus.style.color = '#ff2a6d';
-                        timerWarning.innerHTML = '⏰ <strong>Time expired!</strong> Submit as Pending or contact coordinator.';
-                        timerWarning.classList.add('show');
-                        
-                        document.getElementById('submitPendingBtn').style.display = 'block';
-                        dropZone.style.opacity = '0.5';
-                        dropZone.style.pointerEvents = 'none';
-                        
-                        if (!isPendingSubmission) {
-                            submitPendingRegistration();
-                        }
-                    }
-                }, 1000);
-            }
-            
-            // Scroll to upload section
-            document.getElementById('uploadSection').scrollIntoView({ behavior: 'smooth' });
-            localStorage.removeItem('payment_initiated');
-            sessionStorage.removeItem('returning_from_payment');
-            saveRegistrationState();
-        }
-
-        function confirmPaymentNotDone() {
-            paymentConfirmModal.classList.remove('active');
-            modalVisible = false;
-            if (uploadTimerInterval) clearInterval(uploadTimerInterval);
-            
-            if (confirm('⏳ Would you like to try the payment again?')) {
-                // Reset button state
-                isPaymentButtonDisabled = false;
-                payUPIBtn.disabled = false;
-                const total = getTotalAmount();
-                payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + total + '</span> VIA UPI';
-                alert('📱 Please complete the payment and come back to this page.');
-                localStorage.setItem('payment_initiated', 'true');
-                sessionStorage.setItem('returning_from_payment', 'true');
-                saveRegistrationState();
-            } else {
-                alert('⏳ You can come back later to complete your registration.');
-                localStorage.removeItem('payment_initiated');
-                sessionStorage.removeItem('returning_from_payment');
-                // Reset button state
-                isPaymentButtonDisabled = false;
-                payUPIBtn.disabled = false;
-                const total = getTotalAmount();
-                payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + total + '</span> VIA UPI';
-            }
         }
 
         function formatTime(seconds) {
@@ -2604,65 +1972,37 @@
             return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
-        // ─── CHECK DUPLICATE UTR ──────────────────────────────────────────
-        async function checkDuplicateUTR(utr) {
-            try {
-                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-                const localMatch = db.find(r => r.txn === utr && (r.status === 'VERIFIED' || r.status === 'PENDING'));
-                if (localMatch) return true;
-                
-                if (supabaseClient) {
-                    const { data, error } = await supabaseClient
-                        .from('registrations')
-                        .select('txn')
-                        .eq('txn', utr)
-                        .in('status', ['VERIFIED', 'PENDING']);
-                    if (!error && data && data.length > 0) {
-                        return true;
-                    }
-                }
-                return false;
-            } catch (e) {
-                console.warn('Error checking duplicate UTR:', e);
-                return false;
-            }
-        }
-
-        // ─── SCREENSHOT UPLOAD HANDLING ──────────────────────────────────
-        dropZone.addEventListener('click', () => {
-            if (!uploadDisabled) fileInput.click();
+        // ─── MODAL UPLOAD HANDLING ────────────────────────────────────────
+        modalDropZone.addEventListener('click', () => {
+            if (!registrationComplete && !isModalUploadProcessed) modalFileInput.click();
         });
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0 && !uploadDisabled) {
-                handleFile(e.target.files[0]);
+        modalFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0 && !registrationComplete && !isModalUploadProcessed) {
+                handleModalFile(e.target.files[0]);
             }
         });
 
-        dropZone.addEventListener('dragover', (e) => {
+        modalDropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            if (!uploadDisabled) dropZone.classList.add('dragover');
+            if (!registrationComplete && !isModalUploadProcessed) modalDropZone.classList.add('dragover');
         });
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
+        modalDropZone.addEventListener('dragleave', () => {
+            modalDropZone.classList.remove('dragover');
         });
 
-        dropZone.addEventListener('drop', (e) => {
+        modalDropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.classList.remove('dragover');
-            if (!uploadDisabled && e.dataTransfer.files.length > 0) {
-                handleFile(e.dataTransfer.files[0]);
+            modalDropZone.classList.remove('dragover');
+            if (!registrationComplete && !isModalUploadProcessed && e.dataTransfer.files.length > 0) {
+                handleModalFile(e.dataTransfer.files[0]);
             }
         });
 
-        function handleFile(file) {
-            if (uploadDisabled) {
-                alert('📌 Upload has been disabled. Registration already submitted.');
-                return;
-            }
-            if (registrationComplete) {
-                alert('✅ Registration already complete.');
+        function handleModalFile(file) {
+            if (registrationComplete || isModalUploadProcessed) {
+                alert('Registration already complete or upload processed.');
                 return;
             }
             
@@ -2680,14 +2020,190 @@
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                uploadPrompt.style.display = 'none';
-                uploadPreview.style.display = 'block';
-                dropZone.style.borderColor = '#4caf50';
+                modalPreviewImage.src = e.target.result;
+                modalUploadPrompt.style.display = 'none';
+                modalUploadPreview.style.display = 'block';
+                modalDropZone.style.borderColor = '#4caf50';
             };
             reader.readAsDataURL(file);
             
-            processScreenshot(file);
+            processModalScreenshot(file);
+        }
+
+        async function processModalScreenshot(file) {
+            modalUploadStatus.style.display = 'block';
+            modalStatusText.textContent = 'Processing screenshot & extracting UTR...';
+            modalConfirmBtn.disabled = true;
+            modalUtrResult.style.display = 'none';
+            
+            try {
+                const Tesseract = window.Tesseract;
+                if (!Tesseract) throw new Error('OCR library not loaded.');
+                
+                const imageUrl = URL.createObjectURL(file);
+                const result = await Tesseract.recognize(
+                    imageUrl,
+                    'eng',
+                    {
+                        logger: (m) => {
+                            if (m.status === 'recognizing text') {
+                                modalStatusText.textContent = `Processing... ${Math.round(m.progress * 100)}%`;
+                            }
+                        }
+                    }
+                );
+                
+                const text = result.data.text;
+                console.log('📝 OCR Extracted Text:', text);
+                
+                const utrMatch = text.match(/\b\d{12}\b/);
+                
+                if (utrMatch) {
+                    extractedUTR = utrMatch[0];
+                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                    if (isDuplicate) {
+                        modalUtrResult.style.display = 'block';
+                        modalUtrIcon.textContent = '⚠️';
+                        modalUtrIcon.style.color = '#ff2a6d';
+                        modalExtractedUtr.textContent = extractedUTR;
+                        modalExtractedUtr.className = 'value duplicate';
+                        document.querySelector('.modal-utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                        document.querySelector('.modal-utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                        modalStatusText.textContent = '⚠️ This UTR has already been used!';
+                        modalUploadStatus.style.display = 'none';
+                        modalConfirmBtn.disabled = true;
+                        return;
+                    }
+                    
+                    modalExtractedUtr.textContent = extractedUTR;
+                    modalExtractedUtr.className = 'value';
+                    modalUtrIcon.textContent = '✅';
+                    modalUtrIcon.style.color = '#4caf50';
+                    document.querySelector('.modal-utr-result .result-box .label').textContent = 'Extracted UTR Number';
+                    modalUtrResult.style.display = 'block';
+                    modalUploadStatus.style.display = 'none';
+                    modalStatusText.textContent = '✅ UTR extracted successfully!';
+                    modalConfirmBtn.disabled = false;
+                    isModalUploadProcessed = true;
+                    
+                    await uploadScreenshotToDrive(file, extractedUTR);
+                    
+                } else {
+                    const upiMatch = text.match(/[A-Z0-9]{8,15}/);
+                    if (upiMatch && upiMatch[0].length >= 8) {
+                        extractedUTR = upiMatch[0];
+                        const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                        if (isDuplicate) {
+                            modalUtrResult.style.display = 'block';
+                            modalUtrIcon.textContent = '⚠️';
+                            modalUtrIcon.style.color = '#ff2a6d';
+                            modalExtractedUtr.textContent = extractedUTR;
+                            modalExtractedUtr.className = 'value duplicate';
+                            document.querySelector('.modal-utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                            document.querySelector('.modal-utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                            modalStatusText.textContent = '⚠️ This UTR has already been used!';
+                            modalUploadStatus.style.display = 'none';
+                            modalConfirmBtn.disabled = true;
+                            return;
+                        }
+                        
+                        modalExtractedUtr.textContent = extractedUTR;
+                        modalExtractedUtr.className = 'value';
+                        modalUtrIcon.textContent = '✅';
+                        modalUtrIcon.style.color = '#4caf50';
+                        document.querySelector('.modal-utr-result .result-box .label').textContent = 'Transaction ID';
+                        modalUtrResult.style.display = 'block';
+                        modalUploadStatus.style.display = 'none';
+                        modalStatusText.textContent = '✅ Transaction ID extracted!';
+                        modalConfirmBtn.disabled = false;
+                        isModalUploadProcessed = true;
+                        
+                        await uploadScreenshotToDrive(file, extractedUTR);
+                    } else {
+                        modalUploadStatus.style.display = 'none';
+                        const manualUtr = prompt('⚠️ Could not detect UTR automatically.\n\nPlease enter the 12-digit UTR number from your payment app:');
+                        if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
+                            extractedUTR = manualUtr.replace(/\D/g, '');
+                            const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                            if (isDuplicate) {
+                                modalUtrResult.style.display = 'block';
+                                modalUtrIcon.textContent = '⚠️';
+                                modalUtrIcon.style.color = '#ff2a6d';
+                                modalExtractedUtr.textContent = extractedUTR;
+                                modalExtractedUtr.className = 'value duplicate';
+                                document.querySelector('.modal-utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                                document.querySelector('.modal-utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                                modalUploadStatus.style.display = 'none';
+                                modalConfirmBtn.disabled = true;
+                                return;
+                            }
+                            modalExtractedUtr.textContent = extractedUTR;
+                            modalExtractedUtr.className = 'value';
+                            modalUtrIcon.textContent = '✅';
+                            modalUtrIcon.style.color = '#4caf50';
+                            document.querySelector('.modal-utr-result .result-box .label').textContent = 'Manual UTR Entry';
+                            modalUtrResult.style.display = 'block';
+                            modalConfirmBtn.disabled = false;
+                            isModalUploadProcessed = true;
+                            await uploadScreenshotToDrive(file, extractedUTR);
+                        } else {
+                            alert('❌ Invalid UTR. Please try uploading the screenshot again.');
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                console.error('OCR Error:', error);
+                modalUploadStatus.style.display = 'none';
+                const manualUtr = prompt('⚠️ Error processing screenshot.\n\nPlease enter the 12-digit UTR number from your payment app:');
+                if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
+                    extractedUTR = manualUtr.replace(/\D/g, '');
+                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
+                    if (isDuplicate) {
+                        modalUtrResult.style.display = 'block';
+                        modalUtrIcon.textContent = '⚠️';
+                        modalUtrIcon.style.color = '#ff2a6d';
+                        modalExtractedUtr.textContent = extractedUTR;
+                        modalExtractedUtr.className = 'value duplicate';
+                        document.querySelector('.modal-utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
+                        document.querySelector('.modal-utr-result .result-box .label').textContent = '❌ UTR Already Used';
+                        modalConfirmBtn.disabled = true;
+                        return;
+                    }
+                    modalExtractedUtr.textContent = extractedUTR;
+                    modalExtractedUtr.className = 'value';
+                    modalUtrIcon.textContent = '✅';
+                    modalUtrIcon.style.color = '#4caf50';
+                    document.querySelector('.modal-utr-result .result-box .label').textContent = 'Manual UTR Entry';
+                    modalUtrResult.style.display = 'block';
+                    modalConfirmBtn.disabled = false;
+                    isModalUploadProcessed = true;
+                    await uploadScreenshotToDrive(file, extractedUTR);
+                } else {
+                    alert('❌ Invalid UTR. Please try again.');
+                }
+            }
+        }
+
+        // ─── CHECK DUPLICATE UTR ──────────────────────────────────────────
+        async function checkDuplicateUTR(utr) {
+            try {
+                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                const localMatch = db.find(r => r.txn === utr && (r.status === 'VERIFIED' || r.status === 'PENDING'));
+                if (localMatch) return true;
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('registrations')
+                        .select('txn')
+                        .eq('txn', utr)
+                        .in('status', ['VERIFIED', 'PENDING']);
+                    if (!error && data && data.length > 0) return true;
+                }
+                return false;
+            } catch (e) {
+                console.warn('Error checking duplicate UTR:', e);
+                return false;
+            }
         }
 
         // ─── UPLOAD SCREENSHOT TO GOOGLE DRIVE ──────────────────────────
@@ -2728,176 +2244,8 @@
             });
         }
 
-        // ─── OCR: EXTRACT UTR ─────────────────────────────────────────────
-        async function processScreenshot(file) {
-            uploadStatus.style.display = 'block';
-            statusText.textContent = 'Processing screenshot & extracting UTR...';
-            finalSubmitBtn.style.display = 'none';
-            utrResult.style.display = 'none';
-            
-            try {
-                const Tesseract = window.Tesseract;
-                if (!Tesseract) {
-                    throw new Error('OCR library not loaded.');
-                }
-                
-                const imageUrl = URL.createObjectURL(file);
-                const result = await Tesseract.recognize(
-                    imageUrl,
-                    'eng',
-                    {
-                        logger: (m) => {
-                            if (m.status === 'recognizing text') {
-                                statusText.textContent = `Processing... ${Math.round(m.progress * 100)}%`;
-                            }
-                        }
-                    }
-                );
-                
-                const text = result.data.text;
-                console.log('📝 OCR Extracted Text:', text);
-                
-                const utrMatch = text.match(/\b\d{12}\b/);
-                
-                if (utrMatch) {
-                    extractedUTR = utrMatch[0];
-                    
-                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                    if (isDuplicate) {
-                        utrResult.style.display = 'block';
-                        const icon = document.getElementById('utrIcon');
-                        icon.textContent = '⚠️';
-                        icon.style.color = '#ff2a6d';
-                        extractedUtr.textContent = extractedUTR;
-                        extractedUtr.className = 'value duplicate';
-                        document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
-                        document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
-                        statusText.textContent = '⚠️ This UTR has already been used!';
-                        uploadStatus.style.display = 'none';
-                        document.getElementById('submitPendingBtn').style.display = 'block';
-                        document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
-                        return;
-                    }
-                    
-                    extractedUtr.textContent = extractedUTR;
-                    extractedUtr.className = 'value';
-                    document.getElementById('utrIcon').textContent = '✅';
-                    document.getElementById('utrIcon').style.color = '#4caf50';
-                    document.querySelector('.utr-result .result-box .label').textContent = 'Extracted UTR Number';
-                    utrResult.style.display = 'block';
-                    finalSubmitBtn.style.display = 'block';
-                    uploadStatus.style.display = 'none';
-                    statusText.textContent = '✅ UTR extracted successfully!';
-                    
-                    await uploadScreenshotToDrive(file, extractedUTR);
-                    
-                } else {
-                    const upiMatch = text.match(/[A-Z0-9]{8,15}/);
-                    if (upiMatch && upiMatch[0].length >= 8) {
-                        extractedUTR = upiMatch[0];
-                        
-                        const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                        if (isDuplicate) {
-                            utrResult.style.display = 'block';
-                            const icon = document.getElementById('utrIcon');
-                            icon.textContent = '⚠️';
-                            icon.style.color = '#ff2a6d';
-                            extractedUtr.textContent = extractedUTR;
-                            extractedUtr.className = 'value duplicate';
-                            document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
-                            document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
-                            statusText.textContent = '⚠️ This UTR has already been used!';
-                            uploadStatus.style.display = 'none';
-                            document.getElementById('submitPendingBtn').style.display = 'block';
-                            document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
-                            return;
-                        }
-                        
-                        extractedUtr.textContent = extractedUTR;
-                        extractedUtr.className = 'value';
-                        document.getElementById('utrIcon').textContent = '✅';
-                        document.getElementById('utrIcon').style.color = '#4caf50';
-                        document.querySelector('.utr-result .result-box .label').textContent = 'Transaction ID';
-                        utrResult.style.display = 'block';
-                        finalSubmitBtn.style.display = 'block';
-                        uploadStatus.style.display = 'none';
-                        statusText.textContent = '✅ Transaction ID extracted!';
-                        
-                        await uploadScreenshotToDrive(file, extractedUTR);
-                    } else {
-                        uploadStatus.style.display = 'none';
-                        const manualUtr = prompt('⚠️ Could not detect UTR automatically.\n\nPlease enter the 12-digit UTR number from your payment app:');
-                        if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
-                            extractedUTR = manualUtr.replace(/\D/g, '');
-                            
-                            const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                            if (isDuplicate) {
-                                utrResult.style.display = 'block';
-                                const icon = document.getElementById('utrIcon');
-                                icon.textContent = '⚠️';
-                                icon.style.color = '#ff2a6d';
-                                extractedUtr.textContent = extractedUTR;
-                                extractedUtr.className = 'value duplicate';
-                                document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
-                                document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
-                                statusText.textContent = '⚠️ This UTR has already been used!';
-                                document.getElementById('submitPendingBtn').style.display = 'block';
-                                document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
-                                return;
-                            }
-                            
-                            extractedUtr.textContent = extractedUTR;
-                            extractedUtr.className = 'value';
-                            document.getElementById('utrIcon').textContent = '✅';
-                            document.getElementById('utrIcon').style.color = '#4caf50';
-                            document.querySelector('.utr-result .result-box .label').textContent = 'Manual UTR Entry';
-                            utrResult.style.display = 'block';
-                            finalSubmitBtn.style.display = 'block';
-                            await uploadScreenshotToDrive(file, extractedUTR);
-                        } else {
-                            alert('❌ Invalid UTR. Please try uploading the screenshot again.');
-                        }
-                    }
-                }
-                
-            } catch (error) {
-                console.error('OCR Error:', error);
-                uploadStatus.style.display = 'none';
-                const manualUtr = prompt('⚠️ Error processing screenshot.\n\nPlease enter the 12-digit UTR number from your payment app:');
-                if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
-                    extractedUTR = manualUtr.replace(/\D/g, '');
-                    
-                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                    if (isDuplicate) {
-                        utrResult.style.display = 'block';
-                        const icon = document.getElementById('utrIcon');
-                        icon.textContent = '⚠️';
-                        icon.style.color = '#ff2a6d';
-                        extractedUtr.textContent = extractedUTR;
-                        extractedUtr.className = 'value duplicate';
-                        document.querySelector('.utr-result .result-box').style.borderColor = 'rgba(255,42,109,0.3)';
-                        document.querySelector('.utr-result .result-box .label').textContent = '❌ UTR Already Used';
-                        document.getElementById('submitPendingBtn').style.display = 'block';
-                        document.getElementById('submitPendingBtn').textContent = '🔄 Use Different UTR / Contact Coordinator';
-                        return;
-                    }
-                    
-                    extractedUtr.textContent = extractedUTR;
-                    extractedUtr.className = 'value';
-                    document.getElementById('utrIcon').textContent = '✅';
-                    document.getElementById('utrIcon').style.color = '#4caf50';
-                    document.querySelector('.utr-result .result-box .label').textContent = 'Manual UTR Entry';
-                    utrResult.style.display = 'block';
-                    finalSubmitBtn.style.display = 'block';
-                    await uploadScreenshotToDrive(file, extractedUTR);
-                } else {
-                    alert('❌ Invalid UTR. Please try again.');
-                }
-            }
-        }
-
-        // ─── CONFIRM REGISTRATION ─────────────────────────────────────────
-        async function confirmRegistration() {
+        // ─── MODAL CONFIRM REGISTRATION ──────────────────────────────────
+        async function modalConfirmRegistration() {
             if (!extractedUTR) {
                 alert('⚠️ Please upload payment screenshot first.');
                 return;
@@ -2913,8 +2261,8 @@
                 return;
             }
             
-            finalSubmitBtn.disabled = true;
-            finalSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+            modalConfirmBtn.disabled = true;
+            modalConfirmBtn.innerHTML = '<span class="spinner"></span> Submitting...';
             
             try {
                 const leaderName = getLeaderName();
@@ -2952,16 +2300,11 @@
                 localStorage.setItem('deplomat_db', JSON.stringify(db));
                 
                 registrationComplete = true;
-                uploadDisabled = true;
-                dropZone.classList.add('disabled');
-                dropZone.style.pointerEvents = 'none';
-                dropZone.style.opacity = '0.5';
-                finalSubmitBtn.style.display = 'none';
-                document.getElementById('submitPendingBtn').style.display = 'none';
-                payUPIBtn.disabled = true;
-                payUPIBtn.style.opacity = '0.5';
+                paymentConfirmModal.classList.remove('active');
+                modalVisible = false;
+                if (uploadTimerInterval) { clearInterval(uploadTimerInterval); uploadTimerInterval = null; }
                 
-                goToStep(5);
+                goToStep(4);
                 const details = document.getElementById('successDetails');
                 details.innerHTML = `
                     <p style="font-size:2rem;">✅</p>
@@ -2982,8 +2325,6 @@
                     </div>
                 `;
                 
-                if (uploadTimerInterval) { clearInterval(uploadTimerInterval);
-                    uploadTimerInterval = null; }
                 localStorage.removeItem('pending_registration');
                 localStorage.removeItem('payment_initiated');
                 sessionStorage.removeItem('returning_from_payment');
@@ -2991,24 +2332,42 @@
                 sessionStorage.removeItem('deplomat_registration_state_backup');
                 localStorage.removeItem('payment_start_time');
                 
-                finalSubmitBtn.disabled = false;
-                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
+                modalConfirmBtn.disabled = false;
+                modalConfirmBtn.innerHTML = '🔱 Confirm Registration';
                 
             } catch (error) {
                 alert(`❌ Submission failed: ${error.message}`);
-                finalSubmitBtn.disabled = false;
-                finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
+                modalConfirmBtn.disabled = false;
+                modalConfirmBtn.innerHTML = '🔱 Confirm Registration';
             }
+        }
+
+        function modalRetryPayment() {
+            paymentConfirmModal.classList.remove('active');
+            modalVisible = false;
+            if (uploadTimerInterval) { clearInterval(uploadTimerInterval); uploadTimerInterval = null; }
+            isPaymentButtonDisabled = false;
+            payUPIBtn.disabled = false;
+            const total = getTotalAmount();
+            payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + total + '</span> VIA UPI';
+            localStorage.setItem('payment_initiated', 'true');
+            sessionStorage.setItem('returning_from_payment', 'true');
+            alert('📱 Please complete the payment and come back to this page.');
+            saveRegistrationState();
+        }
+
+        function modalSubmitPending() {
+            if (registrationComplete) return;
+            paymentConfirmModal.classList.remove('active');
+            modalVisible = false;
+            if (uploadTimerInterval) { clearInterval(uploadTimerInterval); uploadTimerInterval = null; }
+            submitPendingRegistration();
         }
 
         // ─── SUBMIT AS PENDING ──────────────────────────────────────────────
         async function submitPendingRegistration() {
             if (isPendingSubmission || registrationComplete) return;
             isPendingSubmission = true;
-            
-            const btn = document.getElementById('submitPendingBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Submitting...';
             
             try {
                 const leaderName = getLeaderName();
@@ -3046,14 +2405,8 @@
                 localStorage.setItem('deplomat_db', JSON.stringify(db));
                 
                 registrationComplete = true;
-                uploadDisabled = true;
-                dropZone.classList.add('disabled');
-                dropZone.style.pointerEvents = 'none';
-                dropZone.style.opacity = '0.5';
-                finalSubmitBtn.style.display = 'none';
-                btn.style.display = 'none';
                 
-                goToStep(5);
+                goToStep(4);
                 const details = document.getElementById('successDetails');
                 details.innerHTML = `
                     <p style="font-size:2rem;">⏳</p>
@@ -3073,8 +2426,6 @@
                     </div>
                 `;
                 
-                if (uploadTimerInterval) { clearInterval(uploadTimerInterval);
-                    uploadTimerInterval = null; }
                 localStorage.removeItem('pending_registration');
                 localStorage.removeItem('payment_initiated');
                 sessionStorage.removeItem('returning_from_payment');
@@ -3084,8 +2435,6 @@
                 
             } catch (error) {
                 alert(`❌ Submission failed: ${error.message}`);
-                btn.disabled = false;
-                btn.innerHTML = '⏳ Submit as Pending (Contact Coordinator)';
                 isPendingSubmission = false;
             }
         }
@@ -3130,8 +2479,7 @@
                 if (state.college) document.getElementById('college').value = state.college;
                 if (state.category) {
                     const radio = document.querySelector(`input[name="ug_pu"][value="${state.category}"]`);
-                    if (radio) { radio.checked = true;
-                        selectedCategory = state.category; }
+                    if (radio) { radio.checked = true; selectedCategory = state.category; }
                 }
                 if (state.eventId !== null && state.eventId !== undefined) {
                     const eventSelect = document.getElementById('eventSelect');
@@ -3173,24 +2521,18 @@
                         updateAddButtonState();
                     }, 400);
                 }
-                
-                // Restore payment state
                 if (state.paymentStartTime) {
                     paymentStartTime = state.paymentStartTime;
                 }
-                
-                // Check if we're returning from payment
                 const returning = sessionStorage.getItem('returning_from_payment');
                 if (returning === 'true') {
                     sessionStorage.removeItem('returning_from_payment');
                     if (state.paymentInitiated) {
                         paymentInitiated = true;
                     }
-                    // Go to step 4 and show the payment confirmation modal
                     setTimeout(() => {
-                        goToStep(4);
+                        goToStep(3);
                         updatePaymentSummary();
-                        // Calculate remaining time from original start
                         if (paymentStartTime) {
                             const elapsed = Math.floor((Date.now() - paymentStartTime) / 1000);
                             uploadTimeRemaining = Math.max(0, UPLOAD_TIMER_SECONDS - elapsed);
@@ -3211,8 +2553,7 @@
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'visible') {
                 const returning = sessionStorage.getItem('returning_from_payment');
-                if (returning === 'true' && currentStep === 4 && !registrationComplete && !modalVisible) {
-                    // Show the payment confirmation modal
+                if (returning === 'true' && currentStep === 3 && !registrationComplete && !modalVisible) {
                     setTimeout(() => {
                         showPaymentConfirmModal();
                     }, 500);
@@ -3311,20 +2652,17 @@
             }
         });
 
-        step1Next.addEventListener('click', function(e) { e.preventDefault();
-            goToStep(2); });
+        step1Next.addEventListener('click', function(e) { e.preventDefault(); goToStep(2); });
         step2Back.addEventListener('click', () => goToStep(1));
         step2Next.addEventListener('click', () => goToStep(3));
         addPlayerBtn.addEventListener('click', () => addPlayer(false));
-        step3Back.addEventListener('click', () => goToStep(2));
-        step3Next.addEventListener('click', () => goToStep(4));
-        step4Back.addEventListener('click', () => {
+        step3Back.addEventListener('click', () => {
             if (paymentInitiated && !registrationComplete) {
                 if (!confirm('⚠️ You have initiated payment. Going back will reset your progress. Continue?')) {
                     return;
                 }
             }
-            goToStep(3);
+            goToStep(2);
         });
 
         document.addEventListener('keydown', (e) => {
@@ -3334,29 +2672,12 @@
                     const step = parseInt(active.dataset.step);
                     if (step === 1) step1Next.click();
                     else if (step === 2) step2Next.click();
-                    else if (step === 3) step3Next.click();
                 }
             }
         });
 
         // ─── INIT ──────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function() {
-            // Set receiver name
-            receiverDisplay.textContent = PAYMENT_CONFIG.payeeName;
-            warningReceiver.textContent = PAYMENT_CONFIG.payeeName;
-            
-            // Check for in-app browser on load
-            if (detectInAppBrowser()) {
-                console.log('📱 In-app browser detected');
-                inappBanner.classList.add('show');
-                // Hide UPI button initially
-                payUPIBtn.style.display = 'none';
-            } else {
-                console.log('🌐 Regular browser detected');
-                inappBanner.classList.remove('show');
-                payUPIBtn.style.display = 'flex';
-            }
-            
             const restored = restoreRegistrationState();
             
             if (!restored) {
@@ -3373,19 +2694,13 @@
             }
             
             setTimeout(() => updateQR(EVENT_FEE), 200);
-            console.log('🔱 DEPLOMAT Registration · Payment System Fixed');
+            console.log('🔱 DEPLOMAT Registration · Updated');
             console.log('📱 UPI ID:', PAYMENT_CONFIG.upiId);
-            console.log('👤 Payee:', PAYMENT_CONFIG.payeeName);
             console.log('💳 Fee per participant: ₹' + PAYMENT_CONFIG.pricePerParticipant);
-            console.log('📸 Upload payment screenshot to auto-detect UTR');
-            console.log('⏱️ 5 minute upload timer');
-            console.log('🔍 Duplicate UTR detection enabled');
-            console.log('💾 State persistence enabled');
-            console.log('✅ In-app browser detection enabled');
-            console.log('✅ QR code is PRIMARY payment method');
-            console.log('✅ Android intent:// fallback enabled');
-            console.log('✅ Fixed URL encoding: spaces → %20');
-            console.log('✅ Single payment entry point: launchUPIPayment()');
+            console.log('📸 Upload payment screenshot in modal');
+            console.log('✅ Removed receiver name display');
+            console.log('✅ Removed cross-check step (Step 3)');
+            console.log('✅ Upload integrated into payment confirmation modal');
         });
 
         function autoSelectEventFromURL() {
@@ -3406,20 +2721,6 @@
                     }
                 }
             } catch (_) {}
-        }
-        
-        // ─── HELPER: validateCategoryEventPair ──────────────────────────
-        function validateCategoryEventPair() {
-            const cat = getSelectedCategory();
-            const val = eventSelect.value;
-            if (cat && val) {
-                const result = checkCategoryEventCompatibility(cat, val);
-                if (!result.valid) {
-                    showBlockNotice(result.message);
-                } else {
-                    showBlockNotice('');
-                }
-            }
         }
     </script>
 </body>
