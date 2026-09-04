@@ -58,31 +58,31 @@
     .hamburger-icon {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      padding: 10px 10px;
-      background: rgba(4,18,23,0.8);
+      gap: 6px;
+      padding: 12px 12px;
+      background: rgba(4,18,23,0.85);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1.5px solid rgba(169,132,69,0.2);
       transition: transform 0.2s, border-color 0.3s, box-shadow 0.3s;
       box-shadow: 0 0 30px rgba(169,132,69,0.03);
     }
     .hamburger-icon .bar {
-      width: 24px;
-      height: 2.5px;
+      width: 26px;
+      height: 3px;
       background: var(--gold-light);
-      border-radius: 3px;
+      border-radius: 4px;
       transition: 0.3s ease;
       transform-origin: center;
       box-shadow: 0 0 8px rgba(169,132,69,0.1);
     }
     .hamburger-icon .bar:nth-child(2) { 
-      width: 18px; 
+      width: 22px; 
       background: var(--gold-bright);
     }
     .hamburger-icon .bar:nth-child(3) { 
-      width: 12px;
+      width: 18px;
       background: var(--gold);
     }
     .menu-wrapper:hover .hamburger-icon {
@@ -96,13 +96,13 @@
       display: none;
       position: absolute;
       left: 0;
-      top: 60px;
-      min-width: 200px;
-      padding: 10px 0;
-      border-radius: 14px;
-      background: rgba(6,26,32,0.96);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      top: 68px;
+      min-width: 220px;
+      padding: 12px 0;
+      border-radius: 16px;
+      background: rgba(6,26,32,0.97);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       box-shadow: var(--shadow-deep), 0 0 0 1px rgba(169,132,69,0.08);
       z-index: 100;
       flex-direction: column;
@@ -121,29 +121,29 @@
     }
     .dropdown-section-title {
       font-family: 'Cinzel',serif;
-      font-size: 7px;
+      font-size: 8px;
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
       color: rgba(169,132,69,0.4);
-      padding: 4px 18px 2px 18px;
+      padding: 6px 22px 4px 22px;
     }
     .dropdown-divider {
       height: 1px;
       background: linear-gradient(90deg,transparent,rgba(169,132,69,0.15),transparent);
-      margin: 4px 12px;
+      margin: 6px 16px;
       border: none;
     }
     .dropdown-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       color: rgba(232,217,184,0.75);
       text-decoration: none;
-      padding: 8px 18px;
-      font-size: 11px;
+      padding: 10px 22px;
+      font-size: 12px;
       font-weight: 400;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
       transition: 0.15s;
       border-left: 2px solid transparent;
       white-space: nowrap;
@@ -162,11 +162,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       background: rgba(169,132,69,0.05);
       border-radius: 50%;
-      font-size: 9px;
+      font-size: 10px;
       color: rgba(169,132,69,0.4);
       flex-shrink: 0;
       font-style: normal;
@@ -184,16 +184,16 @@
       top: 0;
       right: 0;
       z-index: 998;
-      padding: 16px 20px;
+      padding: 18px 24px;
       display: flex;
-      gap: 24px;
+      gap: 28px;
       align-items: center;
       background: transparent;
     }
     .nav-item {
       font-family: 'Cinzel', serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: rgba(232,217,184,0.25);
       text-decoration: none;
@@ -244,7 +244,7 @@
     }
     .nav-divider {
       width: 1px;
-      height: 14px;
+      height: 16px;
       background: rgba(169,132,69,0.08);
     }
 
@@ -367,7 +367,7 @@
     .hero-title {
       font-family: 'Cinzel',serif;
       font-weight: 900;
-      font-size: clamp(2.4rem, 10vw, 5.5rem);
+      font-size: clamp(2.2rem, 9vw, 5.5rem);
       letter-spacing: 0.1em;
       text-transform: uppercase;
       background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
@@ -377,6 +377,8 @@
       filter: drop-shadow(0 4px 12px rgba(169,132,69,0.2));
       line-height: 1.05;
       text-shadow: 0 0 40px rgba(0,0,0,0.3);
+      max-width: 100%;
+      word-wrap: break-word;
     }
     .hero-title .accent {
       font-weight: 400;
@@ -392,7 +394,7 @@
     .hero-subtitle {
       font-family: 'Cormorant Garamond',serif;
       font-weight: 600;
-      font-size: clamp(0.75rem, 2vw, 1.3rem);
+      font-size: clamp(0.7rem, 1.8vw, 1.3rem);
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: rgba(232,217,184,0.9);
@@ -411,7 +413,7 @@
     .hero-tagline {
       font-family: 'Cinzel',serif;
       font-weight: 400;
-      font-size: clamp(0.45rem, 1vw, 0.75rem);
+      font-size: clamp(0.4rem, 0.9vw, 0.75rem);
       letter-spacing: 0.35em;
       text-transform: uppercase;
       color: rgba(192,154,82,0.5);
@@ -723,9 +725,12 @@
         0 20px 60px rgba(0, 0, 0, 0.9);
       transform: scale(0.97);
     }
+    /* ─── FIX: GLOW EFFECT NO LONGER DARKENS/BRIGHTENS IMAGE ─── */
     .carousel-track .event-card.glow-effect .card-image {
-      opacity: 0.6;
-      filter: brightness(1.2) saturate(1.1) contrast(1.05);
+      /* REMOVED: opacity: 0.6; filter: brightness(1.2) saturate(1.1) contrast(1.05); */
+      /* Image stays at full natural exposure */
+      opacity: 1;
+      filter: none;
     }
     .carousel-track .event-card.glow-effect .card-explore-badge {
       opacity: 1;
@@ -763,9 +768,10 @@
         0 20px 60px rgba(0, 0, 0, 0.9);
       transform: scale(0.97);
     }
+    /* ─── FIX: HOVER NO LONGER DARKENS/BRIGHTENS IMAGE ─── */
     .carousel-track .event-card:hover .card-image {
-      opacity: 0.6;
-      filter: brightness(1.2) saturate(1.1) contrast(1.05);
+      opacity: 1;
+      filter: none;
     }
     .carousel-track .event-card:hover .card-explore-badge {
       opacity: 1;
@@ -778,6 +784,7 @@
       color: #FFF8E7;
     }
 
+    /* ─── FIX: CARD IMAGE - FULL NATURAL EXPOSURE BY DEFAULT ─── */
     .carousel-track .event-card .card-image {
       position:absolute;
       top:0;
@@ -785,13 +792,14 @@
       width:100%;
       height:100%;
       z-index:0;
-      opacity:0.45;
+      opacity: 1; /* WAS: 0.45 - NOW FULL EXPOSURE */
       transition:opacity 0.5s ease, filter 0.5s ease;
       background:var(--abyss);
       display:flex;
       align-items:center;
       justify-content:center;
       overflow:hidden;
+      filter: none; /* Ensure no default filters */
     }
     .carousel-track .event-card .card-image img {
       width:100%;
@@ -1821,18 +1829,18 @@
 
     @media (max-width: 768px) {
       .header { top:12px; left:12px; }
-      .hamburger-icon { padding:8px 8px; border-radius:10px; gap:4px; }
-      .hamburger-icon .bar { width:20px; height:2px; }
-      .hamburger-icon .bar:nth-child(2) { width:14px; }
-      .hamburger-icon .bar:nth-child(3) { width:8px; }
-      .epic-dropdown { top:50px; min-width:160px; max-width:calc(100vw - 32px); padding:6px 0; }
-      .dropdown-item { font-size:10px; padding:6px 14px; gap:8px; }
-      .dropdown-item .icon { width:16px; height:16px; font-size:7px; }
-      .dropdown-section-title { font-size:6px; padding:3px 14px 1px 14px; }
+      .hamburger-icon { padding:10px 10px; border-radius:12px; gap:5px; }
+      .hamburger-icon .bar { width:22px; height:2.5px; }
+      .hamburger-icon .bar:nth-child(2) { width:18px; }
+      .hamburger-icon .bar:nth-child(3) { width:14px; }
+      .epic-dropdown { top:56px; min-width:180px; max-width:calc(100vw - 32px); padding:8px 0; }
+      .dropdown-item { font-size:11px; padding:8px 16px; gap:10px; }
+      .dropdown-item .icon { width:20px; height:20px; font-size:8px; }
+      .dropdown-section-title { font-size:7px; padding:4px 16px 2px 16px; }
       
-      .nav-bar { padding: 12px 16px; gap: 16px; }
-      .nav-item { font-size: 0.5rem; letter-spacing: 0.12em; }
-      .nav-divider { height: 10px; }
+      .nav-bar { padding: 14px 18px; gap: 18px; }
+      .nav-item { font-size: 0.55rem; letter-spacing: 0.14em; }
+      .nav-divider { height: 12px; }
       
       .explore-section { padding:60px 0 30px 0; }
       .explore-header { padding:0 12px 12px 12px; }
@@ -1889,9 +1897,9 @@
     }
 
     @media (max-width: 480px) {
-      .nav-bar { padding: 10px 12px; gap: 12px; }
-      .nav-item { font-size: 0.45rem; letter-spacing: 0.1em; }
-      .nav-divider { height: 8px; }
+      .nav-bar { padding: 12px 14px; gap: 14px; }
+      .nav-item { font-size: 0.5rem; letter-spacing: 0.12em; }
+      .nav-divider { height: 10px; }
       
       .carousel-track { gap: 6px; padding: 0 2px; }
       .carousel-track .event-card { 
@@ -2072,7 +2080,7 @@
     <!-- HERO -->
     <section class="hero-section" id="hero">
       <div class="video-container">
-        <video autoplay muted loop playsinline webkit-playsinline preload="metadata">
+        <video id="heroVideo" autoplay muted loop playsinline webkit-playsinline preload="metadata">
           <source src="https://res.cloudinary.com/jhcpadgq/video/upload/v1788184746/Untitled_video_1.mp4" type="video/mp4" />
         </video>
       </div>
@@ -2250,8 +2258,8 @@
           scrollContainer.style.overflowY = 'auto';
           document.body.style.overflow = '';
           intro.classList.add('hidden');
-          const video = document.querySelector('.hero-section video');
-          if (video) video.play().catch(()=>{});
+          // Resume hero video after intro
+          ensureHeroVideoPlaying();
         }, prefersReducedMotion ? 400 : 800);
       }
 
@@ -2313,6 +2321,68 @@
       
       let resizeTimeout = null;
       let currentGlowCard = null;
+
+      // ─── AUTOPLAY ───────────────────────────────────────────
+      let autoplayTimer = null;
+      let autoplayPaused = false;
+      let autoplayDelay = 4000; // 4 seconds between slides
+      let userInteracted = false;
+      let interactionTimeout = null;
+
+      function startAutoplay() {
+        stopAutoplay();
+        if (autoplayPaused) return;
+        autoplayTimer = setTimeout(() => {
+          if (!autoplayPaused && !isDragging && !isSnapping) {
+            const nextIndex = (currentLogicalIndex + 1) % (N * 3);
+            if (nextIndex >= N && nextIndex < N * 2) {
+              snapToIndex(nextIndex, true);
+            } else {
+              // Reset to middle
+              snapToIndex(N + ((nextIndex + N) % N), true);
+            }
+          }
+          startAutoplay();
+        }, autoplayDelay);
+      }
+
+      function stopAutoplay() {
+        if (autoplayTimer) {
+          clearTimeout(autoplayTimer);
+          autoplayTimer = null;
+        }
+      }
+
+      function pauseAutoplay() {
+        autoplayPaused = true;
+        stopAutoplay();
+      }
+
+      function resumeAutoplay() {
+        autoplayPaused = false;
+        if (interactionTimeout) {
+          clearTimeout(interactionTimeout);
+          interactionTimeout = null;
+        }
+        // Resume after a short delay
+        interactionTimeout = setTimeout(() => {
+          interactionTimeout = null;
+          if (!autoplayPaused && !isDragging && !isSnapping) {
+            startAutoplay();
+          }
+        }, 3000);
+      }
+
+      function handleUserInteraction() {
+        pauseAutoplay();
+        if (interactionTimeout) {
+          clearTimeout(interactionTimeout);
+        }
+        interactionTimeout = setTimeout(() => {
+          interactionTimeout = null;
+          resumeAutoplay();
+        }, 3000);
+      }
 
       // ─── SPARKLE EFFECT ──────────────────────────────────
       function createSparkles(x, y, count = 12) {
@@ -2397,7 +2467,7 @@
         updateCardVisuals(clampedPos);
       }
       
-      // ─── UPDATE CARD VISUALS - EXTRA VIBRANT ────────────
+      // ─── UPDATE CARD VISUALS - FIXED: FULL EXPOSURE FOR ALL CARDS ───
       function updateCardVisuals(pixelPos) {
         const cards = track.querySelectorAll('.event-card');
         if (!cards.length || cardWidthWithGap === 0) return;
@@ -2416,10 +2486,11 @@
           const maxDist = stageWidth / 2 + cardWidth;
           const norm = Math.min(dist / maxDist, 1);
           const scale = 1 - norm * 0.12;
-          const opacity = 1 - norm * 0.20;
           
+          // ─── FIX: REMOVED DYNAMIC OPACITY DARKENING ───
+          // All cards maintain full opacity 1
           card.style.transform = `scale(${scale})`;
-          card.style.opacity = Math.max(0.5, opacity);
+          card.style.opacity = '1'; // WAS: Math.max(0.5, 1 - norm * 0.20)
           card.style.zIndex = Math.round(scale * 10);
           
           if (dist < closestDist) {
@@ -2438,7 +2509,7 @@
         });
       }
       
-      // ─── GLOW MANAGEMENT - INTENSIFIED ──────────────────
+      // ─── GLOW MANAGEMENT - FIXED: GLOW NO LONGER BRIGHTENS IMAGE ───
       function applyGlow(card) {
         if (currentGlowCard && currentGlowCard !== card) {
           currentGlowCard.classList.remove('glow-effect');
@@ -2552,6 +2623,7 @@
         clearGlow();
         
         e.preventDefault();
+        handleUserInteraction();
       }
       
       function handlePointerMove(e) {
@@ -2593,7 +2665,6 @@
           targetIndex = getNearestCardIndex(currentPixelPos);
           const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.event-card');
           if (card) {
-            // Create sparkles on tap
             const rect = card.getBoundingClientRect();
             createSparkles(e.clientX, e.clientY, 16);
             
@@ -2619,6 +2690,7 @@
         
         targetIndex = Math.max(N - 1, Math.min(2 * N, targetIndex));
         snapToIndex(targetIndex, true);
+        // User interaction handled in pointer down
       }
       
       function handlePointerCancel(e) {
@@ -2636,6 +2708,7 @@
       function handleWheel(e) {
         if (isDragging || isSnapping) return;
         e.preventDefault();
+        handleUserInteraction();
         
         if (wheelTimeout) clearTimeout(wheelTimeout);
         wheelTimeout = setTimeout(() => {
@@ -2696,12 +2769,12 @@
               window.location.href = events[oi].href;
             }, 300);
           }
+          handleUserInteraction();
         });
         
         card.addEventListener('click', (e) => {
           if (e.target.closest('.card-explore-badge')) return;
           if (isDragging || isSnapping) return;
-          // Only navigate if not dragging
           const rect = card.getBoundingClientRect();
           createSparkles(rect.left + rect.width/2, rect.top + rect.height/2, 14);
           const oi = parseInt(card.dataset.originalIndex);
@@ -2710,6 +2783,7 @@
               window.location.href = events[oi].href;
             }, 300);
           }
+          handleUserInteraction();
         });
         
         // ─── TOUCH SPARKLE ON TAP ──────────────────────────
@@ -2740,9 +2814,9 @@
             e.preventDefault();
             if (!isSnapping) {
               snapToIndex(i + N, true);
-              // Sparkle on dot click
               const rect = dot.getBoundingClientRect();
               createSparkles(rect.left + rect.width/2, rect.top + rect.height/2, 8);
+              handleUserInteraction();
             }
           });
           dotsContainer.appendChild(dot);
@@ -2756,9 +2830,14 @@
           track.style.transition = 'none';
           track.style.transform = `translate3d(${initialPos}px, 0, 0)`;
           updateCardVisuals(initialPos);
+          
+          // Start autoplay after initial render
+          setTimeout(() => {
+            startAutoplay();
+          }, 1000);
         });
         
-        console.log('🏛️ Carousel initialized - VIBRANT INTERACTION ENABLED');
+        console.log('🏛️ Carousel initialized - VIBRANT INTERACTION + AUTOPLAY');
       }
       
       // ─── PRELOAD IMAGES ──────────────────────────────────
@@ -2801,7 +2880,7 @@
           ro.observe(stage);
         }
         
-        console.log('🏛️ Carousel ready - VIBRANT INTERACTION');
+        console.log('🏛️ Carousel ready - VIBRANT INTERACTION + AUTOPLAY');
       }
       
       window.carouselSnapTo = snapToIndex;
@@ -3038,6 +3117,11 @@
       let currentIndex = 0;
       let isTransitioning = false;
       
+      // ─── AUTOPLAY VARIABLES ─────────────────────────────────
+      let autoplayTimer = null;
+      let resumeTimer = null;
+      let autoplayPaused = false;
+
       function preloadFeaturedImages() {
         navItems.forEach(item => {
           const img = new Image();
@@ -3052,9 +3136,10 @@
         });
       }
 
-      function setActive(index) {
+      function setActive(index, fromAutoplay = false) {
         if (isTransitioning) return;
         if (index === currentIndex) return;
+        
         isTransitioning = true;
 
         currentIndex = index;
@@ -3081,15 +3166,16 @@
             isTransitioning = false;
           };
           
+          // Fallback transition completion
           setTimeout(() => {
             featuredBg.classList.remove('loading');
             featuredBg.classList.add('active');
             isTransitioning = false;
-          }, 2000);
+          }, 900);
 
           featuredMain.dataset.href = item.href;
 
-        }, 300);
+        }, 400);
       }
 
       function buildSelector() {
@@ -3106,10 +3192,56 @@
               <div class="ki-sub">${item.label.replace('✦ ', '')}</div>
             </div>
           `;
-          el.addEventListener('click', () => setActive(index));
-          el.addEventListener('touchend', (e) => { e.preventDefault(); setActive(index); });
+          
+          // Use pointerup to avoid duplicate triggers
+          el.addEventListener('pointerup', (e) => {
+            e.preventDefault();
+            if (isTransitioning) return;
+            setActive(index);
+            pauseAutoplay();
+          });
+          
           selector.appendChild(el);
         });
+      }
+
+      // ─── AUTOPLAY FUNCTIONS ──────────────────────────────────
+      function startFeaturedAutoplay() {
+        stopFeaturedAutoplay();
+        if (autoplayPaused) return;
+        autoplayTimer = setTimeout(() => {
+          const nextIndex = (currentIndex + 1) % navItems.length;
+          setActive(nextIndex, true);
+          startFeaturedAutoplay();
+        }, 5000);
+      }
+
+      function stopFeaturedAutoplay() {
+        if (autoplayTimer) {
+          clearTimeout(autoplayTimer);
+          autoplayTimer = null;
+        }
+        if (resumeTimer) {
+          clearTimeout(resumeTimer);
+          resumeTimer = null;
+        }
+      }
+
+      function pauseAutoplay() {
+        autoplayPaused = true;
+        stopFeaturedAutoplay();
+        // Schedule resume after 6-8 seconds
+        if (resumeTimer) {
+          clearTimeout(resumeTimer);
+          resumeTimer = null;
+        }
+        resumeTimer = setTimeout(() => {
+          resumeTimer = null;
+          autoplayPaused = false;
+          if (!isTransitioning) {
+            startFeaturedAutoplay();
+          }
+        }, 7000);
       }
 
       function initFeatured() {
@@ -3129,12 +3261,43 @@
         fcCta.textContent = 'EXPLORE →';
         featuredMain.dataset.href = first.href;
 
-        featuredMain.addEventListener('click', (e) => {
+        // Featured main click navigation
+        featuredMain.addEventListener('pointerup', (e) => {
           const href = featuredMain.dataset.href;
           if (href) window.location.href = href;
+          pauseAutoplay();
         });
 
-        console.log('🏛️ Kingdom Featured Navigation initialized with VIBRANT INTERACTION');
+        // User interaction detection on the entire featured section
+        const featuredSection = document.getElementById('kingdomFeatured');
+        const interactionEvents = ['pointerdown', 'touchstart'];
+        interactionEvents.forEach(eventType => {
+          featuredSection.addEventListener(eventType, (e) => {
+            // Ignore if the interaction is on a link or button that navigates
+            if (e.target.closest('a') || e.target.closest('.fc-cta')) return;
+            pauseAutoplay();
+          }, { passive: true });
+        });
+
+        // Visibility change: pause when hidden
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) {
+            stopFeaturedAutoplay();
+          } else {
+            if (!autoplayPaused && !isTransitioning) {
+              // Restart cleanly
+              stopFeaturedAutoplay();
+              startFeaturedAutoplay();
+            }
+          }
+        });
+
+        // Start autoplay automatically
+        setTimeout(() => {
+          startFeaturedAutoplay();
+        }, 1000);
+
+        console.log('🏛️ Kingdom Featured Navigation initialized with AUTOPLAY');
       }
 
       if (document.readyState === 'loading') {
@@ -3142,6 +3305,83 @@
       } else {
         initFeatured();
       }
+    })();
+
+    // ═══════════════════════════════════════════════════════════
+    // 9. HERO VIDEO CONTROLLER
+    // ═══════════════════════════════════════════════════════════
+    (function() {
+      const heroVideo = document.getElementById('heroVideo');
+      if (!heroVideo) return;
+
+      let isAttempting = false;
+
+      function ensureHeroVideoPlaying() {
+        if (!heroVideo) return;
+        if (isAttempting) return;
+        
+        // If video is already playing, do nothing
+        if (!heroVideo.paused && !heroVideo.ended) return;
+
+        isAttempting = true;
+        heroVideo.play()
+          .then(() => {
+            isAttempting = false;
+          })
+          .catch(() => {
+            isAttempting = false;
+            // Attempt again on user interaction or next event
+          });
+      }
+
+      // 1. DOMContentLoaded attempt
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          ensureHeroVideoPlaying();
+        });
+      } else {
+        ensureHeroVideoPlaying();
+      }
+
+      // 2. After Atlantis intro (called from intro script)
+      window.ensureHeroVideoPlaying = ensureHeroVideoPlaying;
+
+      // 3. Pageshow (for bfcache)
+      window.addEventListener('pageshow', (e) => {
+        if (e.persisted) {
+          ensureHeroVideoPlaying();
+        }
+      });
+
+      // 4. Visibility change
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          ensureHeroVideoPlaying();
+        }
+      });
+
+      // 5. Canplay / loadeddata events
+      heroVideo.addEventListener('canplay', () => {
+        if (heroVideo.paused || heroVideo.ended) {
+          ensureHeroVideoPlaying();
+        }
+      });
+
+      heroVideo.addEventListener('loadeddata', () => {
+        if (heroVideo.paused || heroVideo.ended) {
+          ensureHeroVideoPlaying();
+        }
+      });
+
+      // 6. Attempt to play on any user interaction to help mobile autoplay
+      const interactionEvents = ['touchstart', 'pointerdown', 'click', 'touchend'];
+      interactionEvents.forEach(eventType => {
+        document.addEventListener(eventType, () => {
+          ensureHeroVideoPlaying();
+        }, { once: false, passive: true });
+      });
+
+      console.log('🎬 Hero Video Controller initialized');
     })();
 
     console.log('🔱 DEPLOMAT · VIBRANT INTERACTION FULLY ACTIVE');
