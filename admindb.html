@@ -17,6 +17,7 @@
     </script>
 
     <style>
+        /* ─── RESET & BASE ─────────────────────────────────────────── */
         * {
             margin: 0;
             padding: 0;
@@ -239,6 +240,7 @@
             animation: pulse 1.5s ease-in-out infinite;
         }
 
+        /* ─── STATS GRID ───────────────────────────────────────────── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -322,6 +324,7 @@
             color: #f06292;
         }
 
+        /* ─── ANALYTICS GRID ───────────────────────────────────────── */
         .analytics-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -386,6 +389,7 @@
             padding: 4px 8px;
         }
 
+        /* ─── EVENT BAR LIST ───────────────────────────────────────── */
         .event-bar-list {
             display: flex;
             flex-direction: column;
@@ -443,6 +447,7 @@
             color: #FFC53D;
         }
 
+        /* ─── COLUMN CHART ──────────────────────────────────────────── */
         .column-chart-container {
             display: flex;
             align-items: flex-end;
@@ -505,6 +510,7 @@
             letter-spacing: 0.05em;
         }
 
+        /* ─── EXTRA ANALYTICS ──────────────────────────────────────── */
         .extra-analytics {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -601,6 +607,7 @@
             font-weight: 600;
         }
 
+        /* ─── TABLE CARD ────────────────────────────────────────────── */
         .table-card {
             background: rgba(16, 16, 26, 0.5);
             backdrop-filter: blur(16px) saturate(1.2);
@@ -627,6 +634,7 @@
             color: #65d8ff;
         }
 
+        /* ─── DOWNLOAD BUTTON ───────────────────────────────────────── */
         .download-btn {
             background: rgba(101, 216, 255, 0.08);
             border: 1px solid rgba(101, 216, 255, 0.15);
@@ -690,6 +698,7 @@
             color: #fff;
         }
 
+        /* ─── FILTER BADGE INDICATORS ──────────────────────────────── */
         .filter-badge {
             display: inline-flex;
             align-items: center;
@@ -748,6 +757,7 @@
             color: #ff2a6d;
         }
 
+        /* ─── TABLE SCROLL ──────────────────────────────────────────── */
         .table-scroll {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -838,6 +848,7 @@
             font-size: 0.85rem;
         }
 
+        /* ─── STATUS BADGE STYLES ──────────────────────────────────── */
         .status-badge {
             display: inline-block;
             padding: 2px 10px;
@@ -863,6 +874,7 @@
             border: 1px solid rgba(255, 42, 109, 0.1);
         }
 
+        /* ─── ACTION BUTTON STYLES ─────────────────────────────────── */
         .action-btn {
             background: none;
             border: none;
@@ -884,6 +896,7 @@
             background: rgba(255, 42, 109, 0.15);
         }
 
+        /* ─── TOOLTIP ───────────────────────────────────────────────── */
         .tooltip {
             position: fixed;
             bottom: 30px;
@@ -924,6 +937,7 @@
             color: #65d8ff;
         }
 
+        /* ─── RESPONSIVE ────────────────────────────────────────────── */
         @media (max-width: 1024px) {
             .analytics-grid {
                 grid-template-columns: 1fr;
@@ -1165,6 +1179,11 @@
                 </span>
                 <span class="label">Postgraduate</span>
             </div>
+            <div class="stat-card orange">
+                <span class="icon">🔄</span>
+                <span class="number" id="crossRegs">0</span>
+                <span class="label">Cross‑Registered</span>
+            </div>
         </div>
 
         <div class="analytics-grid">
@@ -1308,22 +1327,14 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════
-        //  🔐 SUPABASE CONFIG - EXACTLY MATCHING REGISTRATION PAGE
-        //  ⚠️  DO NOT CHANGE THIS KEY - Copy exactly from registration
+        //  🔐 SUPABASE CONFIG
         // ═══════════════════════════════════════════════════════════════
 
         const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLUutqWQYDswqXG4LzJaCd8krpKAykq1LEY';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
 
         let supabaseClient = null;
         let isSupabaseConnected = false;
-
-        console.log('🔐 Supabase Config:');
-        console.log('📍 URL:', SUPABASE_URL);
-        console.log('📍 Key (first 30 chars):', SUPABASE_ANON_KEY.substring(0, 30) + '...');
-        console.log('📍 Key (last 30 chars):', '...' + SUPABASE_ANON_KEY.substring(SUPABASE_ANON_KEY.length - 30));
-        console.log('📍 Key length:', SUPABASE_ANON_KEY.length);
-        console.log('📍 Protocol:', window.location.protocol);
 
         try {
             if (typeof supabase !== 'undefined' && supabase.createClient) {
@@ -1362,6 +1373,7 @@
         const totalRevenueEl = document.getElementById('totalRevenue');
         const ugCollegesEl = document.getElementById('ugColleges');
         const puCollegesEl = document.getElementById('puColleges');
+        const crossRegsEl = document.getElementById('crossRegs');
         const lastUpdatedEl = document.getElementById('lastUpdated');
         const connectionStatus = document.getElementById('connectionStatus');
         const eventBarList = document.getElementById('eventBarList');
@@ -1420,8 +1432,14 @@
 
         // ─── HELPERS ──────────────────────────────────────────────────
 
+        /**
+         * 🔧 FIX: Use the database's `ug_pu` column as the source of truth
+         * for UG/PU classification instead of the hardcoded event map.
+         */
         function getRegistrationCategory(registration) {
+            // Use the database column directly - this is the single source of truth
             const category = registration.ug_pu || 'UG';
+            // Normalize to uppercase for consistent comparison
             return category.toUpperCase();
         }
 
@@ -1429,30 +1447,48 @@
             const r = registration;
             if (!r) return [];
             
+            // If participants is already an array
             if (r.participants && Array.isArray(r.participants)) return r.participants;
             
+            // If participants is a JSON string
             if (typeof r.participants === 'string' && r.participants.trim()) {
                 try {
                     const parsed = JSON.parse(r.participants);
                     if (Array.isArray(parsed)) return parsed;
                 } catch (e) {
+                    // If JSON parse fails, try splitting by comma
                     return r.participants.split(',').map(p => ({ 
                         name: p.trim(), 
-                        phone: 'N/A'
+                        phone: 'N/A', 
+                        otherEvent: 'No' 
                     }));
                 }
             }
             
+            // Fallback: use team_leader
             if (r.team_leader) {
-                return [{ name: r.team_leader, phone: r.phone || 'N/A' }];
+                return [{ name: r.team_leader, phone: r.phone || 'N/A', otherEvent: 'No' }];
             }
             
             return [];
         }
 
+        function getCategoryDisplay(category) {
+            if (category === 'PU') return 'PU';
+            return 'UG';
+        }
+
         function getTeamSize(registration) {
             const parts = getParticipantsArray(registration);
             return parts.length || 1;
+        }
+
+        function getTeamSizeLabel(size) {
+            if (size === 1) return 'Solo';
+            if (size === 2) return 'Pair';
+            if (size === 3) return '3 Members';
+            if (size === 4) return '4 Members';
+            return '5+ Members';
         }
 
         function safeString(val) {
@@ -1492,28 +1528,21 @@
             }
 
             try {
-                console.log('🔄 Testing Supabase connection...');
-                
-                const { data, error } = await supabaseClient
+                const { data, error, status } = await supabaseClient
                     .from('registrations')
                     .select('count', { count: 'exact', head: true });
                     
                 if (error) {
                     console.error('❌ Supabase connection test failed:', error);
-                    console.error('   Message:', error.message);
-                    console.error('   Code:', error.code);
                     updateConnectionStatus('offline', `❌ ${error.message || 'Connection failed'}`);
                     return false;
                 }
                 
-                console.log('✅ Supabase connection test passed!');
-                console.log('   Records:', data);
+                console.log('✅ Supabase connection test passed. Records:', data);
                 updateConnectionStatus('online', `✅ Connected (${data || 0} records)`);
                 return true;
             } catch (e) {
                 console.error('❌ Supabase connection test error:', e);
-                console.error('   Type:', e.name);
-                console.error('   Message:', e.message);
                 updateConnectionStatus('offline', '⚠️ Connection error');
                 return false;
             }
@@ -1569,6 +1598,7 @@
                 const teamSize = participants.length || 1;
                 const eventInfo = EVENTS.find(e => e.name === r.event_name);
                 const eventType = eventInfo ? eventInfo.type : '—';
+                // 🔧 FIX: Use the database category
                 const cat = getRegistrationCategory(r);
                 const categoryLabel = cat === 'PU' ? 'PU' : 'UG';
                 const status = r.status || 'VERIFIED';
@@ -1646,6 +1676,7 @@
                 const teamSize = participants.length || 1;
                 const eventInfo = EVENTS.find(e => e.name === r.event_name);
                 const eventType = eventInfo ? eventInfo.type : '—';
+                // 🔧 FIX: Use the database category
                 const cat = getRegistrationCategory(r);
                 const categoryLabel = cat === 'PU' ? 'PU' : 'UG';
                 const status = r.status || 'VERIFIED';
@@ -1721,7 +1752,14 @@
                         fromSupabase = true;
                         dataSource = 'Supabase';
                         console.log('✅ Loaded from Supabase:', data.length, 'records');
+                        console.log('📋 Sample record:', data[0]);
                         
+                        // Log category distribution for debugging
+                        const ugCount = data.filter(r => getRegistrationCategory(r) === 'UG').length;
+                        const puCount = data.filter(r => getRegistrationCategory(r) === 'PU').length;
+                        console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
+                        
+                        // Save to localStorage as backup
                         try {
                             localStorage.setItem('deplomat_db', JSON.stringify(data));
                             localStorage.setItem('deplomat_db_timestamp', new Date().toISOString());
@@ -1733,7 +1771,7 @@
                         updateConnectionStatus('online', `✅ ${data.length} records from Supabase`);
                     } else {
                         console.warn('⚠️ No data returned from Supabase');
-                        updateConnectionStatus('offline', '📭 No data in Supabase');
+                        updateConnectionStatus('offline', '⚠️ No data in Supabase');
                     }
                 } catch (e) {
                     console.error('❌ Supabase fetch failed:', e);
@@ -1764,6 +1802,7 @@
             
             if (data.length === 0) {
                 showTooltip('⚠️ No data found. Please check your connection.', 'error');
+                // Show empty state in table
                 tableBody.innerHTML = `
                     <tr>
                         <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
@@ -1791,6 +1830,7 @@
             const status = statusFilter.value;
 
             filteredRegistrations = allRegistrations.filter(r => {
+                // Search filter
                 if (search) {
                     const searchable = [
                         r.team_leader || '',
@@ -1803,20 +1843,24 @@
                     if (!searchable.includes(search)) return false;
                 }
 
+                // Event filter
                 if (event && r.event_name !== event) return false;
 
+                // 🔧 FIX: Category filter using database column
                 if (category !== 'all') {
                     const rCategory = getRegistrationCategory(r);
                     if (category === 'ug' && rCategory !== 'UG') return false;
                     if (category === 'pu' && rCategory !== 'PU') return false;
                 }
 
+                // Team size filter
                 if (teamSize !== 'all') {
                     const size = getTeamSize(r);
                     if (teamSize === '5plus' && size < 5) return false;
                     if (teamSize !== '5plus' && size !== parseInt(teamSize)) return false;
                 }
 
+                // Status filter
                 if (status !== 'all') {
                     const rStatus = r.status || 'VERIFIED';
                     if (rStatus !== status) return false;
@@ -1877,6 +1921,8 @@
             activeFiltersInfo.innerHTML = html;
         }
 
+        // ─── CLEAR FILTER ────────────────────────────────────────────
+
         function clearFilter(type) {
             if (type === 'search') searchInput.value = '';
             if (type === 'event') eventFilter.value = '';
@@ -1888,6 +1934,8 @@
 
         window.clearFilter = clearFilter;
 
+        // ─── SCHEDULED RENDER ────────────────────────────────────────
+
         function scheduleRender() {
             if (renderScheduled) return;
             renderScheduled = true;
@@ -1897,6 +1945,8 @@
             });
         }
 
+        // ─── RENDER ALL ──────────────────────────────────────────────
+
         function renderAll() {
             renderStats();
             renderEventBars();
@@ -1905,6 +1955,8 @@
             renderTable();
             updateRecordCount();
         }
+
+        // ─── STATS ────────────────────────────────────────────────────
 
         function renderStats() {
             const regs = filteredRegistrations;
@@ -1922,6 +1974,7 @@
             regs.forEach(r => { revenue += (r.total_amount || 0); });
             totalRevenueEl.textContent = '₹' + revenue.toLocaleString();
 
+            // 🔧 FIX: UG and PU colleges using database column
             const ugCollegeSet = new Set();
             const puCollegeSet = new Set();
 
@@ -1931,6 +1984,7 @@
                 const cat = getRegistrationCategory(r);
                 if (cat === 'UG') ugCollegeSet.add(college);
                 if (cat === 'PU') puCollegeSet.add(college);
+                // If category is neither UG nor PU, default to UG
                 if (cat !== 'UG' && cat !== 'PU') ugCollegeSet.add(college);
             });
 
@@ -1939,6 +1993,29 @@
             ugCollegesEl.innerHTML = `${ugCount}<span class="sub-num">UG Colleges</span>`;
             puCollegesEl.innerHTML = `${puCount}<span class="sub-num">PU Colleges</span>`;
 
+            // Cross-registration count
+            const crossSet = new Set();
+            regs.forEach(r => {
+                const crossCheck = r.cross_check || [];
+                if (Array.isArray(crossCheck)) {
+                    crossCheck.forEach(c => {
+                        if (c && c.checked === true) {
+                            const key = `${r.id || r.email || ''}-${c.eventId || ''}`;
+                            crossSet.add(key);
+                        }
+                    });
+                }
+                const parts = getParticipantsArray(r);
+                parts.forEach(p => {
+                    if (p && p.otherEvent && p.otherEvent !== 'No') {
+                        const key = `${r.id || r.email || ''}-${p.name || ''}`;
+                        crossSet.add(key);
+                    }
+                });
+            });
+            crossRegsEl.textContent = crossSet.size;
+
+            // Top event
             const eventCount = {};
             regs.forEach(r => {
                 const name = r.event_name || 'Unknown';
@@ -1952,6 +2029,8 @@
             }
             topEventEl.textContent = topVal > 0 ? topName : '—';
         }
+
+        // ─── EVENT BAR CHART ─────────────────────────────────────────
 
         function renderEventBars() {
             const regs = filteredRegistrations;
@@ -2012,6 +2091,8 @@
             eventBarList.innerHTML = html;
         }
 
+        // ─── COLUMN CHART ────────────────────────────────────────────
+
         function renderColumnChart() {
             const regs = filteredRegistrations;
 
@@ -2021,7 +2102,7 @@
                 const cat = getRegistrationCategory(r);
                 if (cat === 'UG') ug++;
                 else if (cat === 'PU') pu++;
-                else ug++;
+                else ug++; // Default to UG if unknown
             });
 
             const maxVal = Math.max(ug, pu, 1);
@@ -2039,6 +2120,8 @@
             puColVal.textContent = pu;
         }
 
+        // ─── EXTRA ANALYTICS ─────────────────────────────────────────
+
         function renderExtraAnalytics() {
             const regs = filteredRegistrations;
 
@@ -2054,7 +2137,7 @@
                 const cat = getRegistrationCategory(r);
                 if (cat === 'UG') collegeStats[college].ug++;
                 else if (cat === 'PU') collegeStats[college].pu++;
-                else collegeStats[college].ug++;
+                else collegeStats[college].ug++; // Default to UG
             });
 
             let topUg = { name: '—', count: 0 };
@@ -2105,6 +2188,8 @@
             }
         }
 
+        // ─── TABLE ────────────────────────────────────────────────────
+
         function renderTable() {
             const regs = filteredRegistrations;
 
@@ -2126,6 +2211,7 @@
                 const participantNames = parts.map(p => p.name || 'Unknown').join(', ');
 
                 const eventName = r.event_name || 'Unknown';
+                // 🔧 FIX: Use database category for table display
                 const cat = getRegistrationCategory(r);
 
                 let categoryDisplay = '—';
@@ -2212,6 +2298,8 @@
             lastUpdatedEl.textContent = `Last updated: ${timeStr} from ${dataSource}`;
         }
 
+        // ─── TOOLTIP ──────────────────────────────────────────────────
+
         let tooltipTimeout = null;
 
         function showTooltip(msg, type) {
@@ -2225,6 +2313,8 @@
                 tooltip.classList.remove('show', 'success', 'error', 'info');
             }, 3200);
         }
+
+        // ─── REFRESH ──────────────────────────────────────────────────
 
         async function refreshData() {
             if (isRefreshing) return;
@@ -2245,6 +2335,8 @@
             }
         }
 
+        // ─── VERIFY REGISTRATION ─────────────────────────────────────
+
         async function verifyRegistration(id) {
             if (!confirm('✅ Verify this registration?')) return;
 
@@ -2259,6 +2351,7 @@
                         .eq('id', id);
                     if (error) throw error;
                     
+                    // Update local data
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'VERIFIED';
                     
@@ -2272,6 +2365,8 @@
                 console.error('Verify error:', e);
             }
         }
+
+        // ─── REJECT REGISTRATION ─────────────────────────────────────
 
         async function rejectRegistration(id) {
             const reason = prompt('❌ Reason for rejection (optional):');
@@ -2290,6 +2385,7 @@
                         .eq('id', id);
                     if (error) throw error;
                     
+                    // Update local data
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'REJECTED';
                     
@@ -2304,8 +2400,11 @@
             }
         }
 
+        // Make functions globally accessible
         window.verifyRegistration = verifyRegistration;
         window.rejectRegistration = rejectRegistration;
+
+        // ─── EVENT LISTENERS ─────────────────────────────────────────
 
         searchInput.addEventListener('input', debounce(applyFilters, 300));
         eventFilter.addEventListener('change', applyFilters);
@@ -2335,8 +2434,10 @@
                 if (!document.hidden) {
                     refreshData();
                 }
-            }, 60000);
+            }, 60000); // 1 minute
         }
+
+        // ─── WINDOW RESIZE HANDLER ──────────────────────────────────
 
         let resizeTimer = null;
 
@@ -2346,6 +2447,8 @@
                 renderColumnChart();
             }, 200);
         }
+
+        // ─── INIT ─────────────────────────────────────────────────────
 
         async function init() {
             populateDropdowns();
@@ -2360,7 +2463,10 @@
                     </tr>
                 `;
 
+            // Test Supabase connection
             await testSupabaseConnection();
+            
+            // Load data
             await loadData();
 
             window.addEventListener('resize', handleResize);
@@ -2377,11 +2483,18 @@
                 refreshData();
             }, 1500);
 
-            console.log('📊 DEPLOMAT Admin Dashboard v6.0');
-            console.log('📈 Loaded', allRegistrations.length, 'registrations from', dataSource);
-            console.log('🔑 API Key ends with:', SUPABASE_ANON_KEY.substring(SUPABASE_ANON_KEY.length - 20));
+            console.log('📊 DEPLOMAT Admin Dashboard v3.0');
+            console.log(`📈 Loaded ${allRegistrations.length} registrations from ${dataSource}`);
+            console.log('🎯 Features: Filters, Search, Export, Verification');
+            console.log('⌨️  Keyboard shortcuts: Ctrl+R (refresh), Ctrl+Shift+E (export)');
+            
+            // Log category distribution for debugging
+            const ugCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'UG').length;
+            const puCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'PU').length;
+            console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
         }
 
+        // Start the dashboard
         init();
     </script>
 
