@@ -684,17 +684,29 @@
             color: rgba(255, 255, 255, 0.4);
             margin-bottom: 15px;
         }
-        .pay-app-btn {
+        .payment-side .receiver-name {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 16px;
+            padding: 8px 12px;
+            background: rgba(101, 216, 255, 0.04);
+            border-radius: 8px;
+            border: 1px solid rgba(101, 216, 255, 0.06);
+        }
+        .payment-side .receiver-name strong {
+            color: #65d8ff;
+        }
+        .pay-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border-radius: 12px;
             font-family: 'Segoe UI', sans-serif;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             cursor: pointer;
             transition: 0.3s;
             border: none;
@@ -703,38 +715,46 @@
             color: #fff;
             -webkit-tap-highlight-color: transparent;
         }
-        .pay-app-btn:hover {
+        .pay-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        .pay-app-btn:active {
+        .pay-btn:active {
             transform: scale(0.96);
         }
-        .btn-gpay {
-            background: #4285F4;
+        .pay-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
         }
-        .btn-phonepe {
-            background: #5f259f;
-        }
-        .btn-paytm {
-            background: #00baf2;
-        }
-        .btn-other {
-            background: #FFC53D;
+        .btn-upi {
+            background: linear-gradient(135deg, #65d8ff, #3b7bff);
             color: #0a0a0f;
+        }
+        .btn-qr {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .btn-qr:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
         }
         .qr-toggle {
             font-size: 0.75rem;
             color: #65d8ff;
             cursor: pointer;
             margin-top: 10px;
-            text-decoration: underline;
             -webkit-tap-highlight-color: transparent;
+            text-decoration: underline;
         }
         .qr-container {
             display: none;
             margin-top: 15px;
             animation: fadeStep 0.3s ease;
+        }
+        .qr-container.active {
+            display: block;
         }
         .qr-frame {
             display: inline-block;
@@ -744,8 +764,8 @@
             border: 2px solid #FFC53D;
         }
         .qr-frame img {
-            width: 140px;
-            height: 140px;
+            width: 160px;
+            height: 160px;
             display: block;
         }
         .upload-area {
@@ -1117,10 +1137,6 @@
             .step-line {
                 width: 10px;
             }
-            .pay-app-btn {
-                font-size: 0.85rem;
-                padding: 12px;
-            }
             .qr-frame img {
                 width: 100px;
                 height: 100px;
@@ -1308,6 +1324,28 @@
             color: #FFC53D;
             font-weight: 700;
         }
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .payment-actions .btn {
+            flex: 1;
+            min-width: 140px;
+        }
+        .warning-text {
+            font-size: 0.7rem;
+            color: rgba(255, 197, 61, 0.5);
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: rgba(255, 197, 61, 0.04);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 197, 61, 0.06);
+        }
+        .warning-text strong {
+            color: #FFC53D;
+        }
     </style>
 </head>
 <body>
@@ -1431,14 +1469,29 @@
                         <!-- Payment Section -->
                         <div class="payment-side">
                             <h5 id="payhead">PAY ₹0</h5>
-                            <p>Tap to open your payment app</p>
-                            <button onclick="openPaymentApp('gpay')" class="pay-app-btn btn-gpay"><i class="fab fa-google-pay"></i> Pay with GPay</button>
-                            <button onclick="openPaymentApp('phonepe')" class="pay-app-btn btn-phonepe"><i class="fas fa-mobile-alt"></i> Pay with PhonePe</button>
-                            <button onclick="openPaymentApp('paytm')" class="pay-app-btn btn-paytm"><i class="fas fa-wallet"></i> Pay with Paytm</button>
-                            <button onclick="openPaymentApp('upi')" class="pay-app-btn btn-other"><i class="fas fa-qrcode"></i> Other UPI Apps</button>
-                            <div class="qr-toggle" onclick="toggleQR()">Or scan QR code manually</div>
+                            <p>Complete your payment via UPI</p>
+                            
+                            <div class="receiver-name">
+                                📤 <strong>Receiver:</strong> <span id="receiverDisplay">Loading...</span>
+                            </div>
+                            
+                            <div class="payment-actions">
+                                <button class="pay-btn btn-upi" id="payUPIBtn" onclick="launchUPIPayment()">
+                                    💳 PAY ₹<span id="payBtnAmount">0</span> VIA UPI
+                                </button>
+                                <button class="pay-btn btn-qr" onclick="toggleQR()">
+                                    📱 SCAN QR CODE
+                                </button>
+                            </div>
+                            
                             <div class="qr-container" id="qrArea">
                                 <div class="qr-frame"><img id="qrImage" src="" alt="QR Code" /></div>
+                                <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;">Scan with any UPI app</p>
+                            </div>
+                            
+                            <div class="warning-text">
+                                ⚠️ <strong>Important:</strong> Before paying, verify the recipient name shown in your UPI app matches 
+                                <strong id="warningReceiver">Loading...</strong>
                             </div>
                         </div>
 
@@ -1542,7 +1595,7 @@
         </div>
     </main>
     
-    <!-- PAYMENT CONFIRMATION MODAL (appears after returning from payment) -->
+    <!-- PAYMENT CONFIRMATION MODAL -->
     <div class="payment-confirm-modal" id="paymentConfirmModal">
         <div class="modal-box">
             <div class="icon-big">💳</div>
@@ -1563,12 +1616,23 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        // ─── CONFIG ──────────────────────────────────────────────────────────
+        // ═══════════════════════════════════════════════════════════════════
+        //  PAYMENT CONFIGURATION - SINGLE SOURCE OF TRUTH
+        // ═══════════════════════════════════════════════════════════════════
+        //  IMPORTANT: Use your actual registered UPI account details here
+        //  The payeeName must match the name registered with your UPI ID
+        // ═══════════════════════════════════════════════════════════════════
+        const PAYMENT_CONFIG = {
+            upiId: "7349231368@ptyes",      // ← Your existing UPI ID
+            payeeName: "JESWIN JOSEPH",      // ← Actual registered name of the UPI account
+            pricePerParticipant: 250,
+            currency: "INR",
+            transactionNote: "DEPLOMAT Registration"
+        };
+        
+        // ─── SUPABASE CONFIG ──────────────────────────────────────────────
         const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
-        const EVENT_FEE = 250;
-        const UPI_ID = "7349231368@ptyes";
-        const PAYEE_NAME = "DEPLOMAT";
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLUutqWQYDswqXG4LzJaCd8krpKAykq1LEY';
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzTZEG_4kMrakDO9SRIzENGjYzzJXUGh0B-QNHE70f-iMozYMkLXucuPanRyfMuyqlW/exec';
         const UPLOAD_TIMER_SECONDS = 300; // 5 minutes
         
@@ -1619,6 +1683,7 @@
         const payPlayerCount = document.getElementById('payPlayerCount');
         const payTotal = document.getElementById('payTotal');
         const payhead = document.getElementById('payhead');
+        const payBtnAmount = document.getElementById('payBtnAmount');
         const qrImage = document.getElementById('qrImage');
         const qrArea = document.getElementById('qrArea');
         const step4Back = document.getElementById('step4Back');
@@ -1646,6 +1711,9 @@
         const paymentConfirmModal = document.getElementById('paymentConfirmModal');
         const modalAmount = document.getElementById('modalAmount');
         const modalTimerDisplay = document.getElementById('modalTimerDisplay');
+        const receiverDisplay = document.getElementById('receiverDisplay');
+        const warningReceiver = document.getElementById('warningReceiver');
+        const payUPIBtn = document.getElementById('payUPIBtn');
 
         // ─── STATE ──────────────────────────────────────────────────────────
         let currentStep = 1;
@@ -1663,119 +1731,160 @@
         let timerStarted = false;
         let uploadDisabled = false;
         let registrationComplete = false;
-        let usedUTRs = [];
         let paymentInitiated = false;
         let modalVisible = false;
+        let paymentStartTime = null;
+        let isPaymentButtonDisabled = false;
 
-        // ─── STATE PERSISTENCE ─────────────────────────────────────────────
-        const STATE_EXPIRY = 10 * 60 * 1000;
+        // ═══════════════════════════════════════════════════════════════════
+        //  PAYMENT FUNCTIONS - SINGLE IMPLEMENTATION
+        // ═══════════════════════════════════════════════════════════════════
 
-        function saveRegistrationState() {
-            const state = {
-                college: document.getElementById('college').value.trim(),
-                category: getSelectedCategory(),
-                eventId: selectedEvent ? selectedEvent.id : null,
-                participants: getParticipantsList(),
-                currentStep: currentStep,
-                timestamp: Date.now(),
-                eventName: selectedEvent ? selectedEvent.name : null,
-                eventSub: selectedEvent ? selectedEvent.sub : null,
-                paymentInitiated: paymentInitiated
-            };
-            try {
-                localStorage.setItem('deplomat_registration_state', JSON.stringify(state));
-                sessionStorage.setItem('deplomat_registration_state_backup', JSON.stringify(state));
-            } catch (e) {}
+        function calculatePaymentAmount(participantCount) {
+            const count = Number(participantCount);
+            if (!Number.isInteger(count) || count <= 0) {
+                return 0;
+            }
+            return count * PAYMENT_CONFIG.pricePerParticipant;
         }
 
-        function restoreRegistrationState() {
-            let saved = localStorage.getItem('deplomat_registration_state');
-            if (!saved) saved = sessionStorage.getItem('deplomat_registration_state_backup');
-            if (!saved) return false;
+        function generateUPILink(amount) {
+            const params = new URLSearchParams({
+                pa: PAYMENT_CONFIG.upiId,
+                pn: PAYMENT_CONFIG.payeeName,
+                am: Number(amount).toFixed(2),
+                cu: PAYMENT_CONFIG.currency,
+                tn: PAYMENT_CONFIG.transactionNote
+            });
+            return `upi://pay?${params.toString()}`;
+        }
+
+        function getTotalAmount() {
+            const count = playersContainer.children.length;
+            return calculatePaymentAmount(count);
+        }
+
+        // ─── LAUNCH UPI PAYMENT (SINGLE ENTRY POINT) ─────────────────────
+        function launchUPIPayment() {
+            // Prevent double-click / repeated launches
+            if (isPaymentButtonDisabled) {
+                alert('⏳ Payment is already in progress. Please complete or cancel it.');
+                return;
+            }
+            
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
+                return;
+            }
+            
+            const total = getTotalAmount();
+            if (total <= 0) {
+                alert('⚠️ Invalid payment amount. Please check participant count.');
+                return;
+            }
+            
+            // Validate registration data
+            const leaderName = getLeaderName();
+            const college = collegeInput.value.trim();
+            const participants = getParticipantsList();
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+            
+            if (!leaderName || !college || participants.length === 0) {
+                alert('⚠️ Please complete all registration details first.');
+                return;
+            }
+            
+            // Double-click protection
+            isPaymentButtonDisabled = true;
+            payUPIBtn.disabled = true;
+            payUPIBtn.innerHTML = '<span class="spinner"></span> Opening UPI...';
+            
+            // Save payment state
+            paymentInitiated = true;
+            paymentStartTime = Date.now();
+            saveRegistrationState();
+            
+            const regData = {
+                leader_name: leaderName,
+                college: college,
+                event: selectedEvent ? selectedEvent.name : 'Unknown',
+                amount: total,
+                participants: participants,
+                timestamp: new Date().toISOString(),
+                category: ugPuValue,
+                eventId: selectedEvent ? selectedEvent.id : null,
+                paymentStartTime: paymentStartTime
+            };
+            localStorage.setItem('pending_registration', JSON.stringify(regData));
+            sessionStorage.setItem('returning_from_payment', 'true');
+            localStorage.setItem('payment_initiated', 'true');
+            localStorage.setItem('payment_start_time', paymentStartTime.toString());
+            
+            // Generate the UPI link
+            const upiLink = generateUPILink(total);
+            
+            // ═══════════════════════════════════════════════════════════════
+            //  DIRECT NAVIGATION - DO NOT USE window.open()
+            //  This ensures the UPI app opens directly from the user gesture
+            // ═══════════════════════════════════════════════════════════════
             try {
-                const state = JSON.parse(saved);
-                if (Date.now() - state.timestamp > STATE_EXPIRY) {
-                    localStorage.removeItem('deplomat_registration_state');
-                    sessionStorage.removeItem('deplomat_registration_state_backup');
-                    return false;
-                }
-                if (!state.college && !state.eventId && (!state.participants || state.participants.length === 0)) {
-                    return false;
-                }
-                restoreBanner.classList.add('show');
-                if (state.college) document.getElementById('college').value = state.college;
-                if (state.category) {
-                    const radio = document.querySelector(`input[name="ug_pu"][value="${state.category}"]`);
-                    if (radio) { radio.checked = true;
-                        selectedCategory = state.category; }
-                }
-                if (state.eventId !== null && state.eventId !== undefined) {
-                    const eventSelect = document.getElementById('eventSelect');
-                    const eventIndex = state.eventId.toString();
-                    if (Array.from(eventSelect.options).some(opt => opt.value === eventIndex)) {
-                        eventSelect.value = eventIndex;
-                        const event = EVENTS.find(e => e.id === state.eventId);
-                        if (event) {
-                            selectedEvent = event;
-                            bannerEventName.textContent = event.name;
-                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
-                            eventBanner.classList.add('show');
-                            currentMin = event.min;
-                            currentMax = event.max;
-                            updateEventLimitInfo();
-                        }
-                        eventSelect.dispatchEvent(new Event('change'));
-                    }
-                }
-                if (state.participants && state.participants.length > 0) {
-                    setTimeout(() => {
-                        playersContainer.innerHTML = '';
-                        state.participants.forEach((p, index) => {
-                            addPlayer(index === 0);
-                            const entries = playersContainer.querySelectorAll('.player-entry');
-                            const entry = entries[entries.length - 1];
-                            if (entry) {
-                                const nameInput = entry.querySelector('.player-name');
-                                if (nameInput) nameInput.value = p.name || '';
-                                if (index === 0) {
-                                    const emailInput = entry.querySelector('.player-email');
-                                    const phoneInput = entry.querySelector('.player-phone');
-                                    if (emailInput) emailInput.value = p.email || '';
-                                    if (phoneInput) phoneInput.value = p.phone || '';
-                                }
-                            }
-                        });
-                        updatePlayerNumbers();
-                        updateAddButtonState();
-                    }, 400);
-                }
+                // Use location.href for direct navigation from user gesture
+                window.location.href = upiLink;
                 
-                // Check if we're returning from payment
-                const returning = sessionStorage.getItem('returning_from_payment');
-                if (returning === 'true') {
-                    sessionStorage.removeItem('returning_from_payment');
-                    // Restore payment initiated state
-                    if (state.paymentInitiated) {
-                        paymentInitiated = true;
-                    }
-                    // Go to step 4 and show the payment confirmation modal
-                    setTimeout(() => {
-                        goToStep(4);
-                        updatePaymentSummary();
-                        // Show the modal after a short delay
-                        setTimeout(() => {
-                            showPaymentConfirmModal();
-                        }, 800);
-                    }, 500);
-                }
-                return true;
+                // Re-enable button after 8 seconds (in case user returns quickly)
+                setTimeout(() => {
+                    isPaymentButtonDisabled = false;
+                    payUPIBtn.disabled = false;
+                    const totalAmount = getTotalAmount();
+                    payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
+                }, 8000);
             } catch (e) {
-                console.error('Error restoring state:', e);
-                return false;
+                // Fallback if location.href fails
+                console.warn('UPI launch fallback:', e);
+                window.location.assign(upiLink);
+                
+                setTimeout(() => {
+                    isPaymentButtonDisabled = false;
+                    payUPIBtn.disabled = false;
+                    const totalAmount = getTotalAmount();
+                    payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
+                }, 8000);
             }
         }
 
-        // ─── HELPERS ──────────────────────────────────────────────────────
+        // ─── REMOVED: openPaymentApp() - No longer needed ────────────────
+        // The old openPaymentApp() function has been removed.
+        // Only launchUPIPayment() is used for initiating payments.
+
+        // ─── HELPER FUNCTIONS ─────────────────────────────────────────────
+        function getLeaderName() {
+            const firstEntry = playersContainer.querySelector('.player-entry');
+            if (firstEntry) {
+                const nameInput = firstEntry.querySelector('.player-name');
+                return nameInput ? nameInput.value.trim() : 'Unknown';
+            }
+            return 'Unknown';
+        }
+
+        function getParticipantsList() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            const participants = [];
+            entries.forEach((entry, index) => {
+                const nameInput = entry.querySelector('.player-name');
+                const isLeader = index === 0;
+                let p = { name: nameInput ? nameInput.value.trim() : '', isLeader: isLeader };
+                if (isLeader) {
+                    const emailInput = entry.querySelector('.player-email');
+                    const phoneInput = entry.querySelector('.player-phone');
+                    p.email = emailInput ? emailInput.value.trim() : '';
+                    p.phone = phoneInput ? phoneInput.value.trim() : '';
+                }
+                participants.push(p);
+            });
+            return participants;
+        }
+
         function getSelectedCategory() {
             const checked = document.querySelector('input[name="ug_pu"]:checked');
             return checked ? checked.value : null;
@@ -1805,47 +1914,6 @@
         function showBlockNotice(message) {
             if (message) { blockMsg.innerHTML = message;
                 blockNotice.classList.add('show'); } else { blockNotice.classList.remove('show'); }
-        }
-
-        function validateCategoryEventPair() {
-            const cat = getSelectedCategory();
-            const eventVal = eventSelect.value;
-            if (!cat || !eventVal) { showBlockNotice(''); return true; }
-            const result = checkCategoryEventCompatibility(cat, eventVal);
-            if (!result.valid) { showBlockNotice(result.message); return false; }
-            showBlockNotice('');
-            return true;
-        }
-
-        function getTotalAmount() {
-            return playersContainer.children.length * EVENT_FEE;
-        }
-
-        function getLeaderName() {
-            const firstEntry = playersContainer.querySelector('.player-entry');
-            if (firstEntry) {
-                const nameInput = firstEntry.querySelector('.player-name');
-                return nameInput ? nameInput.value.trim() : 'Unknown';
-            }
-            return 'Unknown';
-        }
-
-        function getParticipantsList() {
-            const entries = playersContainer.querySelectorAll('.player-entry');
-            const participants = [];
-            entries.forEach((entry, index) => {
-                const nameInput = entry.querySelector('.player-name');
-                const isLeader = index === 0;
-                let p = { name: nameInput ? nameInput.value.trim() : '', isLeader: isLeader };
-                if (isLeader) {
-                    const emailInput = entry.querySelector('.player-email');
-                    const phoneInput = entry.querySelector('.player-phone');
-                    p.email = emailInput ? emailInput.value.trim() : '';
-                    p.phone = phoneInput ? phoneInput.value.trim() : '';
-                }
-                participants.push(p);
-            });
-            return participants;
         }
 
         // ─── STEP MANAGEMENT ──────────────────────────────────────────────
@@ -2031,7 +2099,7 @@
         // ─── PAYMENT & SCREENSHOT UPLOAD ──────────────────────────────────
         function updatePaymentSummary() {
             const count = playersContainer.children.length;
-            const total = count * EVENT_FEE;
+            const total = calculatePaymentAmount(count);
             let leaderName = getLeaderName();
             const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
             const ugPuValue = ugPuSelected ? ugPuSelected.value : '—';
@@ -2041,17 +2109,23 @@
             payPlayerCount.textContent = count;
             payTotal.textContent = `₹${total}`;
             payhead.textContent = `PAY ₹${total}`;
+            payBtnAmount.textContent = total;
+            
+            // Update receiver display
+            receiverDisplay.textContent = PAYMENT_CONFIG.payeeName;
+            warningReceiver.textContent = PAYMENT_CONFIG.payeeName;
+            
             updateQR(total);
         }
 
         function updateQR(amount) {
-            const upi = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${amount}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
+            const upi = generateUPILink(amount);
             qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upi)}`;
         }
 
         function toggleQR() {
             qrVisible = !qrVisible;
-            qrArea.style.display = qrVisible ? 'block' : 'none';
+            qrArea.classList.toggle('active', qrVisible);
             if (qrVisible) updateQR(getTotalAmount());
         }
 
@@ -2062,7 +2136,16 @@
             
             const total = getTotalAmount();
             modalAmount.textContent = `₹${total}`;
-            modalTimerDisplay.textContent = timerDisplay.textContent;
+            
+            // Calculate remaining time from original start
+            let remaining = UPLOAD_TIMER_SECONDS;
+            if (paymentStartTime) {
+                const elapsed = Math.floor((Date.now() - paymentStartTime) / 1000);
+                remaining = Math.max(0, UPLOAD_TIMER_SECONDS - elapsed);
+            }
+            uploadTimeRemaining = remaining;
+            modalTimerDisplay.textContent = formatTime(remaining);
+            
             paymentConfirmModal.classList.add('active');
             modalVisible = true;
             
@@ -2071,13 +2154,11 @@
                 clearInterval(uploadTimerInterval);
             }
             uploadTimerInterval = setInterval(() => {
-                const minutes = Math.floor(uploadTimeRemaining / 60);
-                const seconds = uploadTimeRemaining % 60;
-                modalTimerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                uploadTimeRemaining--;
+                if (uploadTimeRemaining < 0) uploadTimeRemaining = 0;
+                modalTimerDisplay.textContent = formatTime(uploadTimeRemaining);
                 if (uploadTimeRemaining <= 0) {
                     clearInterval(uploadTimerInterval);
-                    modalTimerDisplay.textContent = '00:00';
-                    // Auto-close modal and show pending
                     paymentConfirmModal.classList.remove('active');
                     modalVisible = false;
                     alert('⏰ Time expired! Please contact the coordinator.');
@@ -2093,46 +2174,48 @@
             
             // Show upload section and start timer
             uploadSection.style.display = 'block';
+            uploadSection.classList.add('active');
             uploadTimer.style.display = 'block';
-            uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
+            
+            // Use the remaining time from the modal
+            timerDisplay.textContent = formatTime(uploadTimeRemaining);
             timerStarted = true;
             
-            // Start the timer
-            if (uploadTimerInterval) clearInterval(uploadTimerInterval);
-            uploadTimerInterval = setInterval(() => {
-                uploadTimeRemaining--;
-                const minutes = Math.floor(uploadTimeRemaining / 60);
-                const seconds = uploadTimeRemaining % 60;
-                timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                
-                if (uploadTimeRemaining < 60 && uploadTimeRemaining > 0) {
-                    timerWarning.classList.add('show');
-                    timerDisplay.style.color = '#ff6b8a';
-                    timerStatus.textContent = 'Expiring';
-                    timerStatus.style.background = 'rgba(255,42,109,0.08)';
-                    timerStatus.style.color = '#ff6b8a';
-                }
-                
-                if (uploadTimeRemaining <= 0) {
-                    clearInterval(uploadTimerInterval);
-                    uploadTimerInterval = null;
-                    timerDisplay.textContent = '00:00';
-                    timerDisplay.style.color = '#ff2a6d';
-                    timerStatus.textContent = 'Expired';
-                    timerStatus.style.background = 'rgba(255,42,109,0.12)';
-                    timerStatus.style.color = '#ff2a6d';
-                    timerWarning.innerHTML = '⏰ <strong>Time expired!</strong> Submit as Pending or contact coordinator.';
-                    timerWarning.classList.add('show');
+            // Start the timer if not already running
+            if (!uploadTimerInterval) {
+                uploadTimerInterval = setInterval(() => {
+                    uploadTimeRemaining--;
+                    timerDisplay.textContent = formatTime(uploadTimeRemaining);
                     
-                    document.getElementById('submitPendingBtn').style.display = 'block';
-                    dropZone.style.opacity = '0.5';
-                    dropZone.style.pointerEvents = 'none';
-                    
-                    if (!isPendingSubmission) {
-                        submitPendingRegistration();
+                    if (uploadTimeRemaining < 60 && uploadTimeRemaining > 0) {
+                        timerWarning.classList.add('show');
+                        timerDisplay.style.color = '#ff6b8a';
+                        timerStatus.textContent = 'Expiring';
+                        timerStatus.style.background = 'rgba(255,42,109,0.08)';
+                        timerStatus.style.color = '#ff6b8a';
                     }
-                }
-            }, 1000);
+                    
+                    if (uploadTimeRemaining <= 0) {
+                        clearInterval(uploadTimerInterval);
+                        uploadTimerInterval = null;
+                        timerDisplay.textContent = '00:00';
+                        timerDisplay.style.color = '#ff2a6d';
+                        timerStatus.textContent = 'Expired';
+                        timerStatus.style.background = 'rgba(255,42,109,0.12)';
+                        timerStatus.style.color = '#ff2a6d';
+                        timerWarning.innerHTML = '⏰ <strong>Time expired!</strong> Submit as Pending or contact coordinator.';
+                        timerWarning.classList.add('show');
+                        
+                        document.getElementById('submitPendingBtn').style.display = 'block';
+                        dropZone.style.opacity = '0.5';
+                        dropZone.style.pointerEvents = 'none';
+                        
+                        if (!isPendingSubmission) {
+                            submitPendingRegistration();
+                        }
+                    }
+                }, 1000);
+            }
             
             // Scroll to upload section
             document.getElementById('uploadSection').scrollIntoView({ behavior: 'smooth' });
@@ -2146,9 +2229,12 @@
             modalVisible = false;
             if (uploadTimerInterval) clearInterval(uploadTimerInterval);
             
-            // Ask if they want to try payment again
             if (confirm('⏳ Would you like to try the payment again?')) {
-                // Reset and show payment buttons
+                // Reset button state
+                isPaymentButtonDisabled = false;
+                payUPIBtn.disabled = false;
+                const total = getTotalAmount();
+                payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + total + '</span> VIA UPI';
                 alert('📱 Please complete the payment and come back to this page.');
                 localStorage.setItem('payment_initiated', 'true');
                 sessionStorage.setItem('returning_from_payment', 'true');
@@ -2157,12 +2243,18 @@
                 alert('⏳ You can come back later to complete your registration.');
                 localStorage.removeItem('payment_initiated');
                 sessionStorage.removeItem('returning_from_payment');
+                // Reset button state
+                isPaymentButtonDisabled = false;
+                payUPIBtn.disabled = false;
+                const total = getTotalAmount();
+                payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + total + '</span> VIA UPI';
             }
         }
 
-        // ─── TIMER FUNCTIONS ──────────────────────────────────────────────
-        function startUploadTimer() {
-            // Timer is started from confirmPaymentDone
+        function formatTime(seconds) {
+            const mins = Math.floor(Math.max(0, seconds) / 60);
+            const secs = Math.floor(Math.max(0, seconds) % 60);
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
         // ─── CHECK DUPLICATE UTR ──────────────────────────────────────────
@@ -2519,6 +2611,8 @@
                 dropZone.style.opacity = '0.5';
                 finalSubmitBtn.style.display = 'none';
                 document.getElementById('submitPendingBtn').style.display = 'none';
+                payUPIBtn.disabled = true;
+                payUPIBtn.style.opacity = '0.5';
                 
                 goToStep(5);
                 const details = document.getElementById('successDetails');
@@ -2548,6 +2642,7 @@
                 sessionStorage.removeItem('returning_from_payment');
                 localStorage.removeItem('deplomat_registration_state');
                 sessionStorage.removeItem('deplomat_registration_state_backup');
+                localStorage.removeItem('payment_start_time');
                 
                 finalSubmitBtn.disabled = false;
                 finalSubmitBtn.innerHTML = '🔱 Confirm Registration';
@@ -2636,6 +2731,7 @@
                 localStorage.removeItem('pending_registration');
                 localStorage.removeItem('payment_initiated');
                 sessionStorage.removeItem('returning_from_payment');
+                localStorage.removeItem('payment_start_time');
                 
                 isPendingSubmission = false;
                 
@@ -2647,58 +2743,120 @@
             }
         }
 
-        // ─── openPaymentApp ──────────────────────────────────────────────
-        function openPaymentApp(app) {
-            if (registrationComplete) {
-                alert('✅ Registration already complete.');
-                return;
-            }
-            
-            const total = getTotalAmount();
-            const leaderName = getLeaderName();
-            const college = collegeInput.value.trim();
-            const participants = getParticipantsList();
-            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
-            const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-            
-            if (!leaderName || !college || participants.length === 0) {
-                alert('⚠️ Please complete all registration details first.');
-                return;
-            }
-            
-            // Save state and mark payment as initiated
-            paymentInitiated = true;
-            saveRegistrationState();
-            
-            const regData = {
-                leader_name: leaderName,
-                college: college,
-                event: selectedEvent ? selectedEvent.name : 'Unknown',
-                amount: total,
-                participants: participants,
-                timestamp: new Date().toISOString(),
-                category: ugPuValue,
-                eventId: selectedEvent ? selectedEvent.id : null
+        // ─── STATE PERSISTENCE ─────────────────────────────────────────────
+        const STATE_EXPIRY = 10 * 60 * 1000;
+
+        function saveRegistrationState() {
+            const state = {
+                college: document.getElementById('college').value.trim(),
+                category: getSelectedCategory(),
+                eventId: selectedEvent ? selectedEvent.id : null,
+                participants: getParticipantsList(),
+                currentStep: currentStep,
+                timestamp: Date.now(),
+                eventName: selectedEvent ? selectedEvent.name : null,
+                eventSub: selectedEvent ? selectedEvent.sub : null,
+                paymentInitiated: paymentInitiated,
+                paymentStartTime: paymentStartTime
             };
-            localStorage.setItem('pending_registration', JSON.stringify(regData));
-            sessionStorage.setItem('returning_from_payment', 'true');
-            localStorage.setItem('payment_initiated', 'true');
-            
-            const upiLink = `upi://pay?pa=${UPI_ID}&pn=${PAYEE_NAME}&am=${total}&cu=INR&tn=${encodeURIComponent('DEPLOMAT Registration')}`;
-            
-            // Open the payment app
-            const newTab = window.open(upiLink, '_blank');
-            
-            if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
-                if (confirm('⚠️ Could not open payment app in new tab.\n\nClick OK to redirect to payment app.\nYou will need to return to this page after payment.')) {
-                    window.location.href = upiLink;
+            try {
+                localStorage.setItem('deplomat_registration_state', JSON.stringify(state));
+                sessionStorage.setItem('deplomat_registration_state_backup', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        function restoreRegistrationState() {
+            let saved = localStorage.getItem('deplomat_registration_state');
+            if (!saved) saved = sessionStorage.getItem('deplomat_registration_state_backup');
+            if (!saved) return false;
+            try {
+                const state = JSON.parse(saved);
+                if (Date.now() - state.timestamp > STATE_EXPIRY) {
+                    localStorage.removeItem('deplomat_registration_state');
+                    sessionStorage.removeItem('deplomat_registration_state_backup');
+                    return false;
                 }
-            } else {
-                alert('📱 Payment app opened in new tab.\n\nComplete your payment and return to this page.\n\n⏱️ You have 5 minutes to upload the screenshot after confirming payment.');
-                // Show a small indicator that payment was initiated
-                document.querySelector('.payment-side').insertAdjacentHTML('beforeend', 
-                    '<div style="margin-top:12px;padding:8px 12px;background:rgba(255,197,61,0.08);border-radius:8px;border:1px solid rgba(255,197,61,0.15);font-size:0.75rem;color:#FFC53D;">📌 Payment initiated. Return to this page after completing payment.</div>'
-                );
+                if (!state.college && !state.eventId && (!state.participants || state.participants.length === 0)) {
+                    return false;
+                }
+                restoreBanner.classList.add('show');
+                if (state.college) document.getElementById('college').value = state.college;
+                if (state.category) {
+                    const radio = document.querySelector(`input[name="ug_pu"][value="${state.category}"]`);
+                    if (radio) { radio.checked = true;
+                        selectedCategory = state.category; }
+                }
+                if (state.eventId !== null && state.eventId !== undefined) {
+                    const eventSelect = document.getElementById('eventSelect');
+                    const eventIndex = state.eventId.toString();
+                    if (Array.from(eventSelect.options).some(opt => opt.value === eventIndex)) {
+                        eventSelect.value = eventIndex;
+                        const event = EVENTS.find(e => e.id === state.eventId);
+                        if (event) {
+                            selectedEvent = event;
+                            bannerEventName.textContent = event.name;
+                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                            eventBanner.classList.add('show');
+                            currentMin = event.min;
+                            currentMax = event.max;
+                            updateEventLimitInfo();
+                        }
+                        eventSelect.dispatchEvent(new Event('change'));
+                    }
+                }
+                if (state.participants && state.participants.length > 0) {
+                    setTimeout(() => {
+                        playersContainer.innerHTML = '';
+                        state.participants.forEach((p, index) => {
+                            addPlayer(index === 0);
+                            const entries = playersContainer.querySelectorAll('.player-entry');
+                            const entry = entries[entries.length - 1];
+                            if (entry) {
+                                const nameInput = entry.querySelector('.player-name');
+                                if (nameInput) nameInput.value = p.name || '';
+                                if (index === 0) {
+                                    const emailInput = entry.querySelector('.player-email');
+                                    const phoneInput = entry.querySelector('.player-phone');
+                                    if (emailInput) emailInput.value = p.email || '';
+                                    if (phoneInput) phoneInput.value = p.phone || '';
+                                }
+                            }
+                        });
+                        updatePlayerNumbers();
+                        updateAddButtonState();
+                    }, 400);
+                }
+                
+                // Restore payment state
+                if (state.paymentStartTime) {
+                    paymentStartTime = state.paymentStartTime;
+                }
+                
+                // Check if we're returning from payment
+                const returning = sessionStorage.getItem('returning_from_payment');
+                if (returning === 'true') {
+                    sessionStorage.removeItem('returning_from_payment');
+                    if (state.paymentInitiated) {
+                        paymentInitiated = true;
+                    }
+                    // Go to step 4 and show the payment confirmation modal
+                    setTimeout(() => {
+                        goToStep(4);
+                        updatePaymentSummary();
+                        // Calculate remaining time from original start
+                        if (paymentStartTime) {
+                            const elapsed = Math.floor((Date.now() - paymentStartTime) / 1000);
+                            uploadTimeRemaining = Math.max(0, UPLOAD_TIMER_SECONDS - elapsed);
+                        }
+                        setTimeout(() => {
+                            showPaymentConfirmModal();
+                        }, 800);
+                    }, 500);
+                }
+                return true;
+            } catch (e) {
+                console.error('Error restoring state:', e);
+                return false;
             }
         }
 
@@ -2836,6 +2994,10 @@
 
         // ─── INIT ──────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function() {
+            // Set receiver name
+            receiverDisplay.textContent = PAYMENT_CONFIG.payeeName;
+            warningReceiver.textContent = PAYMENT_CONFIG.payeeName;
+            
             const restored = restoreRegistrationState();
             
             if (!restored) {
@@ -2852,11 +3014,17 @@
             }
             
             setTimeout(() => updateQR(EVENT_FEE), 200);
-            console.log('🔱 DEPLOMAT Registration · Auto-UTR extraction via OCR enabled');
+            console.log('🔱 DEPLOMAT Registration · Payment System Fixed');
+            console.log('📱 UPI ID:', PAYMENT_CONFIG.upiId);
+            console.log('👤 Payee:', PAYMENT_CONFIG.payeeName);
+            console.log('💳 Fee per participant: ₹' + PAYMENT_CONFIG.pricePerParticipant);
             console.log('📸 Upload payment screenshot to auto-detect UTR');
             console.log('⏱️ 5 minute upload timer');
             console.log('🔍 Duplicate UTR detection enabled');
             console.log('💾 State persistence enabled');
+            console.log('✅ Removed: openPaymentApp(), old UPI_ID/PAYEE_NAME, window.open() for UPI launch');
+            console.log('✅ Single payment entry point: launchUPIPayment()');
+            console.log('✅ Direct navigation: window.location.href = upiLink');
         });
 
         function autoSelectEventFromURL() {
