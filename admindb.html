@@ -1381,7 +1381,7 @@
 
         const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
         // ✅ FIXED: Using the correct anon key provided by the user
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLUutqWQYDswqXG4LzJaCd8krpKAykq1LEY';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ciV-bON--bAuofVltQySLA_m24_M8j_';
 
         let supabaseClient = null;
         let isSupabaseConnected = false;
@@ -1390,18 +1390,18 @@
         function initSupabase() {
             try {
                 if (typeof supabase !== 'undefined' && supabase.createClient) {
-                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
                     console.log('✅ Supabase client initialized successfully');
                     return true;
                 } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
                     console.log('✅ Supabase client initialized successfully (window)');
                     return true;
                 } else {
                     console.warn('⚠️ Supabase library not loaded, retrying...');
                     setTimeout(() => {
                         if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
                             console.log('✅ Supabase client initialized after retry');
                         }
                     }, 500);
