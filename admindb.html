@@ -1111,8 +1111,13 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -1327,11 +1332,12 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════
-        //  🔐 SUPABASE CONFIG
+        //  🔐 SUPABASE CONFIG - FIXED WITH CORRECT API KEY
         // ═══════════════════════════════════════════════════════════════
 
         const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLxTB3bdn7wGiGn5P7Z1E1sZuBij4A7TCGM';
+        // ✅ FIXED: Using the correct anon key provided by the user
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmemVhZnZra2pia3F3bWh6YmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzQ1NjIsImV4cCI6MjEwMjY1MDU2Mn0.wST073KahLUutqWQYDswqXG4LzJaCd8krpKAykq1LEY';
 
         let supabaseClient = null;
         let isSupabaseConnected = false;
@@ -1339,12 +1345,19 @@
         try {
             if (typeof supabase !== 'undefined' && supabase.createClient) {
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase client initialized');
+                console.log('✅ Supabase client initialized successfully');
             } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase client initialized (window)');
+                console.log('✅ Supabase client initialized successfully (window)');
             } else {
-                console.warn('⚠️ Supabase library not loaded');
+                console.warn('⚠️ Supabase library not loaded, retrying...');
+                // Retry after a short delay
+                setTimeout(() => {
+                    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log('✅ Supabase client initialized after retry');
+                    }
+                }, 500);
             }
         } catch (e) {
             console.error('❌ Failed to initialize Supabase:', e);
@@ -1432,44 +1445,34 @@
 
         // ─── HELPERS ──────────────────────────────────────────────────
 
-        /**
-         * 🔧 FIX: Use the database's `ug_pu` column as the source of truth
-         * for UG/PU classification instead of the hardcoded event map.
-         */
         function getRegistrationCategory(registration) {
-            // Use the database column directly - this is the single source of truth
             const category = registration.ug_pu || 'UG';
-            // Normalize to uppercase for consistent comparison
             return category.toUpperCase();
         }
 
         function getParticipantsArray(registration) {
             const r = registration;
             if (!r) return [];
-            
-            // If participants is already an array
+
             if (r.participants && Array.isArray(r.participants)) return r.participants;
-            
-            // If participants is a JSON string
+
             if (typeof r.participants === 'string' && r.participants.trim()) {
                 try {
                     const parsed = JSON.parse(r.participants);
                     if (Array.isArray(parsed)) return parsed;
                 } catch (e) {
-                    // If JSON parse fails, try splitting by comma
-                    return r.participants.split(',').map(p => ({ 
-                        name: p.trim(), 
-                        phone: 'N/A', 
-                        otherEvent: 'No' 
+                    return r.participants.split(',').map(p => ({
+                        name: p.trim(),
+                        phone: 'N/A',
+                        otherEvent: 'No'
                     }));
                 }
             }
-            
-            // Fallback: use team_leader
+
             if (r.team_leader) {
                 return [{ name: r.team_leader, phone: r.phone || 'N/A', otherEvent: 'No' }];
             }
-            
+
             return [];
         }
 
@@ -1531,13 +1534,13 @@
                 const { data, error, status } = await supabaseClient
                     .from('registrations')
                     .select('count', { count: 'exact', head: true });
-                    
+
                 if (error) {
                     console.error('❌ Supabase connection test failed:', error);
                     updateConnectionStatus('offline', `❌ ${error.message || 'Connection failed'}`);
                     return false;
                 }
-                
+
                 console.log('✅ Supabase connection test passed. Records:', data);
                 updateConnectionStatus('online', `✅ Connected (${data || 0} records)`);
                 return true;
@@ -1598,7 +1601,6 @@
                 const teamSize = participants.length || 1;
                 const eventInfo = EVENTS.find(e => e.name === r.event_name);
                 const eventType = eventInfo ? eventInfo.type : '—';
-                // 🔧 FIX: Use the database category
                 const cat = getRegistrationCategory(r);
                 const categoryLabel = cat === 'PU' ? 'PU' : 'UG';
                 const status = r.status || 'VERIFIED';
@@ -1627,7 +1629,8 @@
             let csvContent = headers.join(',') + '\n';
             rows.forEach(row => {
                 const escapedRow = row.map(cell => {
-                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
+                    if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes(
+                            '\n'))) {
                         return `"${cell.replace(/"/g, '""')}"`;
                     }
                     return cell;
@@ -1676,7 +1679,6 @@
                 const teamSize = participants.length || 1;
                 const eventInfo = EVENTS.find(e => e.name === r.event_name);
                 const eventType = eventInfo ? eventInfo.type : '—';
-                // 🔧 FIX: Use the database category
                 const cat = getRegistrationCategory(r);
                 const categoryLabel = cat === 'PU' ? 'PU' : 'UG';
                 const status = r.status || 'VERIFIED';
@@ -1738,7 +1740,7 @@
                 try {
                     updateConnectionStatus('syncing', '🔄 Fetching from Supabase...');
                     console.log('🔄 Fetching from Supabase...');
-                    
+
                     const { data: supabaseData, error } = await supabaseClient
                         .from('registrations')
                         .select('*')
@@ -1753,12 +1755,12 @@
                         dataSource = 'Supabase';
                         console.log('✅ Loaded from Supabase:', data.length, 'records');
                         console.log('📋 Sample record:', data[0]);
-                        
+
                         // Log category distribution for debugging
                         const ugCount = data.filter(r => getRegistrationCategory(r) === 'UG').length;
                         const puCount = data.filter(r => getRegistrationCategory(r) === 'PU').length;
                         console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
-                        
+
                         // Save to localStorage as backup
                         try {
                             localStorage.setItem('deplomat_db', JSON.stringify(data));
@@ -1767,7 +1769,7 @@
                         } catch (e) {
                             console.warn('⚠️ Could not save to localStorage:', e);
                         }
-                        
+
                         updateConnectionStatus('online', `✅ ${data.length} records from Supabase`);
                     } else {
                         console.warn('⚠️ No data returned from Supabase');
@@ -1799,21 +1801,20 @@
             }
 
             allRegistrations = data;
-            
+
             if (data.length === 0) {
                 showTooltip('⚠️ No data found. Please check your connection.', 'error');
-                // Show empty state in table
                 tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
-                            <i class="fas fa-database" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
-                            No registrations found<br>
-                            <span style="font-size:0.7rem;color:rgba(255,255,255,0.1);">
-                                ${supabaseClient ? 'Check Supabase connection' : 'Supabase not initialized'}
-                            </span>
-                        </td>
-                    </tr>
-                `;
+                        <tr>
+                            <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                                <i class="fas fa-database" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                                No registrations found<br>
+                                <span style="font-size:0.7rem;color:rgba(255,255,255,0.1);">
+                                    ${supabaseClient ? 'Check Supabase connection' : 'Supabase not initialized'}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
             } else {
                 applyFilters();
                 updateLastUpdated();
@@ -1846,7 +1847,7 @@
                 // Event filter
                 if (event && r.event_name !== event) return false;
 
-                // 🔧 FIX: Category filter using database column
+                // Category filter using database column
                 if (category !== 'all') {
                     const rCategory = getRegistrationCategory(r);
                     if (category === 'ug' && rCategory !== 'UG') return false;
@@ -1912,11 +1913,11 @@
             let html = '';
             filters.forEach(f => {
                 html += `
-                        <span class="filter-chip">
-                            ${f.label}
-                            <span class="clear-filter" onclick="clearFilter('${f.type}')">×</span>
-                        </span>
-                    `;
+                            <span class="filter-chip">
+                                ${f.label}
+                                <span class="clear-filter" onclick="clearFilter('${f.type}')">×</span>
+                            </span>
+                        `;
             });
             activeFiltersInfo.innerHTML = html;
         }
@@ -1974,7 +1975,6 @@
             regs.forEach(r => { revenue += (r.total_amount || 0); });
             totalRevenueEl.textContent = '₹' + revenue.toLocaleString();
 
-            // 🔧 FIX: UG and PU colleges using database column
             const ugCollegeSet = new Set();
             const puCollegeSet = new Set();
 
@@ -1984,7 +1984,6 @@
                 const cat = getRegistrationCategory(r);
                 if (cat === 'UG') ugCollegeSet.add(college);
                 if (cat === 'PU') puCollegeSet.add(college);
-                // If category is neither UG nor PU, default to UG
                 if (cat !== 'UG' && cat !== 'PU') ugCollegeSet.add(college);
             });
 
@@ -1993,7 +1992,6 @@
             ugCollegesEl.innerHTML = `${ugCount}<span class="sub-num">UG Colleges</span>`;
             puCollegesEl.innerHTML = `${puCount}<span class="sub-num">PU Colleges</span>`;
 
-            // Cross-registration count
             const crossSet = new Set();
             regs.forEach(r => {
                 const crossCheck = r.cross_check || [];
@@ -2015,7 +2013,6 @@
             });
             crossRegsEl.textContent = crossSet.size;
 
-            // Top event
             const eventCount = {};
             regs.forEach(r => {
                 const name = r.event_name || 'Unknown';
@@ -2060,11 +2057,11 @@
 
             if (sorted.length === 0) {
                 eventBarList.innerHTML = `
-                        <div class="empty-state" style="padding:20px 0;">
-                            <span class="icon" style="font-size:1.8rem;">📭</span>
-                            <p style="font-size:0.8rem;">${selectedEventFilter !== 'all' ? 'No data for selected event' : 'No registration data yet'}</p>
-                        </div>
-                    `;
+                            <div class="empty-state" style="padding:20px 0;">
+                                <span class="icon" style="font-size:1.8rem;">📭</span>
+                                <p style="font-size:0.8rem;">${selectedEventFilter !== 'all' ? 'No data for selected event' : 'No registration data yet'}</p>
+                            </div>
+                        `;
                 return;
             }
 
@@ -2078,14 +2075,14 @@
                     'linear-gradient(90deg, #FFC53D, #f5a623)' :
                     'linear-gradient(90deg, #65d8ff, #3b7bff)';
                 html += `
-                        <div class="event-bar-item ${isTop ? 'top' : ''}">
-                            <span class="e-name" title="${displayName}">${displayName}</span>
-                            <div class="e-bar-track">
-                                <div class="e-bar-fill" style="width:${pct}%;background:${fillColor};"></div>
+                            <div class="event-bar-item ${isTop ? 'top' : ''}">
+                                <span class="e-name" title="${displayName}">${displayName}</span>
+                                <div class="e-bar-track">
+                                    <div class="e-bar-fill" style="width:${pct}%;background:${fillColor};"></div>
+                                </div>
+                                <span class="e-count">${count}</span>
                             </div>
-                            <span class="e-count">${count}</span>
-                        </div>
-                    `;
+                        `;
             });
 
             eventBarList.innerHTML = html;
@@ -2096,13 +2093,14 @@
         function renderColumnChart() {
             const regs = filteredRegistrations;
 
-            let ug = 0, pu = 0;
+            let ug = 0,
+                pu = 0;
 
             regs.forEach(r => {
                 const cat = getRegistrationCategory(r);
                 if (cat === 'UG') ug++;
                 else if (cat === 'PU') pu++;
-                else ug++; // Default to UG if unknown
+                else ug++;
             });
 
             const maxVal = Math.max(ug, pu, 1);
@@ -2137,7 +2135,7 @@
                 const cat = getRegistrationCategory(r);
                 if (cat === 'UG') collegeStats[college].ug++;
                 else if (cat === 'PU') collegeStats[college].pu++;
-                else collegeStats[college].ug++; // Default to UG
+                else collegeStats[college].ug++;
             });
 
             let topUg = { name: '—', count: 0 };
@@ -2195,13 +2193,13 @@
 
             if (regs.length === 0) {
                 tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
-                                <i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
-                                ${allRegistrations.length === 0 ? 'No registrations loaded' : 'No matching records found'}
-                            </td>
-                        </tr>
-                    `;
+                            <tr>
+                                <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                                    <i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                                    ${allRegistrations.length === 0 ? 'No registrations loaded' : 'No matching records found'}
+                                </td>
+                            </tr>
+                        `;
                 return;
             }
 
@@ -2211,7 +2209,6 @@
                 const participantNames = parts.map(p => p.name || 'Unknown').join(', ');
 
                 const eventName = r.event_name || 'Unknown';
-                // 🔧 FIX: Use database category for table display
                 const cat = getRegistrationCategory(r);
 
                 let categoryDisplay = '—';
@@ -2251,30 +2248,30 @@
                 if (status === 'PENDING') {
                     const id = r.id || idx;
                     actionsHtml = `
-                            <button onclick="verifyRegistration('${id}')" class="action-btn verify" title="Verify">✅</button>
-                            <button onclick="rejectRegistration('${id}')" class="action-btn reject" title="Reject">❌</button>
-                        `;
+                                <button onclick="verifyRegistration('${id}')" class="action-btn verify" title="Verify">✅</button>
+                                <button onclick="rejectRegistration('${id}')" class="action-btn reject" title="Reject">❌</button>
+                            `;
                 } else {
                     actionsHtml = `<span style="color:rgba(255,255,255,0.15);font-size:0.6rem;">—</span>`;
                 }
 
                 html += `
-                        <tr>
-                            <td style="color:rgba(255,255,255,0.2);">${idx + 1}</td>
-                            <td><strong style="color:rgba(255,255,255,0.8);">${safeString(r.team_leader)}</strong></td>
-                            <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">${safeString(r.email)}</td>
-                            <td style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${safeString(r.phone)}</td>
-                            <td><span class="tag event-tag">${eventName}</span></td>
-                            <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
-                            <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">
-                                ${sizeBadge} ${participantNames || '—'}
-                            </td>
-                            <td><span class="txn-code">${safeString(r.txn)}</span></td>
-                            <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
-                            <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
-                            <td>${actionsHtml}</td>
-                        </tr>
-                    `;
+                            <tr>
+                                <td style="color:rgba(255,255,255,0.2);">${idx + 1}</td>
+                                <td><strong style="color:rgba(255,255,255,0.8);">${safeString(r.team_leader)}</strong></td>
+                                <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">${safeString(r.email)}</td>
+                                <td style="color:rgba(255,255,255,0.4);font-size:0.7rem;">${safeString(r.phone)}</td>
+                                <td><span class="tag event-tag">${eventName}</span></td>
+                                <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
+                                <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">
+                                    ${sizeBadge} ${participantNames || '—'}
+                                </td>
+                                <td><span class="txn-code">${safeString(r.txn)}</span></td>
+                                <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
+                                <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
+                                <td>${actionsHtml}</td>
+                            </tr>
+                        `;
             });
 
             tableBody.innerHTML = html;
@@ -2344,17 +2341,16 @@
                 if (supabaseClient) {
                     const { error } = await supabaseClient
                         .from('registrations')
-                        .update({ 
-                            status: 'VERIFIED', 
-                            verified_at: new Date().toISOString() 
+                        .update({
+                            status: 'VERIFIED',
+                            verified_at: new Date().toISOString()
                         })
                         .eq('id', id);
                     if (error) throw error;
-                    
-                    // Update local data
+
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'VERIFIED';
-                    
+
                     showTooltip('✅ Registration verified!', 'success');
                     await refreshData();
                 } else {
@@ -2384,11 +2380,10 @@
                         })
                         .eq('id', id);
                     if (error) throw error;
-                    
-                    // Update local data
+
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'REJECTED';
-                    
+
                     showTooltip('❌ Registration rejected', 'error');
                     await refreshData();
                 } else {
@@ -2434,7 +2429,7 @@
                 if (!document.hidden) {
                     refreshData();
                 }
-            }, 60000); // 1 minute
+            }, 60000);
         }
 
         // ─── WINDOW RESIZE HANDLER ──────────────────────────────────
@@ -2465,7 +2460,7 @@
 
             // Test Supabase connection
             await testSupabaseConnection();
-            
+
             // Load data
             await loadData();
 
@@ -2487,8 +2482,8 @@
             console.log(`📈 Loaded ${allRegistrations.length} registrations from ${dataSource}`);
             console.log('🎯 Features: Filters, Search, Export, Verification');
             console.log('⌨️  Keyboard shortcuts: Ctrl+R (refresh), Ctrl+Shift+E (export)');
-            
-            // Log category distribution for debugging
+            console.log('✅ Fixed API key issue - using correct anon key');
+
             const ugCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'UG').length;
             const puCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'PU').length;
             console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
