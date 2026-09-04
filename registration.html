@@ -246,6 +246,84 @@
         .block-notice .msg strong {
             color: #fff;
         }
+        /* ─── IN-APP BROWSER BANNER ──────────────────────────────────────── */
+        .inapp-banner {
+            display: none;
+            background: rgba(255, 197, 61, 0.12);
+            border: 1px solid rgba(255, 197, 61, 0.3);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            animation: fadeStep 0.4s ease both;
+            position: relative;
+        }
+        .inapp-banner.show {
+            display: block;
+        }
+        .inapp-banner .banner-icon {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .inapp-banner h4 {
+            color: #FFC53D;
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        .inapp-banner p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .inapp-banner .banner-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .inapp-banner .banner-actions .btn-copy {
+            padding: 10px 24px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 197, 61, 0.2);
+            background: rgba(255, 197, 61, 0.06);
+            color: #FFC53D;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .inapp-banner .banner-actions .btn-copy:hover {
+            background: rgba(255, 197, 61, 0.12);
+        }
+        .inapp-banner .banner-actions .btn-copy:active {
+            transform: scale(0.96);
+        }
+        .inapp-banner .banner-actions .btn-open {
+            padding: 10px 24px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #FFC53D, #f5a623);
+            color: #0a0a0f;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .inapp-banner .banner-actions .btn-open:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 197, 61, 0.2);
+        }
+        .inapp-banner .banner-actions .btn-open:active {
+            transform: scale(0.96);
+        }
         .step-indicator {
             display: flex;
             justify-content: center;
@@ -749,21 +827,18 @@
             text-decoration: underline;
         }
         .qr-container {
-            display: none;
+            display: block;
             margin-top: 15px;
             animation: fadeStep 0.3s ease;
         }
-        .qr-container.active {
-            display: block;
-        }
-        .qr-frame {
+        .qr-container .qr-frame {
             display: inline-block;
             background: #fff;
             padding: 10px;
             border-radius: 10px;
             border: 2px solid #FFC53D;
         }
-        .qr-frame img {
+        .qr-container .qr-frame img {
             width: 160px;
             height: 160px;
             display: block;
@@ -1090,7 +1165,7 @@
             .payment-side {
                 padding: 20px 16px;
             }
-            .qr-frame img {
+            .qr-container .qr-frame img {
                 width: 120px;
                 height: 120px;
             }
@@ -1137,7 +1212,7 @@
             .step-line {
                 width: 10px;
             }
-            .qr-frame img {
+            .qr-container .qr-frame img {
                 width: 100px;
                 height: 100px;
             }
@@ -1149,6 +1224,16 @@
             }
             .event-banner .info strong {
                 font-size: 0.9rem;
+            }
+            .inapp-banner {
+                padding: 14px 16px;
+            }
+            .inapp-banner .banner-actions {
+                flex-direction: column;
+            }
+            .inapp-banner .banner-actions .btn-copy,
+            .inapp-banner .banner-actions .btn-open {
+                width: 100%;
             }
         }
         .text-center {
@@ -1457,6 +1542,24 @@
                     </div>
                     <!-- STEP 4: PAYMENT + SCREENSHOT UPLOAD -->
                     <div class="form-step" data-step="4">
+                        <!-- ════════════════════════════════════════════════════════════════ -->
+                        <!--  IN-APP BROWSER BANNER - SHOWN WHEN IN-APP WEBVIEW DETECTED   -->
+                        <!-- ════════════════════════════════════════════════════════════════ -->
+                        <div class="inapp-banner" id="inappBanner">
+                            <div class="banner-icon">📱</div>
+                            <h4>⚠️ Payment Link Blocked in In-App Browser</h4>
+                            <p>
+                                WhatsApp, Instagram, and other in-app browsers <strong>cannot</strong> open UPI payment links.
+                                <br />
+                                Please tap the <strong>⋮</strong> or <strong>•••</strong> menu and choose 
+                                <strong>"Open in Chrome"</strong> (Android) or <strong>"Open in Safari"</strong> (iPhone).
+                            </p>
+                            <div class="banner-actions">
+                                <button class="btn-copy" onclick="copyRegistrationLink()">📋 Copy Registration Link</button>
+                                <button class="btn-open" onclick="openInExternalBrowser()">🌐 Open in Browser</button>
+                            </div>
+                        </div>
+
                         <div class="payment-summary">
                             <div class="summary-row"><span>Event</span><span id="payEventName">—</span></div>
                             <div class="summary-row"><span>Team Leader</span><span id="payTeamLeader">—</span></div>
@@ -1476,17 +1579,26 @@
                             </div>
                             
                             <div class="payment-actions">
+                                <!-- ══════════════════════════════════════════════════════ -->
+                                <!--  "Pay via UPI" button - HIDDEN in in-app browsers     -->
+                                <!--  because deep links don't work reliably there          -->
+                                <!-- ══════════════════════════════════════════════════════ -->
                                 <button class="pay-btn btn-upi" id="payUPIBtn" onclick="launchUPIPayment()">
                                     💳 PAY ₹<span id="payBtnAmount">0</span> VIA UPI
                                 </button>
+                                
+                                <!-- QR Code button - ALWAYS visible, PRIMARY method -->
                                 <button class="pay-btn btn-qr" onclick="toggleQR()">
                                     📱 SCAN QR CODE
                                 </button>
                             </div>
                             
+                            <!-- QR Code - ALWAYS visible, PRIMARY payment method -->
                             <div class="qr-container" id="qrArea">
                                 <div class="qr-frame"><img id="qrImage" src="" alt="QR Code" /></div>
-                                <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;">Scan with any UPI app</p>
+                                <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;">
+                                    ✅ Scan with any UPI app — <strong>always works</strong>
+                                </p>
                             </div>
                             
                             <div class="warning-text">
@@ -1619,12 +1731,9 @@
         // ═══════════════════════════════════════════════════════════════════
         //  PAYMENT CONFIGURATION - SINGLE SOURCE OF TRUTH
         // ═══════════════════════════════════════════════════════════════════
-        //  IMPORTANT: Use your actual registered UPI account details here
-        //  The payeeName must match the name registered with your UPI ID
-        // ═══════════════════════════════════════════════════════════════════
         const PAYMENT_CONFIG = {
-            upiId: "7349231368@ptyes",      // ← Your existing UPI ID
-            payeeName: "JESWIN JOSEPH",      // ← Actual registered name of the UPI account
+            upiId: "7349231368@ptyes",
+            payeeName: "JESWIN JOSEPH",
             pricePerParticipant: 250,
             currency: "INR",
             transactionNote: "DEPLOMAT Registration"
@@ -1714,6 +1823,7 @@
         const receiverDisplay = document.getElementById('receiverDisplay');
         const warningReceiver = document.getElementById('warningReceiver');
         const payUPIBtn = document.getElementById('payUPIBtn');
+        const inappBanner = document.getElementById('inappBanner');
 
         // ─── STATE ──────────────────────────────────────────────────────────
         let currentStep = 1;
@@ -1724,7 +1834,7 @@
         let selectedCategory = null;
         let uploadedFile = null;
         let extractedUTR = null;
-        let qrVisible = false;
+        let qrVisible = true; // QR is PRIMARY - always visible
         let uploadTimerInterval = null;
         let uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
         let isPendingSubmission = false;
@@ -1735,6 +1845,89 @@
         let modalVisible = false;
         let paymentStartTime = null;
         let isPaymentButtonDisabled = false;
+
+        // ═══════════════════════════════════════════════════════════════════
+        //  IN-APP BROWSER DETECTION
+        // ═══════════════════════════════════════════════════════════════════
+        function detectInAppBrowser() {
+            const ua = navigator.userAgent || '';
+            const vendor = navigator.vendor || '';
+            const platform = navigator.platform || '';
+            
+            // Check for known in-app browser patterns
+            const inAppPatterns = [
+                'wv',                          // WebView
+                'FBAV',                        // Facebook App
+                'FBAN',                        // Facebook App
+                'Instagram',                   // Instagram
+                'Line',                        // Line
+                'WhatsApp',                    // WhatsApp
+                'Messenger',                   // Facebook Messenger
+                'Snapchat',                    // Snapchat
+                'Twitter',                     // Twitter/X
+                'LinkedIn',                    // LinkedIn
+                'Pinterest',                   // Pinterest
+                'TikTok',                      // TikTok
+                'WeChat',                      // WeChat
+                'Kakao',                       // KakaoTalk
+                /; wv\)/,                      // Android WebView
+                /; fb_iab\)/,                  // Facebook in-app browser
+                /; instagram\)/,               // Instagram in-app browser
+                /; WhatsApp\)/,                // WhatsApp in-app browser
+                /; Messenger\)/,               // Messenger in-app browser
+                /; Line\)/,                    // Line in-app browser
+                /; Snapchat\)/,                // Snapchat in-app browser
+                /; Twitter\)/,                 // Twitter/X in-app browser
+                /; LinkedIn\)/,                // LinkedIn in-app browser
+                /; Pinterest\)/,               // Pinterest in-app browser
+                /; TikTok\)/,                  // TikTok in-app browser
+                /; WeChat\)/,                  // WeChat in-app browser
+            ];
+            
+            // Check user-agent
+            for (const pattern of inAppPatterns) {
+                if (typeof pattern === 'string') {
+                    if (ua.includes(pattern)) return true;
+                } else if (pattern.test(ua)) {
+                    return true;
+                }
+            }
+            
+            // Check for navigator properties
+            // @ts-ignore - these are non-standard properties
+            if (navigator.standalone === true) return true; // iOS standalone mode
+            
+            // Check for window properties
+            // @ts-ignore
+            if (window._phantom || window.callPhantom) return true;
+            
+            // Check for WebView specific features
+            // @ts-ignore
+            if (window.navigator && window.navigator.standalone) return true;
+            
+            // Check for Android WebView
+            if (ua.includes('Android') && ua.includes('wv')) return true;
+            
+            // Check for iOS WebView
+            if (ua.includes('iPhone') || ua.includes('iPad')) {
+                // @ts-ignore
+                if (window.webkit && window.webkit.messageHandlers) return true;
+                if (ua.includes('Safari') && !ua.includes('CriOS') && !ua.includes('FxiOS')) {
+                    // Might be in-app browser if no Chrome/Firefox but has Safari UA
+                    // Additional check: if no address bar or toolbar (hard to detect)
+                }
+            }
+            
+            return false;
+        }
+
+        function isAndroid() {
+            return /Android/i.test(navigator.userAgent);
+        }
+
+        function isIOS() {
+            return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
 
         // ═══════════════════════════════════════════════════════════════════
         //  PAYMENT FUNCTIONS - SINGLE IMPLEMENTATION
@@ -1748,15 +1941,19 @@
             return count * PAYMENT_CONFIG.pricePerParticipant;
         }
 
+        // ═══════════════════════════════════════════════════════════════════
+        //  FIXED: generateUPILink - Manual encoding with %20 for spaces
+        // ═══════════════════════════════════════════════════════════════════
         function generateUPILink(amount) {
-            const params = new URLSearchParams({
-                pa: PAYMENT_CONFIG.upiId,
-                pn: PAYMENT_CONFIG.payeeName,
-                am: Number(amount).toFixed(2),
-                cu: PAYMENT_CONFIG.currency,
-                tn: PAYMENT_CONFIG.transactionNote
-            });
-            return `upi://pay?${params.toString()}`;
+            // Manually construct the UPI URL with proper encoding
+            // Spaces in 'pn' must be %20, not +
+            const pa = encodeURIComponent(PAYMENT_CONFIG.upiId);
+            const pn = encodeURIComponent(PAYMENT_CONFIG.payeeName).replace(/\+/g, '%20');
+            const am = Number(amount).toFixed(2);
+            const cu = PAYMENT_CONFIG.currency;
+            const tn = encodeURIComponent(PAYMENT_CONFIG.transactionNote).replace(/\+/g, '%20');
+            
+            return `upi://pay?pa=${pa}&pn=${pn}&am=${am}&cu=${cu}&tn=${tn}`;
         }
 
         function getTotalAmount() {
@@ -1821,28 +2018,99 @@
             localStorage.setItem('payment_initiated', 'true');
             localStorage.setItem('payment_start_time', paymentStartTime.toString());
             
-            // Generate the UPI link
+            // ═══════════════════════════════════════════════════════════════
+            //  ENHANCED: Multi-strategy UPI launch
+            //  Strategy 1: Direct navigation (works in most browsers)
+            //  Strategy 2: Android intent:// fallback for Chrome
+            //  Strategy 3: window.location.assign as fallback
+            // ═══════════════════════════════════════════════════════════════
             const upiLink = generateUPILink(total);
             
-            // ═══════════════════════════════════════════════════════════════
-            //  DIRECT NAVIGATION - DO NOT USE window.open()
-            //  This ensures the UPI app opens directly from the user gesture
-            // ═══════════════════════════════════════════════════════════════
-            try {
-                // Use location.href for direct navigation from user gesture
-                window.location.href = upiLink;
+            // Check if we're in an in-app browser - if so, don't even try the UPI link
+            if (detectInAppBrowser()) {
+                // Show the in-app banner and scroll to it
+                inappBanner.classList.add('show');
+                inappBanner.scrollIntoView({ behavior: 'smooth' });
                 
-                // Re-enable button after 8 seconds (in case user returns quickly)
-                setTimeout(() => {
-                    isPaymentButtonDisabled = false;
-                    payUPIBtn.disabled = false;
-                    const totalAmount = getTotalAmount();
-                    payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
-                }, 8000);
+                // Re-enable button
+                isPaymentButtonDisabled = false;
+                payUPIBtn.disabled = false;
+                const totalAmount = getTotalAmount();
+                payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
+                
+                // Also show QR code prominently
+                qrArea.style.display = 'block';
+                qrVisible = true;
+                updateQR(totalAmount);
+                
+                alert('📱 Please use the QR code to pay, or open this page in Chrome/Safari.');
+                return;
+            }
+            
+            // Determine if Android for intent:// fallback
+            const isAndroidDevice = isAndroid();
+            
+            try {
+                if (isAndroidDevice) {
+                    // ═══════════════════════════════════════════════════════
+                    //  ANDROID: Use intent:// URL with package fallback
+                    //  This reliably triggers the UPI app chooser on Chrome
+                    // ═══════════════════════════════════════════════════════
+                    
+                    // Parse the UPI link to get parameters
+                    const upiUrl = new URL(upiLink);
+                    const params = upiUrl.searchParams;
+                    
+                    // Build the intent URL
+                    const packageName = 'in.org.npci.upiapp'; // UPI reference app
+                    const intentUrl = `intent://pay?${params.toString()}#Intent;scheme=upi;action=android.intent.action.VIEW;package=${packageName};S.browser_fallback_url=${encodeURIComponent(window.location.href)};end;`;
+                    
+                    // Try intent:// first
+                    window.location.href = intentUrl;
+                    
+                    // Fallback: if intent fails, try the regular UPI link after a delay
+                    setTimeout(() => {
+                        // Check if still on the page (intent didn't redirect)
+                        window.location.href = upiLink;
+                    }, 2500);
+                    
+                    // Re-enable button after 8 seconds
+                    setTimeout(() => {
+                        isPaymentButtonDisabled = false;
+                        payUPIBtn.disabled = false;
+                        const totalAmount = getTotalAmount();
+                        payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
+                    }, 8000);
+                    
+                } else {
+                    // ═══════════════════════════════════════════════════════
+                    //  iOS / Other: Direct navigation
+                    // ═══════════════════════════════════════════════════════
+                    window.location.href = upiLink;
+                    
+                    // Re-enable button after 8 seconds (in case user returns quickly)
+                    setTimeout(() => {
+                        isPaymentButtonDisabled = false;
+                        payUPIBtn.disabled = false;
+                        const totalAmount = getTotalAmount();
+                        payUPIBtn.innerHTML = '💳 PAY ₹<span id="payBtnAmount">' + totalAmount + '</span> VIA UPI';
+                    }, 8000);
+                }
             } catch (e) {
-                // Fallback if location.href fails
+                // Fallback if URL parsing fails
                 console.warn('UPI launch fallback:', e);
-                window.location.assign(upiLink);
+                
+                try {
+                    if (isAndroidDevice) {
+                        const intentUrl = `intent://pay?${new URL(upiLink).searchParams.toString()}#Intent;scheme=upi;action=android.intent.action.VIEW;end;`;
+                        window.location.assign(intentUrl);
+                    } else {
+                        window.location.assign(upiLink);
+                    }
+                } catch (e2) {
+                    // Last resort
+                    window.location.assign(upiLink);
+                }
                 
                 setTimeout(() => {
                     isPaymentButtonDisabled = false;
@@ -1853,9 +2121,65 @@
             }
         }
 
-        // ─── REMOVED: openPaymentApp() - No longer needed ────────────────
-        // The old openPaymentApp() function has been removed.
-        // Only launchUPIPayment() is used for initiating payments.
+        // ─── COPY REGISTRATION LINK (for in-app browser users) ──────────
+        function copyRegistrationLink() {
+            const url = window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('✅ Registration link copied!\n\nOpen it in Chrome or Safari to pay via UPI.');
+                }).catch(() => {
+                    fallbackCopyLink(url);
+                });
+            } else {
+                fallbackCopyLink(url);
+            }
+        }
+
+        function fallbackCopyLink(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ Registration link copied!\n\nOpen it in Chrome or Safari to pay via UPI.');
+            } catch (e) {
+                alert('📋 Please copy this link manually:\n\n' + text);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // ─── OPEN IN EXTERNAL BROWSER ────────────────────────────────────
+        function openInExternalBrowser() {
+            const url = window.location.href;
+            
+            // Try to use the native "Open in Browser" intent on Android
+            if (isAndroid()) {
+                try {
+                    // Try using the WebView's "Open in Browser" capability
+                    // @ts-ignore
+                    if (window.Android && window.Android.openInBrowser) {
+                        // @ts-ignore
+                        window.Android.openInBrowser(url);
+                        return;
+                    }
+                } catch (e) {}
+                
+                // Fallback: show instructions
+                alert('📱 Please tap the ⋮ (menu) icon in the top-right, then select "Open in Chrome" or "Open in Browser".');
+                return;
+            }
+            
+            if (isIOS()) {
+                alert('📱 Please tap the share icon (📤 or ⬆️), then select "Open in Safari".');
+                return;
+            }
+            
+            // Generic fallback
+            alert('📱 Please open this page in your device\'s browser (Chrome/Safari) to pay via UPI.');
+        }
 
         // ─── HELPER FUNCTIONS ─────────────────────────────────────────────
         function getLeaderName() {
@@ -1936,7 +2260,21 @@
                 updateEventLimitInfo();
                 validateCategoryEventPair(); }
             if (step === 3) { initializeCrossCheck(); }
-            if (step === 4) { updatePaymentSummary(); }
+            if (step === 4) { 
+                updatePaymentSummary();
+                // Show in-app banner if detected
+                if (detectInAppBrowser()) {
+                    inappBanner.classList.add('show');
+                    // Hide the UPI button in in-app browser
+                    payUPIBtn.style.display = 'none';
+                } else {
+                    inappBanner.classList.remove('show');
+                    payUPIBtn.style.display = 'flex';
+                }
+                // Make QR always visible
+                qrArea.style.display = 'block';
+                qrVisible = true;
+            }
             saveRegistrationState();
         }
 
@@ -2116,6 +2454,15 @@
             warningReceiver.textContent = PAYMENT_CONFIG.payeeName;
             
             updateQR(total);
+            
+            // Show/hide UPI button based on in-app browser detection
+            if (detectInAppBrowser()) {
+                payUPIBtn.style.display = 'none';
+                inappBanner.classList.add('show');
+            } else {
+                payUPIBtn.style.display = 'flex';
+                inappBanner.classList.remove('show');
+            }
         }
 
         function updateQR(amount) {
@@ -2125,7 +2472,7 @@
 
         function toggleQR() {
             qrVisible = !qrVisible;
-            qrArea.classList.toggle('active', qrVisible);
+            qrArea.style.display = qrVisible ? 'block' : 'none';
             if (qrVisible) updateQR(getTotalAmount());
         }
 
@@ -2998,6 +3345,18 @@
             receiverDisplay.textContent = PAYMENT_CONFIG.payeeName;
             warningReceiver.textContent = PAYMENT_CONFIG.payeeName;
             
+            // Check for in-app browser on load
+            if (detectInAppBrowser()) {
+                console.log('📱 In-app browser detected');
+                inappBanner.classList.add('show');
+                // Hide UPI button initially
+                payUPIBtn.style.display = 'none';
+            } else {
+                console.log('🌐 Regular browser detected');
+                inappBanner.classList.remove('show');
+                payUPIBtn.style.display = 'flex';
+            }
+            
             const restored = restoreRegistrationState();
             
             if (!restored) {
@@ -3022,9 +3381,11 @@
             console.log('⏱️ 5 minute upload timer');
             console.log('🔍 Duplicate UTR detection enabled');
             console.log('💾 State persistence enabled');
-            console.log('✅ Removed: openPaymentApp(), old UPI_ID/PAYEE_NAME, window.open() for UPI launch');
+            console.log('✅ In-app browser detection enabled');
+            console.log('✅ QR code is PRIMARY payment method');
+            console.log('✅ Android intent:// fallback enabled');
+            console.log('✅ Fixed URL encoding: spaces → %20');
             console.log('✅ Single payment entry point: launchUPIPayment()');
-            console.log('✅ Direct navigation: window.location.href = upiLink');
         });
 
         function autoSelectEventFromURL() {
@@ -3045,6 +3406,20 @@
                     }
                 }
             } catch (_) {}
+        }
+        
+        // ─── HELPER: validateCategoryEventPair ──────────────────────────
+        function validateCategoryEventPair() {
+            const cat = getSelectedCategory();
+            const val = eventSelect.value;
+            if (cat && val) {
+                const result = checkCategoryEventCompatibility(cat, val);
+                if (!result.valid) {
+                    showBlockNotice(result.message);
+                } else {
+                    showBlockNotice('');
+                }
+            }
         }
     </script>
 </body>
