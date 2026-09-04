@@ -1119,6 +1119,40 @@
                 opacity: 1;
             }
         }
+
+        /* ─── SETUP INSTRUCTION BANNER ─────────────────────────────── */
+        .setup-banner {
+            background: rgba(255, 197, 61, 0.08);
+            border: 1px solid rgba(255, 197, 61, 0.15);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 14px;
+        }
+        .setup-banner.show {
+            display: flex;
+        }
+        .setup-banner .icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .setup-banner .msg {
+            flex: 1;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .setup-banner .msg strong {
+            color: #FFC53D;
+        }
+        .setup-banner .msg code {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #65d8ff;
+        }
     </style>
 </head>
 <body>
@@ -1145,6 +1179,16 @@
             <p class="sub">Live registration insights &amp; event performance</p>
             <p class="last-updated" id="lastUpdated">Last updated: —</p>
             <span class="connection-status" id="connectionStatus">🔄 Connecting...</span>
+        </div>
+
+        <!-- Setup Instructions Banner -->
+        <div class="setup-banner" id="setupBanner">
+            <span class="icon">⚡</span>
+            <div class="msg">
+                <strong>⚠️ Database Setup Required</strong><br>
+                Please run the SQL setup script in Supabase SQL Editor to create the table and enable RLS policies.
+                <br><small style="color:rgba(255,255,255,0.3);">Check the console for the full SQL script.</small>
+            </div>
         </div>
 
         <div class="stats-grid" id="statsGrid">
@@ -1342,26 +1386,35 @@
         let supabaseClient = null;
         let isSupabaseConnected = false;
 
-        try {
-            if (typeof supabase !== 'undefined' && supabase.createClient) {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase client initialized successfully');
-            } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase client initialized successfully (window)');
-            } else {
-                console.warn('⚠️ Supabase library not loaded, retrying...');
-                // Retry after a short delay
-                setTimeout(() => {
-                    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                        console.log('✅ Supabase client initialized after retry');
-                    }
-                }, 500);
+        // ✅ Improved initialization with retry
+        function initSupabase() {
+            try {
+                if (typeof supabase !== 'undefined' && supabase.createClient) {
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('✅ Supabase client initialized successfully');
+                    return true;
+                } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('✅ Supabase client initialized successfully (window)');
+                    return true;
+                } else {
+                    console.warn('⚠️ Supabase library not loaded, retrying...');
+                    setTimeout(() => {
+                        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                            console.log('✅ Supabase client initialized after retry');
+                        }
+                    }, 500);
+                    return false;
+                }
+            } catch (e) {
+                console.error('❌ Failed to initialize Supabase:', e);
+                return false;
             }
-        } catch (e) {
-            console.error('❌ Failed to initialize Supabase:', e);
         }
+
+        // Initialize Supabase
+        initSupabase();
 
         // ─── EVENT DATA ──────────────────────────────────────────────
         const EVENTS = [
@@ -1402,6 +1455,7 @@
         const tooltip = document.getElementById('tooltip');
         const activeFiltersInfo = document.getElementById('activeFiltersInfo');
         const downloadBtn = document.getElementById('downloadBtn');
+        const setupBanner = document.getElementById('setupBanner');
 
         const ugColBar = document.getElementById('ugColBar');
         const puColBar = document.getElementById('puColBar');
@@ -1426,6 +1480,84 @@
         let isRefreshing = false;
         let renderScheduled = false;
         let dataSource = 'localStorage';
+
+        // ─── SUPABASE SETUP SQL SCRIPT ──────────────────────────────
+        const SUPABASE_SETUP_SQL = `
+        -- ═══════════════════════════════════════════════════════════════
+        --  DEPLOMAT · Supabase Setup Script
+        --  Run this in Supabase SQL Editor to set up the database
+        -- ═══════════════════════════════════════════════════════════════
+
+        -- 1. Create the registrations table
+        CREATE TABLE IF NOT EXISTS registrations (
+            id BIGSERIAL PRIMARY KEY,
+            event_name TEXT,
+            event_sub TEXT,
+            college TEXT,
+            ug_pu TEXT CHECK (ug_pu IN ('UG', 'PU')),
+            team_leader TEXT,
+            email TEXT,
+            phone TEXT,
+            total_amount INTEGER,
+            txn TEXT UNIQUE,
+            participants JSONB,
+            status TEXT DEFAULT 'VERIFIED' CHECK (status IN ('VERIFIED', 'PENDING', 'REJECTED')),
+            registered_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+            verified_at TIMESTAMP WITH TIME ZONE,
+            is_pending BOOLEAN DEFAULT FALSE,
+            timeout_triggered BOOLEAN DEFAULT FALSE,
+            rejection_reason TEXT,
+            rejected_at TIMESTAMP WITH TIME ZONE
+        );
+
+        -- 2. Create indexes for better performance
+        CREATE INDEX IF NOT EXISTS idx_registrations_email ON registrations(email);
+        CREATE INDEX IF NOT EXISTS idx_registrations_txn ON registrations(txn);
+        CREATE INDEX IF NOT EXISTS idx_registrations_status ON registrations(status);
+        CREATE INDEX IF NOT EXISTS idx_registrations_event ON registrations(event_name);
+        CREATE INDEX IF NOT EXISTS idx_registrations_ug_pu ON registrations(ug_pu);
+
+        -- 3. Enable Row Level Security
+        ALTER TABLE registrations ENABLE ROW LEVEL SECURITY;
+
+        -- 4. Create RLS policies (this is the critical fix for "invalid api key")
+        DO $$ 
+        BEGIN
+            -- Drop existing policies if they exist
+            DROP POLICY IF EXISTS "Allow anonymous inserts" ON registrations;
+            DROP POLICY IF EXISTS "Allow anonymous selects" ON registrations;
+            DROP POLICY IF EXISTS "Allow anonymous updates" ON registrations;
+            
+            -- Allow INSERT from anyone (fixes the API key error)
+            CREATE POLICY "Allow anonymous inserts" 
+            ON registrations 
+            FOR INSERT 
+            WITH CHECK (true);
+            
+            -- Allow SELECT from anyone
+            CREATE POLICY "Allow anonymous selects" 
+            ON registrations 
+            FOR SELECT 
+            USING (true);
+            
+            -- Allow UPDATE from anyone
+            CREATE POLICY "Allow anonymous updates" 
+            ON registrations 
+            FOR UPDATE 
+            USING (true) 
+            WITH CHECK (true);
+        END $$;
+
+        -- 5. Verify policies
+        SELECT 
+            tablename,
+            policyname,
+            cmd,
+            qual,
+            with_check
+        FROM pg_policies 
+        WHERE tablename = 'registrations';
+        `;
 
         // ─── POPULATE DROPDOWNS ──────────────────────────────────────
 
@@ -1476,22 +1608,9 @@
             return [];
         }
 
-        function getCategoryDisplay(category) {
-            if (category === 'PU') return 'PU';
-            return 'UG';
-        }
-
         function getTeamSize(registration) {
             const parts = getParticipantsArray(registration);
             return parts.length || 1;
-        }
-
-        function getTeamSizeLabel(size) {
-            if (size === 1) return 'Solo';
-            if (size === 2) return 'Pair';
-            if (size === 3) return '3 Members';
-            if (size === 4) return '4 Members';
-            return '5+ Members';
         }
 
         function safeString(val) {
@@ -1514,9 +1633,12 @@
             if (status === 'online') {
                 connectionStatus.classList.add('online');
                 isSupabaseConnected = true;
+                setupBanner.classList.remove('show');
             } else if (status === 'offline') {
                 connectionStatus.classList.add('offline');
                 isSupabaseConnected = false;
+                // Show setup banner if we're offline
+                setupBanner.classList.add('show');
             } else if (status === 'syncing') {
                 connectionStatus.classList.add('syncing');
             }
@@ -1537,7 +1659,13 @@
 
                 if (error) {
                     console.error('❌ Supabase connection test failed:', error);
-                    updateConnectionStatus('offline', `❌ ${error.message || 'Connection failed'}`);
+                    if (error.code === '42P01') {
+                        updateConnectionStatus('offline', '⚠️ Table "registrations" does not exist');
+                    } else if (error.code === '42501') {
+                        updateConnectionStatus('offline', '⚠️ RLS policy error - run setup script');
+                    } else {
+                        updateConnectionStatus('offline', `❌ ${error.message || 'Connection failed'}`);
+                    }
                     return false;
                 }
 
@@ -1748,6 +1876,11 @@
 
                     if (error) {
                         console.error('❌ Supabase error:', error);
+                        if (error.code === '42P01') {
+                            showTooltip('⚠️ Table "registrations" does not exist. Run setup script.', 'error');
+                        } else if (error.code === '42501') {
+                            showTooltip('⚠️ RLS policy error. Run setup script in Supabase.', 'error');
+                        }
                         throw new Error(error.message);
                     } else if (supabaseData && supabaseData.length > 0) {
                         data = supabaseData;
@@ -1771,28 +1904,52 @@
                         }
 
                         updateConnectionStatus('online', `✅ ${data.length} records from Supabase`);
+                        setupBanner.classList.remove('show');
                     } else {
                         console.warn('⚠️ No data returned from Supabase');
                         updateConnectionStatus('offline', '⚠️ No data in Supabase');
+                        // Try loading from localStorage
+                        try {
+                            const localData = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                            if (localData.length > 0) {
+                                data = localData;
+                                dataSource = 'localStorage';
+                                console.log('📦 Loaded from localStorage:', data.length, 'records');
+                                updateConnectionStatus('offline', `📦 ${data.length} records (cached)`);
+                                showTooltip(`📦 Using cached data (${data.length} records)`, 'info');
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ localStorage read failed:', e);
+                        }
                     }
                 } catch (e) {
                     console.error('❌ Supabase fetch failed:', e);
                     updateConnectionStatus('offline', `❌ ${e.message || 'Connection failed'}`);
+                    // Try loading from localStorage as fallback
+                    try {
+                        const localData = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                        if (localData.length > 0) {
+                            data = localData;
+                            dataSource = 'localStorage';
+                            console.log('📦 Loaded from localStorage (fallback):', data.length, 'records');
+                            showTooltip(`📦 Using cached data (${data.length} records)`, 'info');
+                        }
+                    } catch (e2) {
+                        console.warn('⚠️ localStorage read failed:', e2);
+                    }
                 }
-            }
-
-            // If Supabase failed or returned no data, try localStorage
-            if (data.length === 0) {
+            } else {
+                // No Supabase client, try localStorage
                 try {
                     const localData = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                     if (localData.length > 0) {
-                        console.log('📦 Loaded from localStorage:', localData.length, 'records');
                         data = localData;
                         dataSource = 'localStorage';
+                        console.log('📦 Loaded from localStorage:', data.length, 'records');
                         updateConnectionStatus('offline', `📦 ${data.length} records (cached)`);
                         showTooltip(`📦 Using cached data (${data.length} records)`, 'info');
                     } else {
-                        console.warn('⚠️ No data in localStorage either');
+                        console.warn('⚠️ No data in localStorage');
                         updateConnectionStatus('offline', '⚠️ No data available');
                     }
                 } catch (e) {
@@ -1803,14 +1960,14 @@
             allRegistrations = data;
 
             if (data.length === 0) {
-                showTooltip('⚠️ No data found. Please check your connection.', 'error');
+                showTooltip('⚠️ No data found. Please check your connection or run setup script.', 'error');
                 tableBody.innerHTML = `
                         <tr>
                             <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
                                 <i class="fas fa-database" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
                                 No registrations found<br>
                                 <span style="font-size:0.7rem;color:rgba(255,255,255,0.1);">
-                                    ${supabaseClient ? 'Check Supabase connection' : 'Supabase not initialized'}
+                                    ${supabaseClient ? 'Check Supabase connection or run setup script' : 'Supabase not initialized'}
                                 </span>
                             </td>
                         </tr>
@@ -2308,7 +2465,7 @@
             clearTimeout(tooltipTimeout);
             tooltipTimeout = setTimeout(() => {
                 tooltip.classList.remove('show', 'success', 'error', 'info');
-            }, 3200);
+            }, 5000);
         }
 
         // ─── REFRESH ──────────────────────────────────────────────────
@@ -2351,6 +2508,9 @@
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'VERIFIED';
 
+                    // Update localStorage
+                    localStorage.setItem('deplomat_db', JSON.stringify(allRegistrations));
+
                     showTooltip('✅ Registration verified!', 'success');
                     await refreshData();
                 } else {
@@ -2383,6 +2543,9 @@
 
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'REJECTED';
+
+                    // Update localStorage
+                    localStorage.setItem('deplomat_db', JSON.stringify(allRegistrations));
 
                     showTooltip('❌ Registration rejected', 'error');
                     await refreshData();
@@ -2458,6 +2621,16 @@
                     </tr>
                 `;
 
+            // Show setup instructions in console
+            console.log('📋 Supabase Setup Instructions:');
+            console.log('==================================================');
+            console.log('If you see "invalid api key" or table not found errors:');
+            console.log('1. Go to Supabase Dashboard → SQL Editor');
+            console.log('2. Paste and run the SQL script below:');
+            console.log('==================================================');
+            console.log(SUPABASE_SETUP_SQL);
+            console.log('==================================================');
+
             // Test Supabase connection
             await testSupabaseConnection();
 
@@ -2483,6 +2656,7 @@
             console.log('🎯 Features: Filters, Search, Export, Verification');
             console.log('⌨️  Keyboard shortcuts: Ctrl+R (refresh), Ctrl+Shift+E (export)');
             console.log('✅ Fixed API key issue - using correct anon key');
+            console.log('📋 Check console for setup instructions if needed');
 
             const ugCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'UG').length;
             const puCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'PU').length;

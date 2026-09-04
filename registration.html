@@ -1207,7 +1207,6 @@
         .warning-text strong {
             color: #FFC53D;
         }
-        /* Modal styles for upload */
         .modal-upload-area .upload-preview {
             display: none;
             margin-top: 8px;
@@ -1518,7 +1517,6 @@
                 console.log('✅ Supabase client initialized successfully (window)');
             } else {
                 console.warn('⚠️ Supabase library not loaded, retrying...');
-                // Retry after a short delay
                 setTimeout(() => {
                     if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
                         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -2307,7 +2305,6 @@
                 
                 // ✅ Ensure Supabase client is initialized before inserting
                 if (!supabaseClient) {
-                    // Try to reinitialize
                     try {
                         if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
                             supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -2317,16 +2314,52 @@
                     }
                 }
                 
+                let supabaseSuccess = false;
+                
                 if (supabaseClient) {
-                    console.log('📤 Inserting registration into Supabase...');
-                    const { data, error } = await supabaseClient.from('registrations').insert([registrationData]);
-                    if (error) {
-                        console.error('❌ Supabase insert error:', error);
-                        throw new Error(error.message);
+                    try {
+                        console.log('📤 Inserting registration into Supabase...');
+                        console.log('📋 Data:', registrationData);
+                        
+                        const { data, error } = await supabaseClient
+                            .from('registrations')
+                            .insert([registrationData])
+                            .select();
+                        
+                        if (error) {
+                            console.error('❌ Supabase insert error details:', {
+                                code: error.code,
+                                message: error.message,
+                                details: error.details,
+                                hint: error.hint
+                            });
+                            
+                            // Handle specific error codes with user-friendly messages
+                            let errorMessage = '';
+                            if (error.code === '42501') {
+                                errorMessage = 'Permission denied. Please check RLS policies in Supabase.';
+                            } else if (error.code === '23505') {
+                                errorMessage = 'This UTR number has already been used.';
+                            } else if (error.code === '42P01') {
+                                errorMessage = 'Table "registrations" does not exist in Supabase. Please create it.';
+                            } else {
+                                errorMessage = `Supabase error: ${error.message}`;
+                            }
+                            
+                            throw new Error(errorMessage);
+                        }
+                        
+                        console.log('✅ Supabase insert successful:', data);
+                        supabaseSuccess = true;
+                        
+                    } catch (supabaseError) {
+                        console.error('❌ Supabase operation failed:', supabaseError);
+                        // Still save locally if Supabase fails
+                        alert(`⚠️ Could not save to database: ${supabaseError.message}\n\nYour data has been saved locally. Please contact the coordinator.`);
                     }
-                    console.log('✅ Supabase insert successful:', data);
                 } else {
                     console.warn('⚠️ Supabase not available, saving to localStorage only');
+                    alert('⚠️ Database connection unavailable. Your data has been saved locally. Please contact the coordinator.');
                 }
                 
                 // Always save to localStorage as backup
@@ -2341,10 +2374,11 @@
                 
                 goToStep(4);
                 const details = document.getElementById('successDetails');
+                const dbStatus = supabaseSuccess ? '✅ Saved to database' : '💾 Saved locally only';
                 details.innerHTML = `
-                    <p style="font-size:2rem;">✅</p>
-                    <h2 style="font-size:1.6rem;">Registration Complete!</h2>
-                    <p style="color:#4caf50;">🎉 Payment Verified Successfully!</p>
+                    <p style="font-size:2rem;">${supabaseSuccess ? '✅' : '⚠️'}</p>
+                    <h2 style="font-size:1.6rem;">${supabaseSuccess ? 'Registration Complete!' : 'Registration Saved Locally'}</h2>
+                    <p style="color:${supabaseSuccess ? '#4caf50' : '#FFC53D'};">${supabaseSuccess ? '🎉 Payment Verified Successfully!' : '📌 Data saved locally - Contact coordinator'}</p>
                     <div class="reg-details">
                         <p><strong>Event:</strong> ${registrationData.event_name}</p>
                         <p><strong>Team Leader:</strong> ${leaderName}</p>
@@ -2354,8 +2388,8 @@
                         <p><strong>Participants:</strong> ${participants.length}</p>
                         <hr style="border-color:rgba(255,255,255,0.05);margin:12px 0;"/>
                         <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);">
-                            ✅ Payment verified automatically.<br>
-                            Confirmation sent to ${participants[0]?.email || 'your email'}.
+                            ${dbStatus}<br>
+                            ${supabaseSuccess ? 'Confirmation sent to ' + (participants[0]?.email || 'your email') : 'Please contact the coordinator for verification.'}
                         </p>
                     </div>
                 `;
@@ -2432,8 +2466,12 @@
                 };
                 
                 if (supabaseClient) {
-                    const { error } = await supabaseClient.from('registrations').insert([registrationData]);
-                    if (error) throw new Error(error.message);
+                    try {
+                        const { error } = await supabaseClient.from('registrations').insert([registrationData]);
+                        if (error) throw new Error(error.message);
+                    } catch (e) {
+                        console.warn('Supabase pending insert failed:', e);
+                    }
                 }
                 
                 const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
@@ -2735,7 +2773,8 @@
             console.log('💳 Fee per participant: ₹' + PAYMENT_CONFIG.pricePerParticipant);
             console.log('📸 Upload payment screenshot in modal');
             console.log('✅ Fixed API key issue');
-            console.log('✅ Supabase client initialized properly');
+            console.log('✅ Improved error handling for Supabase');
+            console.log('✅ Better user feedback for database issues');
         });
 
         function autoSelectEventFromURL() {
