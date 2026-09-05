@@ -1433,7 +1433,7 @@
                             <span class="text" id="limitText">Loading event limits...</span>
                         </div>
                         <p style="color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-bottom: 16px; letter-spacing: 0.05em;">
-                            ⚡ Enter all participants for this event. Per person fee: <strong style="color: #65d8ff;">₹250</strong>
+                            ⚡ <span id="step2FeeText">Enter all participants for this event.</span>
                             <br /><span style="color: rgba(255,255,255,0.2); font-size: 0.7rem;">The first participant is the <strong style="color: #65d8ff;">Team Leader</strong>.</span>
                         </p>
                         <div id="playersContainer"></div>
@@ -1450,7 +1450,7 @@
                             <div class="summary-row"><span>Team Leader</span><span id="payTeamLeader">—</span></div>
                             <div class="summary-row"><span>Category</span><span id="payUgPu">—</span></div>
                             <div class="summary-row"><span>Number of Participants</span><span id="payPlayerCount">0</span></div>
-                            <div class="summary-row"><span>Fee per participant</span><span>₹250</span></div>
+                            <div class="summary-row"><span id="payFeeLabel">Fee per participant</span><span id="payFeeValue">₹250</span></div>
                             <div class="summary-row total"><span>Total Amount</span><span class="amount" id="payTotal">₹0</span></div>
                         </div>
 
@@ -1551,9 +1551,9 @@
         //  PAYMENT CONFIGURATION
         // ═══════════════════════════════════════════════════════════════════
         const PAYMENT_CONFIG = {
-            upiId1: "7349231368@ptyes",
-            upiId2: "nidabeig2006@okhdfcbank",
-            pricePerParticipant: 250,
+            upiId1: "baijuacm@okicici",
+            upiId2: "",
+
             currency: "INR",
             transactionNote: "DEPLOMAT Registration"
         };
@@ -1564,18 +1564,18 @@
         const UPLOAD_TIMER_SECONDS = 120; // 2 minutes
 
         const EVENTS = [
-            { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both' },
-            { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5, category: 'both' },
-            { id: 2, name: "THE TRIDENT WAR", sub: "Free Fire", min: 4, max: 4, category: 'both' },
-            { id: 3, name: "COURT OF THE DEEP", sub: "Moot Court", min: 2, max: 3, category: 'both' },
-            { id: 4, name: "THE SIREN'S ACT", sub: "Reels Making", min: 1, max: 3, category: 'both' },
-            { id: 5, name: "ECHOS OF ATLANTIS", sub: "Solo Singing", min: 1, max: 1, category: 'both' },
-            { id: 6, name: "THE MERMAID'S WALTZ", sub: "Solo Dance", min: 1, max: 1, category: 'both' },
-            { id: 7, name: "TIDES OF RYTHM", sub: "Group Dance", min: 6, max: 12, category: 'both' },
-            { id: 8, name: "RUNWAY OF REALMS", sub: "Rampwalk", min: 10, max: 12, category: 'both' },
-            { id: 9, name: "THE KRAKEN'S PITCH", sub: "Cricket (PU/UG Boys)", min: 11, max: 11, category: 'both' },
-            { id: 10, name: "POSEIDON'S CUP", sub: "Football (P.U Boys)", min: 11, max: 11, category: 'pu' },
-            { id: 11, name: "RIPTIDE RALLY", sub: "Throwball (UG Girls)", min: 9, max: 9, category: 'ug' }
+            { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both', pricing: { type: 'fixed', amount: 750 } },
+            { id: 1, name: "THE LOST RELIC", sub: "Treasure Hunt", min: 3, max: 5, category: 'both', pricing: { type: 'fixed', amount: 500 } },
+            { id: 2, name: "THE TRIDENT WAR", sub: "Free Fire", min: 4, max: 4, category: 'both', pricing: { type: 'fixed', amount: 1000 } },
+            { id: 3, name: "COURT OF THE DEEP", sub: "Moot Court", min: 2, max: 3, category: 'both', pricing: { type: 'perParticipant', amount: 250 } },
+            { id: 4, name: "THE SIREN'S ACT", sub: "Reels Making", min: 1, max: 3, category: 'both', pricing: { type: 'fixed', amount: 750 } },
+            { id: 5, name: "ECHOS OF ATLANTIS", sub: "Solo Singing", min: 1, max: 1, category: 'both', pricing: { type: 'fixed', amount: 250 } },
+            { id: 6, name: "THE MERMAID'S WALTZ", sub: "Solo Dance", min: 1, max: 1, category: 'both', pricing: { type: 'fixed', amount: 250 } },
+            { id: 7, name: "TIDES OF RYTHM", sub: "Group Dance", min: 6, max: 12, category: 'both', pricing: { type: 'perParticipant', amount: 250 } },
+            { id: 8, name: "RUNWAY OF REALMS", sub: "Rampwalk", min: 10, max: 12, category: 'both', pricing: { type: 'fixed', amount: 1500 } },
+            { id: 9, name: "THE KRAKEN'S PITCH", sub: "Cricket (PU/UG Boys)", min: 11, max: 11, category: 'both', pricing: { type: 'category', UG: 2500, PU: 2000 } },
+            { id: 10, name: "POSEIDON'S CUP", sub: "Football (P.U Boys)", min: 11, max: 11, category: 'pu', pricing: { type: 'fixed', amount: 2000 } },
+            { id: 11, name: "RIPTIDE RALLY", sub: "Throwball (UG Girls)", min: 9, max: 9, category: 'ug', pricing: { type: 'fixed', amount: 1500 } }
         ];
 
         let supabaseClient = null;
@@ -1611,6 +1611,9 @@
         const payUgPu = document.getElementById('payUgPu');
         const payPlayerCount = document.getElementById('payPlayerCount');
         const payTotal = document.getElementById('payTotal');
+        const payFeeLabel = document.getElementById('payFeeLabel');
+        const payFeeValue = document.getElementById('payFeeValue');
+        const step2FeeText = document.getElementById('step2FeeText');
         const payhead = document.getElementById('payhead');
         const qr1Container = document.getElementById('qr1Container');
         const qr2Container = document.getElementById('qr2Container');
@@ -1697,7 +1700,59 @@
 
         function getTotalAmount() {
             const count = playersContainer.children.length;
-            return count * PAYMENT_CONFIG.pricePerParticipant;
+            const pricing = selectedEvent ? selectedEvent.pricing : null;
+            if (!pricing) return 0;
+            if (pricing.type === 'fixed') return pricing.amount;
+            if (pricing.type === 'perParticipant') {
+                return count * pricing.amount;
+            }
+            if (pricing.type === 'category') {
+                return pricing[getSelectedCategoryForPricing()] || 0;
+            }
+            return 0;
+        }
+
+        function getSelectedCategoryForPricing() {
+            return (getSelectedCategory() || selectedCategory || '').toUpperCase();
+        }
+
+        function getFeeRowInfo() {
+            if (!selectedEvent || !selectedEvent.pricing) return { label: 'Fee per participant', value: '—' };
+            const p = selectedEvent.pricing;
+            if (p.type === 'fixed') return { label: 'Fee / Pricing', value: 'Fixed event fee' };
+            if (p.type === 'perParticipant') return { label: 'Fee per participant', value: `₹${p.amount}` };
+            if (p.type === 'category') return { label: 'Fee / Pricing', value: `UG: ₹${p.UG} · PU: ₹${p.PU}` };
+            return { label: 'Fee per participant', value: '—' };
+        }
+
+        function updateFeeRow() {
+            const info = getFeeRowInfo();
+            payFeeLabel.textContent = info.label;
+            payFeeValue.textContent = info.value;
+        }
+
+        function updateStep2FeeText() {
+            if (!step2FeeText) return;
+            if (!selectedEvent || !selectedEvent.pricing) {
+                step2FeeText.textContent = 'Enter all participants for this event.';
+                return;
+            }
+            const p = selectedEvent.pricing;
+            const strong = (txt) => `<strong style="color: #65d8ff;">${txt}</strong>`;
+            if (p.type === 'fixed') {
+                step2FeeText.innerHTML = `Enter all participants for this event. ⚡ Registration fee: ${strong(`₹${p.amount}`)}`;
+            } else if (p.type === 'perParticipant') {
+                step2FeeText.innerHTML = `Enter all participants for this event. ⚡ Fee per participant: ${strong(`₹${p.amount}`)}`;
+            } else if (p.type === 'category') {
+                const amt = p[getSelectedCategoryForPricing()];
+                step2FeeText.innerHTML = `Enter all participants for this event. ⚡ Registration fee: ${strong(amt ? `₹${amt}` : '—')}`;
+            }
+        }
+
+        function refreshPricingUI() {
+            updateStep2FeeText();
+            updatePaymentSummary();
+            if (currentStep === 3) updateQRImages();
         }
 
         function updateQRImages() {
@@ -2468,11 +2523,12 @@
             div.innerHTML = headerHtml + fieldsHtml;
             if (!isFirst) {
                 div.querySelector('.remove-btn').addEventListener('click', () => {
-                    if (playersContainer.children.length > currentMin) { div.remove(); updatePlayerNumbers(); updateAddButtonState(); saveRegistrationState(); } 
+                    if (playersContainer.children.length > currentMin) { div.remove(); updatePlayerNumbers(); updateAddButtonState(); saveRegistrationState(); refreshPricingUI(); } 
                     else { alert(`Minimum ${currentMin} participant(s) required.`); }
                 });
             }
             playersContainer.appendChild(div);
+            refreshPricingUI();
             updatePlayerNumbers();
             updateAddButtonState();
             saveRegistrationState();
@@ -2515,13 +2571,14 @@
             if (currentCount > currentMax) { while (playersContainer.children.length > currentMax) playersContainer.lastChild.remove(); updatePlayerNumbers(); } 
             else if (currentCount < currentMin) { while (playersContainer.children.length < currentMin) addPlayer(playersContainer.children.length === 0); }
             updateAddButtonState();
+            refreshPricingUI();
         }
 
         // ─── PAYMENT SUMMARY ──────────────────────────────────────────────
 
         function updatePaymentSummary() {
             const count = playersContainer.children.length;
-            const total = count * PAYMENT_CONFIG.pricePerParticipant;
+            const total = getTotalAmount();
             let leaderName = getLeaderName();
             const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
             const ugPuValue = ugPuSelected ? ugPuSelected.value : '—';
@@ -2529,6 +2586,7 @@
             payTeamLeader.textContent = leaderName;
             payUgPu.textContent = ugPuValue;
             payPlayerCount.textContent = count;
+            updateFeeRow();
             payTotal.textContent = `₹${total}`;
             payhead.textContent = `PAY ₹${total}`;
         }
@@ -2612,6 +2670,7 @@
                         });
                         updatePlayerNumbers();
                         updateAddButtonState();
+                        refreshPricingUI();
                     }, 400);
                 }
                 const returning = sessionStorage.getItem('returning_from_payment');
@@ -2656,6 +2715,8 @@
                 }
                 validateCategoryEventPair();
                 saveRegistrationState();
+                selectedCategory = cat;
+                refreshPricingUI();
             });
         });
 
@@ -2707,6 +2768,7 @@
             }
             validateCategoryEventPair();
             saveRegistrationState();
+            refreshPricingUI();
         });
 
         document.addEventListener('input', function(e) {
@@ -2781,7 +2843,7 @@
             console.log('🔱 DEPLOMAT Registration · UNIFIED PAYMENT SYSTEM');
             console.log('📱 QR 1 UPI ID:', PAYMENT_CONFIG.upiId1);
             console.log('📱 QR 2 UPI ID:', PAYMENT_CONFIG.upiId2 || 'Coming Soon');
-            console.log('💳 Fee per participant: ₹' + PAYMENT_CONFIG.pricePerParticipant);
+            console.log('💳 Pricing: per-event pricing from EVENTS config, computed via getTotalAmount()');
             console.log('✅ Supabase status:', supabaseClient ? 'Connected' : 'Not connected');
             console.log('📸 Unified screenshot verification with strict 12-digit UTR');
             console.log('🛡️ Duplicate check with proper error handling');
