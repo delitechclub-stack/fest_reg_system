@@ -357,9 +357,6 @@
   const PAYMENT_TIME_TOLERANCE_MINUTES = 10;
 
   // ─── EVENTS ──────────────────────────────────────────────────────────
-  // Updated limits per requirement:
-  // Cricket (id:9) min=7 max=10, Football (10) min=7 max=10, Throwball (11) min=9 max=12,
-  // Treasure Hunt (1) min=2 max=2
   const EVENTS = [
     { id:0, name:"THE ATLANTEAN TRIALS", sub:"Escape Room", min:3, max:3, category:'both', pricing:{ type:'fixed', amount:750 } },
     { id:1, name:"THE LOST RELIC", sub:"Treasure Hunt", min:2, max:2, category:'both', pricing:{ type:'fixed', amount:500 } },
@@ -480,16 +477,14 @@
   }
   function showBlockNotice(msg) { if(msg){ blockMsg.innerHTML=msg; blockNotice.classList.add('show'); } else blockNotice.classList.remove('show'); }
 
-  // ─── PRICING LOGIC (CRITICAL: Cricket, Football, Throwball ignore optional players) ──
+  // ─── PRICING LOGIC ──────────────────────────────────────────────────
   function getTotalAmount() {
     const count = playersContainer.children.length;
     const pricing = selectedEvent ? selectedEvent.pricing : null;
     if(!pricing) return 0;
-    // For Cricket, Football, Throwball: use base amount, ignore count
     const eventId = selectedEvent ? selectedEvent.id : -1;
     const isTeamSportWithOptional = (eventId === 9 || eventId === 10 || eventId === 11);
     if(isTeamSportWithOptional) {
-      // Use the base pricing (fixed or category)
       if(pricing.type === 'fixed') return pricing.amount;
       if(pricing.type === 'category') {
         const cat = getSelectedCategoryForPricing();
@@ -497,7 +492,6 @@
       }
       return 0;
     }
-    // Normal per-participant or fixed for others
     if(pricing.type === 'fixed') return pricing.amount;
     if(pricing.type === 'perParticipant') return count * pricing.amount;
     if(pricing.type === 'category') {
@@ -545,7 +539,6 @@
     const upi1 = `upi://pay?pa=${PAYMENT_CONFIG.upiId1}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
     qr1Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi1)}`;
     qr1Label.textContent = PAYMENT_CONFIG.upiId1;
-    // QR 2 is disabled - only QR 1 available
     qr2Image.src = '';
     qr2Label.textContent = 'Coming Soon';
     showQr2Btn.style.opacity = '0.5';
@@ -589,7 +582,222 @@
   showQr1Btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); const total=getTotalAmount(); openQRModal('qr1', PAYMENT_CONFIG.upiId1, total); const vis=qr1Container.classList.contains('active'); qr1Container.classList.toggle('active', !vis); qr2Container.classList.remove('active'); showQr1Btn.textContent = vis ? '📱 SHOW QR 1' : '📱 HIDE QR 1'; showQr1Btn.className = vis ? 'pay-btn btn-qr-primary qr-btn-no-nav' : 'pay-btn btn-qr-secondary qr-btn-no-nav'; return false; });
   showQr2Btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(!PAYMENT_CONFIG.upiId2){ alert('⚠️ QR 2 is coming soon. Please use QR 1 for now.'); return false; } const total=getTotalAmount(); openQRModal('qr2', PAYMENT_CONFIG.upiId2, total); const vis=qr2Container.classList.contains('active'); qr2Container.classList.toggle('active', !vis); qr1Container.classList.remove('active'); showQr2Btn.textContent = vis ? '🔄 QR 1 not working? Try QR 2' : '🔄 HIDE QR 2'; showQr1Btn.textContent='📱 SHOW QR 1'; showQr1Btn.className='pay-btn btn-qr-primary qr-btn-no-nav'; return false; });
 
-  // ─── SCREENSHOT VERIFICATION (Enhanced: UTR, receiver, amount, time) ──
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ─── FIXED: ROBUST AMOUNT EXTRACTION ─────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Extract payment amount from OCR text with context awareness.
+   * Prioritizes amounts associated with currency symbols and payment labels.
+   * Excludes time, date, UTR, phone numbers, and other non-payment numbers.
+   *
+   * @param {string} text - Raw OCR text
+   * @param {number} expectedAmount - Expected amount for context
+   * @returns {Object} { amount: number|null, source: string, raw: string, confidence: string }
+   */
+  function extractPaymentAmountFromOCR(text, expectedAmount) {
+    // Normalize the text for better matching
+    const normalizedText = text.replace(/\s+/g, ' ').trim();
+    
+    console.log("🔍 EXTRACT AMOUNT - OCR RAW TEXT:", normalizedText.substring(0, 500) + (normalizedText.length > 500 ? '...' : ''));
+    console.log("🔍 EXPECTED AMOUNT:", expectedAmount);
+    
+    const candidates = [];
+    
+    // ─── STEP 1: Look for currency-prefixed amounts ──────────────────
+    // Priority: ₹, Rs, Rs., INR (case insensitive)
+    // Must capture comma-separated amounts properly: ₹2,000 -> 2000
+    
+    const currencyRegexes = [
+      // ₹2,000 or ₹2,000.00
+      { pattern: /[₹]\s*([\d,]+(?:\.\d{2})?)/gi, label: '₹' },
+      // Rs. 2,000 or Rs 2,000
+      { pattern: /Rs[.\s]*([\d,]+(?:\.\d{2})?)/gi, label: 'Rs' },
+      // INR 2,000 or INR2,000
+      { pattern: /INR\s*([\d,]+(?:\.\d{2})?)/gi, label: 'INR' },
+      // Amount with comma but no currency symbol: 2,000 (only if preceded by payment context)
+      { pattern: /(?:Amount|Paid|Payment|Total|Transferred|You paid)\s*[:]?\s*([\d,]+(?:\.\d{2})?)/gi, label: 'context' }
+    ];
+    
+    for (const regex of currencyRegexes) {
+      let match;
+      // Reset regex state
+      const pattern = new RegExp(regex.pattern);
+      while ((match = pattern.exec(normalizedText)) !== null) {
+        const rawAmount = match[1];
+        const amountStr = rawAmount.replace(/,/g, '');
+        const amount = parseFloat(amountStr);
+        if (!isNaN(amount) && amount > 0) {
+          // Check context around this match
+          const matchStart = match.index;
+          const contextStart = Math.max(0, matchStart - 30);
+          const contextEnd = Math.min(normalizedText.length, matchStart + match[0].length + 30);
+          const context = normalizedText.substring(contextStart, contextEnd);
+          
+          // Exclude obvious non-payment contexts
+          const isNonPaymentContext = /(?:phone|mobile|contact|whatsapp|date|time|ref|utr|account|bank|cvv|pin|otp|password|aadhar|pan)/i.test(context);
+          
+          // Exclude time patterns like 01:10 or 12:30
+          const isTimePattern = /(\d{1,2}:\d{2})/.test(context) && amount <= 12;
+          
+          // Exclude dates like 26 Aug 2026 (amount would be 26, which is small)
+          const isDatePattern = /(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i.test(context) && amount <= 31;
+          
+          // Exclude small numbers that are likely not payment amounts unless they match expected
+          // (e.g., if expected is small like 250, 500)
+          const isTooSmall = amount < 10 && amount !== expectedAmount;
+          
+          if (!isNonPaymentContext && !isTimePattern && !isDatePattern && !isTooSmall) {
+            candidates.push({
+              amount: amount,
+              raw: match[0],
+              context: context,
+              source: regex.label,
+              confidence: 'high',
+              matchIndex: match.index
+            });
+          } else {
+            // Low confidence candidate (excluded but log for debugging)
+            console.log(`⚠️ Excluded candidate: ${match[0]} = ${amount} (${isNonPaymentContext ? 'non-payment context' : isTimePattern ? 'time pattern' : isDatePattern ? 'date pattern' : 'too small'})`);
+          }
+        }
+      }
+    }
+    
+    // ─── STEP 2: Look for amount words (Rupees, Two Thousand, etc.) ──
+    // This is a fallback for OCR that misreads currency symbols
+    const wordToNumber = {
+      'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
+      'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
+      'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14,
+      'fifteen': 15, 'sixteen': 16, 'seventeen': 17, 'eighteen': 18,
+      'nineteen': 19, 'twenty': 20, 'thirty': 30, 'forty': 40,
+      'fifty': 50, 'sixty': 60, 'seventy': 70, 'eighty': 80,
+      'ninety': 90, 'hundred': 100, 'thousand': 1000
+    };
+    
+    // Look for "Rupees Two Thousand Only" pattern
+    const wordAmountRegex = /(?:Rupees|Rs|INR)\s+([A-Za-z\s]+)\s+(?:Only)/i;
+    const wordMatch = wordAmountRegex.exec(normalizedText);
+    if (wordMatch) {
+      const words = wordMatch[1].toLowerCase().trim().split(/\s+/);
+      let total = 0;
+      let current = 0;
+      for (const word of words) {
+        if (word === 'and') continue;
+        const val = wordToNumber[word];
+        if (val === 100 && current > 0) {
+          current *= val;
+        } else if (val === 1000) {
+          current = (current || 1) * val;
+          total += current;
+          current = 0;
+        } else if (val) {
+          current += val;
+        }
+      }
+      total += current;
+      if (total > 0) {
+        candidates.push({
+          amount: total,
+          raw: wordMatch[0],
+          context: wordMatch[0],
+          source: 'word_amount',
+          confidence: 'medium'
+        });
+      }
+    }
+    
+    // ─── STEP 3: Find number close to expected amount ────────────────
+    // As a fallback, find any number that matches the expected amount
+    // But only if we have no candidates yet
+    if (candidates.length === 0 && expectedAmount > 0) {
+      // Find all numbers in the text
+      const allNumbers = [];
+      const numRegex = /\b(\d{1,6}(?:\.\d{2})?)\b/g;
+      let numMatch;
+      while ((numMatch = numRegex.exec(normalizedText)) !== null) {
+        const val = parseFloat(numMatch[1].replace(/,/g, ''));
+        if (!isNaN(val) && val > 0) {
+          allNumbers.push({ value: val, raw: numMatch[0], index: numMatch.index });
+        }
+      }
+      
+      // Check if any number equals the expected amount (with small tolerance)
+      for (const num of allNumbers) {
+        if (Math.abs(num.value - expectedAmount) < 0.01) {
+          // Check context to ensure it's not a time or date
+          const contextStart = Math.max(0, num.index - 20);
+          const contextEnd = Math.min(normalizedText.length, num.index + 20);
+          const context = normalizedText.substring(contextStart, contextEnd);
+          
+          const isNonPaymentContext = /(?:time|date|ref|utr|account|phone|mobile)/i.test(context);
+          const isTimePattern = /(\d{1,2}:\d{2})/.test(context);
+          
+          if (!isNonPaymentContext && !isTimePattern) {
+            candidates.push({
+              amount: num.value,
+              raw: num.raw,
+              context: context,
+              source: 'exact_match',
+              confidence: 'low'
+            });
+          }
+        }
+      }
+    }
+    
+    // ─── STEP 4: Sort candidates by confidence ──────────────────────
+    const confidenceOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+    candidates.sort((a, b) => {
+      // First by confidence
+      if (confidenceOrder[a.confidence] !== confidenceOrder[b.confidence]) {
+        return confidenceOrder[b.confidence] - confidenceOrder[a.confidence];
+      }
+      // Then by match index (earlier matches preferred for currency contexts)
+      return (a.matchIndex || 0) - (b.matchIndex || 0);
+    });
+    
+    console.log("🔍 AMOUNT CANDIDATES:", candidates.map(c => ({
+      amount: c.amount,
+      raw: c.raw,
+      source: c.source,
+      confidence: c.confidence,
+      context: c.context.substring(0, 50) + '...'
+    })));
+    
+    // ─── STEP 5: Select the best candidate ──────────────────────────
+    if (candidates.length === 0) {
+      console.log("❌ No amount candidates found.");
+      return { amount: null, source: 'none', raw: null, confidence: 'none' };
+    }
+    
+    // Use the highest confidence candidate
+    // But verify it makes sense with the expected amount
+    const best = candidates[0];
+    
+    // If confidence is 'low' and we have expected amount, only accept if it matches
+    if (best.confidence === 'low' && expectedAmount > 0) {
+      if (Math.abs(best.amount - expectedAmount) > 0.01) {
+        console.log(`⚠️ Low confidence candidate ${best.amount} doesn't match expected ${expectedAmount}, rejecting.`);
+        return { amount: null, source: 'rejected_low_confidence', raw: best.raw, confidence: 'low' };
+      }
+    }
+    
+    console.log(`✅ SELECTED AMOUNT: ${best.amount} (${best.source}, ${best.confidence} confidence)`);
+    
+    return {
+      amount: best.amount,
+      source: best.source,
+      raw: best.raw,
+      confidence: best.confidence
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ─── SCREENSHOT VERIFICATION (Enhanced with robust amount extraction) ───
+  // ═══════════════════════════════════════════════════════════════════════════
+
   async function handleScreenshotUpload(file) {
     if(registrationComplete) { alert('✅ Registration already complete.'); return; }
     const validTypes = ['image/png','image/jpeg','image/jpg','image/webp'];
@@ -622,47 +830,70 @@
       const Tesseract = window.Tesseract; if(!Tesseract) throw new Error('OCR library not loaded.');
       const imageUrl = URL.createObjectURL(file);
       updateModalUI(PAYMENT_STATES.VERIFYING, { message:'Processing... 0%' });
-      const result = await Tesseract.recognize(imageUrl, 'eng', { logger: (m) => { if(m.status === 'recognizing text') { const progress = Math.round(m.progress * 100); updateModalUI(PAYMENT_STATES.VERIFYING, { message:`Processing... ${progress}%` }); } } });
+      const result = await Tesseract.recognize(imageUrl, 'eng', { 
+        logger: (m) => { 
+          if(m.status === 'recognizing text') { 
+            const progress = Math.round(m.progress * 100); 
+            updateModalUI(PAYMENT_STATES.VERIFYING, { message:`Processing... ${progress}%` }); 
+          } 
+        } 
+      });
       const text = result.data.text;
-      console.log('📝 OCR Extracted Text:', text);
+      console.log("📝 OCR EXTRACTED TEXT:", text);
       
-      // 1. UTR - extract 12-digit number
+      // ─── 1. UTR ──────────────────────────────────────────────────────
       const utrMatch = text.match(/\b\d{12}\b/);
       if(!utrMatch) return { success:false, state:PAYMENT_STATES.UTR_NOT_FOUND };
       const extractedUTR = utrMatch[0];
       
-      // 2. Check duplicate UTR via database (including legacy duplicates)
+      // ─── 2. Duplicate UTR Check ────────────────────────────────────
       const duplicateCheck = await checkDuplicateUTR(extractedUTR);
       if(duplicateCheck.error) return { success:false, state:PAYMENT_STATES.ERROR, error:`Database error: ${duplicateCheck.error}` };
       if(duplicateCheck.exists) return { success:false, state:PAYMENT_STATES.UTR_DUPLICATE, utr:extractedUTR };
       
-      // 3. Receiver: check for baijuacm@okicici
+      // ─── 3. Receiver Check ─────────────────────────────────────────
       const receiverMatch = text.match(/baijuacm@okicici/i);
       if(!receiverMatch) {
         const detected = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
         return { success:false, state:'RECEIVER_MISMATCH', message:`❌ RECEIVER DOES NOT MATCH<br>Expected: <strong>baijuacm@okicici</strong><br>${detected ? `Detected: ${detected[0]}` : 'No UPI ID detected in screenshot'}` };
       }
       
-      // 4. Amount: extract numeric amount (e.g., ₹500, 500, 500.00)
-      const amountMatch = text.match(/[₹]?(\d{1,6}(?:\.\d{2})?)/);
-      const detectedAmount = amountMatch ? parseFloat(amountMatch[1]) : null;
+      // ─── 4. FIXED: Amount Extraction using robust helper ──────────
       const expectedAmount = getTotalAmount();
+      const amountResult = extractPaymentAmountFromOCR(text, expectedAmount);
       
-      // ALL events must verify amount - NO exceptions for Cricket, Football, Throwball
-      if(detectedAmount !== null && Math.abs(detectedAmount - expectedAmount) > 0.01) {
-        return { success:false, state:'AMOUNT_MISMATCH', message:`❌ PAYMENT AMOUNT DOES NOT MATCH<br>Expected: ₹${expectedAmount}<br>Detected: ₹${detectedAmount}` };
+      console.log("🔍 AMOUNT EXTRACTION RESULT:", amountResult);
+      
+      // If no amount detected, reject with clear message
+      if (amountResult.amount === null) {
+        return { 
+          success: false, 
+          state: 'AMOUNT_MISMATCH', 
+          message: `❌ PAYMENT AMOUNT NOT DETECTED<br>Expected: ₹${expectedAmount}<br>Could not confidently detect the payment amount in the screenshot.<br><br>Please upload a clear screenshot showing:<br>• The amount (e.g., ₹${expectedAmount})<br>• The UPI transaction details`
+        };
       }
       
-      // 5. Time: attempt to extract and validate (within tolerance)
+      const detectedAmount = amountResult.amount;
+      
+      // Check if detected amount matches expected (with small tolerance for decimal)
+      if (Math.abs(detectedAmount - expectedAmount) > 0.01) {
+        return { 
+          success: false, 
+          state: 'AMOUNT_MISMATCH', 
+          message: `❌ PAYMENT AMOUNT DOES NOT MATCH<br>Expected: ₹${expectedAmount}<br>Detected: ₹${detectedAmount}<br>Source: ${amountResult.source} (${amountResult.confidence} confidence)`
+        };
+      }
+      
+      console.log(`✅ AMOUNT MATCHED: Expected ₹${expectedAmount}, Detected ₹${detectedAmount} (${amountResult.source})`);
+      
+      // ─── 5. Time Check ──────────────────────────────────────────────
       const timeMatch = text.match(/\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?/i);
       const detectedTime = timeMatch ? timeMatch[0] : null;
       
-      // Check if payment time is within tolerance (if we can detect it)
       let timeWithinTolerance = true;
       if (detectedTime) {
         try {
           const now = new Date();
-          // Try to parse the time - simplified check
           const timeStr = detectedTime.toUpperCase().replace(/\s/g, '');
           const hourMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
           if (hourMatch) {
@@ -675,28 +906,36 @@
             const diffMinutes = Math.abs(now - detectedDate) / 60000;
             if (diffMinutes > PAYMENT_TIME_TOLERANCE_MINUTES && diffMinutes < 24*60) {
               timeWithinTolerance = false;
-              // But don't reject - just log warning for now, since OCR time is often unreliable
               console.warn(`⏰ Payment time outside tolerance: ${diffMinutes} minutes (tolerance: ${PAYMENT_TIME_TOLERANCE_MINUTES} minutes)`);
             }
           }
         } catch(e) { /* ignore parsing errors */ }
       }
       
-      // Build verification data
+      // ─── 6. Build Verification Data ────────────────────────────────
       const verificationData = {
         utr: extractedUTR,
         amount: detectedAmount,
+        amountSource: amountResult.source,
+        amountConfidence: amountResult.confidence,
+        amountRaw: amountResult.raw,
         receiver: receiverMatch[0],
         paymentTime: detectedTime,
         expectedAmount: expectedAmount,
-        amountMatched: (detectedAmount !== null && Math.abs(detectedAmount - expectedAmount) <= 0.01),
+        amountMatched: (Math.abs(detectedAmount - expectedAmount) <= 0.01),
         receiverMatched: true,
         utrUnique: !duplicateCheck.exists,
         timeWithinTolerance: timeWithinTolerance,
         verifiedAt: new Date().toISOString()
       };
       
-      return { success:true, state:PAYMENT_STATES.UTR_VERIFIED, utr:extractedUTR, data:verificationData };
+      return { 
+        success: true, 
+        state: PAYMENT_STATES.UTR_VERIFIED, 
+        utr: extractedUTR, 
+        data: verificationData 
+      };
+      
     } catch(error) {
       console.error('❌ Verification error:', error);
       return { success:false, state:PAYMENT_STATES.ERROR, error:error.message || 'Screenshot verification failed' };
@@ -705,15 +944,12 @@
 
   async function checkDuplicateUTR(utr) {
     try {
-      // Check local storage first
       const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
       const localMatch = db.find(r => r.txn === utr && (r.status === 'VERIFIED' || r.status === 'PENDING'));
       if(localMatch) return { exists:true, source:'local' };
       
-      // Check Supabase - this will respect the legacy_duplicate flag
       if(!supabaseClient) return { error:'Database connection unavailable' };
       
-      // Query registrations with this UTR - the partial unique index ensures new records can't duplicate
       const { data, error } = await supabaseClient
         .from('registrations')
         .select('txn, status, legacy_duplicate')
@@ -721,17 +957,10 @@
         .in('status', ['VERIFIED', 'PENDING']);
       
       if(error) {
-        // If error is 23505 (duplicate) this is caught by the insert, not select
         return { error:`Database error: ${error.message}` };
       }
       
-      // If any matching records exist, the UTR is already used
-      // The partial unique index will prevent new non-legacy duplicates
       if(data && data.length > 0) {
-        // Check if any of the matching records are NOT legacy duplicates
-        // If all are legacy duplicates, we still need to check for duplicate UTR
-        // But since we're checking before insert, any existing record means UTR is already used
-        // The database will enforce uniqueness for non-legacy records via the partial unique index
         return { exists:true, source:'supabase' };
       }
       return { exists:false };
@@ -754,7 +983,6 @@
       const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
       const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
       
-      // Build registration data with all required fields
       const registrationData = {
         event_name: selectedEvent ? selectedEvent.name : 'Unknown',
         event_sub: selectedEvent ? selectedEvent.sub : '',
@@ -769,9 +997,7 @@
         status: 'VERIFIED',
         registered_at: new Date().toISOString(),
         verified_at: new Date().toISOString(),
-        // Set legacy_duplicate to false for all new registrations
         legacy_duplicate: false,
-        // Payment verification columns
         payment_amount_detected: paymentState.verificationData?.amount || null,
         payment_receiver_detected: paymentState.verificationData?.receiver || null,
         payment_time_detected: paymentState.verificationData?.paymentTime || null,
@@ -811,7 +1037,6 @@
       try {
         const { data, error } = await supabaseClient.from('registrations').insert([registrationData]).select();
         if(error) {
-          // Check for unique violation error code 23505
           if(error.code === '23505') return { success:false, error:'DUPLICATE_UTR' };
           return { success:false, error:error.message };
         }
@@ -821,7 +1046,6 @@
         return { success:false, error:err.message };
       }
     }
-    // fallback local
     try {
       const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
       const exists = db.some(r => r.txn === registrationData.txn && (r.status === 'VERIFIED' || r.status === 'PENDING'));
@@ -1023,10 +1247,11 @@
     console.log('📱 UPI ID:', PAYMENT_CONFIG.upiId1);
     console.log('💳 Pricing: per-event pricing with optional player ignore for Cricket, Football, Throwball');
     console.log('✅ Supabase status:', supabaseClient ? 'Connected' : 'Not connected');
-    console.log('📸 Enhanced verification: UTR, Receiver, Amount, Time');
+    console.log('📸 Enhanced verification: UTR, Receiver, Amount (context-aware), Time');
     console.log('🛡️ Duplicate check with legacy duplicate handling');
     console.log('⏰ Payment time tolerance:', PAYMENT_TIME_TOLERANCE_MINUTES, 'minutes');
-    console.log('📋 ALL 12 events require full payment verification (UTR, Receiver, Amount)');
+    console.log('📋 ALL events require full payment verification (UTR, Receiver, Amount)');
+    console.log('🔍 FIXED: Amount extraction uses context (₹, Rs, INR, labels) and excludes time/date/UTR');
   });
   function autoSelectEventFromURL() {
     try {
