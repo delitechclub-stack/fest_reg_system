@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>DEPLOMAT · Manual Registration</title>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* ─── RESET & BASE ─────────────────────────────────────────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overscroll-behavior: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page-bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: #00d4ff;
+            top: -15%;
+            left: -15%;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #b000ff;
+            bottom: -15%;
+            right: -15%;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: #ff2a6d;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+        }
+
+        body::before {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 46px 46px;
+            content: "";
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent 85%);
+            pointer-events: none;
+        }
+
+        .home-link {
+            position: fixed;
+            top: 28px;
+            left: 32px;
+            z-index: 20;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 60px;
+            background: rgba(16, 16, 26, 0.5);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+            transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .home-link:hover {
+            color: #00d4ff;
+            border-color: rgba(0, 212, 255, 0.2);
+            transform: translateX(-4px);
+            background: rgba(0, 212, 255, 0.06);
+        }
+
+        .home-link:active {
+            transform: scale(0.95);
+        }
+
+        .manual-wrap {
+            position: relative;
+            z-index: 2;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 24px 60px 24px;
+        }
+
+        .manual-container {
+            width: min(100%, 820px);
+            animation: reveal 0.65s ease both;
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .manual-card {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(32px, 5vw, 48px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            background: rgba(17, 24, 38, 0.75);
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        .manual-card::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #65d8ff, transparent);
+            content: "";
+            opacity: 0.8;
+        }
+
+        .manual-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .manual-header .eyebrow {
+            color: #65d8ff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .manual-header .badge-coord {
+            display: inline-block;
+            background: rgba(255, 197, 61, 0.12);
+            color: #FFC53D;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 197, 61, 0.1);
+            margin-bottom: 8px;
+        }
+
+        .manual-header h1 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .manual-header .sub {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .manual-header .manual-notice {
+            color: rgba(255, 197, 61, 0.5);
+            font-size: 0.7rem;
+            margin-top: 8px;
+            letter-spacing: 0.08em;
+        }
+
+        .manual-header .manual-notice i {
+            color: #FFC53D;
+        }
+
+        /* ─── FORM ELEMENTS ────────────────────────────────────────── */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .form-group label .required {
+            color: #ff2a6d;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: 0.25s ease;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+
+        .form-group select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ─── RADIO GROUP ──────────────────────────────────────────── */
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            padding: 6px 0;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            text-transform: none;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-weight: 500;
+            padding: 8px 18px 8px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            transition: 0.25s ease;
+        }
+
+        .radio-group label:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .radio-group label input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #65d8ff;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+            appearance: radio;
+            -webkit-appearance: radio;
+            background: transparent;
+        }
+
+        .radio-group label:has(input:checked) {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.06);
+            color: #fff;
+        }
+
+        /* ─── EVENT LIMIT INFO ────────────────────────────────────── */
+        .event-limit-info {
+            background: rgba(255, 197, 61, 0.06);
+            border: 1px solid rgba(255, 197, 61, 0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .event-limit-info .icon {
+            font-size: 1.2rem;
+        }
+
+        .event-limit-info .text {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .event-limit-info .text strong {
+            color: #FFC53D;
+        }
+
+        .block-notice {
+            display: none;
+            background: rgba(255, 42, 109, 0.12);
+            border: 1px solid rgba(255, 42, 109, 0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 12px;
+            animation: fadeStep 0.35s ease both;
+            color: #ff6b8a;
+        }
+
+        .block-notice.show {
+            display: flex;
+        }
+
+        .block-notice .icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .block-notice .msg {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .block-notice .msg strong {
+            color: #fff;
+        }
+
+        @keyframes fadeStep {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ─── PLAYER ENTRIES ──────────────────────────────────────── */
+        .player-entry {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 18px 16px;
+            margin-bottom: 12px;
+            transition: 0.3s ease;
+        }
+
+        .player-entry:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .player-entry .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .player-entry .player-number {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+
+        .player-entry .player-number.leader {
+            color: #65d8ff;
+        }
+
+        .player-entry .remove-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 42, 109, 0.4);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.2s;
+            padding: 4px 8px;
+            border-radius: 6px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .player-entry .remove-btn:hover {
+            color: #ff2a6d;
+            background: rgba(255, 42, 109, 0.08);
+        }
+
+        .player-entry .player-fields {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .player-entry .player-fields.leader-fields {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .player-entry .player-fields input {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-family: inherit;
+            transition: 0.25s ease;
+            outline: none;
+        }
+
+        .player-entry .player-fields input:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+
+        .player-entry .player-fields input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .player-entry .player-fields .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .player-entry .player-fields .field-group label {
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+        }
+
+        .player-entry .player-fields .field-group label .required {
+            color: #ff2a6d;
+        }
+
+        .leader-badge {
+            display: inline-block;
+            background: rgba(101, 216, 255, 0.12);
+            color: #65d8ff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+            margin-left: 8px;
+        }
+
+        .add-player-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            font-family: inherit;
+        }
+
+        .add-player-btn:hover {
+            border-color: rgba(101, 216, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(101, 216, 255, 0.04);
+        }
+
+        .add-player-btn:active {
+            transform: scale(0.98);
+        }
+
+        .add-player-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ─── PAYMENT SUMMARY ──────────────────────────────────────── */
+        .payment-summary {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 14px;
+            padding: 20px;
+            margin: 16px 0 24px 0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .payment-summary .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .payment-summary .summary-row.total {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 12px;
+            margin-top: 6px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .payment-summary .summary-row.total .amount {
+            color: #65d8ff;
+        }
+
+        .payment-summary .summary-row .label-small {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ─── REGISTER BUTTON ──────────────────────────────────────── */
+        .register-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            margin-top: 8px;
+            box-shadow: 0 8px 30px rgba(76, 175, 80, 0.15);
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(76, 175, 80, 0.25);
+        }
+
+        .register-btn:active {
+            transform: scale(0.97);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .register-btn .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── SUCCESS STATE ────────────────────────────────────────── */
+        .success-state {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+            animation: fadeStep 0.5s ease both;
+        }
+
+        .success-state.show {
+            display: block;
+        }
+
+        .success-state .check {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .success-state h2 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+            background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .success-state p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .success-state .reg-details {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px auto;
+            max-width: 450px;
+            text-align: left;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .success-state .reg-details strong {
+            color: #fff;
+        }
+
+        .success-state .reg-details .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .success-state .reg-details .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .success-state .reg-details .detail-row .value {
+            color: #65d8ff;
+            font-weight: 600;
+        }
+
+        .btn-reset {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 16px;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .btn-reset:active {
+            transform: scale(0.96);
+        }
+
+        /* ─── FORM HIDDEN ──────────────────────────────────────────── */
+        .form-hidden {
+            display: none !important;
+        }
+
+        /* ─── TOOLTIP ───────────────────────────────────────────────── */
+        .tooltip {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(16, 16, 26, 0.92);
+            backdrop-filter: blur(16px);
+            padding: 12px 28px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            text-align: center;
+            max-width: 90vw;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .tooltip.success {
+            border-color: rgba(76, 175, 80, 0.3);
+            color: #81c784;
+        }
+
+        .tooltip.error {
+            border-color: rgba(255, 42, 109, 0.3);
+            color: #ff6b8a;
+        }
+
+        .tooltip.info {
+            border-color: rgba(101, 216, 255, 0.3);
+            color: #65d8ff;
+        }
+
+        /* ─── RESPONSIVE ────────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .home-link {
+                top: 18px;
+                left: 18px;
+                font-size: 0.65rem;
+                padding: 8px 14px;
+                letter-spacing: 2px;
+            }
+
+            .manual-wrap {
+                padding: 80px 16px 40px 16px;
+            }
+
+            .manual-card {
+                padding: clamp(20px, 4vw, 28px);
+                border-radius: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .player-entry .player-fields.leader-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .radio-group {
+                gap: 12px;
+            }
+
+            .radio-group label {
+                padding: 6px 14px 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            .manual-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .manual-card {
+                padding: 16px 14px;
+                border-radius: 16px;
+            }
+
+            .manual-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .payment-summary {
+                padding: 16px;
+            }
+
+            .register-btn {
+                font-size: 0.95rem;
+                padding: 14px;
+            }
+
+            .success-state .reg-details {
+                font-size: 0.75rem;
+                padding: 12px 14px;
+            }
+        }
+
+        /* ─── SCROLLBAR ────────────────────────────────────────────── */
+        .manual-wrap::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .manual-wrap::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .manual-wrap::-webkit-scrollbar-thumb {
+            background: rgba(101, 216, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        /* ─── CONNECTION STATUS ────────────────────────────────────── */
+        .connection-status {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-top: 8px;
+        }
+
+        .connection-status.online {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+        }
+
+        .connection-status.offline {
+            background: rgba(255, 42, 109, 0.15);
+            color: #ff2a6d;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+        }
+
+        .connection-status.syncing {
+            background: rgba(255, 197, 61, 0.15);
+            color: #FFC53D;
+            border: 1px solid rgba(255, 197, 61, 0.1);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-bg-orb orb-1"></div>
+    <div class="page-bg-orb orb-2"></div>
+    <div class="page-bg-orb orb-3"></div>
+
+    <a href="index.html" class="home-link" aria-label="Back to home">
+        <i class="fas fa-arrow-left"></i> Home
+    </a>
+
+    <div class="tooltip" id="tooltip">Registration created successfully</div>
+
+    <main class="manual-wrap">
+        <div class="manual-container">
+
+            <div class="manual-card">
+
+                <div class="manual-header">
+                    <p class="eyebrow"><i class="fas fa-clipboard-list"></i> DEPLOMAT · 2026</p>
+                    <span class="badge-coord"><i class="fas fa-user-shield"></i> Coordinator Portal</span>
+                    <h1>MANUAL REGISTRATION</h1>
+                    <p class="sub">Create verified registrations on behalf of participants</p>
+                    <p class="manual-notice"><i class="fas fa-info-circle"></i> Manual registration · Payment not
+                        required · Status: VERIFIED</p>
+                    <span class="connection-status" id="connectionStatus">🔄 Connecting...</span>
+                </div>
+
+                <!-- ─── BLOCK NOTICE ────────────────────────────────── -->
+                <div class="block-notice" id="blockNotice">
+                    <span class="icon">⛔</span>
+                    <span class="msg" id="blockMsg">This event is not available for your category.</span>
+                </div>
+
+                <!-- ─── FORM ────────────────────────────────────────── -->
+                <form id="manualForm" novalidate>
+
+                    <!-- 1. College -->
+                    <div class="form-group">
+                        <label>College / Institution <span class="required">*</span></label>
+                        <input type="text" id="college" placeholder="Enter college name" required />
+                    </div>
+
+                    <!-- 2. Category -->
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <div class="radio-group" id="ugPuGroup">
+                            <label><input type="radio" name="ug_pu" value="UG" /><span>UG</span></label>
+                            <label><input type="radio" name="ug_pu" value="PU" /><span>PU</span></label>
+                        </div>
+                        <small style="color:rgba(255,255,255,0.25);font-size:0.7rem;display:block;margin-top:4px;">
+                            ⚡ Select UG (Under Graduate) or PU (Post Graduate)
+                        </small>
+                    </div>
+
+                    <!-- 3. Event -->
+                    <div class="form-group">
+                        <label>Select Event <span class="required">*</span></label>
+                        <select id="eventSelect" required>
+                            <option value="">— Select an event —</option>
+                        </select>
+                    </div>
+
+                    <!-- Event Limit Info -->
+                    <div class="event-limit-info" id="eventLimitInfo">
+                        <span class="icon">📋</span>
+                        <span class="text" id="limitText">Select an event to see team size limits</span>
+                    </div>
+
+                    <!-- 4. Participants -->
+                    <div style="margin-top:24px;">
+                        <p
+                            style="color:rgba(255,255,255,0.3);font-size:0.8rem;margin-bottom:12px;letter-spacing:0.05em;">
+                            ⚡ <span id="participantNotice">Enter all participants for this event.</span>
+                            <br /><span style="color:rgba(255,255,255,0.2);font-size:0.7rem;">
+                                The first participant is the <strong style="color:#65d8ff;">Team Leader</strong>.
+                            </span>
+                        </p>
+                        <div id="playersContainer"></div>
+                        <button type="button" class="add-player-btn" id="addPlayerBtn">+ Add Player</button>
+                    </div>
+
+                    <!-- 5. Pricing Summary -->
+                    <div class="payment-summary" id="paymentSummary">
+                        <div class="summary-row"><span>Event</span><span id="payEventName">—</span></div>
+                        <div class="summary-row"><span>Team Leader</span><span id="payTeamLeader">—</span></div>
+                        <div class="summary-row"><span>Category</span><span id="payUgPu">—</span></div>
+                        <div class="summary-row"><span>Participants</span><span id="payPlayerCount">0</span></div>
+                        <div class="summary-row"><span id="payFeeLabel">Fee</span><span id="payFeeValue">—</span></div>
+                        <div class="summary-row total"><span>Registration Amount</span><span class="amount"
+                                id="payTotal">₹0</span></div>
+                    </div>
+
+                    <!-- 6. Register Button -->
+                    <button type="submit" class="register-btn" id="registerBtn">
+                        <i class="fas fa-check-circle"></i> REGISTER
+                    </button>
+
+                </form>
+
+                <!-- ─── SUCCESS STATE ────────────────────────────────── -->
+                <div class="success-state" id="successState">
+                    <span class="check">✅</span>
+                    <h2>Registration Created Successfully</h2>
+                    <p>The registration has been saved to the database with <strong>VERIFIED</strong> status.</p>
+                    <div class="reg-details" id="successDetails"></div>
+                    <button class="btn-reset" id="resetBtn"><i class="fas fa-plus"></i> Create Another
+                        Registration</button>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        //  🔐 SUPABASE CONFIG
+        // ═══════════════════════════════════════════════════════════════
+
+        const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ciV-bON--bAuofVltQySLA_m24_M8j_';
+
+        let supabaseClient = null;
+
+        function initSupabase() {
+            try {
+                if (typeof supabase !== 'undefined' && supabase.createClient) {
+                    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+                    console.log('✅ Supabase client initialized');
+                    return true;
+                } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+                    console.log('✅ Supabase client initialized (window)');
+                    return true;
+                } else {
+                    console.warn('⚠️ Supabase library not loaded, retrying...');
+                    setTimeout(() => {
+                        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+                            console.log('✅ Supabase client initialized after retry');
+                        }
+                    }, 500);
+                    return false;
+                }
+            } catch (e) {
+                console.error('❌ Failed to initialize Supabase:', e);
+                return false;
+            }
+        }
+
+        initSupabase();
+
+        // ─── EVENTS ──────────────────────────────────────────────────
+        const EVENTS = [
+            {
+                id: 0, name: 'THE ATLANTEAN TRIALS', sub: 'Escape Room', min: 3, max: 3, category: 'both', pricing: {
+                    type: 'fixed',
+                    amount: 750
+                }
+            },
+            {
+                id: 1, name: 'THE LOST RELIC', sub: 'Treasure Hunt', min: 2, max: 2, category: 'both', pricing: {
+                    type: 'fixed',
+                    amount: 500
+                }
+            },
+            {
+                id: 2, name: 'THE TRIDENT WAR', sub: 'Free Fire', min: 4, max: 4, category: 'both', pricing: {
+                    type: 'fixed',
+                    amount: 1000
+                }
+            },
+            {
+                id: 3, name: 'COURT OF THE DEEP', sub: 'Moot Court', min: 2, max: 3, category: 'both', pricing: {
+                    type: 'perParticipant',
+                    amount: 250
+                }
+            },
+            {
+                id: 4, name: "THE SIREN'S ACT", sub: 'Reels Making', min: 1, max: 3, category: 'both', pricing: {
+                    type: 'fixed',
+                    amount: 750
+                }
+            },
+            {
+                id: 5, name: 'ECHOS OF ATLANTIS', sub: 'Solo Singing', min: 1, max: 1, category: 'both', pricing: {
+                    type: 'fixed',
+                    amount: 250
+                }
+            },
+            {
+                id: 6, name: "THE MERMAID'S WALTZ", sub: 'Solo Dance', min: 1, max: 1, category: 'both', pricing: {
+                    type: 'fixed',
+                    amount: 250
+                }
+            },
+            {
+                id: 7, name: 'TIDES OF RYTHM', sub: 'Group Dance', min: 6, max: 12, category: 'both', pricing: {
+                    type: 'perParticipant',
+                    amount: 250
+                }
+            },
+            {
+                id: 8, name: 'RUNWAY OF REALMS', sub: 'Rampwalk', min: 10, max: 12, category: 'both', pricing: {
+                    type: 'fixed',
+                    amount: 1500
+                }
+            },
+            {
+                id: 9, name: "THE KRAKEN'S PITCH", sub: 'Cricket (PU/UG Boys)', min: 7, max: 10, category: 'both',
+                pricing: { type: 'category', UG: 2500, PU: 2000 }
+            },
+            {
+                id: 10, name: "POSEIDON'S CUP", sub: 'Football (P.U Boys)', min: 7, max: 10, category: 'pu',
+                pricing: { type: 'fixed', amount: 2000 }
+            },
+            {
+                id: 11, name: 'RIPTIDE RALLY', sub: 'Throwball (UG Girls)', min: 9, max: 12, category: 'ug',
+                pricing: { type: 'fixed', amount: 1500 }
+            }
+        ];
+
+        // ─── DOM REFS ──────────────────────────────────────────────────
+        const form = document.getElementById('manualForm');
+        const collegeInput = document.getElementById('college');
+        const eventSelect = document.getElementById('eventSelect');
+        const ugPuRadios = document.querySelectorAll('input[name="ug_pu"]');
+        const playersContainer = document.getElementById('playersContainer');
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
+        const limitText = document.getElementById('limitText');
+        const blockNotice = document.getElementById('blockNotice');
+        const blockMsg = document.getElementById('blockMsg');
+        const participantNotice = document.getElementById('participantNotice');
+        const registerBtn = document.getElementById('registerBtn');
+        const successState = document.getElementById('successState');
+        const successDetails = document.getElementById('successDetails');
+        const resetBtn = document.getElementById('resetBtn');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        // Payment summary refs
+        const payEventName = document.getElementById('payEventName');
+        const payTeamLeader = document.getElementById('payTeamLeader');
+        const payUgPu = document.getElementById('payUgPu');
+        const payPlayerCount = document.getElementById('payPlayerCount');
+        const payTotal = document.getElementById('payTotal');
+        const payFeeLabel = document.getElementById('payFeeLabel');
+        const payFeeValue = document.getElementById('payFeeValue');
+
+        // ─── STATE ─────────────────────────────────────────────────────
+        let selectedEvent = null;
+        let selectedCategory = null;
+        let currentMin = 1;
+        let currentMax = 12;
+        let isSubmitting = false;
+
+        // ─── HELPERS ──────────────────────────────────────────────────
+
+        function getSelectedCategory() {
+            const c = document.querySelector('input[name="ug_pu"]:checked');
+            return c ? c.value : null;
+        }
+
+        function getEventById(id) {
+            return EVENTS.find(e => e.id === parseInt(id));
+        }
+
+        function getLeaderName() {
+            const first = playersContainer.querySelector('.player-entry');
+            if (first) {
+                const n = first.querySelector('.player-name');
+                return n ? n.value.trim() : 'Unknown';
+            }
+            return 'Unknown';
+        }
+
+        function getParticipantsList() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            const list = [];
+            entries.forEach((entry, idx) => {
+                const name = entry.querySelector('.player-name')?.value?.trim() || '';
+                const isLeader = idx === 0;
+                let p = { name, isLeader };
+                if (isLeader) {
+                    const email = entry.querySelector('.player-email')?.value?.trim() || '';
+                    const phone = entry.querySelector('.player-phone')?.value?.trim() || '';
+                    p.email = email;
+                    p.phone = phone;
+                }
+                list.push(p);
+            });
+            return list;
+        }
+
+        function getTeamSize() {
+            return playersContainer.children.length;
+        }
+
+        function getTotalAmount() {
+            const count = getTeamSize();
+            const pricing = selectedEvent ? selectedEvent.pricing : null;
+            if (!pricing) return 0;
+
+            // Cricket (9), Football (10), Throwball (11) — fixed/ category pricing, ignore count
+            const eventId = selectedEvent ? selectedEvent.id : -1;
+            const isTeamSportWithOptional = (eventId === 9 || eventId === 10 || eventId === 11);
+
+            if (isTeamSportWithOptional) {
+                if (pricing.type === 'fixed') return pricing.amount;
+                if (pricing.type === 'category') {
+                    const cat = getSelectedCategoryForPricing();
+                    return pricing[cat] || 0;
+                }
+                return 0;
+            }
+
+            if (pricing.type === 'fixed') return pricing.amount;
+            if (pricing.type === 'perParticipant') return count * pricing.amount;
+            if (pricing.type === 'category') {
+                const cat = getSelectedCategoryForPricing();
+                return pricing[cat] || 0;
+            }
+            return 0;
+        }
+
+        function getSelectedCategoryForPricing() {
+            return (getSelectedCategory() || selectedCategory || '').toUpperCase();
+        }
+
+        function getFeeRowInfo() {
+            if (!selectedEvent || !selectedEvent.pricing) return { label: 'Fee', value: '—' };
+            const p = selectedEvent.pricing;
+            if (p.type === 'fixed') return { label: 'Fee / Pricing', value: 'Fixed event fee' };
+            if (p.type === 'perParticipant') return { label: 'Fee per participant', value: `₹${p.amount}` };
+            if (p.type === 'category') return { label: 'Fee / Pricing', value: `UG: ₹${p.UG} · PU: ₹${p.PU}` };
+            return { label: 'Fee', value: '—' };
+        }
+
+        function checkCategoryEventCompatibility(category, eventId) {
+            if (!category || !eventId) return { valid: true, message: '' };
+            const e = getEventById(eventId);
+            if (!e) return { valid: true, message: '' };
+            if (e.category === 'both') return { valid: true, message: '' };
+            const cat = category.toUpperCase();
+            if (cat === 'UG' && e.category === 'pu') return {
+                valid: false,
+                message: `⛔ "${e.name} · ${e.sub}" is for <strong>PU</strong> students only.`
+            };
+            if (cat === 'PU' && e.category === 'ug') return {
+                valid: false,
+                message: `⛔ "${e.name} · ${e.sub}" is for <strong>UG</strong> students only.`
+            };
+            return { valid: true, message: '' };
+        }
+
+        function showBlockNotice(msg) {
+            if (msg) {
+                blockMsg.innerHTML = msg;
+                blockNotice.classList.add('show');
+            } else {
+                blockNotice.classList.remove('show');
+            }
+        }
+
+        // ─── UPDATE UI ────────────────────────────────────────────────
+
+        function updateEventLimitInfo() {
+            const val = eventSelect.value;
+            if (!val) {
+                limitText.textContent = 'Please select an event first.';
+                return;
+            }
+            const ev = getEventById(val);
+            if (!ev) {
+                limitText.textContent = 'Event not found.';
+                return;
+            }
+            currentMin = ev.min;
+            currentMax = ev.max;
+            selectedEvent = ev;
+
+            let catLabel = ev.category === 'pu' ? '🔵 PU Only' :
+                ev.category === 'ug' ? '🟣 UG Only' : '🟢 UG + PU';
+
+            if (ev.min === ev.max) {
+                limitText.innerHTML =
+                    `<strong>${ev.name}</strong> · ${ev.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${ev.min}</strong> participants (including Team Leader)`;
+            } else {
+                limitText.innerHTML =
+                    `<strong>${ev.name}</strong> · ${ev.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Team size: <strong>${ev.min} – ${ev.max}</strong> participants allowed (including Team Leader)`;
+            }
+
+            // Adjust player entries
+            const currentCount = playersContainer.children.length;
+            if (currentCount > currentMax) {
+                while (playersContainer.children.length > currentMax) {
+                    playersContainer.lastChild.remove();
+                }
+                updatePlayerNumbers();
+            } else if (currentCount < currentMin) {
+                while (playersContainer.children.length < currentMin) {
+                    addPlayer(playersContainer.children.length === 0);
+                }
+            }
+            updateAddButtonState();
+            updatePricingUI();
+            updateParticipantNotice();
+        }
+
+        function updateParticipantNotice() {
+            if (!selectedEvent) {
+                participantNotice.textContent = 'Enter all participants for this event.';
+                return;
+            }
+            const p = selectedEvent.pricing;
+            const strong = (txt) => `<strong style="color:#65d8ff;">${txt}</strong>`;
+            if (p.type === 'fixed') {
+                participantNotice.innerHTML =
+                    `Enter all participants for this event. ⚡ Registration fee: ${strong(`₹${p.amount}`)}`;
+            } else if (p.type === 'perParticipant') {
+                participantNotice.innerHTML =
+                    `Enter all participants for this event. ⚡ Fee per participant: ${strong(`₹${p.amount}`)}`;
+            } else if (p.type === 'category') {
+                const amt = p[getSelectedCategoryForPricing()];
+                participantNotice.innerHTML =
+                    `Enter all participants for this event. ⚡ Registration fee: ${strong(amt ? `₹${amt}` : '—')}`;
+            } else {
+                participantNotice.textContent = 'Enter all participants for this event.';
+            }
+        }
+
+        function updatePricingUI() {
+            const count = getTeamSize();
+            const total = getTotalAmount();
+            const leader = getLeaderName();
+            const ug = getSelectedCategory();
+
+            payEventName.textContent = selectedEvent ? `${selectedEvent.name} · ${selectedEvent.sub}` : '—';
+            payTeamLeader.textContent = leader || '—';
+            payUgPu.textContent = ug || '—';
+            payPlayerCount.textContent = count;
+
+            const feeInfo = getFeeRowInfo();
+            payFeeLabel.textContent = feeInfo.label;
+            payFeeValue.textContent = feeInfo.value;
+
+            payTotal.textContent = `₹${total}`;
+        }
+
+        function updateAddButtonState() {
+            const count = playersContainer.children.length;
+            if (count >= currentMax) {
+                addPlayerBtn.disabled = true;
+                addPlayerBtn.textContent = `✓ Max ${currentMax} players reached`;
+            } else {
+                addPlayerBtn.disabled = false;
+                addPlayerBtn.textContent = '+ Add Player';
+            }
+        }
+
+        function updatePlayerNumbers() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            entries.forEach((entry, index) => {
+                const isFirst = index === 0;
+                const numSpan = entry.querySelector('.player-number');
+                if (numSpan) {
+                    if (isFirst) {
+                        numSpan.innerHTML = '👑 Team Leader <span class="leader-badge">Leader</span>';
+                        numSpan.className = 'player-number leader';
+                    } else {
+                        numSpan.textContent = `Player ${index + 1}`;
+                        numSpan.className = 'player-number';
+                    }
+                }
+                const removeBtn = entry.querySelector('.remove-btn');
+                if (removeBtn) {
+                    removeBtn.style.display = isFirst ? 'none' : 'block';
+                }
+            });
+            updateAddButtonState();
+            updatePricingUI();
+        }
+
+        function validateCategoryEventPair() {
+            const cat = getSelectedCategory();
+            const val = eventSelect.value;
+            if (cat && val) {
+                const res = checkCategoryEventCompatibility(cat, val);
+                if (!res.valid) {
+                    showBlockNotice(res.message);
+                    return false;
+                } else {
+                    showBlockNotice('');
+                    return true;
+                }
+            }
+            showBlockNotice('');
+            return true;
+        }
+
+        // ─── PLAYER MANAGEMENT ───────────────────────────────────────
+
+        function addPlayer(isLeader = false) {
+            const count = playersContainer.children.length;
+            if (count >= currentMax) {
+                alert(`Maximum ${currentMax} players allowed.`);
+                return;
+            }
+            const index = count + 1;
+            const isFirst = count === 0;
+
+            const div = document.createElement('div');
+            div.className = 'player-entry';
+
+            let headerHtml = `<div class="player-header">
+                <span class="player-number ${isFirst ? 'leader' : ''}">
+                    ${isFirst ? '👑 Team Leader' : `Player ${index}`}
+                    ${isFirst ? '<span class="leader-badge">Leader</span>' : ''}
+                </span>
+                ${!isFirst ? `<button type="button" class="remove-btn" title="Remove player">✕</button>` : ''}
+            </div>`;
+
+            let fieldsHtml = '';
+            if (isFirst) {
+                fieldsHtml = `<div class="player-fields leader-fields">
+                    <div class="field-group"><label>Full Name <span class="required">*</span></label>
+                        <input type="text" class="player-name" placeholder="Team Leader full name" required /></div>
+                    <div class="field-group"><label>Email <span class="required">*</span></label>
+                        <input type="email" class="player-email" placeholder="leader@example.com" required /></div>
+                    <div class="field-group"><label>Phone <span class="required">*</span></label>
+                        <input type="tel" class="player-phone" placeholder="+91 98765 43210" required /></div>
+                </div>`;
+            } else {
+                fieldsHtml = `<div class="player-fields">
+                    <div class="field-group"><label>Full Name <span class="required">*</span></label>
+                        <input type="text" class="player-name" placeholder="Player ${index} full name" required /></div>
+                    <div class="field-group"><label>Phone <span class="required">*</span></label>
+                        <input type="tel" class="player-phone" placeholder="+91 98765 43210" required /></div>
+                </div>`;
+            }
+
+            div.innerHTML = headerHtml + fieldsHtml;
+
+            if (!isFirst) {
+                div.querySelector('.remove-btn').addEventListener('click', () => {
+                    if (playersContainer.children.length > currentMin) {
+                        div.remove();
+                        updatePlayerNumbers();
+                        updatePricingUI();
+                    } else {
+                        alert(`Minimum ${currentMin} participant(s) required.`);
+                    }
+                });
+            }
+
+            playersContainer.appendChild(div);
+            updatePlayerNumbers();
+            updatePricingUI();
+        }
+
+        // ─── POPULATE EVENT DROPDOWN ─────────────────────────────────
+
+        function populateEventDropdown() {
+            let html = '<option value="">— Select an event —</option>';
+            EVENTS.forEach(e => {
+                html += `<option value="${e.id}">${e.name} · ${e.sub}</option>`;
+            });
+            eventSelect.innerHTML = html;
+        }
+
+        // ─── FORM VALIDATION ─────────────────────────────────────────
+
+        function validateForm() {
+            // College
+            if (!collegeInput.value.trim()) {
+                alert('⚠️ Please enter the college name.');
+                collegeInput.focus();
+                return false;
+            }
+
+            // Category
+            const cat = getSelectedCategory();
+            if (!cat) {
+                alert('⚠️ Please select a category (UG or PU).');
+                return false;
+            }
+
+            // Event
+            if (!eventSelect.value) {
+                alert('⚠️ Please select an event.');
+                eventSelect.focus();
+                return false;
+            }
+
+            // Category vs Event compatibility
+            const compat = checkCategoryEventCompatibility(cat, eventSelect.value);
+            if (!compat.valid) {
+                const clean = compat.message.replace(/<[^>]*>/g, '');
+                alert(`⛔ ${clean}`);
+                return false;
+            }
+
+            // Participants count
+            const count = playersContainer.children.length;
+            if (count < currentMin) {
+                alert(`⚠️ This event requires at least ${currentMin} participant(s). Please add more.`);
+                return false;
+            }
+            if (count > currentMax) {
+                alert(`⚠️ Maximum ${currentMax} participants allowed.`);
+                return false;
+            }
+
+            // Validate each player
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            for (let i = 0; i < entries.length; i++) {
+                const entry = entries[i];
+                const name = entry.querySelector('.player-name');
+                if (!name || !name.value.trim()) {
+                    alert(`⚠️ Please enter name for ${i === 0 ? 'Team Leader' : `Player ${i + 1}`}.`);
+                    name?.focus();
+                    return false;
+                }
+                if (i === 0) {
+                    const email = entry.querySelector('.player-email');
+                    const phone = entry.querySelector('.player-phone');
+                    if (!email || !email.value.trim() || !email.value.includes('@')) {
+                        alert('⚠️ Please enter a valid email for the Team Leader.');
+                        email?.focus();
+                        return false;
+                    }
+                    const phoneDigits = (phone?.value || '').replace(/\D/g, '');
+                    if (phoneDigits.length < 10) {
+                        alert('⚠️ Please enter a valid 10-digit phone number for the Team Leader.');
+                        phone?.focus();
+                        return false;
+                    }
+                } else {
+                    const phone = entry.querySelector('.player-phone');
+                    if (phone) {
+                        const phoneDigits = (phone.value || '').replace(/\D/g, '');
+                        if (phoneDigits.length < 10) {
+                            alert(`⚠️ Please enter a valid 10-digit phone number for Player ${i + 1}.`);
+                            phone.focus();
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // ─── SUBMIT REGISTRATION ─────────────────────────────────────
+
+        async function submitRegistration() {
+            if (isSubmitting) return;
+            if (!validateForm()) return;
+
+            isSubmitting = true;
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="spinner"></span> Registering...';
+
+            try {
+                const cat = getSelectedCategory();
+                const ev = getEventById(eventSelect.value);
+                const participants = getParticipantsList();
+                const total = getTotalAmount();
+                const leader = getLeaderName();
+
+                // Build participants JSON with all required fields
+                const participantsData = participants.map((p, idx) => {
+                    const base = {
+                        name: p.name || '',
+                        phone: p.phone || '',
+                    };
+                    if (idx === 0) {
+                        base.email = p.email || '';
+                        base.isLeader = true;
+                    }
+                    return base;
+                });
+
+                // Ensure leader has isLeader flag
+                if (participantsData.length > 0) {
+                    participantsData[0].isLeader = true;
+                }
+
+                // Generate a unique manual txn identifier
+                // Use MANUAL- prefix with timestamp and random suffix to avoid conflicts
+                const timestamp = Date.now().toString(36);
+                const randomSuffix = Math.random().toString(36).substring(2, 8);
+                const manualTxn = `MANUAL-${timestamp}-${randomSuffix}`;
+
+                const registrationData = {
+                    event_name: ev ? ev.name : 'Unknown',
+                    event_sub: ev ? ev.sub : '',
+                    college: collegeInput.value.trim(),
+                    ug_pu: cat || '',
+                    team_leader: leader,
+                    email: participantsData[0]?.email || '',
+                    phone: participantsData[0]?.phone || '',
+                    total_amount: total,
+                    txn: manualTxn,
+                    participants: participantsData,
+
+                    // Identify this as a Student Coordinator manual registration
+                    registration_source: 'STUDENT_COORDINATOR',
+
+                    status: 'VERIFIED',
+                    registered_at: new Date().toISOString(),
+                    verified_at: new Date().toISOString(),
+                    is_pending: false,
+                    timeout_triggered: false,
+                    rejection_reason: null,
+                    rejected_at: null
+                };
+
+                let success = false;
+                let insertedData = null;
+
+                if (!supabaseClient) {
+                    throw new Error('Supabase is not connected. Registration was not saved.');
+                }
+
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('registrations')
+                        .insert([registrationData])
+                        .select();
+
+                    if (error) {
+                        console.error('❌ Supabase insert error:', error);
+                        throw new Error(`Database error: ${error.message}`);
+                    }
+
+                    insertedData = data?.[0] || registrationData;
+
+                    console.log('✅ Student Coordinator registration inserted into Supabase:', insertedData);
+
+                } catch (dbError) {
+                    console.error('❌ Supabase insert failed:', dbError);
+                    throw dbError;
+                }
+
+                showSuccessState(insertedData, ev, cat, participantsData);
+                showTooltip('✅ Registration created successfully!', 'success');
+            }
+
+             catch (error) {
+            console.error('❌ Registration error:', error);
+            showTooltip(`❌ Failed: ${error.message || 'Unknown error'}`, 'error');
+            alert(`Registration failed: ${error.message || 'Unknown error'}`);
+        } finally {
+            isSubmitting = false;
+            registerBtn.disabled = false;
+            registerBtn.innerHTML = '<i class="fas fa-check-circle"></i> REGISTER';
+        }
+        }
+
+        function showSuccessState(data, event, category, participants) {
+            form.classList.add('form-hidden');
+            successState.classList.add('show');
+
+            const total = data.total_amount || getTotalAmount();
+            const count = participants.length;
+
+            let detailsHtml = `
+                <div class="detail-row"><span>Registration ID</span><span class="value">${data.id || '—'}</span></div>
+                <div class="detail-row"><span>Event</span><span class="value">${data.event_name} · ${data.event_sub || ''}</span></div>
+                <div class="detail-row"><span>College</span><span class="value">${data.college}</span></div>
+                <div class="detail-row"><span>Team Leader</span><span class="value">${data.team_leader}</span></div>
+                <div class="detail-row"><span>Category</span><span class="value">${data.ug_pu}</span></div>
+                <div class="detail-row"><span>Participants</span><span class="value">${count}</span></div>
+                <div class="detail-row"><span>Amount</span><span class="value">₹${total}</span></div>
+                <div class="detail-row"><span>Status</span><span class="value" style="color:#4caf50;">VERIFIED</span></div>
+                <div class="detail-row"><span>Created At</span><span class="value">${new Date(data.registered_at).toLocaleString()}</span></div>
+            `;
+
+            successDetails.innerHTML = detailsHtml;
+        }
+
+        function resetForm() {
+            form.classList.remove('form-hidden');
+            successState.classList.remove('show');
+
+            collegeInput.value = '';
+            const checked = document.querySelector('input[name="ug_pu"]:checked');
+            if (checked) checked.checked = false;
+            eventSelect.value = '';
+            selectedEvent = null;
+            selectedCategory = null;
+
+            playersContainer.innerHTML = '';
+            currentMin = 1;
+            currentMax = 12;
+
+            // Re-initialize with default min
+            for (let i = 0; i < currentMin; i++) {
+                addPlayer(i === 0);
+            }
+            updateAddButtonState();
+            updatePricingUI();
+            updateEventLimitInfo();
+            showBlockNotice('');
+            limitText.textContent = 'Select an event to see team size limits';
+            participantNotice.textContent = 'Enter all participants for this event.';
+
+            // Reset payment summary
+            payEventName.textContent = '—';
+            payTeamLeader.textContent = '—';
+            payUgPu.textContent = '—';
+            payPlayerCount.textContent = '0';
+            payTotal.textContent = '₹0';
+            payFeeLabel.textContent = 'Fee';
+            payFeeValue.textContent = '—';
+
+            // Scroll to top of form
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            showTooltip('🔄 Form reset. Ready for new registration.', 'info');
+        }
+
+        // ─── TOOLTIP ──────────────────────────────────────────────────
+
+        let tooltipTimeout = null;
+
+        function showTooltip(msg, type) {
+            const el = document.getElementById('tooltip');
+            el.textContent = msg;
+            el.className = 'tooltip show';
+            if (type === 'success') el.classList.add('success');
+            if (type === 'error') el.classList.add('error');
+            if (type === 'info') el.classList.add('info');
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                el.classList.remove('show', 'success', 'error', 'info');
+            }, 4000);
+        }
+
+        // ─── CONNECTION STATUS ───────────────────────────────────────
+
+        function updateConnectionStatus(status, message) {
+            connectionStatus.textContent = message || 'Connected';
+            connectionStatus.className = 'connection-status';
+            if (status === 'online') {
+                connectionStatus.classList.add('online');
+            } else if (status === 'offline') {
+                connectionStatus.classList.add('offline');
+            } else if (status === 'syncing') {
+                connectionStatus.classList.add('syncing');
+            }
+        }
+
+        async function testSupabaseConnection() {
+            if (!supabaseClient) {
+                updateConnectionStatus('offline', '⚠️ No Supabase client');
+                return false;
+            }
+            try {
+                const { data, error } = await supabaseClient
+                    .from('registrations')
+                    .select('count', { count: 'exact', head: true });
+                if (error) {
+                    console.error('❌ Supabase connection test failed:', error);
+                    updateConnectionStatus('offline', `⚠️ ${error.message || 'Connection failed'}`);
+                    return false;
+                }
+                console.log('✅ Supabase connection test passed');
+                updateConnectionStatus('online', `✅ Connected (${data || 0} records)`);
+                return true;
+            } catch (e) {
+                console.error('❌ Supabase connection test error:', e);
+                updateConnectionStatus('offline', '⚠️ Connection error');
+                return false;
+            }
+        }
+
+        // ─── EVENT LISTENERS ─────────────────────────────────────────
+
+        // UG/PU change
+        ugPuRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                const cat = this.value;
+                selectedCategory = cat;
+                const val = eventSelect.value;
+                if (cat && val) {
+                    const res = checkCategoryEventCompatibility(cat, val);
+                    if (!res.valid) {
+                        showBlockNotice(res.message);
+                        eventSelect.value = '';
+                        selectedEvent = null;
+                        updateEventLimitInfo();
+                        updatePricingUI();
+                        const clean = res.message.replace(/<[^>]*>/g, '');
+                        alert(`⛔ ${clean}\n\nEvent selection cleared.`);
+                    } else {
+                        showBlockNotice('');
+                        const ev = getEventById(val);
+                        if (ev) {
+                            selectedEvent = ev;
+                            currentMin = ev.min;
+                            currentMax = ev.max;
+                            updateEventLimitInfo();
+                            updatePricingUI();
+                        }
+                    }
+                }
+                updatePricingUI();
+                updateParticipantNotice();
+            });
+        });
+
+        // Event change
+        eventSelect.addEventListener('change', function () {
+            const val = this.value;
+            const cat = getSelectedCategory();
+
+            if (val && cat) {
+                const res = checkCategoryEventCompatibility(cat, val);
+                if (!res.valid) {
+                    showBlockNotice(res.message);
+                    this.value = '';
+                    selectedEvent = null;
+                    updateEventLimitInfo();
+                    updatePricingUI();
+                    const clean = res.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${clean}\n\nEvent selection cleared.`);
+                    return;
+                } else {
+                    showBlockNotice('');
+                }
+            }
+
+            if (val) {
+                const ev = getEventById(val);
+                if (ev) {
+                    selectedEvent = ev;
+                    currentMin = ev.min;
+                    currentMax = ev.max;
+                    // Rebuild players
+                    playersContainer.innerHTML = '';
+                    for (let i = 0; i < currentMin; i++) {
+                        addPlayer(i === 0);
+                    }
+                    updateEventLimitInfo();
+                    updatePricingUI();
+                    updateParticipantNotice();
+                    showBlockNotice('');
+                }
+            } else {
+                selectedEvent = null;
+                playersContainer.innerHTML = '';
+                for (let i = 0; i < currentMin; i++) {
+                    addPlayer(i === 0);
+                }
+                updateEventLimitInfo();
+                updatePricingUI();
+                updateParticipantNotice();
+                showBlockNotice('');
+            }
+        });
+
+        // Add player
+        addPlayerBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            addPlayer(false);
+        });
+
+        // Form submit
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitRegistration();
+        });
+
+        // Reset button
+        resetBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            resetForm();
+        });
+
+        // ─── INPUT DEBOUNCE FOR PRICING UPDATE ──────────────────────
+
+        let pricingTimeout = null;
+
+        function debouncePricingUpdate() {
+            clearTimeout(pricingTimeout);
+            pricingTimeout = setTimeout(() => {
+                updatePricingUI();
+                updateParticipantNotice();
+            }, 300);
+        }
+
+        document.addEventListener('input', function (e) {
+            if (e.target.closest('.player-entry') || e.target.id === 'college') {
+                debouncePricingUpdate();
+            }
+        });
+
+        document.addEventListener('change', function (e) {
+            if (e.target.closest('.player-entry')) {
+                updatePricingUI();
+            }
+        });
+
+        // ─── INIT ─────────────────────────────────────────────────────
+
+        async function init() {
+            populateEventDropdown();
+
+            // Add initial players (min 1)
+            for (let i = 0; i < currentMin; i++) {
+                addPlayer(i === 0);
+            }
+            updateAddButtonState();
+            updatePricingUI();
+
+            // Test connection
+            await testSupabaseConnection();
+
+            console.log('🔱 DEPLOMAT · Manual Registration v1.0');
+            console.log('📋 Coordinator portal for manual registrations');
+            console.log('✅ Event list loaded:', EVENTS.length, 'events');
+            console.log('💳 Pricing logic: per-event with special rules for Cricket, Football, Throwball');
+            console.log('💾 Supabase status:', supabaseClient ? 'Connected' : 'Not connected');
+
+            // Show ready
+            showTooltip('✅ Ready for manual registration', 'info');
+        }
+
+        init();
+
+        // ─── KEYBOARD SHORTCUTS ──────────────────────────────────────
+
+        document.addEventListener('keydown', function (e) {
+            // Ctrl+Enter to submit
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                if (form.classList.contains('form-hidden')) return;
+                e.preventDefault();
+                submitRegistration();
+            }
+            // Escape to reset if in success state
+            if (e.key === 'Escape' && successState.classList.contains('show')) {
+                resetForm();
+            }
+        });
+
+        console.log('⌨️  Shortcuts: Ctrl+Enter to submit, Escape to reset from success');
+    </script>
+
+</body>
+
+</html>
