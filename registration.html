@@ -1114,12 +1114,27 @@
             color: #ff2a6d !important;
         }
 
-        /* Fix for QR button - prevent accidental navigation */
         .qr-btn-no-nav {
             cursor: pointer;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+        }
+
+        .upload-timer-badge {
+            display: inline-block;
+            background: rgba(255, 197, 61, 0.12);
+            color: #FFC53D;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .upload-timer-badge.warning {
+            color: #ff2a6d;
+            background: rgba(255, 42, 109, 0.12);
         }
 
         @media (max-width: 768px) {
@@ -1464,7 +1479,7 @@
                                     <div class="qr-frame">
                                         <img id="qr1Image" src="" alt="QR Code 1" />
                                     </div>
-                                    <p class="qr-label">UPI: <strong>7349231368@ptyes</strong></p>
+                                    <p class="qr-label">UPI: <strong>nidabeig2006@okhdfcbank</strong></p>
                                     <p style="font-size:0.65rem;color:rgba(255,255,255,0.3);">Scan with any UPI app</p>
                                 </div>
                                 
@@ -1484,6 +1499,10 @@
 
                             <!-- Upload Section - Shows after QR interaction -->
                             <div id="uploadSection" style="display:none; margin-top:16px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <span style="font-size:0.75rem;color:rgba(255,255,255,0.4);">📸 Upload payment screenshot below</span>
+                                    <span class="upload-timer-badge" id="uploadTimerBadge">⏱️ 2:00</span>
+                                </div>
                                 <div class="upload-area" id="dropZone">
                                     <div id="uploadPrompt">
                                         <span class="icon-big">📸</span>
@@ -1694,6 +1713,7 @@
         const utrIcon = document.getElementById('utrIcon');
         const uploadConfirmBtn = document.getElementById('uploadConfirmBtn');
         const screenshotInput = document.getElementById('screenshotInput');
+        const uploadTimerBadge = document.getElementById('uploadTimerBadge');
         const eventBanner = document.getElementById('eventBanner');
         const bannerEventName = document.getElementById('bannerEventName');
         const bannerEventSub = document.getElementById('bannerEventSub');
@@ -1738,19 +1758,14 @@
         let isPaymentButtonDisabled = false;
         let isModalUploadProcessed = false;
         let qrInteracted = false;
+        let uploadSectionVisible = false;
 
         // ─── PREVENT NAVIGATION BUG ──────────────────────────────────────
-        // Prevent any accidental form submissions or navigation from QR buttons
         document.querySelectorAll('.qr-btn-no-nav').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
             });
-            
-            // Also prevent any default behavior on touch
-            btn.addEventListener('touchstart', function(e) {
-                // Just prevent any weird behavior
-            }, { passive: true });
         });
 
         // ═══════════════════════════════════════════════════════════════════
@@ -1765,11 +1780,9 @@
         function updateQRImages() {
             const total = getTotalAmount();
             
-            // QR 1 - UPI: 7349231368@ptyes
             const upi1 = `upi://pay?pa=${PAYMENT_CONFIG.upiId1}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
             qr1Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi1)}`;
             
-            // QR 2 - To be updated later
             if (PAYMENT_CONFIG.upiId2) {
                 const upi2 = `upi://pay?pa=${PAYMENT_CONFIG.upiId2}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
                 qr2Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi2)}`;
@@ -1789,7 +1802,6 @@
         }
 
         function showQr1() {
-            // Prevent any navigation or form submission
             event.preventDefault();
             event.stopPropagation();
             
@@ -1804,18 +1816,21 @@
             if (qr1Visible) {
                 showQr1Btn.textContent = '📱 HIDE QR 1';
                 showQr1Btn.className = 'pay-btn btn-qr-secondary qr-btn-no-nav';
-                // Show upload section when QR is shown
-                showUploadSection();
+                // Show upload section with delay
+                showUploadSectionWithDelay();
             } else {
                 showQr1Btn.textContent = '📱 SHOW QR 1';
                 showQr1Btn.className = 'pay-btn btn-qr-primary qr-btn-no-nav';
+                // Hide upload section if QR 2 is not visible
+                if (!qr2Visible) {
+                    hideUploadSection();
+                }
             }
             
             return false;
         }
 
         function showQr2() {
-            // Prevent any navigation or form submission
             event.preventDefault();
             event.stopPropagation();
             
@@ -1834,53 +1849,90 @@
             
             if (qr2Visible) {
                 showQr2Btn.textContent = '🔄 HIDE QR 2';
-                // Show upload section when QR is shown
-                showUploadSection();
+                showUploadSectionWithDelay();
             } else {
                 showQr2Btn.textContent = '🔄 QR 1 not working? Try QR 2';
+                if (!qr1Visible) {
+                    hideUploadSection();
+                }
             }
             
-            // Reset QR 1 button text
             showQr1Btn.textContent = '📱 SHOW QR 1';
             showQr1Btn.className = 'pay-btn btn-qr-primary qr-btn-no-nav';
             
             return false;
         }
 
-        // Attach event listeners with preventDefault
-        showQr1Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showQr1();
-            return false;
-        });
+        // ─── UPLOAD SECTION WITH DELAY ──────────────────────────────────
 
-        showQr2Btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showQr2();
-            return false;
-        });
+        let uploadDelayTimeout = null;
 
-        function showUploadSection() {
+        function showUploadSectionWithDelay() {
+            // Clear any existing timeout
+            if (uploadDelayTimeout) {
+                clearTimeout(uploadDelayTimeout);
+                uploadDelayTimeout = null;
+            }
+            
+            // First show the upload section with a "loading" state
             uploadSection.style.display = 'block';
             uploadSection.style.animation = 'fadeStep 0.4s ease both';
+            uploadSectionVisible = true;
             
-            // Only start timer if not already started
-            if (!uploadTimerInterval && !registrationComplete && !isPendingSubmission) {
-                startUploadTimer();
+            // Show a temporary message
+            const originalPrompt = uploadPrompt.innerHTML;
+            uploadPrompt.innerHTML = `
+                <span class="icon-big">⏳</span>
+                <p class="text-muted">Preparing upload option...</p>
+                <p class="text-small">Please wait</p>
+            `;
+            
+            // Set a timeout to show the actual upload UI
+            uploadDelayTimeout = setTimeout(() => {
+                // Restore original upload prompt
+                uploadPrompt.innerHTML = originalPrompt;
+                uploadPrompt.style.display = 'block';
+                uploadPreview.style.display = 'none';
+                uploadStatus.style.display = 'none';
+                utrResult.style.display = 'none';
+                uploadConfirmBtn.disabled = true;
+                dropZone.style.borderColor = 'rgba(255,255,255,0.1)';
+                
+                // Start timer if not already started
+                if (!uploadTimerInterval && !registrationComplete && !isPendingSubmission) {
+                    startUploadTimer();
+                }
+                
+                uploadDelayTimeout = null;
+            }, 1000); // 1 second delay before showing actual upload
+        }
+
+        function hideUploadSection() {
+            if (uploadDelayTimeout) {
+                clearTimeout(uploadDelayTimeout);
+                uploadDelayTimeout = null;
             }
+            uploadSection.style.display = 'none';
+            uploadSectionVisible = false;
+            if (uploadTimerInterval) {
+                clearInterval(uploadTimerInterval);
+                uploadTimerInterval = null;
+            }
+            uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
+            updateTimerDisplay();
         }
 
         // ─── UPLOAD TIMER ──────────────────────────────────────────────────
 
         function startUploadTimer() {
             uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
+            updateTimerDisplay();
             
             if (uploadTimerInterval) clearInterval(uploadTimerInterval);
             
             uploadTimerInterval = setInterval(() => {
                 uploadTimeRemaining--;
+                updateTimerDisplay();
                 if (uploadTimeRemaining <= 0) {
                     clearInterval(uploadTimerInterval);
                     uploadTimerInterval = null;
@@ -1889,12 +1941,26 @@
             }, 1000);
         }
 
+        function updateTimerDisplay() {
+            const mins = Math.floor(Math.max(0, uploadTimeRemaining) / 60);
+            const secs = Math.floor(Math.max(0, uploadTimeRemaining) % 60);
+            const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            
+            if (uploadTimerBadge) {
+                uploadTimerBadge.textContent = `⏱️ ${timeStr}`;
+                if (uploadTimeRemaining <= 10) {
+                    uploadTimerBadge.classList.add('warning');
+                } else {
+                    uploadTimerBadge.classList.remove('warning');
+                }
+            }
+        }
+
         function handleUploadTimeout() {
             if (registrationComplete) return;
             if (isPendingSubmission) return;
             if (isModalUploadProcessed) return;
             
-            // Mark as pending
             alert('⏰ Time expired! Your registration is now marked as PENDING.\n\nPlease contact the coordinator with your payment proof.');
             submitPendingRegistration();
         }
@@ -1903,7 +1969,7 @@
 
         dropZone.addEventListener('click', function(e) {
             e.preventDefault();
-            if (!registrationComplete && !isPendingSubmission && qrInteracted) {
+            if (!registrationComplete && !isPendingSubmission && qrInteracted && uploadSectionVisible) {
                 screenshotInput.click();
             } else if (!qrInteracted) {
                 alert('📱 Please show a QR code first to enable upload.');
@@ -1940,7 +2006,7 @@
                 return;
             }
             
-            if (!qrInteracted) {
+            if (!qrInteracted || !uploadSectionVisible) {
                 alert('📱 Please show a QR code first to enable upload.');
                 return;
             }
@@ -2087,7 +2153,6 @@
                     }
                 }
                 
-                // Stop timer since upload is complete
                 if (uploadTimerInterval) {
                     clearInterval(uploadTimerInterval);
                     uploadTimerInterval = null;
@@ -2138,7 +2203,6 @@
                 return;
             }
             
-            // Show the payment confirmation modal
             showPaymentConfirmModal();
         });
 
@@ -2168,8 +2232,6 @@
 
         async function uploadScreenshotToDrive(file, utrNumber) {
             try {
-                const base64 = await fileToBase64(file);
-                // Store locally
                 const screenshots = JSON.parse(localStorage.getItem('payment_screenshots') || '[]');
                 screenshots.push({
                     utr: utrNumber,
@@ -2201,7 +2263,6 @@
             const total = getTotalAmount();
             modalAmount.textContent = `₹${total}`;
             
-            // Show the modal with upload section
             modalUploadPrompt.style.display = 'block';
             modalUploadPreview.style.display = 'none';
             modalUploadStatus.style.display = 'none';
@@ -2210,7 +2271,6 @@
             modalDropZone.style.borderColor = 'rgba(255,255,255,0.1)';
             isModalUploadProcessed = false;
             
-            // Reset timer
             uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
             modalTimerDisplay.textContent = formatTime(uploadTimeRemaining);
             modalTimerDisplay.className = '';
@@ -2426,7 +2486,6 @@
                     }
                 }
                 
-                // Stop timer since upload is complete
                 if (uploadTimerInterval) {
                     clearInterval(uploadTimerInterval);
                     uploadTimerInterval = null;
@@ -2570,8 +2629,8 @@
             paymentConfirmModal.classList.remove('active');
             modalVisible = false;
             if (uploadTimerInterval) { clearInterval(uploadTimerInterval); uploadTimerInterval = null; }
-            // Show upload section again
             uploadSection.style.display = 'block';
+            uploadSectionVisible = true;
             startUploadTimer();
         }
 
@@ -3108,6 +3167,21 @@
             goToStep(2);
         });
 
+        // Attach QR button events
+        showQr1Btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showQr1();
+            return false;
+        });
+
+        showQr2Btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showQr2();
+            return false;
+        });
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const active = document.querySelector('.form-step.active');
@@ -3142,14 +3216,12 @@
                 updatePaymentSummary();
             }, 200);
             
-            console.log('🔱 DEPLOMAT Registration · QR Payment Updated');
+            console.log('🔱 DEPLOMAT Registration · Upload Fixed');
             console.log('📱 QR 1 UPI ID:', PAYMENT_CONFIG.upiId1);
             console.log('📱 QR 2 UPI ID:', PAYMENT_CONFIG.upiId2 || 'Coming Soon');
-            console.log('💳 Fee per participant: ₹' + PAYMENT_CONFIG.pricePerParticipant);
-            console.log('⏱️ Upload timeout: ' + UPLOAD_TIMER_SECONDS + ' seconds');
-            console.log('📸 Upload screenshot after QR interaction');
-            console.log('✅ Supabase status:', supabaseClient ? 'Connected' : 'Not connected');
-            console.log('✅ QR button navigation bug fixed');
+            console.log('⏱️ Upload appears 1 second after QR is shown');
+            console.log('📸 Upload timer: ' + UPLOAD_TIMER_SECONDS + ' seconds');
+            console.log('✅ Upload functionality fixed');
         });
 
         function autoSelectEventFromURL() {
