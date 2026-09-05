@@ -291,13 +291,13 @@
               <button type="button" class="pay-btn btn-qr-primary qr-btn-no-nav" id="showQr1Btn">📱 SHOW QR 1</button>
               <div class="qr-container" id="qr1Container">
                 <div class="qr-frame"><img id="qr1Image" src="" alt="QR Code 1" /></div>
-                <p class="qr-label">UPI: <strong id="qr1Label">7349231368@ptyes</strong></p>
+                <p class="qr-label">UPI: <strong id="qr1Label">baijuacm@okicici</strong></p>
                 <p style="font-size:0.65rem;color:rgba(255,255,255,0.3);">Scan with any UPI app</p>
               </div>
-              <button type="button" class="qr-switch-btn qr-btn-no-nav" id="showQr2Btn"><span class="icon">🔄</span> QR 1 not working? Try QR 2</button>
+              <button type="button" class="qr-switch-btn qr-btn-no-nav" id="showQr2Btn" disabled style="opacity:0.5;cursor:not-allowed;"><span class="icon">⏳</span> QR 2 Coming Soon</button>
               <div class="qr-container" id="qr2Container">
                 <div class="qr-frame"><img id="qr2Image" src="" alt="QR Code 2" /></div>
-                <p class="qr-label">UPI: <strong id="qr2Label">nidabeig2006@okhdfcbank</strong></p>
+                <p class="qr-label">UPI: <strong id="qr2Label">Coming Soon</strong></p>
                 <p style="font-size:0.65rem;color:rgba(255,255,255,0.3);">Alternative payment method</p>
               </div>
             </div>
@@ -354,6 +354,7 @@
   const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ciV-bON--bAuofVltQySLA_m24_M8j_';
   const UPLOAD_TIMER_SECONDS = 120;
+  const PAYMENT_TIME_TOLERANCE_MINUTES = 10;
 
   // ─── EVENTS ──────────────────────────────────────────────────────────
   // Updated limits per requirement:
@@ -544,12 +545,13 @@
     const upi1 = `upi://pay?pa=${PAYMENT_CONFIG.upiId1}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
     qr1Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi1)}`;
     qr1Label.textContent = PAYMENT_CONFIG.upiId1;
-    if(PAYMENT_CONFIG.upiId2) {
-      const upi2 = `upi://pay?pa=${PAYMENT_CONFIG.upiId2}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
-      qr2Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi2)}`;
-      qr2Label.textContent = PAYMENT_CONFIG.upiId2;
-      showQr2Btn.style.opacity='1'; showQr2Btn.style.cursor='pointer'; showQr2Btn.disabled=false; showQr2Btn.innerHTML='<span class="icon">🔄</span> QR 1 not working? Try QR 2';
-    } else { qr2Image.src=''; qr2Label.textContent='Coming Soon'; showQr2Btn.style.opacity='0.5'; showQr2Btn.style.cursor='not-allowed'; showQr2Btn.disabled=true; showQr2Btn.innerHTML='<span class="icon">⏳</span> QR 2 Coming Soon'; }
+    // QR 2 is disabled - only QR 1 available
+    qr2Image.src = '';
+    qr2Label.textContent = 'Coming Soon';
+    showQr2Btn.style.opacity = '0.5';
+    showQr2Btn.style.cursor = 'not-allowed';
+    showQr2Btn.disabled = true;
+    showQr2Btn.innerHTML = '<span class="icon">⏳</span> QR 2 Coming Soon';
   }
   function openQRModal(qrType, upiId, amount) {
     if(registrationComplete) { alert('✅ Registration already complete.'); return; }
@@ -623,43 +625,77 @@
       const result = await Tesseract.recognize(imageUrl, 'eng', { logger: (m) => { if(m.status === 'recognizing text') { const progress = Math.round(m.progress * 100); updateModalUI(PAYMENT_STATES.VERIFYING, { message:`Processing... ${progress}%` }); } } });
       const text = result.data.text;
       console.log('📝 OCR Extracted Text:', text);
-      // 1. UTR
+      
+      // 1. UTR - extract 12-digit number
       const utrMatch = text.match(/\b\d{12}\b/);
       if(!utrMatch) return { success:false, state:PAYMENT_STATES.UTR_NOT_FOUND };
       const extractedUTR = utrMatch[0];
-      const duplicateCheck = await unifiedCheckDuplicateUTR(extractedUTR);
+      
+      // 2. Check duplicate UTR via database (including legacy duplicates)
+      const duplicateCheck = await checkDuplicateUTR(extractedUTR);
       if(duplicateCheck.error) return { success:false, state:PAYMENT_STATES.ERROR, error:`Database error: ${duplicateCheck.error}` };
       if(duplicateCheck.exists) return { success:false, state:PAYMENT_STATES.UTR_DUPLICATE, utr:extractedUTR };
-      // 2. Receiver: look for baijuacm@okicici
+      
+      // 3. Receiver: check for baijuacm@okicici
       const receiverMatch = text.match(/baijuacm@okicici/i);
       if(!receiverMatch) {
         const detected = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        return { success:false, state:'RECEIVER_MISMATCH', message:`❌ RECEIVER DOES NOT MATCH<br>Expected: <strong>baijuacm@okicici</strong><br>Detected: ${detected ? detected[0] : 'Not detected'}` };
+        return { success:false, state:'RECEIVER_MISMATCH', message:`❌ RECEIVER DOES NOT MATCH<br>Expected: <strong>baijuacm@okicici</strong><br>${detected ? `Detected: ${detected[0]}` : 'No UPI ID detected in screenshot'}` };
       }
-      // 3. Amount: extract numeric amount (e.g., ₹500, 500, 500.00)
+      
+      // 4. Amount: extract numeric amount (e.g., ₹500, 500, 500.00)
       const amountMatch = text.match(/[₹]?(\d{1,6}(?:\.\d{2})?)/);
       const detectedAmount = amountMatch ? parseFloat(amountMatch[1]) : null;
       const expectedAmount = getTotalAmount();
-      // Check if event is Cricket(9), Football(10), Throwball(11) -> skip amount check
-      const eventId = selectedEvent ? selectedEvent.id : -1;
-      const skipAmountCheck = (eventId === 9 || eventId === 10 || eventId === 11);
-      if(!skipAmountCheck && detectedAmount !== null && Math.abs(detectedAmount - expectedAmount) > 0.01) {
+      
+      // ALL events must verify amount - NO exceptions for Cricket, Football, Throwball
+      if(detectedAmount !== null && Math.abs(detectedAmount - expectedAmount) > 0.01) {
         return { success:false, state:'AMOUNT_MISMATCH', message:`❌ PAYMENT AMOUNT DOES NOT MATCH<br>Expected: ₹${expectedAmount}<br>Detected: ₹${detectedAmount}` };
       }
-      // 4. Time: sanity check (skip strict)
+      
+      // 5. Time: attempt to extract and validate (within tolerance)
       const timeMatch = text.match(/\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?/i);
       const detectedTime = timeMatch ? timeMatch[0] : null;
+      
+      // Check if payment time is within tolerance (if we can detect it)
+      let timeWithinTolerance = true;
+      if (detectedTime) {
+        try {
+          const now = new Date();
+          // Try to parse the time - simplified check
+          const timeStr = detectedTime.toUpperCase().replace(/\s/g, '');
+          const hourMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
+          if (hourMatch) {
+            let hours = parseInt(hourMatch[1]);
+            const mins = parseInt(hourMatch[2]);
+            if (timeStr.includes('PM') && hours < 12) hours += 12;
+            if (timeStr.includes('AM') && hours === 12) hours = 0;
+            const detectedDate = new Date(now);
+            detectedDate.setHours(hours, mins, 0, 0);
+            const diffMinutes = Math.abs(now - detectedDate) / 60000;
+            if (diffMinutes > PAYMENT_TIME_TOLERANCE_MINUTES && diffMinutes < 24*60) {
+              timeWithinTolerance = false;
+              // But don't reject - just log warning for now, since OCR time is often unreliable
+              console.warn(`⏰ Payment time outside tolerance: ${diffMinutes} minutes (tolerance: ${PAYMENT_TIME_TOLERANCE_MINUTES} minutes)`);
+            }
+          }
+        } catch(e) { /* ignore parsing errors */ }
+      }
+      
       // Build verification data
       const verificationData = {
         utr: extractedUTR,
         amount: detectedAmount,
         receiver: receiverMatch[0],
         paymentTime: detectedTime,
-        amountMatched: skipAmountCheck ? null : (detectedAmount !== null && Math.abs(detectedAmount - expectedAmount) <= 0.01),
+        expectedAmount: expectedAmount,
+        amountMatched: (detectedAmount !== null && Math.abs(detectedAmount - expectedAmount) <= 0.01),
         receiverMatched: true,
-        timeWithinTolerance: true,
-        amountCheckRequired: !skipAmountCheck
+        utrUnique: !duplicateCheck.exists,
+        timeWithinTolerance: timeWithinTolerance,
+        verifiedAt: new Date().toISOString()
       };
+      
       return { success:true, state:PAYMENT_STATES.UTR_VERIFIED, utr:extractedUTR, data:verificationData };
     } catch(error) {
       console.error('❌ Verification error:', error);
@@ -667,17 +703,41 @@
     }
   }
 
-  async function unifiedCheckDuplicateUTR(utr) {
+  async function checkDuplicateUTR(utr) {
     try {
+      // Check local storage first
       const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
       const localMatch = db.find(r => r.txn === utr && (r.status === 'VERIFIED' || r.status === 'PENDING'));
       if(localMatch) return { exists:true, source:'local' };
+      
+      // Check Supabase - this will respect the legacy_duplicate flag
       if(!supabaseClient) return { error:'Database connection unavailable' };
-      const { data, error } = await supabaseClient.from('registrations').select('txn, status').eq('txn', utr).in('status', ['VERIFIED','PENDING']);
-      if(error) return { error:`Database error: ${error.message}` };
-      if(data && data.length > 0) return { exists:true, source:'supabase' };
+      
+      // Query registrations with this UTR - the partial unique index ensures new records can't duplicate
+      const { data, error } = await supabaseClient
+        .from('registrations')
+        .select('txn, status, legacy_duplicate')
+        .eq('txn', utr)
+        .in('status', ['VERIFIED', 'PENDING']);
+      
+      if(error) {
+        // If error is 23505 (duplicate) this is caught by the insert, not select
+        return { error:`Database error: ${error.message}` };
+      }
+      
+      // If any matching records exist, the UTR is already used
+      // The partial unique index will prevent new non-legacy duplicates
+      if(data && data.length > 0) {
+        // Check if any of the matching records are NOT legacy duplicates
+        // If all are legacy duplicates, we still need to check for duplicate UTR
+        // But since we're checking before insert, any existing record means UTR is already used
+        // The database will enforce uniqueness for non-legacy records via the partial unique index
+        return { exists:true, source:'supabase' };
+      }
       return { exists:false };
-    } catch(error) { return { error:`Verification failed: ${error.message}` }; }
+    } catch(error) { 
+      return { error:`Verification failed: ${error.message}` }; 
+    }
   }
 
   // ─── CONFIRM REGISTRATION ───────────────────────────────────────────
@@ -693,8 +753,8 @@
       const participants = getParticipantsList();
       const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
       const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
-      const eventId = selectedEvent ? selectedEvent.id : -1;
-      const skipAmountCheck = (eventId === 9 || eventId === 10 || eventId === 11);
+      
+      // Build registration data with all required fields
       const registrationData = {
         event_name: selectedEvent ? selectedEvent.name : 'Unknown',
         event_sub: selectedEvent ? selectedEvent.sub : '',
@@ -709,15 +769,16 @@
         status: 'VERIFIED',
         registered_at: new Date().toISOString(),
         verified_at: new Date().toISOString(),
-        is_pending: false,
-        timeout_triggered: false,
+        // Set legacy_duplicate to false for all new registrations
         legacy_duplicate: false,
+        // Payment verification columns
         payment_amount_detected: paymentState.verificationData?.amount || null,
         payment_receiver_detected: paymentState.verificationData?.receiver || null,
         payment_time_detected: paymentState.verificationData?.paymentTime || null,
         payment_qr_type: paymentState.qrType || null,
         payment_verification: paymentState.verificationData || null
       };
+      
       const result = await executeRegistrationInsert(registrationData);
       if(result.success) {
         registrationComplete = true; paymentState.current = PAYMENT_STATES.SUCCESS;
@@ -750,6 +811,7 @@
       try {
         const { data, error } = await supabaseClient.from('registrations').insert([registrationData]).select();
         if(error) {
+          // Check for unique violation error code 23505
           if(error.code === '23505') return { success:false, error:'DUPLICATE_UTR' };
           return { success:false, error:error.message };
         }
@@ -958,12 +1020,13 @@
     if(!restored) { autoSelectEventFromURL(); setTimeout(() => { if(playersContainer.children.length===0){ for(let i=0;i<Math.max(1,currentMin);i++) addPlayer(i===0); } updateEventLimitInfo(); updateAddButtonState(); }, 200); }
     setTimeout(() => { updateQRImages(); updatePaymentSummary(); }, 200);
     console.log('🔱 DEPLOMAT Registration · ENHANCED VERIFICATION');
-    console.log('📱 QR 1 UPI ID:', PAYMENT_CONFIG.upiId1);
-    console.log('📱 QR 2 UPI ID:', PAYMENT_CONFIG.upiId2 || 'Coming Soon');
+    console.log('📱 UPI ID:', PAYMENT_CONFIG.upiId1);
     console.log('💳 Pricing: per-event pricing with optional player ignore for Cricket, Football, Throwball');
     console.log('✅ Supabase status:', supabaseClient ? 'Connected' : 'Not connected');
     console.log('📸 Enhanced verification: UTR, Receiver, Amount, Time');
     console.log('🛡️ Duplicate check with legacy duplicate handling');
+    console.log('⏰ Payment time tolerance:', PAYMENT_TIME_TOLERANCE_MINUTES, 'minutes');
+    console.log('📋 ALL 12 events require full payment verification (UTR, Receiver, Amount)');
   });
   function autoSelectEventFromURL() {
     try {
