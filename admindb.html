@@ -1981,56 +1981,65 @@
         // ─── FILTERING ───────────────────────────────────────────────
 
         function applyFilters() {
-            const search = searchInput.value.toLowerCase().trim();
-            const event = eventFilter.value;
-            const category = categoryFilter.value;
-            const teamSize = teamSizeFilter.value;
-            const status = statusFilter.value;
+    const search = searchInput.value.toLowerCase().trim();
+    const event = eventFilter.value;
+    const category = categoryFilter.value;
+    const teamSize = teamSizeFilter.value;
+    const status = statusFilter.value;
 
-            filteredRegistrations = allRegistrations.filter(r => {
-                // Search filter
-                if (search) {
-                    const searchable = [
-                        r.team_leader || '',
-                        r.email || '',
-                        r.phone || '',
-                        r.txn || '',
-                        r.college || '',
-                        r.event_name || ''
-                    ].join(' ').toLowerCase();
-                    if (!searchable.includes(search)) return false;
-                }
+    filteredRegistrations = allRegistrations.filter(r => {
 
-                // Event filter
-                if (event && r.event_name !== event) return false;
+        // Search filter
+        if (search) {
+            const searchable = [
+                r.team_leader || '',
+                r.email || '',
+                r.phone || '',
+                r.txn || '',
+                r.college || '',
+                r.event_name || '',
+                r.registration_source || ''
+            ].join(' ').toLowerCase();
 
-                // Category filter using database column
-                if (category !== 'all') {
-                    const rCategory = getRegistrationCategory(r);
-                    if (category === 'ug' && rCategory !== 'UG') return false;
-                    if (category === 'pu' && rCategory !== 'PU') return false;
-                }
-
-                // Team size filter
-                if (teamSize !== 'all') {
-                    const size = getTeamSize(r);
-                    if (teamSize === '5plus' && size < 5) return false;
-                    if (teamSize !== '5plus' && size !== parseInt(teamSize)) return false;
-                }
-
-                // Status filter
-                if (status !== 'all') {
-                    const rStatus = r.status || 'VERIFIED';
-                    if (rStatus !== status) return false;
-                }
-
-                return true;
-            });
-
-            selectedEventFilter = eventFilterDropdown.value;
-            updateActiveFilters();
-            scheduleRender();
+            if (!searchable.includes(search)) {
+                return false;
+            }
         }
+
+        // Event filter
+        if (event && event !== 'all' && r.event_name !== event) {
+            return false;
+        }
+
+        // Category filter
+        if (category && category !== 'all' && getRegistrationCategory(r) !== category) {
+            return false;
+        }
+
+        // Team size filter
+        if (
+            teamSize &&
+            teamSize !== 'all' &&
+            getParticipantsArray(r).length !== parseInt(teamSize)
+        ) {
+            return false;
+        }
+
+        // Status filter
+        if (status && status !== 'all' && r.status !== status) {
+            return false;
+        }
+
+        return true;
+    });
+
+    renderTable();
+    renderStats();
+    renderEventBars();
+    renderColumnChart();
+    renderExtraAnalytics();
+    updateRecordCount();
+}
 
         // ─── UPDATE ACTIVE FILTERS DISPLAY ─────────────────────────
 
