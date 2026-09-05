@@ -4,11 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DEPLOMAT · Registration</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js">
+    </script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; overscroll-behavior: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            overscroll-behavior: none;
+        }
         body {
             font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
             background: #0a0a0f;
@@ -25,19 +34,39 @@
             z-index: 0;
             pointer-events: none;
         }
-        .orb-1 { width: 600px; height: 600px; background: #00d4ff; top: -15%; left: -15%; }
-        .orb-2 { width: 500px; height: 500px; background: #b000ff; bottom: -15%; right: -15%; }
-        .orb-3 { width: 400px; height: 400px; background: #ff2a6d; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.06; }
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: #00d4ff;
+            top: -15%;
+            left: -15%;
+        }
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #b000ff;
+            bottom: -15%;
+            right: -15%;
+        }
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: #ff2a6d;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.06;
+        }
         body::before {
             position: fixed;
             inset: 0;
             z-index: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 46px 46px;
             content: "";
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 85%);
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 85%);
             pointer-events: none;
         }
         .home-link {
@@ -48,7 +77,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
             font-size: 0.75rem;
             letter-spacing: 3px;
@@ -56,16 +85,23 @@
             font-weight: 500;
             padding: 10px 18px;
             border-radius: 60px;
-            background: rgba(16,16,26,0.5);
+            background: rgba(16, 16, 26, 0.5);
             backdrop-filter: blur(20px) saturate(1.2);
             -webkit-backdrop-filter: blur(20px) saturate(1.2);
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.6);
-            transition: 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+            transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             -webkit-tap-highlight-color: transparent;
         }
-        .home-link:hover { color: #00d4ff; border-color: rgba(0,212,255,0.2); transform: translateX(-4px); background: rgba(0,212,255,0.06); }
-        .home-link:active { transform: scale(0.95); }
+        .home-link:hover {
+            color: #00d4ff;
+            border-color: rgba(0, 212, 255, 0.2);
+            transform: translateX(-4px);
+            background: rgba(0, 212, 255, 0.06);
+        }
+        .home-link:active {
+            transform: scale(0.95);
+        }
         .register-wrap {
             position: relative;
             z-index: 2;
@@ -76,28 +112,53 @@
             justify-content: center;
             padding: 100px 24px 60px 24px;
         }
-        .register-container { width: min(100%, 720px); animation: reveal 0.65s ease both; }
-        @keyframes reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .register-container {
+            width: min(100%, 720px);
+            animation: reveal 0.65s ease both;
+        }
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
         .register-card {
             position: relative;
             overflow: hidden;
             padding: clamp(32px, 5vw, 56px);
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
-            background: rgba(17,24,38,0.75);
-            box-shadow: 0 30px 90px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+            background: rgba(17, 24, 38, 0.75);
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
         }
         .register-card::after {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
             background: linear-gradient(90deg, transparent, #65d8ff, transparent);
             content: "";
             opacity: 0.8;
         }
-        .register-header { text-align: center; margin-bottom: 32px; }
-        .register-header .eyebrow { color: #65d8ff; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 8px; }
+        .register-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .register-header .eyebrow {
+            color: #65d8ff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
         .register-header h1 {
             font-family: 'Impact', 'Arial Black', sans-serif;
             font-size: clamp(2rem, 5vw, 3.5rem);
@@ -108,11 +169,17 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .register-header .sub { color: rgba(255,255,255,0.3); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px; }
+        .register-header .sub {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
         .event-banner {
             display: none;
-            background: rgba(101,216,255,0.06);
-            border: 1px solid rgba(101,216,255,0.15);
+            background: rgba(101, 216, 255, 0.06);
+            border: 1px solid rgba(101, 216, 255, 0.15);
             border-radius: 14px;
             padding: 14px 20px;
             margin-bottom: 24px;
@@ -120,13 +187,28 @@
             gap: 14px;
             animation: fadeStep 0.5s ease both;
         }
-        .event-banner.show { display: flex; }
-        .event-banner .icon { font-size: 1.6rem; flex-shrink: 0; }
-        .event-banner .info { flex: 1; }
-        .event-banner .info strong { color: #65d8ff; font-size: 1.05rem; display: block; }
-        .event-banner .info small { color: rgba(255,255,255,0.4); font-size: 0.75rem; letter-spacing: 0.05em; }
+        .event-banner.show {
+            display: flex;
+        }
+        .event-banner .icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+        .event-banner .info {
+            flex: 1;
+        }
+        .event-banner .info strong {
+            color: #65d8ff;
+            font-size: 1.05rem;
+            display: block;
+        }
+        .event-banner .info small {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
         .event-banner .badge {
-            background: rgba(101,216,255,0.12);
+            background: rgba(101, 216, 255, 0.12);
             color: #65d8ff;
             padding: 4px 14px;
             border-radius: 40px;
@@ -134,13 +216,13 @@
             font-weight: 600;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            border: 1px solid rgba(101,216,255,0.1);
+            border: 1px solid rgba(101, 216, 255, 0.1);
             white-space: nowrap;
         }
         .block-notice {
             display: none;
-            background: rgba(255,42,109,0.12);
-            border: 1px solid rgba(255,42,109,0.25);
+            background: rgba(255, 42, 109, 0.12);
+            border: 1px solid rgba(255, 42, 109, 0.25);
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 16px;
@@ -149,10 +231,21 @@
             animation: fadeStep 0.35s ease both;
             color: #ff6b8a;
         }
-        .block-notice.show { display: flex; }
-        .block-notice .icon { font-size: 1.4rem; flex-shrink: 0; }
-        .block-notice .msg { flex: 1; font-size: 0.85rem; font-weight: 500; }
-        .block-notice .msg strong { color: #fff; }
+        .block-notice.show {
+            display: flex;
+        }
+        .block-notice .icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .block-notice .msg {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .block-notice .msg strong {
+            color: #fff;
+        }
         .step-indicator {
             display: flex;
             justify-content: center;
@@ -166,34 +259,76 @@
             font-size: 0.65rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.2);
+            color: rgba(255, 255, 255, 0.2);
             transition: 0.3s ease;
         }
         .step-dot .dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             transition: 0.3s ease;
             flex-shrink: 0;
         }
-        .step-dot.active .dot { background: #65d8ff; box-shadow: 0 0 16px rgba(101,216,255,0.3); }
-        .step-dot.active { color: rgba(255,255,255,0.7); }
-        .step-dot.done .dot { background: #4caf50; }
-        .step-dot.done { color: rgba(255,255,255,0.4); }
-        .step-line { width: 30px; height: 1px; background: rgba(255,255,255,0.06); align-self: center; }
-        .form-step { display: none; animation: fadeStep 0.4s ease both; }
-        .form-step.active { display: block; }
-        @keyframes fadeStep { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px; font-weight: 600; }
-        .form-group label .required { color: #ff2a6d; margin-left: 2px; }
-        .form-group input, .form-group select {
+        .step-dot.active .dot {
+            background: #65d8ff;
+            box-shadow: 0 0 16px rgba(101, 216, 255, 0.3);
+        }
+        .step-dot.active {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .step-dot.done .dot {
+            background: #4caf50;
+        }
+        .step-dot.done {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .step-line {
+            width: 30px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            align-self: center;
+        }
+        .form-step {
+            display: none;
+            animation: fadeStep 0.4s ease both;
+        }
+        .form-step.active {
+            display: block;
+        }
+        @keyframes fadeStep {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .form-group label .required {
+            color: #ff2a6d;
+            margin-left: 2px;
+        }
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 14px 16px;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
             color: #fff;
             font-size: 0.95rem;
             font-family: inherit;
@@ -202,11 +337,14 @@
             -webkit-appearance: none;
             appearance: none;
         }
-        .form-group input::placeholder { color: rgba(255,255,255,0.2); }
-        .form-group input:focus, .form-group select:focus {
-            border-color: rgba(101,216,255,0.3);
-            background: rgba(101,216,255,0.04);
-            box-shadow: 0 0 0 4px rgba(101,216,255,0.05);
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
         }
         .form-group select {
             cursor: pointer;
@@ -214,8 +352,15 @@
             background-repeat: no-repeat;
             background-position: right 16px center;
         }
-        .form-group select option { background: #1a1a2e; color: #fff; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
         .radio-group {
             display: flex;
             gap: 24px;
@@ -229,16 +374,19 @@
             font-size: 0.85rem;
             text-transform: none;
             letter-spacing: 0.04em;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             cursor: pointer;
             font-weight: 500;
             padding: 8px 18px 8px 14px;
             border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
             transition: 0.25s ease;
         }
-        .radio-group label:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); }
+        .radio-group label:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+        }
         .radio-group label input[type="radio"] {
             width: 18px;
             height: 18px;
@@ -250,28 +398,42 @@
             -webkit-appearance: radio;
             background: transparent;
         }
-        .radio-group label:has(input:checked) { border-color: rgba(101,216,255,0.3); background: rgba(101,216,255,0.06); color: #fff; }
+        .radio-group label:has(input:checked) {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.06);
+            color: #fff;
+        }
         .player-entry {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             border-radius: 14px;
             padding: 18px 16px;
             margin-bottom: 12px;
             transition: 0.3s ease;
         }
-        .player-entry:hover { border-color: rgba(255,255,255,0.08); }
+        .player-entry:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
         .player-entry .player-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-        .player-entry .player-number { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); font-weight: 600; }
-        .player-entry .player-number.leader { color: #65d8ff; }
+        .player-entry .player-number {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+        .player-entry .player-number.leader {
+            color: #65d8ff;
+        }
         .player-entry .remove-btn {
             background: none;
             border: none;
-            color: rgba(255,42,109,0.4);
+            color: rgba(255, 42, 109, 0.4);
             cursor: pointer;
             font-size: 1.1rem;
             transition: 0.2s;
@@ -279,45 +441,72 @@
             border-radius: 6px;
             -webkit-tap-highlight-color: transparent;
         }
-        .player-entry .remove-btn:hover { color: #ff2a6d; background: rgba(255,42,109,0.08); }
-        .player-entry .player-fields { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .player-entry .player-fields.leader-fields { grid-template-columns: 1fr 1fr; }
+        .player-entry .remove-btn:hover {
+            color: #ff2a6d;
+            background: rgba(255, 42, 109, 0.08);
+        }
+        .player-entry .player-fields {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .player-entry .player-fields.leader-fields {
+            grid-template-columns: 1fr 1fr;
+        }
         .player-entry .player-fields input {
             padding: 10px 14px;
             font-size: 0.85rem;
             width: 100%;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
             color: #fff;
             font-family: inherit;
             transition: 0.25s ease;
             outline: none;
         }
-        .player-entry .player-fields input:focus { border-color: rgba(101,216,255,0.3); background: rgba(101,216,255,0.04); box-shadow: 0 0 0 4px rgba(101,216,255,0.05); }
-        .player-entry .player-fields input::placeholder { color: rgba(255,255,255,0.2); }
-        .player-entry .player-fields .field-group { display: flex; flex-direction: column; gap: 4px; }
-        .player-entry .player-fields .field-group label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.25); font-weight: 600; }
-        .player-entry .player-fields .field-group label .required { color: #ff2a6d; }
+        .player-entry .player-fields input:focus {
+            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(101, 216, 255, 0.04);
+            box-shadow: 0 0 0 4px rgba(101, 216, 255, 0.05);
+        }
+        .player-entry .player-fields input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+        .player-entry .player-fields .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .player-entry .player-fields .field-group label {
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+        }
+        .player-entry .player-fields .field-group label .required {
+            color: #ff2a6d;
+        }
         .leader-badge {
             display: inline-block;
-            background: rgba(101,216,255,0.12);
+            background: rgba(101, 216, 255, 0.12);
             color: #65d8ff;
             padding: 2px 12px;
             border-radius: 20px;
             font-size: 0.6rem;
             font-weight: 600;
             letter-spacing: 0.06em;
-            border: 1px solid rgba(101,216,255,0.1);
+            border: 1px solid rgba(101, 216, 255, 0.1);
             margin-left: 8px;
         }
         .add-player-btn {
             width: 100%;
             padding: 12px;
-            border: 1px dashed rgba(255,255,255,0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            background: rgba(255,255,255,0.02);
-            color: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
             font-size: 0.8rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -326,12 +515,22 @@
             -webkit-tap-highlight-color: transparent;
             font-family: inherit;
         }
-        .add-player-btn:hover { border-color: rgba(101,216,255,0.2); color: rgba(255,255,255,0.6); background: rgba(101,216,255,0.04); }
-        .add-player-btn:active { transform: scale(0.98); }
-        .add-player-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: rgba(255,255,255,0.05); }
+        .add-player-btn:hover {
+            border-color: rgba(101, 216, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(101, 216, 255, 0.04);
+        }
+        .add-player-btn:active {
+            transform: scale(0.98);
+        }
+        .add-player-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
         .event-limit-info {
-            background: rgba(255,197,61,0.06);
-            border: 1px solid rgba(255,197,61,0.15);
+            background: rgba(255, 197, 61, 0.06);
+            border: 1px solid rgba(255, 197, 61, 0.15);
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 16px;
@@ -340,39 +539,48 @@
             gap: 10px;
             flex-wrap: wrap;
         }
-        .event-limit-info .icon { font-size: 1.2rem; }
-        .event-limit-info .text { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
-        .event-limit-info .text strong { color: #FFC53D; }
+        .event-limit-info .icon {
+            font-size: 1.2rem;
+        }
+        .event-limit-info .text {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .event-limit-info .text strong {
+            color: #FFC53D;
+        }
         .payment-summary {
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 14px;
             padding: 20px;
             margin: 16px 0 24px 0;
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
         .payment-summary .summary-row {
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
             font-size: 0.95rem;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
         .payment-summary .summary-row.total {
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
             padding-top: 12px;
             margin-top: 6px;
             font-weight: 700;
             font-size: 1.1rem;
             color: #fff;
         }
-        .payment-summary .summary-row.total .amount { color: #65d8ff; }
+        .payment-summary .summary-row.total .amount {
+            color: #65d8ff;
+        }
         .payment-side {
             width: 100%;
             text-align: center;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             padding: 25px 20px;
             border-radius: 16px;
-            border: 1px solid rgba(255,197,61,0.15);
+            border: 1px solid rgba(255, 197, 61, 0.15);
             margin-top: 20px;
         }
         .payment-side h5 {
@@ -382,7 +590,12 @@
             margin-bottom: 5px;
             letter-spacing: 2px;
         }
-        .payment-side p { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 15px; }
+        .payment-side p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 15px;
+        }
+
         .qr-section {
             display: flex;
             flex-direction: column;
@@ -390,23 +603,50 @@
             gap: 16px;
             margin: 12px 0;
         }
-        .qr-container { display: none; flex-direction: column; align-items: center; gap: 8px; animation: fadeStep 0.3s ease; width: 100%; }
-        .qr-container.active { display: flex; }
+
+        .qr-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: fadeStep 0.3s ease;
+            width: 100%;
+        }
+
+        .qr-container.active {
+            display: flex;
+        }
+
         .qr-frame {
             display: inline-block;
             background: #fff;
             padding: 12px;
             border-radius: 12px;
             border: 2px solid #FFC53D;
-            box-shadow: 0 0 30px rgba(255,197,61,0.1);
+            box-shadow: 0 0 30px rgba(255, 197, 61, 0.1);
         }
-        .qr-frame img { width: 200px; height: 200px; display: block; max-width: 100%; }
-        .qr-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
-        .qr-label strong { color: #FFC53D; }
+
+        .qr-frame img {
+            width: 200px;
+            height: 200px;
+            display: block;
+            max-width: 100%;
+        }
+
+        .qr-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 4px;
+        }
+
+        .qr-label strong {
+            color: #FFC53D;
+        }
+
         .qr-switch-btn {
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.6);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 10px 24px;
             border-radius: 30px;
             font-size: 0.8rem;
@@ -417,9 +657,20 @@
             width: 100%;
             max-width: 300px;
         }
-        .qr-switch-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
-        .qr-switch-btn:active { transform: scale(0.96); }
-        .qr-switch-btn .icon { margin-right: 6px; }
+
+        .qr-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .qr-switch-btn:active {
+            transform: scale(0.96);
+        }
+
+        .qr-switch-btn .icon {
+            margin-right: 6px;
+        }
+
         .pay-btn {
             display: flex;
             align-items: center;
@@ -439,39 +690,126 @@
             color: #fff;
             -webkit-tap-highlight-color: transparent;
         }
-        .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .pay-btn:active { transform: scale(0.96); }
-        .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-        .btn-qr-primary { background: linear-gradient(135deg, #FFC53D, #f59e0b); color: #0a0a0f; }
-        .btn-qr-primary:hover { box-shadow: 0 12px 32px rgba(255,197,61,0.25); }
-        .btn-qr-secondary { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.08); }
-        .btn-qr-secondary:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .pay-btn:active {
+            transform: scale(0.96);
+        }
+        .pay-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn-qr-primary {
+            background: linear-gradient(135deg, #FFC53D, #f59e0b);
+            color: #0a0a0f;
+        }
+        .btn-qr-primary:hover {
+            box-shadow: 0 12px 32px rgba(255, 197, 61, 0.25);
+        }
+        .btn-qr-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .btn-qr-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
         .upload-area {
-            border: 2px dashed rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 30px 20px;
             text-align: center;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             transition: 0.3s ease;
             cursor: pointer;
             margin-top: 16px;
         }
-        .upload-area.dragover { border-color: #65d8ff; background: rgba(101,216,255,0.04); }
-        .upload-area.disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; }
-        .upload-area .icon-big { font-size: 3rem; display: block; margin-bottom: 8px; }
-        .upload-area .text-muted { color: rgba(255,255,255,0.4); font-size: 0.85rem; }
-        .upload-area .text-small { color: rgba(255,255,255,0.15); font-size: 0.65rem; margin-top: 4px; }
-        .upload-preview { display: none; margin-top: 12px; }
-        .upload-preview img { max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #4caf50; }
-        .upload-preview .success-text { color: #4caf50; font-size: 0.75rem; margin-top: 8px; }
-        .upload-status { display: none; margin-top: 12px; }
-        .upload-status .status-box { display: flex; align-items: center; gap: 10px; background: rgba(101,216,255,0.06); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(101,216,255,0.1); }
-        .utr-result { display: none; margin-top: 12px; }
-        .utr-result .result-box { background: rgba(76,175,80,0.06); border: 1px solid rgba(76,175,80,0.15); border-radius: 8px; padding: 12px 16px; }
-        .utr-result .result-box .label { color: rgba(255,255,255,0.3); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; }
-        .utr-result .result-box .value { color: #4caf50; font-size: 1rem; font-weight: 700; font-family: monospace; }
-        .utr-result .result-box .value.duplicate { color: #ff2a6d; }
-        .form-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+        .upload-area.dragover {
+            border-color: #65d8ff;
+            background: rgba(101, 216, 255, 0.04);
+        }
+        .upload-area.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        .upload-area .icon-big {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .upload-area .text-muted {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+        }
+        .upload-area .text-small {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.65rem;
+            margin-top: 4px;
+        }
+        .upload-preview {
+            display: none;
+            margin-top: 12px;
+        }
+        .upload-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #4caf50;
+        }
+        .upload-preview .success-text {
+            color: #4caf50;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        .upload-status {
+            display: none;
+            margin-top: 12px;
+        }
+        .upload-status .status-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(101, 216, 255, 0.06);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(101, 216, 255, 0.1);
+        }
+        .utr-result {
+            display: none;
+            margin-top: 12px;
+        }
+        .utr-result .result-box {
+            background: rgba(76, 175, 80, 0.06);
+            border: 1px solid rgba(76, 175, 80, 0.15);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+        .utr-result .result-box .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .utr-result .result-box .value {
+            color: #4caf50;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+        .utr-result .result-box .value.duplicate {
+            color: #ff2a6d;
+        }
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
         .btn {
             padding: 14px 32px;
             border: none;
@@ -481,25 +819,71 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-family: inherit;
             -webkit-tap-highlight-color: transparent;
             flex: 1;
             min-width: 120px;
             text-align: center;
         }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary { background: linear-gradient(135deg, #65d8ff, #3b7bff); color: #0a0a0f; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(101,216,255,0.2); }
-        .btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.06); }
-        .btn-secondary:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        .btn-success { background: linear-gradient(135deg, #4caf50, #2e7d32); color: #fff; }
-        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(76,175,80,0.2); }
-        .btn-gold { background: #FFC53D; color: #0a0a0f; }
-        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,197,61,0.25); }
-        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-        .success-state { text-align: center; padding: 20px 0; }
-        .success-state .check { font-size: 4rem; display: block; margin-bottom: 16px; }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #65d8ff, #3b7bff);
+            color: #0a0a0f;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(101, 216, 255, 0.2);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: #fff;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(76, 175, 80, 0.2);
+        }
+        .btn-gold {
+            background: #FFC53D;
+            color: #0a0a0f;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 197, 61, 0.25);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ff2a6d, #c62828);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 42, 109, 0.2);
+        }
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .success-state {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .success-state .check {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 16px;
+        }
         .success-state h2 {
             font-family: 'Impact', 'Arial Black', sans-serif;
             font-size: clamp(1.8rem, 4vw, 2.8rem);
@@ -509,38 +893,53 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .success-state p { color: rgba(255,255,255,0.5); font-size: 0.95rem; line-height: 1.6; max-width: 400px; margin: 0 auto; }
+        .success-state p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
         .success-state .reg-details {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
             padding: 16px 20px;
             margin: 20px auto;
             max-width: 400px;
             text-align: left;
             font-size: 0.85rem;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
         }
-        .success-state .reg-details strong { color: #fff; }
+        .success-state .reg-details strong {
+            color: #fff;
+        }
         .spinner {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-top: 2px solid #65d8ff;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
             vertical-align: middle;
             margin-right: 8px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .payment-confirm-modal {
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* QR PAYMENT MODAL - UNIFIED */
+        .qr-payment-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(16px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             display: none;
             align-items: center;
@@ -548,115 +947,374 @@
             padding: 20px;
             animation: fadeStep 0.3s ease;
         }
-        .payment-confirm-modal.active { display: flex; }
-        .payment-confirm-modal .modal-box {
-            background: rgba(17,24,38,0.98);
-            border: 1px solid rgba(255,255,255,0.08);
+        .qr-payment-modal.active {
+            display: flex;
+        }
+        .qr-payment-modal .modal-box {
+            background: rgba(17, 24, 38, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
-            padding: 40px 32px;
-            max-width: 500px;
+            padding: 32px 28px;
+            max-width: 480px;
             width: 100%;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            position: relative;
         }
-        .payment-confirm-modal .modal-box .icon-big { font-size: 4rem; margin-bottom: 12px; }
-        .payment-confirm-modal .modal-box h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
-        .payment-confirm-modal .modal-box p { color: rgba(255,255,255,0.5); font-size: 0.95rem; margin-bottom: 6px; line-height: 1.5; }
-        .payment-confirm-modal .modal-box .highlight { color: #FFC53D; font-weight: 700; }
-        .payment-confirm-modal .modal-box .timer-info { background: rgba(255,197,61,0.06); border-radius: 8px; padding: 10px 14px; margin: 12px 0; border: 1px solid rgba(255,197,61,0.1); }
-        .payment-confirm-modal .modal-box .timer-info span { color: #FFC53D; font-weight: 700; }
-        .payment-confirm-modal .modal-box .modal-upload-area {
-            border: 2px dashed rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            background: rgba(255,255,255,0.02);
-            transition: 0.3s ease;
+        .qr-payment-modal .modal-box .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.8rem;
             cursor: pointer;
-            margin: 12px 0;
+            transition: 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            padding: 4px 8px;
+            border-radius: 8px;
         }
-        .payment-confirm-modal .modal-box .modal-upload-area.dragover { border-color: #65d8ff; background: rgba(101,216,255,0.04); }
-        .payment-confirm-modal .modal-box .modal-upload-area .icon-big { font-size: 2.5rem; display: block; margin-bottom: 4px; }
-        .payment-confirm-modal .modal-box .modal-upload-area .text-muted { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
-        .payment-confirm-modal .modal-box .modal-upload-area .text-small { color: rgba(255,255,255,0.15); font-size: 0.6rem; margin-top: 2px; }
-        .payment-confirm-modal .modal-box .modal-upload-area .upload-preview { display: none; margin-top: 8px; }
-        .payment-confirm-modal .modal-box .modal-upload-area .upload-preview img { max-width: 150px; max-height: 150px; border-radius: 8px; border: 2px solid #4caf50; }
-        .payment-confirm-modal .modal-box .modal-upload-area .upload-preview .success-text { color: #4caf50; font-size: 0.7rem; margin-top: 4px; }
-        .payment-confirm-modal .modal-box .modal-upload-status { display: none; margin-top: 8px; }
-        .payment-confirm-modal .modal-box .modal-upload-status .status-box { display: flex; align-items: center; gap: 10px; background: rgba(101,216,255,0.06); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(101,216,255,0.1); font-size: 0.8rem; color: rgba(255,255,255,0.6); }
-        .payment-confirm-modal .modal-box .modal-utr-result { display: none; margin-top: 8px; }
-        .payment-confirm-modal .modal-box .modal-utr-result .result-box { background: rgba(76,175,80,0.06); border: 1px solid rgba(76,175,80,0.15); border-radius: 8px; padding: 10px 14px; }
-        .payment-confirm-modal .modal-box .modal-utr-result .result-box .label { color: rgba(255,255,255,0.3); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; }
-        .payment-confirm-modal .modal-box .modal-utr-result .result-box .value { color: #4caf50; font-size: 0.9rem; font-weight: 700; font-family: monospace; }
-        .payment-confirm-modal .modal-box .modal-utr-result .result-box .value.duplicate { color: #ff2a6d; }
-        .payment-confirm-modal .modal-box .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-        .payment-confirm-modal .modal-box .btn-row .btn { flex: 1; min-width: 120px; padding: 14px 24px; }
-        .payment-confirm-modal .modal-box .btn-row .btn-secondary { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.06); }
-        .payment-confirm-modal .modal-box .btn-row .btn-secondary:hover { background: rgba(255,255,255,0.12); color: #fff; }
-        .payment-confirm-modal .modal-box .btn-row .btn-primary { background: linear-gradient(135deg, #65d8ff, #3b7bff); color: #0a0a0f; }
-        .payment-confirm-modal .modal-box .btn-row .btn-success { background: linear-gradient(135deg, #4caf50, #2e7d32); color: #fff; }
-        .payment-confirm-modal .modal-box .btn-row .btn-success:disabled { opacity: 0.4; cursor: not-allowed; }
-        .payment-confirm-modal .modal-box .pending-note { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-top: 12px; padding: 10px; background: rgba(255,197,61,0.04); border-radius: 8px; border: 1px solid rgba(255,197,61,0.06); }
-        .payment-confirm-modal .modal-box .pending-note strong { color: #FFC53D; }
-        .timer-expired { color: #ff2a6d !important; }
-        .qr-btn-no-nav { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-        .upload-timer-badge {
-            display: inline-block;
-            background: rgba(255,197,61,0.12);
+        .qr-payment-modal .modal-box .close-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .qr-payment-modal .modal-box .modal-title {
+            text-align: center;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.08em;
             color: #FFC53D;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-top: 8px;
+            margin-bottom: 16px;
         }
-        .upload-timer-badge.warning { color: #ff2a6d; background: rgba(255,42,109,0.12); }
+        .qr-payment-modal .modal-box .qr-display {
+            text-align: center;
+            padding: 12px 0;
+        }
+        .qr-payment-modal .modal-box .qr-display .qr-image-wrap {
+            display: inline-block;
+            background: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 197, 61, 0.3);
+            box-shadow: 0 0 40px rgba(255, 197, 61, 0.08);
+        }
+        .qr-payment-modal .modal-box .qr-display .qr-image-wrap img {
+            width: 180px;
+            height: 180px;
+            display: block;
+            max-width: 100%;
+        }
+        .qr-payment-modal .modal-box .qr-display .amount-display {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #FFC53D;
+            margin-top: 12px;
+        }
+        .qr-payment-modal .modal-box .qr-display .upi-display {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .qr-payment-modal .modal-box .qr-display .upi-display strong {
+            color: #fff;
+        }
+        .qr-payment-modal .modal-box .qr-display .instruction {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        
+        .qr-payment-modal .modal-box .upload-section {
+            margin-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
+        }
+        .qr-payment-modal .modal-box .upload-section .upload-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #65d8ff, #3b7bff);
+            color: #0a0a0f;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .qr-payment-modal .modal-box .upload-section .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(101, 216, 255, 0.2);
+        }
+        .qr-payment-modal .modal-box .upload-section .upload-btn:active {
+            transform: scale(0.96);
+        }
+        .qr-payment-modal .modal-box .upload-section .upload-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .qr-payment-modal .modal-box .upload-section .file-input {
+            display: none;
+        }
+        
+        .qr-payment-modal .modal-box .status-area {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        .qr-payment-modal .modal-box .status-area.show {
+            display: flex;
+        }
+        .qr-payment-modal .modal-box .status-area .status-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+        .qr-payment-modal .modal-box .status-area .status-text {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .qr-payment-modal .modal-box .status-area .status-text .highlight {
+            color: #FFC53D;
+            font-weight: 600;
+        }
+        .qr-payment-modal .modal-box .status-area .status-text .utr-display {
+            display: block;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #4caf50;
+            font-weight: 700;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+        .qr-payment-modal .modal-box .status-area .status-text .utr-display.duplicate {
+            color: #ff2a6d;
+        }
+        .qr-payment-modal .modal-box .status-area.loading {
+            background: rgba(101, 216, 255, 0.06);
+            border: 1px solid rgba(101, 216, 255, 0.1);
+        }
+        .qr-payment-modal .modal-box .status-area.success {
+            background: rgba(76, 175, 80, 0.06);
+            border: 1px solid rgba(76, 175, 80, 0.15);
+        }
+        .qr-payment-modal .modal-box .status-area.error {
+            background: rgba(255, 42, 109, 0.06);
+            border: 1px solid rgba(255, 42, 109, 0.15);
+        }
+        .qr-payment-modal .modal-box .status-area.warning {
+            background: rgba(255, 197, 61, 0.06);
+            border: 1px solid rgba(255, 197, 61, 0.15);
+        }
+        
+        .qr-payment-modal .modal-box .action-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-family: inherit;
+            margin-top: 10px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .qr-payment-modal .modal-box .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        .qr-payment-modal .modal-box .action-btn:active {
+            transform: scale(0.96);
+        }
+        .qr-payment-modal .modal-box .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .qr-payment-modal .modal-box .action-btn.confirm-btn {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: #fff;
+        }
+        .qr-payment-modal .modal-box .action-btn.confirm-btn:hover {
+            box-shadow: 0 8px 24px rgba(76, 175, 80, 0.2);
+        }
+        .qr-payment-modal .modal-box .action-btn.reupload-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .qr-payment-modal .modal-box .action-btn.reupload-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .qr-payment-modal .modal-box .action-btn.close-modal-btn {
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-top: 6px;
+        }
+        .qr-payment-modal .modal-box .action-btn.close-modal-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .timer-expired {
+            color: #ff2a6d !important;
+        }
+
+        .qr-btn-no-nav {
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
         @media (max-width: 768px) {
-            .home-link { top: 18px; left: 18px; font-size: 0.7rem; padding: 8px 14px; letter-spacing: 2px; }
-            .register-wrap { padding: 80px 16px 40px 16px; }
-            .register-card { padding: clamp(24px, 4vw, 32px); border-radius: 20px; }
-            .form-row { grid-template-columns: 1fr; gap: 0; }
-            .player-entry .player-fields.leader-fields { grid-template-columns: 1fr; }
-            .step-line { width: 16px; }
-            .step-dot { font-size: 0.55rem; }
-            .form-actions { flex-direction: column; }
-            .btn { flex: none; width: 100%; padding: 16px; }
-            .payment-side { padding: 20px 16px; }
-            .qr-frame img { width: 150px; height: 150px; }
-            .event-banner { flex-wrap: wrap; }
-            .event-banner .badge { font-size: 0.6rem; }
-            .radio-group { gap: 12px; }
-            .radio-group label { padding: 6px 14px 6px 10px; font-size: 0.8rem; }
-            .payment-confirm-modal .modal-box { padding: 30px 20px; }
-            .payment-confirm-modal .modal-box .btn-row { flex-direction: column; }
+            .home-link {
+                top: 18px;
+                left: 18px;
+                font-size: 0.7rem;
+                padding: 8px 14px;
+                letter-spacing: 2px;
+            }
+            .register-wrap {
+                padding: 80px 16px 40px 16px;
+            }
+            .register-card {
+                padding: clamp(24px, 4vw, 32px);
+                border-radius: 20px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .player-entry .player-fields.leader-fields {
+                grid-template-columns: 1fr;
+            }
+            .step-line {
+                width: 16px;
+            }
+            .step-dot {
+                font-size: 0.55rem;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .btn {
+                flex: none;
+                width: 100%;
+                padding: 16px;
+            }
+            .payment-side {
+                padding: 20px 16px;
+            }
+            .qr-frame img {
+                width: 150px;
+                height: 150px;
+            }
+            .event-banner {
+                flex-wrap: wrap;
+            }
+            .event-banner .badge {
+                font-size: 0.6rem;
+            }
+            .radio-group {
+                gap: 12px;
+            }
+            .radio-group label {
+                padding: 6px 14px 6px 10px;
+                font-size: 0.8rem;
+            }
+            .qr-payment-modal .modal-box {
+                padding: 24px 18px;
+            }
+            .qr-payment-modal .modal-box .qr-display .qr-image-wrap img {
+                width: 140px;
+                height: 140px;
+            }
         }
         @media (max-width: 480px) {
-            .register-header h1 { font-size: 1.8rem; }
-            .register-card { padding: 20px 16px; border-radius: 16px; }
-            .payment-summary { padding: 16px; }
-            .step-indicator { gap: 6px; flex-wrap: wrap; justify-content: center; }
-            .step-dot .dot { width: 8px; height: 8px; }
-            .step-line { width: 10px; }
-            .qr-frame img { width: 120px; height: 120px; }
-            .event-banner .icon { font-size: 1.2rem; }
-            .event-banner .info strong { font-size: 0.9rem; }
-            .payment-confirm-modal .modal-box .modal-upload-area { padding: 14px; }
-            .qr-switch-btn { font-size: 0.7rem; padding: 8px 16px; }
+            .register-header h1 {
+                font-size: 1.8rem;
+            }
+            .register-card {
+                padding: 20px 16px;
+                border-radius: 16px;
+            }
+            .payment-summary {
+                padding: 16px;
+            }
+            .step-indicator {
+                gap: 6px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .step-dot .dot {
+                width: 8px;
+                height: 8px;
+            }
+            .step-line {
+                width: 10px;
+            }
+            .qr-frame img {
+                width: 120px;
+                height: 120px;
+            }
+            .event-banner .icon {
+                font-size: 1.2rem;
+            }
+            .event-banner .info strong {
+                font-size: 0.9rem;
+            }
+            .qr-payment-modal .modal-box .qr-display .qr-image-wrap img {
+                width: 120px;
+                height: 120px;
+            }
+            .qr-switch-btn {
+                font-size: 0.7rem;
+                padding: 8px 16px;
+            }
         }
-        .text-center { text-align: center; }
-        .mt-8 { margin-top: 8px; }
-        .mt-16 { margin-top: 16px; }
-        .mb-8 { margin-bottom: 8px; }
-        .hidden { display: none !important; }
-        .text-gold { color: #FFC53D; }
-        .text-aqua { color: #65d8ff; }
-        .btn-loading { pointer-events: none; opacity: 0.7; }
+        .text-center {
+            text-align: center;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .text-gold {
+            color: #FFC53D;
+        }
+        .text-aqua {
+            color: #65d8ff;
+        }
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
         .restore-banner {
             display: none;
-            background: rgba(76,175,80,0.08);
-            border: 1px solid rgba(76,175,80,0.2);
+            background: rgba(76, 175, 80, 0.08);
+            border: 1px solid rgba(76, 175, 80, 0.2);
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 16px;
@@ -664,22 +1322,31 @@
             gap: 12px;
             color: #4caf50;
         }
-        .restore-banner.show { display: flex; }
-        .restore-banner .icon { font-size: 1.4rem; }
-        .restore-banner .msg { flex: 1; font-size: 0.85rem; }
-        .restore-banner .msg strong { color: #fff; }
-        .warning-text { font-size: 0.7rem; color: rgba(255,197,61,0.5); margin-top: 12px; padding: 10px 12px; background: rgba(255,197,61,0.04); border-radius: 8px; border: 1px solid rgba(255,197,61,0.06); }
-        .warning-text strong { color: #FFC53D; }
-        .modal-upload-area .upload-preview { display: none; margin-top: 8px; }
-        .modal-upload-area .upload-preview img { max-width: 150px; max-height: 150px; border-radius: 8px; border: 2px solid #4caf50; }
-        .modal-upload-area .upload-preview .success-text { color: #4caf50; font-size: 0.7rem; margin-top: 4px; }
-        .modal-upload-status { display: none; margin-top: 8px; }
-        .modal-upload-status .status-box { display: flex; align-items: center; gap: 10px; background: rgba(101,216,255,0.06); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(101,216,255,0.1); font-size: 0.8rem; color: rgba(255,255,255,0.6); }
-        .modal-utr-result { display: none; margin-top: 8px; }
-        .modal-utr-result .result-box { background: rgba(76,175,80,0.06); border: 1px solid rgba(76,175,80,0.15); border-radius: 8px; padding: 10px 14px; }
-        .modal-utr-result .result-box .label { color: rgba(255,255,255,0.3); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; }
-        .modal-utr-result .result-box .value { color: #4caf50; font-size: 0.9rem; font-weight: 700; font-family: monospace; }
-        .modal-utr-result .result-box .value.duplicate { color: #ff2a6d; }
+        .restore-banner.show {
+            display: flex;
+        }
+        .restore-banner .icon {
+            font-size: 1.4rem;
+        }
+        .restore-banner .msg {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        .restore-banner .msg strong {
+            color: #fff;
+        }
+        .warning-text {
+            font-size: 0.7rem;
+            color: rgba(255, 197, 61, 0.5);
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: rgba(255, 197, 61, 0.04);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 197, 61, 0.06);
+        }
+        .warning-text strong {
+            color: #FFC53D;
+        }
     </style>
 </head>
 <body>
@@ -776,7 +1443,7 @@
                             <button type="button" class="btn btn-primary" id="step2Next">Next →</button>
                         </div>
                     </div>
-                    <!-- STEP 3: PAYMENT + QR + SCREENSHOT UPLOAD -->
+                    <!-- STEP 3: PAYMENT + QR -->
                     <div class="form-step" data-step="3">
                         <div class="payment-summary">
                             <div class="summary-row"><span>Event</span><span id="payEventName">—</span></div>
@@ -802,7 +1469,7 @@
                                     <div class="qr-frame">
                                         <img id="qr1Image" src="" alt="QR Code 1" />
                                     </div>
-                                    <p class="qr-label">UPI: <strong>nidabeig2006@okhdfcbank</strong></p>
+                                    <p class="qr-label">UPI: <strong id="qr1Label">7349231368@ptyes</strong></p>
                                     <p style="font-size:0.65rem;color:rgba(255,255,255,0.3);">Scan with any UPI app</p>
                                 </div>
                                 
@@ -815,52 +1482,9 @@
                                     <div class="qr-frame">
                                         <img id="qr2Image" src="" alt="QR Code 2" />
                                     </div>
-                                    <p class="qr-label">UPI: <strong id="qr2Label">Coming Soon</strong></p>
+                                    <p class="qr-label">UPI: <strong id="qr2Label">nidabeig2006@okhdfcbank</strong></p>
                                     <p style="font-size:0.65rem;color:rgba(255,255,255,0.3);">Alternative payment method</p>
                                 </div>
-                            </div>
-
-                            <!-- Upload Section - Shows after QR interaction -->
-                            <div id="uploadSection" style="display:none; margin-top:16px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                    <span style="font-size:0.75rem;color:rgba(255,255,255,0.4);">📸 Upload payment screenshot below</span>
-                                    <span class="upload-timer-badge" id="uploadTimerBadge">⏱️ 2:00</span>
-                                </div>
-                                <div class="upload-area" id="dropZone">
-                                    <div id="uploadPrompt">
-                                        <span class="icon-big">📸</span>
-                                        <p class="text-muted">Tap to upload payment screenshot</p>
-                                        <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
-                                    </div>
-                                    <div class="upload-preview" id="uploadPreview">
-                                        <img id="previewImage" src="" alt="Screenshot Preview" />
-                                        <p class="success-text">✅ Screenshot uploaded</p>
-                                    </div>
-                                    <input type="file" id="screenshotInput" accept="image/*,.pdf" style="display:none;" />
-                                </div>
-                                
-                                <div class="upload-status" id="uploadStatus">
-                                    <div class="status-box">
-                                        <span class="spinner"></span>
-                                        <span id="statusText">Processing screenshot & extracting UTR...</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="utr-result" id="utrResult">
-                                    <div class="result-box">
-                                        <div style="display:flex;align-items:center;gap:10px;">
-                                            <span style="color:#4caf50;font-size:1.2rem;" id="utrIcon">✅</span>
-                                            <div style="flex:1;">
-                                                <p class="label">Extracted UTR Number</p>
-                                                <p class="value" id="extractedUtr">—</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <button type="button" class="btn btn-success" id="uploadConfirmBtn" style="margin-top:12px; width:100%;" disabled>
-                                    ✅ Confirm Payment & Register
-                                </button>
                             </div>
                         </div>
 
@@ -871,9 +1495,9 @@
                     <!-- STEP 4: SUCCESS -->
                     <div class="form-step" data-step="4">
                         <div class="success-state">
-                            <span class="check">✅</span>
-                            <h2>Registration Complete!</h2>
-                            <p>Your registration has been confirmed. You will receive a confirmation email shortly.</p>
+                            <span class="check" id="successIcon">✅</span>
+                            <h2 id="successTitle">Registration Complete!</h2>
+                            <p id="successSub">Your registration has been confirmed. You will receive a confirmation email shortly.</p>
                             <div class="reg-details" id="successDetails"></div>
                             <button type="button" class="btn btn-primary" onclick="window.location.href='index.html'">← Back to Home</button>
                         </div>
@@ -883,70 +1507,41 @@
         </div>
     </main>
     
-    <!-- PAYMENT CONFIRMATION MODAL WITH UPLOAD -->
-    <div class="payment-confirm-modal" id="paymentConfirmModal">
+    <!-- UNIFIED QR PAYMENT MODAL -->
+    <div class="qr-payment-modal" id="qrPaymentModal">
         <div class="modal-box">
-            <div class="icon-big">💳</div>
-            <h3>Did you complete the payment?</h3>
-            <p>Please confirm if you have successfully paid <span class="highlight" id="modalAmount">₹0</span></p>
+            <button class="close-btn" id="closeQrModal">✕</button>
+            <div class="modal-title">🔱 QR PAYMENT</div>
             
-            <div class="timer-info">
-                ⏱️ You have <span id="modalTimerDisplay">2:00</span> to upload the screenshot
+            <!-- QR Display Area -->
+            <div class="qr-display">
+                <div class="qr-image-wrap">
+                    <img id="qrModalImage" src="" alt="QR Code" />
+                </div>
+                <div class="amount-display">Pay ₹<span id="qrModalAmount">0</span></div>
+                <div class="upi-display">UPI: <strong id="qrModalUpi">—</strong></div>
+                <div class="instruction">Complete the payment using any UPI app</div>
             </div>
             
-            <p style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin:8px 0;">
-                📸 After payment, upload the screenshot showing the UTR number below
-            </p>
+            <!-- Upload Section -->
+            <div class="upload-section" id="qrUploadSection">
+                <button class="upload-btn" id="uploadScreenshotBtn">📤 UPLOAD SCREENSHOT</button>
+                <input type="file" class="file-input" id="screenshotFileInput" accept="image/png,image/jpeg,image/jpg,image/webp" />
+            </div>
             
-            <!-- Upload inside modal -->
-            <div id="modalUploadSection">
-                <div class="modal-upload-area" id="modalDropZone">
-                    <div id="modalUploadPrompt">
-                        <span class="icon-big">📤</span>
-                        <p class="text-muted">Tap to upload payment screenshot</p>
-                        <p class="text-small">PNG, JPG or PDF (Max 5MB)</p>
-                    </div>
-                    <div class="upload-preview" id="modalUploadPreview">
-                        <img id="modalPreviewImage" src="" alt="Screenshot Preview" />
-                        <p class="success-text">✅ Screenshot uploaded</p>
-                    </div>
-                    <input type="file" id="modalScreenshotInput" accept="image/*,.pdf" style="display:none;" />
-                </div>
-                
-                <div class="modal-upload-status" id="modalUploadStatus">
-                    <div class="status-box">
-                        <span class="spinner"></span>
-                        <span id="modalStatusText">Processing screenshot & extracting UTR...</span>
-                    </div>
-                </div>
-                
-                <div class="modal-utr-result" id="modalUtrResult">
-                    <div class="result-box">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span style="color:#4caf50;font-size:1.2rem;" id="modalUtrIcon">✅</span>
-                            <div style="flex:1;">
-                                <p class="label">Extracted UTR Number</p>
-                                <p class="value" id="modalExtractedUtr">—</p>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Status Area -->
+            <div class="status-area" id="qrStatusArea">
+                <span class="status-icon" id="qrStatusIcon">⏳</span>
+                <div class="status-text" id="qrStatusText">
+                    <span id="qrStatusMessage">Processing...</span>
+                    <span class="utr-display" id="qrUtrDisplay"></span>
                 </div>
             </div>
             
-            <div class="btn-row">
-                <button class="btn btn-success" id="modalConfirmBtn" onclick="modalConfirmRegistration()" disabled>
-                    🔱 Confirm Registration
-                </button>
-                <button class="btn btn-secondary" onclick="modalRetryPayment()">⏳ Retry Payment</button>
-            </div>
-            <div style="margin-top:8px;">
-                <button class="btn btn-secondary" style="width:100%;padding:10px;font-size:0.7rem;" onclick="modalSubmitPending()">
-                    ⏳ Submit as Pending (Contact Coordinator)
-                </button>
-            </div>
-            <div class="pending-note">
-                ⚠️ If you don't upload within <strong>2 minutes</strong>, your registration will be marked as <strong>PENDING</strong>
-            </div>
+            <!-- Action Buttons -->
+            <button class="action-btn confirm-btn" id="confirmRegBtn" style="display:none;">🔱 Confirm Registration</button>
+            <button class="action-btn reupload-btn" id="reuploadBtn" style="display:none;">📤 Re-upload Screenshot</button>
+            <button class="action-btn close-modal-btn" id="closeQrModalBtn">Close</button>
         </div>
     </div>
 
@@ -956,16 +1551,17 @@
         //  PAYMENT CONFIGURATION
         // ═══════════════════════════════════════════════════════════════════
         const PAYMENT_CONFIG = {
-            upiId1: "nidabeig2006@okhdfcbank",
-            upiId2: "",
+            upiId1: "7349231368@ptyes",
+            upiId2: "nidabeig2006@okhdfcbank",
             pricePerParticipant: 250,
             currency: "INR",
             transactionNote: "DEPLOMAT Registration"
         };
         
+        // ─── SUPABASE CONFIG ──────────────────────────────────────────────
         const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ciV-bON--bAuofVltQySLA_m24_M8j_';
-        const UPLOAD_TIMER_SECONDS = 120;
+        const UPLOAD_TIMER_SECONDS = 120; // 2 minutes
 
         const EVENTS = [
             { id: 0, name: "THE ATLANTEAN TRIALS", sub: "Escape Room", min: 3, max: 3, category: 'both' },
@@ -986,324 +1582,483 @@
         try {
             if (typeof supabase !== 'undefined' && supabase.createClient) {
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-                console.log('✅ Supabase client initialized');
+                console.log('✅ Supabase client initialized successfully');
+            } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+                console.log('✅ Supabase client initialized successfully (window)');
             }
         } catch (e) {
-            console.error('❌ Supabase init failed:', e);
+            console.error('❌ Failed to initialize Supabase:', e);
         }
 
         // ─── DOM REFS ──────────────────────────────────────────────────────
-        const uploadSection = document.getElementById('uploadSection');
-        const dropZone = document.getElementById('dropZone');
-        const uploadPrompt = document.getElementById('uploadPrompt');
-        const uploadPreview = document.getElementById('uploadPreview');
-        const previewImage = document.getElementById('previewImage');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const statusText = document.getElementById('statusText');
-        const utrResult = document.getElementById('utrResult');
-        const extractedUtr = document.getElementById('extractedUtr');
-        const utrIcon = document.getElementById('utrIcon');
-        const uploadConfirmBtn = document.getElementById('uploadConfirmBtn');
-        const screenshotInput = document.getElementById('screenshotInput');
-        const uploadTimerBadge = document.getElementById('uploadTimerBadge');
-        const showQr1Btn = document.getElementById('showQr1Btn');
-        const showQr2Btn = document.getElementById('showQr2Btn');
+        const form = document.getElementById('registrationForm');
+        const steps = document.querySelectorAll('.form-step');
+        const dots = document.querySelectorAll('.step-dot');
+        const collegeInput = document.getElementById('college');
+        const eventSelect = document.getElementById('eventSelect');
+        const step1Next = document.getElementById('step1Next');
+        const ugPuRadios = document.querySelectorAll('input[name="ug_pu"]');
+        const playersContainer = document.getElementById('playersContainer');
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
+        const step2Back = document.getElementById('step2Back');
+        const step2Next = document.getElementById('step2Next');
+        const limitText = document.getElementById('limitText');
+        const eventLimitInfo = document.getElementById('eventLimitInfo');
+        const step3Back = document.getElementById('step3Back');
+        const payEventName = document.getElementById('payEventName');
+        const payTeamLeader = document.getElementById('payTeamLeader');
+        const payUgPu = document.getElementById('payUgPu');
+        const payPlayerCount = document.getElementById('payPlayerCount');
+        const payTotal = document.getElementById('payTotal');
+        const payhead = document.getElementById('payhead');
         const qr1Container = document.getElementById('qr1Container');
         const qr2Container = document.getElementById('qr2Container');
+        const showQr1Btn = document.getElementById('showQr1Btn');
+        const showQr2Btn = document.getElementById('showQr2Btn');
         const qr1Image = document.getElementById('qr1Image');
         const qr2Image = document.getElementById('qr2Image');
+        const qr1Label = document.getElementById('qr1Label');
         const qr2Label = document.getElementById('qr2Label');
+        const eventBanner = document.getElementById('eventBanner');
+        const bannerEventName = document.getElementById('bannerEventName');
+        const bannerEventSub = document.getElementById('bannerEventSub');
+        const blockNotice = document.getElementById('blockNotice');
+        const blockMsg = document.getElementById('blockMsg');
+        const restoreBanner = document.getElementById('restoreBanner');
+        
+        // Modal elements
+        const qrPaymentModal = document.getElementById('qrPaymentModal');
+        const qrModalImage = document.getElementById('qrModalImage');
+        const qrModalAmount = document.getElementById('qrModalAmount');
+        const qrModalUpi = document.getElementById('qrModalUpi');
+        const uploadScreenshotBtn = document.getElementById('uploadScreenshotBtn');
+        const screenshotFileInput = document.getElementById('screenshotFileInput');
+        const qrStatusArea = document.getElementById('qrStatusArea');
+        const qrStatusIcon = document.getElementById('qrStatusIcon');
+        const qrStatusMessage = document.getElementById('qrStatusMessage');
+        const qrUtrDisplay = document.getElementById('qrUtrDisplay');
+        const confirmRegBtn = document.getElementById('confirmRegBtn');
+        const reuploadBtn = document.getElementById('reuploadBtn');
+        const closeQrModal = document.getElementById('closeQrModal');
+        const closeQrModalBtn = document.getElementById('closeQrModalBtn');
+        const successIcon = document.getElementById('successIcon');
+        const successTitle = document.getElementById('successTitle');
+        const successSub = document.getElementById('successSub');
+        const successDetails = document.getElementById('successDetails');
 
         // ─── STATE ──────────────────────────────────────────────────────────
-        let uploadTimerInterval = null;
-        let uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
-        let qrInteracted = false;
-        let uploadSectionVisible = false;
-        let uploadDelayTimeout = null;
+        let currentStep = 1;
+        let players = [];
+        let selectedEvent = null;
+        let currentMin = 1;
+        let currentMax = 12;
+        let selectedCategory = null;
         let registrationComplete = false;
         let isPendingSubmission = false;
-        let extractedUTR = null;
+        
+        // Payment state machine
+        const PAYMENT_STATES = {
+            IDLE: 'IDLE',
+            QR_OPEN: 'QR_OPEN',
+            UPLOADING: 'UPLOADING',
+            VERIFYING: 'VERIFYING',
+            UTR_NOT_FOUND: 'UTR_NOT_FOUND',
+            UTR_DUPLICATE: 'UTR_DUPLICATE',
+            UTR_VERIFIED: 'UTR_VERIFIED',
+            SUBMITTING: 'SUBMITTING',
+            SUCCESS: 'SUCCESS',
+            ERROR: 'ERROR'
+        };
 
-        // ✅ FIX 1: Store the ORIGINAL HTML once at page load
-        const ORIGINAL_UPLOAD_PROMPT_HTML = uploadPrompt ? uploadPrompt.innerHTML : '';
+        let paymentState = {
+            current: PAYMENT_STATES.IDLE,
+            qrType: null, // 'qr1' or 'qr2'
+            file: null,
+            utr: null,
+            error: null,
+            isSubmitting: false
+        };
+
+        // ─── PREVENT NAVIGATION BUG ──────────────────────────────────────
+        document.querySelectorAll('.qr-btn-no-nav').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            btn.addEventListener('touchstart', function(e) {
+                // Prevent any weird behavior
+            }, { passive: true });
+        });
 
         // ═══════════════════════════════════════════════════════════════════
         //  QR FUNCTIONS
         // ═══════════════════════════════════════════════════════════════════
 
         function getTotalAmount() {
-            const playersContainer = document.getElementById('playersContainer');
-            return playersContainer ? playersContainer.children.length * PAYMENT_CONFIG.pricePerParticipant : 0;
+            const count = playersContainer.children.length;
+            return count * PAYMENT_CONFIG.pricePerParticipant;
         }
 
         function updateQRImages() {
             const total = getTotalAmount();
-            if (qr1Image) {
-                const upi1 = `upi://pay?pa=${PAYMENT_CONFIG.upiId1}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
-                qr1Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi1)}`;
-            }
-            if (qr2Image && qr2Label) {
-                if (PAYMENT_CONFIG.upiId2) {
-                    const upi2 = `upi://pay?pa=${PAYMENT_CONFIG.upiId2}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
-                    qr2Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi2)}`;
-                    qr2Label.textContent = PAYMENT_CONFIG.upiId2;
-                    if (showQr2Btn) {
-                        showQr2Btn.style.opacity = '1';
-                        showQr2Btn.style.cursor = 'pointer';
-                        showQr2Btn.disabled = false;
-                        showQr2Btn.innerHTML = '<span class="icon">🔄</span> QR 1 not working? Try QR 2';
-                    }
-                } else {
-                    qr2Image.src = '';
-                    qr2Label.textContent = 'Coming Soon';
-                    if (showQr2Btn) {
-                        showQr2Btn.style.opacity = '0.5';
-                        showQr2Btn.style.cursor = 'not-allowed';
-                        showQr2Btn.disabled = true;
-                        showQr2Btn.innerHTML = '<span class="icon">⏳</span> QR 2 Coming Soon';
-                    }
-                }
+            
+            // QR 1
+            const upi1 = `upi://pay?pa=${PAYMENT_CONFIG.upiId1}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
+            qr1Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi1)}`;
+            qr1Label.textContent = PAYMENT_CONFIG.upiId1;
+            
+            // QR 2
+            if (PAYMENT_CONFIG.upiId2) {
+                const upi2 = `upi://pay?pa=${PAYMENT_CONFIG.upiId2}&am=${total}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
+                qr2Image.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi2)}`;
+                qr2Label.textContent = PAYMENT_CONFIG.upiId2;
+                showQr2Btn.style.opacity = '1';
+                showQr2Btn.style.cursor = 'pointer';
+                showQr2Btn.disabled = false;
+                showQr2Btn.innerHTML = '<span class="icon">🔄</span> QR 1 not working? Try QR 2';
+            } else {
+                qr2Image.src = '';
+                qr2Label.textContent = 'Coming Soon';
+                showQr2Btn.style.opacity = '0.5';
+                showQr2Btn.style.cursor = 'not-allowed';
+                showQr2Btn.disabled = true;
+                showQr2Btn.innerHTML = '<span class="icon">⏳</span> QR 2 Coming Soon';
             }
         }
+
+        function showQr1(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            
+            const total = getTotalAmount();
+            const upiId = PAYMENT_CONFIG.upiId1;
+            
+            // Open modal with QR 1
+            openQRModal('qr1', upiId, total);
+            
+            // Toggle visibility
+            const isVisible = qr1Container.classList.contains('active');
+            qr1Container.classList.toggle('active', !isVisible);
+            qr2Container.classList.remove('active');
+            
+            if (!isVisible) {
+                showQr1Btn.textContent = '📱 HIDE QR 1';
+                showQr1Btn.className = 'pay-btn btn-qr-secondary qr-btn-no-nav';
+            } else {
+                showQr1Btn.textContent = '📱 SHOW QR 1';
+                showQr1Btn.className = 'pay-btn btn-qr-primary qr-btn-no-nav';
+            }
+            
+            return false;
+        }
+
+        function showQr2(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            
+            if (!PAYMENT_CONFIG.upiId2) {
+                alert('⚠️ QR 2 is coming soon. Please use QR 1 for now.');
+                return false;
+            }
+            
+            const total = getTotalAmount();
+            const upiId = PAYMENT_CONFIG.upiId2;
+            
+            // Open modal with QR 2
+            openQRModal('qr2', upiId, total);
+            
+            // Toggle visibility
+            const isVisible = qr2Container.classList.contains('active');
+            qr2Container.classList.toggle('active', !isVisible);
+            qr1Container.classList.remove('active');
+            
+            if (!isVisible) {
+                showQr2Btn.textContent = '🔄 HIDE QR 2';
+            } else {
+                showQr2Btn.textContent = '🔄 QR 1 not working? Try QR 2';
+            }
+            
+            // Reset QR 1 button
+            showQr1Btn.textContent = '📱 SHOW QR 1';
+            showQr1Btn.className = 'pay-btn btn-qr-primary qr-btn-no-nav';
+            
+            return false;
+        }
+
+        // Attach event listeners
+        showQr1Btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showQr1(e);
+            return false;
+        });
+
+        showQr2Btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showQr2(e);
+            return false;
+        });
 
         // ═══════════════════════════════════════════════════════════════════
-        //  ✅ FIXED: UPLOAD SECTION FUNCTIONS
+        //  UNIFIED QR MODAL
         // ═══════════════════════════════════════════════════════════════════
 
-        function showUploadSectionWithDelay() {
-            // Clear any existing timeout
-            if (uploadDelayTimeout) {
-                clearTimeout(uploadDelayTimeout);
-                uploadDelayTimeout = null;
-            }
-            
-            if (!uploadSection) return;
-            
-            // ✅ FIX 2: Reset all elements to clean state
-            resetUploadSection();
-            
-            // Show the upload section
-            uploadSection.style.display = 'block';
-            uploadSection.style.animation = 'fadeStep 0.4s ease both';
-            uploadSectionVisible = true;
-            
-            // Show loading message
-            if (uploadPrompt) {
-                uploadPrompt.innerHTML = `
-                    <span class="icon-big">⏳</span>
-                    <p class="text-muted">Preparing upload option...</p>
-                    <p class="text-small">Please wait</p>
-                `;
-                uploadPrompt.style.display = 'block';
-            }
-            
-            if (uploadPreview) uploadPreview.style.display = 'none';
-            if (uploadStatus) uploadStatus.style.display = 'none';
-            if (utrResult) utrResult.style.display = 'none';
-            if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-            if (dropZone) dropZone.style.borderColor = 'rgba(255,255,255,0.1)';
-            
-            // ✅ FIX 3: Clear file input value
-            if (screenshotInput) screenshotInput.value = '';
-            
-            // Set a timeout to show the actual upload UI
-            uploadDelayTimeout = setTimeout(() => {
-                // ✅ FIX 4: Restore from STORED original HTML
-                if (uploadPrompt) {
-                    uploadPrompt.innerHTML = ORIGINAL_UPLOAD_PROMPT_HTML;
-                    uploadPrompt.style.display = 'block';
-                }
-                if (uploadPreview) uploadPreview.style.display = 'none';
-                if (uploadStatus) uploadStatus.style.display = 'none';
-                if (utrResult) utrResult.style.display = 'none';
-                if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-                if (dropZone) dropZone.style.borderColor = 'rgba(255,255,255,0.1)';
-                
-                // Start timer if not already started
-                if (!uploadTimerInterval && !registrationComplete && !isPendingSubmission) {
-                    startUploadTimer();
-                }
-                
-                uploadDelayTimeout = null;
-            }, 1000);
-        }
-
-        function resetUploadSection() {
-            if (uploadPrompt) uploadPrompt.style.display = 'block';
-            if (uploadPreview) {
-                uploadPreview.style.display = 'none';
-                const img = uploadPreview.querySelector('img');
-                if (img) img.src = '';
-            }
-            if (uploadStatus) uploadStatus.style.display = 'none';
-            if (utrResult) utrResult.style.display = 'none';
-            if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-            if (dropZone) dropZone.style.borderColor = 'rgba(255,255,255,0.1)';
-            if (screenshotInput) screenshotInput.value = '';
-            extractedUTR = null;
-        }
-
-        function hideUploadSection() {
-            if (uploadDelayTimeout) {
-                clearTimeout(uploadDelayTimeout);
-                uploadDelayTimeout = null;
-            }
-            if (uploadSection) {
-                uploadSection.style.display = 'none';
-                uploadSectionVisible = false;
-            }
-            if (uploadTimerInterval) {
-                clearInterval(uploadTimerInterval);
-                uploadTimerInterval = null;
-            }
-            uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
-            updateTimerDisplay();
-            resetUploadSection();
-        }
-
-        // ─── UPLOAD TIMER ──────────────────────────────────────────────────
-
-        function startUploadTimer() {
-            uploadTimeRemaining = UPLOAD_TIMER_SECONDS;
-            updateTimerDisplay();
-            if (uploadTimerInterval) clearInterval(uploadTimerInterval);
-            uploadTimerInterval = setInterval(() => {
-                uploadTimeRemaining--;
-                updateTimerDisplay();
-                if (uploadTimeRemaining <= 0) {
-                    clearInterval(uploadTimerInterval);
-                    uploadTimerInterval = null;
-                    handleUploadTimeout();
-                }
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const mins = Math.floor(Math.max(0, uploadTimeRemaining) / 60);
-            const secs = Math.floor(Math.max(0, uploadTimeRemaining) % 60);
-            const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-            if (uploadTimerBadge) {
-                uploadTimerBadge.textContent = `⏱️ ${timeStr}`;
-                uploadTimerBadge.classList.toggle('warning', uploadTimeRemaining <= 10);
-            }
-        }
-
-        function handleUploadTimeout() {
-            if (registrationComplete || isPendingSubmission) return;
-            alert('⏰ Time expired! Your registration is now marked as PENDING.\n\nPlease contact the coordinator with your payment proof.');
-            submitPendingRegistration();
-        }
-
-        // ─── UPLOAD HANDLING ──────────────────────────────────────────────
-
-        // ✅ FIX 5: Use event delegation or re-attach listeners after DOM is ready
-        function setupUploadListeners() {
-            if (dropZone) {
-                // Remove old listeners to prevent duplicates
-                const newDropZone = dropZone.cloneNode(true);
-                dropZone.parentNode.replaceChild(newDropZone, dropZone);
-                // Re-get the reference
-                const newDropZoneRef = document.getElementById('dropZone');
-                
-                newDropZoneRef.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (!registrationComplete && !isPendingSubmission && qrInteracted && uploadSectionVisible) {
-                        const input = document.getElementById('screenshotInput');
-                        if (input) input.click();
-                    } else if (!qrInteracted) {
-                        alert('📱 Please show a QR code first to enable upload.');
-                    }
-                });
-
-                newDropZoneRef.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    if (!registrationComplete && !isPendingSubmission) this.classList.add('dragover');
-                });
-
-                newDropZoneRef.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                });
-
-                newDropZoneRef.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                    if (!registrationComplete && !isPendingSubmission && e.dataTransfer.files.length > 0) {
-                        handleFileUpload(e.dataTransfer.files[0]);
-                    }
-                });
-            }
-
-            const fileInput = document.getElementById('screenshotInput');
-            if (fileInput) {
-                fileInput.addEventListener('change', function(e) {
-                    if (e.target.files.length > 0 && !registrationComplete && !isPendingSubmission) {
-                        handleFileUpload(e.target.files[0]);
-                        // ✅ FIX 6: Reset input so same file can be selected again
-                        this.value = '';
-                    }
-                });
-            }
-        }
-
-        // Call setup after DOM ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setupUploadListeners);
-        } else {
-            setupUploadListeners();
-        }
-
-        function handleFileUpload(file) {
-            if (registrationComplete || isPendingSubmission) {
-                alert('Registration already complete or pending.');
+        function openQRModal(qrType, upiId, amount) {
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
                 return;
             }
             
-            if (!qrInteracted || !uploadSectionVisible) {
-                alert('📱 Please show a QR code first to enable upload.');
+            // Reset state
+            paymentState.current = PAYMENT_STATES.QR_OPEN;
+            paymentState.qrType = qrType;
+            paymentState.file = null;
+            paymentState.utr = null;
+            paymentState.error = null;
+            paymentState.isSubmitting = false;
+            
+            // Set QR details
+            const qrData = `upi://pay?pa=${upiId}&am=${amount}&cu=${PAYMENT_CONFIG.currency}&tn=${PAYMENT_CONFIG.transactionNote}`;
+            qrModalImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
+            qrModalAmount.textContent = amount;
+            qrModalUpi.textContent = upiId;
+            
+            // Reset UI
+            resetModalUI();
+            
+            // Show modal
+            qrPaymentModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function resetModalUI() {
+            // Hide all status
+            qrStatusArea.className = 'status-area';
+            qrStatusArea.style.display = 'none';
+            qrUtrDisplay.textContent = '';
+            qrUtrDisplay.className = 'utr-display';
+            
+            // Show upload button, hide action buttons
+            document.getElementById('qrUploadSection').style.display = 'block';
+            uploadScreenshotBtn.disabled = false;
+            uploadScreenshotBtn.textContent = '📤 UPLOAD SCREENSHOT';
+            confirmRegBtn.style.display = 'none';
+            reuploadBtn.style.display = 'none';
+            
+            // Reset file input
+            screenshotFileInput.value = '';
+        }
+
+        function updateModalUI(state, data) {
+            qrStatusArea.style.display = 'flex';
+            
+            switch(state) {
+                case PAYMENT_STATES.VERIFYING:
+                    qrStatusArea.className = 'status-area loading show';
+                    qrStatusIcon.textContent = '⏳';
+                    qrStatusMessage.textContent = data?.message || 'Verifying payment screenshot...';
+                    qrUtrDisplay.textContent = '';
+                    document.getElementById('qrUploadSection').style.display = 'none';
+                    uploadScreenshotBtn.disabled = true;
+                    confirmRegBtn.style.display = 'none';
+                    reuploadBtn.style.display = 'none';
+                    break;
+                    
+                case PAYMENT_STATES.UTR_NOT_FOUND:
+                    qrStatusArea.className = 'status-area error show';
+                    qrStatusIcon.textContent = '❌';
+                    qrStatusMessage.innerHTML = 'UTR NOT FOUND<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">We couldn\'t detect a valid UTR number from this screenshot. Please upload a clear payment screenshot showing the transaction/UTR number.</span>';
+                    qrUtrDisplay.textContent = '';
+                    document.getElementById('qrUploadSection').style.display = 'none';
+                    uploadScreenshotBtn.disabled = true;
+                    confirmRegBtn.style.display = 'none';
+                    reuploadBtn.style.display = 'block';
+                    reuploadBtn.textContent = '📤 Re-upload Screenshot';
+                    break;
+                    
+                case PAYMENT_STATES.UTR_DUPLICATE:
+                    qrStatusArea.className = 'status-area error show';
+                    qrStatusIcon.textContent = '❌';
+                    qrStatusMessage.innerHTML = 'UTR ALREADY USED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">This payment transaction has already been used for another registration.</span>';
+                    qrUtrDisplay.textContent = data?.utr || '';
+                    qrUtrDisplay.className = 'utr-display duplicate';
+                    document.getElementById('qrUploadSection').style.display = 'none';
+                    uploadScreenshotBtn.disabled = true;
+                    confirmRegBtn.style.display = 'none';
+                    reuploadBtn.style.display = 'block';
+                    reuploadBtn.textContent = '📤 Re-upload Screenshot';
+                    break;
+                    
+                case PAYMENT_STATES.UTR_VERIFIED:
+                    qrStatusArea.className = 'status-area success show';
+                    qrStatusIcon.textContent = '✅';
+                    qrStatusMessage.innerHTML = 'UTR VERIFIED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">Transaction ID:</span>';
+                    qrUtrDisplay.textContent = data?.utr || '';
+                    qrUtrDisplay.className = 'utr-display';
+                    document.getElementById('qrUploadSection').style.display = 'none';
+                    uploadScreenshotBtn.disabled = true;
+                    confirmRegBtn.style.display = 'block';
+                    confirmRegBtn.disabled = false;
+                    confirmRegBtn.textContent = '🔱 Confirm Registration';
+                    reuploadBtn.style.display = 'none';
+                    break;
+                    
+                case PAYMENT_STATES.SUBMITTING:
+                    qrStatusArea.className = 'status-area loading show';
+                    qrStatusIcon.textContent = '⏳';
+                    qrStatusMessage.textContent = 'Submitting registration...';
+                    qrUtrDisplay.textContent = '';
+                    confirmRegBtn.disabled = true;
+                    confirmRegBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+                    break;
+                    
+                case PAYMENT_STATES.ERROR:
+                    qrStatusArea.className = 'status-area error show';
+                    qrStatusIcon.textContent = '❌';
+                    qrStatusMessage.innerHTML = data?.message || 'An error occurred. Please try again.';
+                    qrUtrDisplay.textContent = '';
+                    document.getElementById('qrUploadSection').style.display = 'block';
+                    uploadScreenshotBtn.disabled = false;
+                    uploadScreenshotBtn.textContent = '📤 Try Again';
+                    confirmRegBtn.style.display = 'none';
+                    reuploadBtn.style.display = 'none';
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+
+        function closeQRModal() {
+            qrPaymentModal.classList.remove('active');
+            document.body.style.overflow = '';
+            paymentState.current = PAYMENT_STATES.IDLE;
+        }
+
+        // ─── MODAL EVENT LISTENERS ────────────────────────────────────────
+
+        closeQrModal.addEventListener('click', closeQRModal);
+        closeQrModalBtn.addEventListener('click', closeQRModal);
+
+        // Close on backdrop click
+        qrPaymentModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQRModal();
+            }
+        });
+
+        // Upload button
+        uploadScreenshotBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!registrationComplete && paymentState.current !== PAYMENT_STATES.SUBMITTING) {
+                screenshotFileInput.click();
+            }
+        });
+
+        // File input
+        screenshotFileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0 && !registrationComplete) {
+                const file = e.target.files[0];
+                handleScreenshotUpload(file);
+            }
+        });
+
+        // Re-upload button
+        reuploadBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!registrationComplete) {
+                resetModalUI();
+                document.getElementById('qrUploadSection').style.display = 'block';
+                uploadScreenshotBtn.disabled = false;
+                uploadScreenshotBtn.textContent = '📤 UPLOAD SCREENSHOT';
+                screenshotFileInput.value = '';
+                screenshotFileInput.click();
+            }
+        });
+
+        // Confirm registration
+        confirmRegBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (paymentState.utr && !registrationComplete) {
+                confirmRegistration();
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════════
+        //  SCREENSHOT VERIFICATION - UNIFIED
+        // ═══════════════════════════════════════════════════════════════════
+
+        async function handleScreenshotUpload(file) {
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
                 return;
             }
             
-            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+            // Validate file
+            const validation = validateFile(file);
+            if (!validation.valid) {
+                alert(validation.error);
+                return;
+            }
+            
+            paymentState.file = file;
+            paymentState.current = PAYMENT_STATES.VERIFYING;
+            
+            // Show preview in status
+            updateModalUI(PAYMENT_STATES.VERIFYING, { message: 'Verifying payment screenshot...' });
+            
+            // Process with OCR
+            const result = await verifyPaymentScreenshot(file);
+            
+            if (result.success) {
+                // UTR found and verified
+                paymentState.utr = result.utr;
+                paymentState.current = PAYMENT_STATES.UTR_VERIFIED;
+                updateModalUI(PAYMENT_STATES.UTR_VERIFIED, { utr: result.utr });
+            } else if (result.state === PAYMENT_STATES.UTR_NOT_FOUND) {
+                paymentState.current = PAYMENT_STATES.UTR_NOT_FOUND;
+                updateModalUI(PAYMENT_STATES.UTR_NOT_FOUND);
+            } else if (result.state === PAYMENT_STATES.UTR_DUPLICATE) {
+                paymentState.current = PAYMENT_STATES.UTR_DUPLICATE;
+                updateModalUI(PAYMENT_STATES.UTR_DUPLICATE, { utr: result.utr });
+            } else {
+                paymentState.current = PAYMENT_STATES.ERROR;
+                paymentState.error = result.error || 'Verification failed';
+                updateModalUI(PAYMENT_STATES.ERROR, { message: paymentState.error });
+            }
+        }
+
+        function validateFile(file) {
+            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
             if (!validTypes.includes(file.type)) {
-                alert('⚠️ Please upload PNG, JPG, or PDF files only.');
-                return;
+                return { valid: false, error: '⚠️ Please upload PNG, JPG, JPEG, or WEBP images only.' };
             }
             if (file.size > 5 * 1024 * 1024) {
-                alert('⚠️ File size must be less than 5MB.');
-                return;
+                return { valid: false, error: '⚠️ File size must be less than 5MB.' };
             }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (previewImage) previewImage.src = e.target.result;
-                if (uploadPrompt) uploadPrompt.style.display = 'none';
-                if (uploadPreview) uploadPreview.style.display = 'block';
-                if (dropZone) dropZone.style.borderColor = '#4caf50';
-            };
-            reader.readAsDataURL(file);
-            
-            processScreenshot(file);
+            return { valid: true };
         }
 
-        async function processScreenshot(file) {
-            if (uploadStatus) uploadStatus.style.display = 'block';
-            if (statusText) statusText.textContent = 'Processing screenshot & extracting UTR...';
-            if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-            if (utrResult) utrResult.style.display = 'none';
-            
+        async function verifyPaymentScreenshot(file) {
             try {
                 const Tesseract = window.Tesseract;
-                if (!Tesseract) throw new Error('OCR library not loaded.');
+                if (!Tesseract) {
+                    throw new Error('OCR library not loaded.');
+                }
                 
                 const imageUrl = URL.createObjectURL(file);
+                
+                // Show progress
+                updateModalUI(PAYMENT_STATES.VERIFYING, { message: 'Processing... 0%' });
+                
                 const result = await Tesseract.recognize(
                     imageUrl,
                     'eng',
                     {
                         logger: (m) => {
-                            if (m.status === 'recognizing text' && statusText) {
-                                statusText.textContent = `Processing... ${Math.round(m.progress * 100)}%`;
+                            if (m.status === 'recognizing text') {
+                                const progress = Math.round(m.progress * 100);
+                                updateModalUI(PAYMENT_STATES.VERIFYING, { message: `Processing... ${progress}%` });
                             }
                         }
                     }
@@ -1312,348 +2067,746 @@
                 const text = result.data.text;
                 console.log('📝 OCR Extracted Text:', text);
                 
+                // Extract UTR - strict 12-digit pattern only
                 const utrMatch = text.match(/\b\d{12}\b/);
                 
-                if (utrMatch) {
-                    extractedUTR = utrMatch[0];
-                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                    if (isDuplicate) {
-                        if (utrResult) {
-                            utrResult.style.display = 'block';
-                            if (utrIcon) { utrIcon.textContent = '⚠️'; utrIcon.style.color = '#ff2a6d'; }
-                            if (extractedUtr) {
-                                extractedUtr.textContent = extractedUTR;
-                                extractedUtr.className = 'value duplicate';
-                            }
-                            const box = utrResult.querySelector('.result-box');
-                            if (box) {
-                                box.style.borderColor = 'rgba(255,42,109,0.3)';
-                                const label = box.querySelector('.label');
-                                if (label) label.textContent = '❌ UTR Already Used';
-                            }
-                        }
-                        if (statusText) statusText.textContent = '⚠️ This UTR has already been used!';
-                        if (uploadStatus) uploadStatus.style.display = 'none';
-                        if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-                        return;
-                    }
-                    
-                    if (extractedUtr) {
-                        extractedUtr.textContent = extractedUTR;
-                        extractedUtr.className = 'value';
-                    }
-                    if (utrIcon) { utrIcon.textContent = '✅'; utrIcon.style.color = '#4caf50'; }
-                    const box = utrResult ? utrResult.querySelector('.result-box') : null;
-                    if (box) {
-                        const label = box.querySelector('.label');
-                        if (label) label.textContent = 'Extracted UTR Number';
-                    }
-                    if (utrResult) utrResult.style.display = 'block';
-                    if (uploadStatus) uploadStatus.style.display = 'none';
-                    if (statusText) statusText.textContent = '✅ UTR extracted successfully!';
-                    if (uploadConfirmBtn) uploadConfirmBtn.disabled = false;
-                    
-                    await uploadScreenshotToDrive(file, extractedUTR);
-                    
-                } else {
-                    // Try to find transaction ID
-                    const upiMatch = text.match(/[A-Z0-9]{8,15}/);
-                    if (upiMatch && upiMatch[0].length >= 8) {
-                        extractedUTR = upiMatch[0];
-                        const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                        if (isDuplicate) {
-                            if (utrResult) {
-                                utrResult.style.display = 'block';
-                                if (utrIcon) { utrIcon.textContent = '⚠️'; utrIcon.style.color = '#ff2a6d'; }
-                                if (extractedUtr) {
-                                    extractedUtr.textContent = extractedUTR;
-                                    extractedUtr.className = 'value duplicate';
-                                }
-                                const box = utrResult.querySelector('.result-box');
-                                if (box) {
-                                    box.style.borderColor = 'rgba(255,42,109,0.3)';
-                                    const label = box.querySelector('.label');
-                                    if (label) label.textContent = '❌ UTR Already Used';
-                                }
-                            }
-                            if (statusText) statusText.textContent = '⚠️ This UTR has already been used!';
-                            if (uploadStatus) uploadStatus.style.display = 'none';
-                            if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-                            return;
-                        }
-                        
-                        if (extractedUtr) {
-                            extractedUtr.textContent = extractedUTR;
-                            extractedUtr.className = 'value';
-                        }
-                        if (utrIcon) { utrIcon.textContent = '✅'; utrIcon.style.color = '#4caf50'; }
-                        const box = utrResult ? utrResult.querySelector('.result-box') : null;
-                        if (box) {
-                            const label = box.querySelector('.label');
-                            if (label) label.textContent = 'Transaction ID';
-                        }
-                        if (utrResult) utrResult.style.display = 'block';
-                        if (uploadStatus) uploadStatus.style.display = 'none';
-                        if (statusText) statusText.textContent = '✅ Transaction ID extracted!';
-                        if (uploadConfirmBtn) uploadConfirmBtn.disabled = false;
-                        
-                        await uploadScreenshotToDrive(file, extractedUTR);
-                    } else {
-                        if (uploadStatus) uploadStatus.style.display = 'none';
-                        const manualUtr = prompt('⚠️ Could not detect UTR automatically.\n\nPlease enter the 12-digit UTR number from your payment app:');
-                        if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
-                            extractedUTR = manualUtr.replace(/\D/g, '');
-                            const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                            if (isDuplicate) {
-                                if (utrResult) {
-                                    utrResult.style.display = 'block';
-                                    if (utrIcon) { utrIcon.textContent = '⚠️'; utrIcon.style.color = '#ff2a6d'; }
-                                    if (extractedUtr) {
-                                        extractedUtr.textContent = extractedUTR;
-                                        extractedUtr.className = 'value duplicate';
-                                    }
-                                    const box = utrResult.querySelector('.result-box');
-                                    if (box) {
-                                        box.style.borderColor = 'rgba(255,42,109,0.3)';
-                                        const label = box.querySelector('.label');
-                                        if (label) label.textContent = '❌ UTR Already Used';
-                                    }
-                                }
-                                if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-                                return;
-                            }
-                            if (extractedUtr) {
-                                extractedUtr.textContent = extractedUTR;
-                                extractedUtr.className = 'value';
-                            }
-                            if (utrIcon) { utrIcon.textContent = '✅'; utrIcon.style.color = '#4caf50'; }
-                            const box = utrResult ? utrResult.querySelector('.result-box') : null;
-                            if (box) {
-                                const label = box.querySelector('.label');
-                                if (label) label.textContent = 'Manual UTR Entry';
-                            }
-                            if (utrResult) utrResult.style.display = 'block';
-                            if (uploadConfirmBtn) uploadConfirmBtn.disabled = false;
-                            await uploadScreenshotToDrive(file, extractedUTR);
-                        } else {
-                            alert('❌ Invalid UTR. Please try uploading the screenshot again.');
-                        }
-                    }
+                if (!utrMatch) {
+                    // No valid 12-digit UTR found
+                    return { success: false, state: PAYMENT_STATES.UTR_NOT_FOUND };
                 }
                 
-                if (uploadTimerInterval) {
-                    clearInterval(uploadTimerInterval);
-                    uploadTimerInterval = null;
+                const extractedUTR = utrMatch[0];
+                
+                // Check for duplicates with proper error handling
+                const duplicateCheck = await unifiedCheckDuplicateUTR(extractedUTR);
+                
+                if (duplicateCheck.error) {
+                    // Database error - DO NOT accept payment
+                    return { 
+                        success: false, 
+                        state: PAYMENT_STATES.ERROR, 
+                        error: `Database error: ${duplicateCheck.error}`
+                    };
+                }
+                
+                if (duplicateCheck.exists) {
+                    return { 
+                        success: false, 
+                        state: PAYMENT_STATES.UTR_DUPLICATE, 
+                        utr: extractedUTR 
+                    };
+                }
+                
+                // UTR is valid and unique
+                return { success: true, state: PAYMENT_STATES.UTR_VERIFIED, utr: extractedUTR };
+                
+            } catch (error) {
+                console.error('❌ Verification error:', error);
+                return { 
+                    success: false, 
+                    state: PAYMENT_STATES.ERROR, 
+                    error: error.message || 'Screenshot verification failed'
+                };
+            }
+        }
+
+        // ─── DUPLICATE CHECK WITH PROPER ERROR HANDLING ──────────────────
+
+        async function unifiedCheckDuplicateUTR(utr) {
+            try {
+                // Check local storage first (performance)
+                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                const localMatch = db.find(r => 
+                    r.txn === utr && 
+                    (r.status === 'VERIFIED' || r.status === 'PENDING')
+                );
+                if (localMatch) {
+                    return { exists: true, source: 'local' };
+                }
+                
+                // Check Supabase
+                if (!supabaseClient) {
+                    // No client - can't verify uniqueness
+                    return { error: 'Database connection unavailable' };
+                }
+                
+                const { data, error } = await supabaseClient
+                    .from('registrations')
+                    .select('txn, status')
+                    .eq('txn', utr)
+                    .in('status', ['VERIFIED', 'PENDING']);
+                    
+                if (error) {
+                    // CRITICAL: Database error - DO NOT accept payment
+                    return { error: `Database error: ${error.message}` };
+                }
+                
+                if (data && data.length > 0) {
+                    return { exists: true, source: 'supabase' };
+                }
+                
+                return { exists: false };
+                
+            } catch (error) {
+                // CRITICAL: ANY error means we cannot verify uniqueness
+                // DO NOT accept the payment
+                return { error: `Verification failed: ${error.message}` };
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        //  CONFIRM REGISTRATION - ATOMIC INSERT
+        // ═══════════════════════════════════════════════════════════════════
+
+        async function confirmRegistration() {
+            if (!paymentState.utr) {
+                alert('⚠️ No UTR verified. Please upload a screenshot first.');
+                return;
+            }
+            if (registrationComplete) {
+                alert('✅ Registration already complete.');
+                return;
+            }
+            if (paymentState.isSubmitting) return;
+            
+            paymentState.isSubmitting = true;
+            paymentState.current = PAYMENT_STATES.SUBMITTING;
+            updateModalUI(PAYMENT_STATES.SUBMITTING);
+            
+            try {
+                // Build registration data
+                const leaderName = getLeaderName();
+                const college = collegeInput.value.trim();
+                const total = getTotalAmount();
+                const participants = getParticipantsList();
+                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+                const ugPuValue = ugPuSelected ? ugPuSelected.value : '';
+                
+                const registrationData = {
+                    event_name: selectedEvent ? selectedEvent.name : 'Unknown',
+                    event_sub: selectedEvent ? selectedEvent.sub : '',
+                    college: college,
+                    ug_pu: ugPuValue,
+                    team_leader: leaderName,
+                    email: participants[0]?.email || '',
+                    phone: participants[0]?.phone || '',
+                    total_amount: total,
+                    txn: paymentState.utr,
+                    participants: participants,
+                    status: 'VERIFIED',
+                    registered_at: new Date().toISOString(),
+                    verified_at: new Date().toISOString(),
+                    is_pending: false,
+                    timeout_triggered: false
+                };
+                
+                // Execute atomic insert
+                const result = await executeRegistrationInsert(registrationData);
+                
+                if (result.success) {
+                    // SUCCESS - registration complete
+                    registrationComplete = true;
+                    paymentState.current = PAYMENT_STATES.SUCCESS;
+                    
+                    closeQRModal();
+                    goToStep(4);
+                    
+                    // Show success
+                    successIcon.textContent = '✅';
+                    successTitle.textContent = 'Registration Complete!';
+                    successSub.textContent = '🎉 Payment Verified Successfully!';
+                    successDetails.innerHTML = `
+                        <p><strong>Event:</strong> ${registrationData.event_name}</p>
+                        <p><strong>Team Leader:</strong> ${leaderName}</p>
+                        <p><strong>College:</strong> ${college}</p>
+                        <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${paymentState.utr}</span></p>
+                        <p><strong>Amount Paid:</strong> ₹${total}</p>
+                        <p><strong>Participants:</strong> ${participants.length}</p>
+                    `;
+                    
+                    // Clean up
+                    localStorage.removeItem('pending_registration');
+                    localStorage.removeItem('payment_initiated');
+                    sessionStorage.removeItem('returning_from_payment');
+                    localStorage.removeItem('deplomat_registration_state');
+                    sessionStorage.removeItem('deplomat_registration_state_backup');
+                    
+                } else if (result.error === 'DUPLICATE_UTR') {
+                    // Duplicate UTR detected during insert
+                    paymentState.current = PAYMENT_STATES.UTR_DUPLICATE;
+                    updateModalUI(PAYMENT_STATES.UTR_DUPLICATE, { utr: paymentState.utr });
+                    paymentState.isSubmitting = false;
+                    
+                } else {
+                    // Other insert failure
+                    paymentState.current = PAYMENT_STATES.ERROR;
+                    updateModalUI(PAYMENT_STATES.ERROR, { 
+                        message: `Registration could not be completed: ${result.error || 'Unknown error'}. Please try again.` 
+                    });
+                    paymentState.isSubmitting = false;
                 }
                 
             } catch (error) {
-                console.error('OCR Error:', error);
-                if (uploadStatus) uploadStatus.style.display = 'none';
-                const manualUtr = prompt('⚠️ Error processing screenshot.\n\nPlease enter the 12-digit UTR number from your payment app:');
-                if (manualUtr && manualUtr.replace(/\D/g, '').length === 12) {
-                    extractedUTR = manualUtr.replace(/\D/g, '');
-                    const isDuplicate = await checkDuplicateUTR(extractedUTR);
-                    if (isDuplicate) {
-                        if (utrResult) {
-                            utrResult.style.display = 'block';
-                            if (utrIcon) { utrIcon.textContent = '⚠️'; utrIcon.style.color = '#ff2a6d'; }
-                            if (extractedUtr) {
-                                extractedUtr.textContent = extractedUTR;
-                                extractedUtr.className = 'value duplicate';
-                            }
-                            const box = utrResult.querySelector('.result-box');
-                            if (box) {
-                                box.style.borderColor = 'rgba(255,42,109,0.3)';
-                                const label = box.querySelector('.label');
-                                if (label) label.textContent = '❌ UTR Already Used';
-                            }
-                        }
-                        if (uploadConfirmBtn) uploadConfirmBtn.disabled = true;
-                        return;
-                    }
-                    if (extractedUtr) {
-                        extractedUtr.textContent = extractedUTR;
-                        extractedUtr.className = 'value';
-                    }
-                    if (utrIcon) { utrIcon.textContent = '✅'; utrIcon.style.color = '#4caf50'; }
-                    const box = utrResult ? utrResult.querySelector('.result-box') : null;
-                    if (box) {
-                        const label = box.querySelector('.label');
-                        if (label) label.textContent = 'Manual UTR Entry';
-                    }
-                    if (utrResult) utrResult.style.display = 'block';
-                    if (uploadConfirmBtn) uploadConfirmBtn.disabled = false;
-                    await uploadScreenshotToDrive(file, extractedUTR);
-                } else {
-                    alert('❌ Invalid UTR. Please try again.');
-                }
+                console.error('❌ Registration error:', error);
+                paymentState.current = PAYMENT_STATES.ERROR;
+                updateModalUI(PAYMENT_STATES.ERROR, { 
+                    message: `Registration could not be completed: ${error.message || 'Unknown error'}. Please try again.` 
+                });
+                paymentState.isSubmitting = false;
             }
         }
 
-        // ─── CONFIRM UPLOAD ──────────────────────────────────────────────
-
-        if (uploadConfirmBtn) {
-            uploadConfirmBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (!extractedUTR) {
-                    alert('⚠️ Please upload a payment screenshot first.');
-                    return;
-                }
-                if (registrationComplete) {
-                    alert('✅ Registration already complete.');
-                    return;
-                }
-                showPaymentConfirmModal();
-            });
-        }
-
-        // ─── QR BUTTON EVENTS ─────────────────────────────────────────────
-
-        function showQr1() {
-            if (event) { event.preventDefault(); event.stopPropagation(); }
-            if (!qr1Container) return;
+        async function executeRegistrationInsert(registrationData) {
+            let result = { success: false, error: null };
             
-            qrInteracted = true;
-            const isVisible = qr1Container.classList.contains('active');
-            
-            if (isVisible) {
-                qr1Container.classList.remove('active');
-                if (showQr1Btn) {
-                    showQr1Btn.textContent = '📱 SHOW QR 1';
-                    showQr1Btn.className = 'pay-btn btn-qr-primary qr-btn-no-nav';
-                }
-                if (!qr2Container || !qr2Container.classList.contains('active')) {
-                    hideUploadSection();
-                }
-            } else {
-                qr1Container.classList.add('active');
-                if (qr2Container) qr2Container.classList.remove('active');
-                if (showQr1Btn) {
-                    showQr1Btn.textContent = '📱 HIDE QR 1';
-                    showQr1Btn.className = 'pay-btn btn-qr-secondary qr-btn-no-nav';
-                }
-                showUploadSectionWithDelay();
-            }
-            updateQRImages();
-            return false;
-        }
-
-        function showQr2() {
-            if (event) { event.preventDefault(); event.stopPropagation(); }
-            
-            if (!PAYMENT_CONFIG.upiId2) {
-                alert('⚠️ QR 2 is coming soon. Please use QR 1 for now.');
-                return false;
-            }
-            
-            if (!qr2Container) return;
-            
-            qrInteracted = true;
-            const isVisible = qr2Container.classList.contains('active');
-            
-            if (isVisible) {
-                qr2Container.classList.remove('active');
-                if (showQr2Btn) {
-                    showQr2Btn.textContent = '🔄 QR 1 not working? Try QR 2';
-                }
-                if (!qr1Container || !qr1Container.classList.contains('active')) {
-                    hideUploadSection();
-                }
-            } else {
-                qr2Container.classList.add('active');
-                if (qr1Container) qr1Container.classList.remove('active');
-                if (showQr2Btn) {
-                    showQr2Btn.textContent = '🔄 HIDE QR 2';
-                }
-                showUploadSectionWithDelay();
-            }
-            
-            if (showQr1Btn) {
-                showQr1Btn.textContent = '📱 SHOW QR 1';
-                showQr1Btn.className = 'pay-btn btn-qr-primary qr-btn-no-nav';
-            }
-            updateQRImages();
-            return false;
-        }
-
-        if (showQr1Btn) {
-            showQr1Btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                showQr1();
-                return false;
-            });
-        }
-
-        if (showQr2Btn) {
-            showQr2Btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                showQr2();
-                return false;
-            });
-        }
-
-        // ─── HELPER FUNCTIONS ─────────────────────────────────────────────
-
-        async function checkDuplicateUTR(utr) {
-            try {
-                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-                const localMatch = db.find(r => r.txn === utr && (r.status === 'VERIFIED' || r.status === 'PENDING'));
-                if (localMatch) return true;
-                if (supabaseClient) {
+            // 1. Try Supabase insert (handles UNIQUE constraint automatically)
+            if (supabaseClient) {
+                try {
                     const { data, error } = await supabaseClient
                         .from('registrations')
-                        .select('txn')
-                        .eq('txn', utr)
-                        .in('status', ['VERIFIED', 'PENDING']);
-                    if (!error && data && data.length > 0) return true;
+                        .insert([registrationData])
+                        .select();
+                        
+                    if (error) {
+                        // Check for unique violation
+                        if (error.code === '23505') { // PostgreSQL unique violation
+                            return { success: false, error: 'DUPLICATE_UTR' };
+                        }
+                        return { success: false, error: error.message };
+                    }
+                    
+                    result.success = true;
+                    result.data = data;
+                    
+                } catch (err) {
+                    if (err.message?.includes('duplicate') || err.code === '23505') {
+                        return { success: false, error: 'DUPLICATE_UTR' };
+                    }
+                    return { success: false, error: err.message };
                 }
-                return false;
-            } catch (e) {
-                console.warn('Error checking duplicate UTR:', e);
-                return false;
             }
-        }
-
-        async function uploadScreenshotToDrive(file, utrNumber) {
+            
+            // 2. Fallback to local storage (with duplicate check)
             try {
-                const screenshots = JSON.parse(localStorage.getItem('payment_screenshots') || '[]');
-                screenshots.push({
-                    utr: utrNumber,
-                    timestamp: new Date().toISOString(),
-                    data: URL.createObjectURL(file)
-                });
-                localStorage.setItem('payment_screenshots', JSON.stringify(screenshots));
-                console.log('✅ Screenshot saved locally');
-            } catch (error) {
-                console.warn('Screenshot upload failed:', error);
+                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
+                const exists = db.some(r => 
+                    r.txn === registrationData.txn && 
+                    (r.status === 'VERIFIED' || r.status === 'PENDING')
+                );
+                if (exists) {
+                    return { success: false, error: 'DUPLICATE_UTR' };
+                }
+                db.push(registrationData);
+                localStorage.setItem('deplomat_db', JSON.stringify(db));
+                result.success = true;
+            } catch (err) {
+                return { success: false, error: err.message };
+            }
+            
+            return result;
+        }
+
+        // ─── GETTER FUNCTIONS ─────────────────────────────────────────────
+
+        function getLeaderName() {
+            const firstEntry = playersContainer.querySelector('.player-entry');
+            if (firstEntry) {
+                const nameInput = firstEntry.querySelector('.player-name');
+                return nameInput ? nameInput.value.trim() : 'Unknown';
+            }
+            return 'Unknown';
+        }
+
+        function getParticipantsList() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            const participants = [];
+            entries.forEach((entry, index) => {
+                const nameInput = entry.querySelector('.player-name');
+                const isLeader = index === 0;
+                let p = { name: nameInput ? nameInput.value.trim() : '', isLeader: isLeader };
+                if (isLeader) {
+                    const emailInput = entry.querySelector('.player-email');
+                    const phoneInput = entry.querySelector('.player-phone');
+                    p.email = emailInput ? emailInput.value.trim() : '';
+                    p.phone = phoneInput ? phoneInput.value.trim() : '';
+                }
+                participants.push(p);
+            });
+            return participants;
+        }
+
+        function getSelectedCategory() {
+            const checked = document.querySelector('input[name="ug_pu"]:checked');
+            return checked ? checked.value : null;
+        }
+
+        function getEventLimits(eventId) {
+            const event = EVENTS.find(e => e.id === parseInt(eventId));
+            if (event) return { min: event.min, max: event.max, name: event.name, sub: event.sub, category: event.category };
+            return { min: 1, max: 12, name: 'Unknown', sub: '', category: 'both' };
+        }
+
+        function checkCategoryEventCompatibility(category, eventId) {
+            if (!category || !eventId) return { valid: true, message: '' };
+            const event = EVENTS.find(e => e.id === parseInt(eventId));
+            if (!event) return { valid: true, message: '' };
+            if (event.category === 'both') return { valid: true, message: '' };
+            const cat = category.toUpperCase();
+            if (cat === 'UG' && event.category === 'pu') {
+                return { valid: false, message: `⛔ "${event.name} · ${event.sub}" is for <strong>PU</strong> students only.` };
+            }
+            if (cat === 'PU' && event.category === 'ug') {
+                return { valid: false, message: `⛔ "${event.name} · ${event.sub}" is for <strong>UG</strong> students only.` };
+            }
+            return { valid: true, message: '' };
+        }
+
+        function showBlockNotice(message) {
+            if (message) { blockMsg.innerHTML = message; blockNotice.classList.add('show'); } 
+            else { blockNotice.classList.remove('show'); }
+        }
+
+        // ─── STEP MANAGEMENT ──────────────────────────────────────────────
+
+        function goToStep(step) {
+            if (step > currentStep) {
+                if (!validateStep(currentStep)) return;
+            }
+            const targetStep = document.querySelector(`.form-step[data-step="${step}"]`);
+            if (!targetStep) return;
+            steps.forEach(s => s.classList.remove('active'));
+            targetStep.classList.add('active');
+            dots.forEach((dot, index) => {
+                const num = index + 1;
+                dot.classList.remove('active', 'done');
+                if (num === step) dot.classList.add('active');
+                else if (num < step) dot.classList.add('done');
+            });
+            currentStep = step;
+            if (step === 2) { initializePlayers(); updateEventLimitInfo(); validateCategoryEventPair(); }
+            if (step === 3) { updatePaymentSummary(); updateQRImages(); }
+            saveRegistrationState();
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                const college = collegeInput.value.trim();
+                const eventVal = eventSelect.value;
+                if (!college) { alert('Please enter your college name.'); return false; }
+                const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+                if (!ugPuSelected) { alert('⚠️ Please select either UG or PU category.'); return false; }
+                if (!eventVal) { alert('Please select an event.'); return false; }
+                const cat = ugPuSelected.value;
+                const result = checkCategoryEventCompatibility(cat, eventVal);
+                if (!result.valid) { const cleanMsg = result.message.replace(/<[^>]*>/g, ''); alert(`⛔ ${cleanMsg}`); showBlockNotice(result.message); return false; }
+                showBlockNotice('');
+                selectedEvent = EVENTS.find(e => e.id === parseInt(eventVal));
+                if (!selectedEvent) { alert('Please select a valid event.'); return false; }
+                selectedCategory = cat;
+                return true;
+            }
+            if (step === 2) {
+                const entries = playersContainer.querySelectorAll('.player-entry');
+                if (entries.length < currentMin) { alert(`This event requires at least ${currentMin} participant(s).`); return false; }
+                if (entries.length > currentMax) { alert(`Maximum ${currentMax} participants allowed.`); return false; }
+                const leader = entries[0];
+                const lName = leader.querySelector('.player-name');
+                const lEmail = leader.querySelector('.player-email');
+                const lPhone = leader.querySelector('.player-phone');
+                if (!lName.value.trim()) { alert('Enter Team Leader name.'); return false; }
+                if (!lEmail.value.trim() || !lEmail.value.includes('@')) { alert('Enter valid Team Leader email.'); return false; }
+                const phoneDigits = lPhone.value.replace(/\D/g, '');
+                if (phoneDigits.length < 10) { alert('Enter valid 10-digit Team Leader phone.'); return false; }
+                for (let i = 1; i < entries.length; i++) {
+                    const nameInput = entries[i].querySelector('.player-name');
+                    if (!nameInput.value.trim()) { alert(`Enter name for Player ${i+1}.`); return false; }
+                }
+                return true;
+            }
+            return true;
+        }
+
+        function validateCategoryEventPair() {
+            const cat = getSelectedCategory();
+            const val = eventSelect.value;
+            if (cat && val) {
+                const result = checkCategoryEventCompatibility(cat, val);
+                if (!result.valid) showBlockNotice(result.message);
+                else showBlockNotice('');
             }
         }
 
-        function showPaymentConfirmModal() {
-            alert('Payment confirmation - implement as needed');
+        // ─── PLAYERS ───────────────────────────────────────────────────────
+
+        function initializePlayers() {
+            if (playersContainer.children.length === 0) {
+                for (let i = 0; i < Math.max(1, currentMin); i++) {
+                    addPlayer(i === 0);
+                }
+            }
+            updateAddButtonState();
         }
 
-        function submitPendingRegistration() {
-            alert('Pending registration - implement as needed');
+        function addPlayer(isLeader = false) {
+            const count = playersContainer.children.length;
+            if (count >= currentMax) { alert(`Maximum ${currentMax} players allowed.`); return; }
+            const index = count + 1;
+            const div = document.createElement('div');
+            div.className = 'player-entry';
+            const isFirst = count === 0;
+            let headerHtml = `<div class="player-header"><span class="player-number ${isFirst?'leader':''}">${isFirst?'👑 Team Leader':`Player ${index}`}${isFirst?'<span class="leader-badge">Leader</span>':''}</span>${!isFirst?`<button type="button" class="remove-btn" title="Remove player">✕</button>`:''}</div>`;
+            let fieldsHtml = '';
+            if (isFirst) {
+                fieldsHtml = `<div class="player-fields leader-fields">
+                            <div class="field-group"><label>Full Name <span class="required">*</span></label><input type="text" class="player-name" placeholder="Team Leader full name" required /></div>
+                            <div class="field-group"><label>Email <span class="required">*</span></label><input type="email" class="player-email" placeholder="leader@example.com" required /></div>
+                            <div class="field-group"><label>Phone <span class="required">*</span></label><input type="tel" class="player-phone" placeholder="+91 98765 43210" required /></div>
+                        </div>`;
+            } else {
+                fieldsHtml = `<div class="player-fields"><div class="field-group"><label>Full Name <span class="required">*</span></label><input type="text" class="player-name" placeholder="Player ${index} full name" required /></div></div>`;
+            }
+            div.innerHTML = headerHtml + fieldsHtml;
+            if (!isFirst) {
+                div.querySelector('.remove-btn').addEventListener('click', () => {
+                    if (playersContainer.children.length > currentMin) { div.remove(); updatePlayerNumbers(); updateAddButtonState(); saveRegistrationState(); } 
+                    else { alert(`Minimum ${currentMin} participant(s) required.`); }
+                });
+            }
+            playersContainer.appendChild(div);
+            updatePlayerNumbers();
+            updateAddButtonState();
+            saveRegistrationState();
         }
+
+        function updatePlayerNumbers() {
+            const entries = playersContainer.querySelectorAll('.player-entry');
+            entries.forEach((entry, index) => {
+                const isFirst = index === 0;
+                const numSpan = entry.querySelector('.player-number');
+                if (numSpan) {
+                    if (isFirst) { numSpan.innerHTML = '👑 Team Leader <span class="leader-badge">Leader</span>'; numSpan.className = 'player-number leader'; } 
+                    else { numSpan.textContent = `Player ${index+1}`; numSpan.className = 'player-number'; }
+                }
+                const removeBtn = entry.querySelector('.remove-btn');
+                if (removeBtn) { removeBtn.style.display = isFirst ? 'none' : 'block'; }
+            });
+            updateAddButtonState();
+        }
+
+        function updateAddButtonState() {
+            const count = playersContainer.children.length;
+            if (count >= currentMax) { addPlayerBtn.disabled = true; addPlayerBtn.textContent = `✓ Max ${currentMax} players reached`; } 
+            else { addPlayerBtn.disabled = false; addPlayerBtn.textContent = '+ Add Player'; }
+        }
+
+        function updateEventLimitInfo() {
+            const eventVal = eventSelect.value;
+            if (!eventVal) { limitText.textContent = 'Please select an event first.'; return; }
+            const limits = getEventLimits(eventVal);
+            currentMin = limits.min;
+            currentMax = limits.max;
+            let catLabel = limits.category === 'pu' ? '🔵 PU Only' : limits.category === 'ug' ? '🟣 UG Only' : '🟢 UG + PU';
+            if (limits.min === limits.max) {
+                limitText.innerHTML = `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)`;
+            } else {
+                limitText.innerHTML = `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed (including Team Leader)`;
+            }
+            const currentCount = playersContainer.children.length;
+            if (currentCount > currentMax) { while (playersContainer.children.length > currentMax) playersContainer.lastChild.remove(); updatePlayerNumbers(); } 
+            else if (currentCount < currentMin) { while (playersContainer.children.length < currentMin) addPlayer(playersContainer.children.length === 0); }
+            updateAddButtonState();
+        }
+
+        // ─── PAYMENT SUMMARY ──────────────────────────────────────────────
+
+        function updatePaymentSummary() {
+            const count = playersContainer.children.length;
+            const total = count * PAYMENT_CONFIG.pricePerParticipant;
+            let leaderName = getLeaderName();
+            const ugPuSelected = document.querySelector('input[name="ug_pu"]:checked');
+            const ugPuValue = ugPuSelected ? ugPuSelected.value : '—';
+            payEventName.textContent = selectedEvent ? `${selectedEvent.name} · ${selectedEvent.sub}` : '—';
+            payTeamLeader.textContent = leaderName;
+            payUgPu.textContent = ugPuValue;
+            payPlayerCount.textContent = count;
+            payTotal.textContent = `₹${total}`;
+            payhead.textContent = `PAY ₹${total}`;
+        }
+
+        // ─── STATE PERSISTENCE ─────────────────────────────────────────────
+
+        const STATE_EXPIRY = 10 * 60 * 1000;
+
+        function saveRegistrationState() {
+            const state = {
+                college: document.getElementById('college').value.trim(),
+                category: getSelectedCategory(),
+                eventId: selectedEvent ? selectedEvent.id : null,
+                participants: getParticipantsList(),
+                currentStep: currentStep,
+                timestamp: Date.now(),
+                eventName: selectedEvent ? selectedEvent.name : null,
+                eventSub: selectedEvent ? selectedEvent.sub : null
+            };
+            try {
+                localStorage.setItem('deplomat_registration_state', JSON.stringify(state));
+                sessionStorage.setItem('deplomat_registration_state_backup', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        function restoreRegistrationState() {
+            let saved = localStorage.getItem('deplomat_registration_state');
+            if (!saved) saved = sessionStorage.getItem('deplomat_registration_state_backup');
+            if (!saved) return false;
+            try {
+                const state = JSON.parse(saved);
+                if (Date.now() - state.timestamp > STATE_EXPIRY) {
+                    localStorage.removeItem('deplomat_registration_state');
+                    sessionStorage.removeItem('deplomat_registration_state_backup');
+                    return false;
+                }
+                if (!state.college && !state.eventId && (!state.participants || state.participants.length === 0)) {
+                    return false;
+                }
+                restoreBanner.classList.add('show');
+                if (state.college) document.getElementById('college').value = state.college;
+                if (state.category) {
+                    const radio = document.querySelector(`input[name="ug_pu"][value="${state.category}"]`);
+                    if (radio) { radio.checked = true; selectedCategory = state.category; }
+                }
+                if (state.eventId !== null && state.eventId !== undefined) {
+                    const eventSelect = document.getElementById('eventSelect');
+                    const eventIndex = state.eventId.toString();
+                    if (Array.from(eventSelect.options).some(opt => opt.value === eventIndex)) {
+                        eventSelect.value = eventIndex;
+                        const event = EVENTS.find(e => e.id === state.eventId);
+                        if (event) {
+                            selectedEvent = event;
+                            bannerEventName.textContent = event.name;
+                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                            eventBanner.classList.add('show');
+                            currentMin = event.min;
+                            currentMax = event.max;
+                            updateEventLimitInfo();
+                        }
+                        eventSelect.dispatchEvent(new Event('change'));
+                    }
+                }
+                if (state.participants && state.participants.length > 0) {
+                    setTimeout(() => {
+                        playersContainer.innerHTML = '';
+                        state.participants.forEach((p, index) => {
+                            addPlayer(index === 0);
+                            const entries = playersContainer.querySelectorAll('.player-entry');
+                            const entry = entries[entries.length - 1];
+                            if (entry) {
+                                const nameInput = entry.querySelector('.player-name');
+                                if (nameInput) nameInput.value = p.name || '';
+                                if (index === 0) {
+                                    const emailInput = entry.querySelector('.player-email');
+                                    const phoneInput = entry.querySelector('.player-phone');
+                                    if (emailInput) emailInput.value = p.email || '';
+                                    if (phoneInput) phoneInput.value = p.phone || '';
+                                }
+                            }
+                        });
+                        updatePlayerNumbers();
+                        updateAddButtonState();
+                    }, 400);
+                }
+                const returning = sessionStorage.getItem('returning_from_payment');
+                if (returning === 'true') {
+                    sessionStorage.removeItem('returning_from_payment');
+                    setTimeout(() => {
+                        goToStep(3);
+                        updatePaymentSummary();
+                        updateQRImages();
+                    }, 500);
+                }
+                return true;
+            } catch (e) {
+                console.error('Error restoring state:', e);
+                return false;
+            }
+        }
+
+        // ─── EVENT LISTENERS ─────────────────────────────────────────────
+
+        ugPuRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const cat = this.value;
+                const eventVal = eventSelect.value;
+                if (cat && eventVal) {
+                    const result = checkCategoryEventCompatibility(cat, eventVal);
+                    if (!result.valid) {
+                        showBlockNotice(result.message);
+                        eventSelect.value = '';
+                        eventBanner.classList.remove('show');
+                        const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                        alert(`⛔ ${cleanMsg}\n\nEvent selection cleared.`);
+                    } else {
+                        showBlockNotice('');
+                        const event = EVENTS.find(e => e.id === parseInt(eventVal));
+                        if (event) {
+                            bannerEventName.textContent = event.name;
+                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                            eventBanner.classList.add('show');
+                        }
+                    }
+                }
+                validateCategoryEventPair();
+                saveRegistrationState();
+            });
+        });
+
+        eventSelect.addEventListener('change', function() {
+            const val = this.value;
+            const cat = getSelectedCategory();
+            if (val && cat) {
+                const result = checkCategoryEventCompatibility(cat, val);
+                if (!result.valid) {
+                    showBlockNotice(result.message);
+                    this.value = '';
+                    eventBanner.classList.remove('show');
+                    const cleanMsg = result.message.replace(/<[^>]*>/g, '');
+                    alert(`⛔ ${cleanMsg}\n\nEvent selection cleared.`);
+                    return;
+                } else {
+                    showBlockNotice('');
+                    const event = EVENTS.find(e => e.id === parseInt(val));
+                    if (event) {
+                        bannerEventName.textContent = event.name;
+                        bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                        eventBanner.classList.add('show');
+                        selectedEvent = event;
+                        if (currentStep === 2) {
+                            updateEventLimitInfo();
+                            playersContainer.innerHTML = '';
+                            for (let i = 0; i < currentMin; i++) addPlayer(i === 0);
+                            updateAddButtonState();
+                        }
+                    }
+                }
+            } else if (val) {
+                const event = EVENTS.find(e => e.id === parseInt(val));
+                if (event) {
+                    bannerEventName.textContent = event.name;
+                    bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                    eventBanner.classList.add('show');
+                    selectedEvent = event;
+                    if (currentStep === 2) {
+                        updateEventLimitInfo();
+                        playersContainer.innerHTML = '';
+                        for (let i = 0; i < currentMin; i++) addPlayer(i === 0);
+                        updateAddButtonState();
+                    }
+                }
+            } else {
+                eventBanner.classList.remove('show');
+                showBlockNotice('');
+            }
+            validateCategoryEventPair();
+            saveRegistrationState();
+        });
+
+        document.addEventListener('input', function(e) {
+            if (e.target.closest('.form-step')) {
+                clearTimeout(window._saveTimeout);
+                window._saveTimeout = setTimeout(saveRegistrationState, 500);
+            }
+        });
+
+        document.addEventListener('change', function(e) {
+            if (e.target.closest('.form-step')) {
+                saveRegistrationState();
+            }
+        });
+
+        step1Next.addEventListener('click', function(e) { e.preventDefault(); goToStep(2); });
+        step2Back.addEventListener('click', function(e) { e.preventDefault(); goToStep(1); });
+        step2Next.addEventListener('click', function(e) { e.preventDefault(); goToStep(3); });
+        addPlayerBtn.addEventListener('click', function(e) { e.preventDefault(); addPlayer(false); });
+        step3Back.addEventListener('click', function(e) { 
+            e.preventDefault();
+            if (paymentState.current !== PAYMENT_STATES.IDLE && !registrationComplete) {
+                if (!confirm('⚠️ You have initiated payment. Going back will reset your progress. Continue?')) {
+                    return;
+                }
+                // Reset payment state
+                paymentState.current = PAYMENT_STATES.IDLE;
+                closeQRModal();
+            }
+            goToStep(2);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const active = document.querySelector('.form-step.active');
+                if (active) {
+                    const step = parseInt(active.dataset.step);
+                    if (step === 1) step1Next.click();
+                    else if (step === 2) step2Next.click();
+                }
+            }
+            if (e.key === 'Escape') {
+                if (qrPaymentModal.classList.contains('active')) {
+                    closeQRModal();
+                }
+            }
+        });
 
         // ─── INIT ──────────────────────────────────────────────────────────
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔱 DEPLOMAT Registration · Upload Fixed');
+            const restored = restoreRegistrationState();
+            
+            if (!restored) {
+                autoSelectEventFromURL();
+                setTimeout(() => {
+                    if (playersContainer.children.length === 0) {
+                        for (let i = 0; i < Math.max(1, currentMin); i++) {
+                            addPlayer(i === 0);
+                        }
+                    }
+                    updateEventLimitInfo();
+                    updateAddButtonState();
+                }, 200);
+            }
+            
+            setTimeout(() => {
+                updateQRImages();
+                updatePaymentSummary();
+            }, 200);
+            
+            console.log('🔱 DEPLOMAT Registration · UNIFIED PAYMENT SYSTEM');
             console.log('📱 QR 1 UPI ID:', PAYMENT_CONFIG.upiId1);
-            console.log('⏱️ Upload appears 1 second after QR is shown');
-            console.log('📸 Upload timer: ' + UPLOAD_TIMER_SECONDS + ' seconds');
-            console.log('✅ Upload functionality fixed');
-            
-            // Initialize QR images
-            setTimeout(updateQRImages, 200);
-            
-            // Setup upload listeners again for safety
-            setupUploadListeners();
+            console.log('📱 QR 2 UPI ID:', PAYMENT_CONFIG.upiId2 || 'Coming Soon');
+            console.log('💳 Fee per participant: ₹' + PAYMENT_CONFIG.pricePerParticipant);
+            console.log('✅ Supabase status:', supabaseClient ? 'Connected' : 'Not connected');
+            console.log('📸 Unified screenshot verification with strict 12-digit UTR');
+            console.log('🛡️ Duplicate check with proper error handling');
+            console.log('🔒 Atomic database insert with UNIQUE constraint');
         });
+
+        function autoSelectEventFromURL() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const eventIndex = params.get('event');
+                if (eventIndex !== null) {
+                    const select = document.getElementById('eventSelect');
+                    if (select && Array.from(select.options).some(opt => opt.value === eventIndex)) {
+                        select.value = eventIndex;
+                        select.dispatchEvent(new Event('change'));
+                        const event = EVENTS.find(e => e.id === parseInt(eventIndex));
+                        if (event) {
+                            bannerEventName.textContent = event.name;
+                            bannerEventSub.textContent = `${event.sub} · ${event.min}–${event.max} participants`;
+                            eventBanner.classList.add('show');
+                        }
+                    }
+                }
+            } catch (_) {}
+        }
     </script>
 </body>
 </html>
