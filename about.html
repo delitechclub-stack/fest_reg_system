@@ -6,6 +6,7 @@
     <title>DEPLOMAT · About Us</title>
 
     <style>
+        /* ----- CSS Variables (keep existing theme) ----- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; overscroll-behavior: none; }
         body {
@@ -17,6 +18,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* ----- Background Orbs (unchanged) ----- */
         .page-bg-orb {
             position: fixed;
             border-radius: 50%;
@@ -28,6 +30,7 @@
         .orb-a { width: 520px; height: 520px; background: #00d4ff; top: -10%; left: -10%; }
         .orb-b { width: 460px; height: 460px; background: #b000ff; bottom: -10%; right: -10%; }
 
+        /* ----- Home link (preserved) ----- */
         .home-link {
             position: fixed;
             top: 28px;
@@ -60,18 +63,19 @@
         }
         .home-link:active { transform: scale(0.95); }
 
+        /* ----- Page wrap (centered container) ----- */
         .page-wrap {
             position: relative;
             z-index: 2;
-            min-height: 100dvh;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 140px 24px 80px 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 120px 24px 80px 24px;
-            text-align: center;
         }
 
+        /* ----- Main title (preserved style) ----- */
         .page-title {
             font-family: 'Impact', 'Arial Black', sans-serif;
             font-size: clamp(2.8rem, 10vw, 6.5rem);
@@ -84,74 +88,404 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-shadow: 0 0 80px rgba(0, 212, 255, 0.08);
+            margin-bottom: 8px;
         }
-
         .page-divider {
             width: min(220px, 60vw);
             height: 1px;
-            margin: 28px auto 32px auto;
+            margin: 16px auto 48px auto;
             background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), rgba(176, 0, 255, 0.5), transparent);
             border: none;
             opacity: 0.7;
         }
 
-        .glass-card {
-            max-width: 640px;
+        /* ----- Cards container (grid-like) ----- */
+        .cards-container {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        /* ----- Premium Info Card ----- */
+        .info-card {
             background: rgba(16, 16, 26, 0.55);
             backdrop-filter: blur(32px) saturate(1.2);
             -webkit-backdrop-filter: blur(32px) saturate(1.2);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
-            padding: 34px 30px;
-            text-align: left;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            padding: 28px 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px 32px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.3s ease,
+                        border-color 0.3s ease;
+            will-change: transform;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                        transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                        box-shadow 0.3s ease,
+                        border-color 0.3s ease;
+        }
+        .info-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* hover lift (desktop) */
+        @media (hover: hover) {
+            .info-card:hover {
+                transform: translateY(-6px) scale(1.005);
+                box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+                border-color: rgba(0, 212, 255, 0.15);
+            }
+            .info-card:hover .card-image-wrap img {
+                transform: scale(1.03);
+            }
+        }
+        /* touch active state */
+        .info-card:active {
+            transform: scale(0.98);
+            transition-duration: 0.08s;
         }
 
-        .page-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.7);
+        /* ----- Image container (side) ----- */
+        .card-image-wrap {
+            flex: 0 0 clamp(180px, 30%, 300px);
+            min-width: 140px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            align-self: center;
+            aspect-ratio: 4 / 3;
+            position: relative;
+        }
+        .card-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        /* alternate image order */
+        .info-card.image-right .card-image-wrap {
+            order: 2;
+        }
+        .info-card.image-right .card-content {
+            order: 1;
+        }
+
+        /* ----- Card content (text side) ----- */
+        .card-content {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .card-content h2 {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #00d4ff 0%, #b000ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+        .card-content .subhead {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 4px;
+        }
+        .card-content .principal-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .card-content .principal-designation {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 12px;
+        }
+        .card-content p {
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.78);
             font-weight: 300;
+            margin-bottom: 12px;
+        }
+        .card-content p:last-child {
+            margin-bottom: 0;
+        }
+        .card-content .message-block {
+            background: rgba(0, 212, 255, 0.04);
+            border-left: 2px solid rgba(0, 212, 255, 0.25);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 12px 0 8px 0;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .card-content .message-block p {
+            font-style: normal;
+            margin-bottom: 8px;
+        }
+        .card-content .message-block .signature {
+            margin-top: 12px;
+            font-style: normal;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            text-align: right;
         }
 
+        /* Read more toggle */
+        .read-more-toggle {
+            display: inline-block;
+            margin-top: 6px;
+            color: #00d4ff;
+            background: none;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(0, 212, 255, 0.2);
+            transition: color 0.2s, border-color 0.2s;
+            background: transparent;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .read-more-toggle:hover {
+            color: #b000ff;
+            border-color: rgba(176, 0, 255, 0.3);
+        }
+        .read-more-toggle:focus-visible {
+            outline: 2px solid #00d4ff;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+        .extra-text {
+            display: none;
+        }
+        .extra-text.open {
+            display: block;
+        }
+
+        /* footer tag */
         .page-tag {
             font-size: 0.65rem;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.25);
-            margin-top: 24px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-top: 48px;
             text-align: center;
         }
 
-        @media (max-width: 768px) {
-            .home-link { top: 20px; left: 20px; font-size: 0.7rem; padding: 9px 15px; letter-spacing: 2.5px; }
-            .page-wrap { padding: 100px 18px 60px 18px; }
-            .page-title { letter-spacing: 6px; }
-            .glass-card { padding: 26px 22px; border-radius: 20px; }
-            .page-text { font-size: 0.95rem; }
-            .page-divider { width: 55vw; margin: 22px auto 26px auto; }
+        /* ----- responsive ----- */
+        @media (max-width: 900px) {
+            .info-card {
+                padding: 24px 22px;
+                gap: 24px;
+            }
+            .card-image-wrap {
+                flex: 0 0 100%;
+                max-width: 360px;
+                aspect-ratio: 4 / 3;
+                align-self: center;
+            }
+            .info-card.image-right .card-image-wrap {
+                order: 0;
+            }
+            .info-card.image-right .card-content {
+                order: 1;
+            }
+            .card-content h2 {
+                font-size: 1.7rem;
+            }
         }
-        @media (max-width: 480px) {
+
+        @media (max-width: 600px) {
+            .page-wrap { padding: 120px 16px 60px 16px; }
             .home-link { top: 16px; left: 16px; font-size: 0.65rem; padding: 8px 13px; letter-spacing: 2px; }
             .page-title { letter-spacing: 4px; }
-            .glass-card { padding: 22px 18px; border-radius: 18px; }
-            .page-text { font-size: 0.9rem; line-height: 1.55; }
-            .page-divider { width: 50vw; margin: 18px auto 22px auto; }
+            .page-divider { margin: 12px auto 32px auto; }
+            .info-card { padding: 18px 16px; border-radius: 20px; gap: 18px; }
+            .card-content p { font-size: 0.92rem; line-height: 1.6; }
+            .card-content .message-block { padding: 14px 16px; }
+            .card-image-wrap { max-width: 280px; }
+            .page-tag { margin-top: 32px; }
+        }
+        @media (max-width: 400px) {
+            .card-image-wrap { max-width: 220px; }
+            .card-content h2 { font-size: 1.3rem; }
+            .card-content p { font-size: 0.88rem; }
+        }
+
+        /* reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .info-card {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+            .info-card:hover {
+                transform: none !important;
+            }
+            .card-image-wrap img {
+                transition: none !important;
+            }
+            html { scroll-behavior: auto; }
         }
     </style>
 </head>
 <body>
+    <!-- Orbs -->
     <div class="page-bg-orb orb-a"></div>
     <div class="page-bg-orb orb-b"></div>
+
+    <!-- Home link (unchanged) -->
     <a href="index.html" class="home-link" aria-label="Back to home">← Home</a>
+
     <main class="page-wrap">
         <h1 class="page-title">About Us</h1>
         <hr class="page-divider" />
-        <div class="glass-card">
-            <p class="page-text">This is the placeholder text for the About page. Replace this with your actual content later. DEPLOMAT is a celebration of creativity, culture, and connection — a space where stories come alive and moments become memories.</p>
+
+        <div class="cards-container">
+
+            <!-- SECTION 1: About College (image left) -->
+            <section class="info-card visible" id="card-college">
+                <div class="card-image-wrap">
+                    <img src="https://i.ibb.co/xKdJ9wgh/1788701245002.png" alt="De Paul College Campus – sprawling greenery and architecture" loading="lazy" />
+                </div>
+                <div class="card-content">
+                    <h2>About the College</h2>
+                    <p>De Paul College Mysore, founded by the Vincentian fathers with a global presence in the field of education, provides ample space and soaring enthusiasm for inquisitive minds to bloom forth. The healthy ambience of De Paul opens up fresh avenues in which they would rise to spectacular heights and shine. With a sprawling campus spread over 50 acres enveloped by a beautiful landscape and equipped with infrastructure facilities of international standard, De Paul would stimulate and sustain the growth process of the students in its three-fold vital strands: Intellectual, Spiritual and Moral.</p>
+                </div>
+            </section>
+
+            <!-- SECTION 2: About Fest (image right) -->
+            <section class="info-card image-right" id="card-fest">
+                <div class="card-image-wrap">
+                    <img src="https://i.ibb.co/MXLHj1M/Whats-App-Image-2026-08-30-at-6-57-33-PM.jpg" alt="Deplomat 2K26 Atlantis – City of Poseidon festival visual" loading="lazy" />
+                </div>
+                <div class="card-content">
+                    <h2>About the Fest</h2>
+                    <p>Long before empires rose and fell, there was Atlantis — the island kingdom born of Poseidon's own hand, a civilization so magnificent it was said to rival the gods. Conceived by the philosopher Plato over two thousand years ago, its legend has echoed through time — a tale of glory, power, and the sea's eternal secrets. This year, that legend rises again.</p>
+                    <p>The Department of Commerce, Management, Computer Science, Arts and Physical Education proudly presents Deplomat 2K26, an Inter-Collegiate PU/UG Fest that summons the brightest minds to rise from the surface and descend into the lost splendor of Atlantis — City of Poseidon. Legend speaks of a sunken kingdom where knowledge, artistry, and valor once reigned supreme — and this September, that legend is reborn.</p>
+                    <p>Building on the resounding success of Deplomat 2K25, which drew over 1,000 enthusiastic participants, this year's edition rises grander still with 12 thrilling events spanning Core, Cultural, and Sports categories. Every challenge is a gate beneath the waves, and only those with sharp minds, bold hearts, and unshaken spirit shall emerge crowned as the true heirs of Atlantis.</p>
+                    <p>On 25th and 26th September 2026, De Paul College transforms into the sunken city itself — will you answer Poseidon's call and claim your throne beneath the tide?</p>
+                </div>
+            </section>
+
+            <!-- SECTION 3: Principal's Note (image left) -->
+            <section class="info-card" id="card-principal">
+                <div class="card-image-wrap">
+                    <img src="https://i.ibb.co/hxFSPkjg/1788700450288-1.png" alt="Rev. Dr. Baiju Antony CM – Principal of De Paul College" loading="lazy" />
+                </div>
+                <div class="card-content">
+                    <h2>Principal's Note</h2>
+                    <div class="principal-name">Rev. Dr. Baiju Antony CM</div>
+                    <div class="principal-designation">Principal, De Paul College, Mysore</div>
+                    <p><strong>Biography:</strong> A Vincentian educator and administrator, Rev. Dr. Baiju Antony CM leads De Paul College with a focus on holistic, value-based education. He holds a Ph.D. in Higher Education Leadership, Management and Policy from Seton Hall University, New Jersey, USA, and serves as a national executive member and Karnataka region secretary for the Xavier Board of Higher Education in India. With extensive experience as an administrator, director, and principal across academic institutions, he returned to lead the De Paul campus as principal in May 2021, having previously served in leadership roles here.</p>
+                    <p>Under his leadership, De Paul continues to strengthen its academic and co-curricular ecosystem on its 50-acre, landscaped campus equipped with international-standard infrastructure, nurturing students along intellectual, spiritual, and moral dimensions.</p>
+
+                    <!-- Principal's Message (with optional read more) -->
+                    <div class="message-block">
+                        <p><strong>Principal's Message:</strong></p>
+                        <div id="msg-short">
+                            <p>“Deplomat has always been more than a festival; it is a living expression of De Paul’s commitment to holistic formation. As we step into Deplomat 2K26 with the theme ‘Atlantis – City of Poseidon’, we invite our students to dive into a world where knowledge, artistry, and valor converge.</p>
+                        </div>
+                        <div id="msg-full" class="extra-text">
+                            <p>This year’s edition, with 12 events across Core, Cultural, and Sports categories, is designed to challenge minds, inspire creativity, and build character. Building on the momentum of Deplomat 2K25, which saw over 1,000 participants, we aim higher—encouraging every student to compete with integrity, collaborate with humility, and celebrate with responsibility.</p>
+                            <p>To our participants: may you pursue excellence not only for medals but for mastery—of your craft, your teamwork, and your values. To our organizers and volunteers: your service makes this vision real; uphold safety, fairness, and inclusivity in every detail.</p>
+                            <p>As your principal, I am proud to see our campus transform into the legendary city of Atlantis for two days of learning and celebration. Let Deplomat 2K26 be a milestone where you emerge not just as winners, but as thoughtful leaders ready to serve society.</p>
+                            <p>Welcome to Deplomat 2K26. May your spirit rise, your talents shine, and your actions reflect the best of De Paul.”</p>
+                            <div class="signature">— Rev. Dr. Baiju Antony CM<br />Principal, De Paul College, Mysore</div>
+                        </div>
+                        <button class="read-more-toggle" id="toggleMsg" aria-expanded="false" aria-controls="msg-full">Read more</button>
+                    </div>
+                </div>
+            </section>
+
         </div>
+
         <div class="page-tag">DEPLOMAT · Fest 2026</div>
     </main>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ----- SCROLL REVEAL (IntersectionObserver) -----
+            const cards = document.querySelectorAll('.info-card:not(.visible)');
+            if (cards.length) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.15,
+                    rootMargin: '0px 0px -30px 0px'
+                });
+                cards.forEach(c => observer.observe(c));
+            }
+
+            // ----- READ MORE / READ LESS (Principal's message) -----
+            const toggleBtn = document.getElementById('toggleMsg');
+            const fullMsg = document.getElementById('msg-full');
+            const shortMsg = document.getElementById('msg-short');
+            if (toggleBtn && fullMsg && shortMsg) {
+                let expanded = false;
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    expanded = !expanded;
+                    if (expanded) {
+                        fullMsg.classList.add('open');
+                        shortMsg.style.display = 'none';
+                        toggleBtn.textContent = 'Read less';
+                        toggleBtn.setAttribute('aria-expanded', 'true');
+                    } else {
+                        fullMsg.classList.remove('open');
+                        shortMsg.style.display = 'block';
+                        toggleBtn.textContent = 'Read more';
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                // ensure initial state: short visible, full hidden
+                fullMsg.classList.remove('open');
+                shortMsg.style.display = 'block';
+                toggleBtn.textContent = 'Read more';
+                toggleBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            // ----- TOUCH / ACTIVE state for cards (no hover on mobile) -----
+            // we use :active in css, but also add a small touch feedback
+            const allCards = document.querySelectorAll('.info-card');
+            allCards.forEach(card => {
+                card.addEventListener('touchstart', function() {
+                    // just a tiny class to trigger active style, but :active already works
+                    // we keep it clean
+                }, { passive: true });
+            });
+
+        })();
+    </script>
+
 </body>
 </html>
