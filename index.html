@@ -179,73 +179,11 @@
     .dropdown-item.login-item { color: rgba(232,217,184,0.85); }
 
     /* ─── TOP NAVIGATION BAR ──────────────────────────────── */
-    .nav-bar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      z-index: 998;
-      padding: 18px 24px;
-      display: flex;
-      gap: 28px;
-      align-items: center;
-      background: transparent;
-    }
-    .nav-item {
-      font-family: 'Cinzel', serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(232,217,184,0.25);
-      text-decoration: none;
-      cursor: pointer;
-      transition: 0.3s ease;
-      padding: 4px 0;
-      position: relative;
-      touch-action: manipulation;
-      font-weight: 600;
-    }
-    .nav-item::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 50%;
-      width: 0%;
-      height: 2px;
-      background: var(--gradient-gold);
-      transition: 0.3s ease;
-      transform: translateX(-50%);
-      border-radius: 2px;
-      filter: blur(2px);
-    }
-    .nav-item.active {
-      color: var(--gold-light);
-    }
-    .nav-item.active::after {
-      width: 80%;
-    }
-    .nav-item:active {
-      transform: scale(0.92);
-      color: var(--gold-bright);
-    }
-    .nav-item .nav-badge {
-      display: inline-block;
-      width: 5px;
-      height: 5px;
-      background: var(--gold-bright);
-      border-radius: 50%;
-      margin-left: 4px;
-      box-shadow: 0 0 12px rgba(169,132,69,0.3);
-      animation: pulseBadge 2s ease-in-out infinite;
-      vertical-align: middle;
-    }
-    @keyframes pulseBadge {
-      0%,100% { opacity: 0.3; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-    .nav-divider {
-      width: 1px;
-      height: 16px;
-      background: rgba(169,132,69,0.08);
+    /* This entire block is now unused — the nav-bar has been removed from the DOM.
+       However, we keep the CSS for completeness; it does not affect the layout anymore.
+       To avoid any potential conflicts, we also hide .nav-bar, .nav-item, etc. globally. */
+    .nav-bar, .nav-item, .nav-divider, .nav-badge {
+      display: none !important;
     }
 
     /* ─── SCROLL CONTAINER ──────────────────────────── */
@@ -747,41 +685,11 @@
       color: var(--gold-brilliant);
     }
 
-    /* ─── HOVER STATE (DESKTOP) - INTENSIFIED ─── */
-    .carousel-track .event-card:hover::after {
-      opacity: 1;
-      height: 100%;
-    }
-    .carousel-track .event-card:hover::before {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-    .carousel-track .event-card:hover .glow-aura {
-      opacity: 1;
-      transform: scaleY(1) scaleX(1);
-    }
-    .carousel-track .event-card:hover {
-      border-color: rgba(208, 175, 105, 0.35);
-      box-shadow: 
-        0 0 100px rgba(208, 175, 105, 0.1),
-        0 0 200px rgba(208, 175, 105, 0.05),
-        0 20px 60px rgba(0, 0, 0, 0.9);
-      transform: scale(0.97);
-    }
-    /* ─── FIX: HOVER NO LONGER DARKENS/BRIGHTENS IMAGE ─── */
+    /* ─── HOVER STATE ─────────────────────────────────────── */
+    /* Glow is controlled by JavaScript so only one event card can glow. */
     .carousel-track .event-card:hover .card-image {
       opacity: 1;
       filter: none;
-    }
-    .carousel-track .event-card:hover .card-explore-badge {
-      opacity: 1;
-      border-color: rgba(208, 175, 105, 0.4);
-      background: rgba(4, 18, 23, 0.9);
-      color: var(--gold-brilliant);
-    }
-    .carousel-track .event-card:hover .card-name {
-      text-shadow: 0 0 60px rgba(208, 175, 105, 0.2);
-      color: #FFF8E7;
     }
 
     /* ─── FIX: CARD IMAGE - FULL NATURAL EXPOSURE BY DEFAULT ─── */
@@ -1840,10 +1748,8 @@
       .dropdown-item .icon { width:20px; height:20px; font-size:8px; }
       .dropdown-section-title { font-size:7px; padding:4px 16px 2px 16px; }
       
-      /* NAV BAR */
-      .nav-bar { padding: 14px 18px; gap: 18px; }
-      .nav-item { font-size: 0.55rem; letter-spacing: 0.14em; padding: 6px 0; }
-      .nav-divider { height: 12px; }
+      /* NAV BAR - now hidden via display:none */
+      .nav-bar { display: none !important; }
       
       /* HERO - COMPACT */
       .hero-section {
@@ -2080,9 +1986,7 @@
     }
 
     @media (max-width: 480px) {
-      .nav-bar { padding: 12px 14px; gap: 14px; }
-      .nav-item { font-size: 0.5rem; letter-spacing: 0.12em; padding: 6px 0; }
-      .nav-divider { height: 10px; }
+      .nav-bar { display: none !important; }
       
       /* HERO - FURTHER COMPACT */
       .hero-section {
@@ -2321,14 +2225,9 @@
     </div>
   </header>
 
-  <!-- ─── TOP NAVIGATION BAR ─────────────────────────────── -->
-  <nav class="nav-bar" id="navBar">
-    <a class="nav-item active" data-action="home" id="navHome">Home</a>
-    <span class="nav-divider"></span>
-    <a class="nav-item" data-action="explore-event" id="navExplore">
-      Explore <span class="nav-badge"></span>
-    </a>
-  </nav>
+  <!-- ─── THE TOP NAVIGATION BAR HAS BEEN REMOVED ─────────── -->
+  <!-- The .nav-bar block is intentionally removed from the DOM. -->
+  <!-- Its CSS is also overridden with display:none to prevent any residual styling. -->
 
   <!-- ─── SCROLL CONTAINER ──────────────────────────────── -->
   <div class="scroll-container active" id="scrollContainer">
@@ -2577,6 +2476,7 @@
       
       let resizeTimeout = null;
       let currentGlowCard = null;
+      let hoveredCard = null;
 
       // ─── AUTOPLAY ───────────────────────────────────────────
       let autoplayTimer = null;
@@ -2756,8 +2656,9 @@
           }
         });
         
-        if (!isDragging && !isSnapping && closestCard) {
-          applyGlow(closestCard);
+        if (!isDragging && !isSnapping) {
+          // Single glow owner: hovered/tapped card takes priority; otherwise center card.
+          applyGlow(hoveredCard || closestCard);
         }
         
         dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
@@ -2921,6 +2822,9 @@
           targetIndex = getNearestCardIndex(currentPixelPos);
           const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.event-card');
           if (card) {
+            // The exact tapped card becomes the only glow owner.
+            hoveredCard = null;
+            applyGlow(card);
             const rect = card.getBoundingClientRect();
             createSparkles(e.clientX, e.clientY, 16);
             
@@ -3017,6 +2921,8 @@
         badge.addEventListener('click', (e) => {
           e.stopPropagation();
           if (isDragging || isSnapping) return;
+          hoveredCard = null;
+          applyGlow(card);
           const rect = card.getBoundingClientRect();
           createSparkles(e.clientX, e.clientY, 20);
           const oi = parseInt(badge.dataset.originalIndex);
@@ -3031,6 +2937,8 @@
         card.addEventListener('click', (e) => {
           if (e.target.closest('.card-explore-badge')) return;
           if (isDragging || isSnapping) return;
+          hoveredCard = null;
+          applyGlow(card);
           const rect = card.getBoundingClientRect();
           createSparkles(rect.left + rect.width/2, rect.top + rect.height/2, 14);
           const oi = parseInt(card.dataset.originalIndex);
@@ -3045,9 +2953,25 @@
         // ─── TOUCH SPARKLE ON TAP ──────────────────────────
         card.addEventListener('touchstart', (e) => {
           const touch = e.touches[0];
+          hoveredCard = null;
+          applyGlow(card);
           const rect = card.getBoundingClientRect();
           createSparkles(touch.clientX, touch.clientY, 10);
         }, { passive: true });
+
+        // Desktop hover uses the same single-owner glow system.
+        card.addEventListener('pointerenter', (e) => {
+          if (e.pointerType === 'mouse' && !isDragging && !isSnapping) {
+            hoveredCard = card;
+            applyGlow(card);
+          }
+        });
+        card.addEventListener('pointerleave', (e) => {
+          if (e.pointerType === 'mouse' && hoveredCard === card) {
+            hoveredCard = null;
+            if (!isDragging && !isSnapping) updateCardVisuals(currentPixelPos);
+          }
+        });
         
         return card;
       }
@@ -3149,7 +3073,8 @@
     // ═══════════════════════════════════════════════════════════
     const menuTrigger = document.getElementById('menuTrigger');
     const dropdown = document.getElementById('dropdownMenu');
-    const navItems = document.querySelectorAll('.nav-item');
+    // The .nav-item references are removed since the top nav is gone.
+    // We keep the hamburger menu logic intact.
     
     menuTrigger.addEventListener('click', (e) => { 
       e.stopPropagation(); 
@@ -3162,9 +3087,7 @@
 
     function navigateTo(action, url) {
       dropdown.classList.remove('open');
-      navItems.forEach(item => item.classList.remove('active'));
-      const targetNav = document.querySelector(`.nav-item[data-action="${action}"]`);
-      if (targetNav) targetNav.classList.add('active');
+      // No top nav items to update anymore
       
       if (action === 'home') {
         document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
@@ -3177,15 +3100,7 @@
       }
     }
 
-    navItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const action = item.getAttribute('data-action');
-        const url = item.getAttribute('data-url');
-        navigateTo(action, url);
-      });
-    });
-
+    // Hamburger dropdown items use navigateTo
     dropdown.querySelectorAll('.dropdown-item').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -3359,6 +3274,15 @@
           image: 'https://i.ibb.co/GvqT9Cr6/Picsart-26-09-06-19-21-05-118.png',
           label: '✦ About',
           href: 'about.html'
+        },
+        // ─── NEW FIFTH ITEM: COMING SOON ────────────────────
+        {
+          id: 'coming-soon',
+          title: 'COMING SOON',
+          desc: 'A new chapter of the DEPLOMAT experience awaits.',
+          image: 'https://via.placeholder.com/1200x700/041217/A98445?text=COMING+SOON',
+          label: '✦ Coming Soon',
+          href: '#'
         }
       ];
 
@@ -3453,6 +3377,13 @@
           el.addEventListener('pointerup', (e) => {
             e.preventDefault();
             if (isTransitioning) return;
+            // If the item is the 'coming-soon' with href '#', prevent navigation
+            if (item.href === '#') {
+              // Just set it active but don't navigate
+              setActive(index);
+              pauseAutoplay();
+              return;
+            }
             setActive(index);
             pauseAutoplay();
           });
@@ -3520,7 +3451,11 @@
         // Featured main click navigation
         featuredMain.addEventListener('pointerup', (e) => {
           const href = featuredMain.dataset.href;
-          if (href) window.location.href = href;
+          if (href && href !== '#') {
+            window.location.href = href;
+          } else if (href === '#') {
+            // Do nothing for coming soon
+          }
           pauseAutoplay();
         });
 
@@ -3553,7 +3488,7 @@
           startFeaturedAutoplay();
         }, 1000);
 
-        console.log('🏛️ Kingdom Featured Navigation initialized with AUTOPLAY');
+        console.log('🏛️ Kingdom Featured Navigation initialized with AUTOPLAY + 5th item (COMING SOON)');
       }
 
       if (document.readyState === 'loading') {
