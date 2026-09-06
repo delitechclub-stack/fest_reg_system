@@ -140,8 +140,8 @@
       cursor: pointer;
       position: relative;
     }
-    .dropdown-item:active { 
-      background: rgba(169,132,69,0.12); 
+    .dropdown-item:active {
+      background: rgba(169,132,69,0.12);
       transform: scale(0.97);
       color: var(--gold-bright);
       border-left-color: var(--gold);
@@ -188,6 +188,7 @@
       z-index: 1;
       transform: translateZ(0);
       min-height: -webkit-fill-available;
+      will-change: opacity;
     }
     .hero-section .video-container {
       position: absolute;
@@ -202,7 +203,6 @@
       height: 100%;
       object-fit: cover;
       pointer-events: none;
-      filter: brightness(0.85) saturate(0.9) contrast(1.1);
     }
     .hero-section .overlay {
       position: absolute;
@@ -446,7 +446,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .explore-header h2 .gold-text { 
+    .explore-header h2 .gold-text {
       background: var(--gradient-gold);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -505,7 +505,7 @@
     .carousel-track .event-card.active-card {
       transform: scale(1.05) !important;
       border-color: rgba(208, 175, 105, 0.4);
-      box-shadow: 
+      box-shadow:
         0 0 80px rgba(208, 175, 105, 0.15),
         0 0 160px rgba(208, 175, 105, 0.08),
         0 20px 60px rgba(0, 0, 0, 0.9);
@@ -630,26 +630,31 @@
       bottom: 12px;
       right: 12px;
       z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Cinzel', serif;
-      font-size: clamp(0.4rem, 0.7vw, 0.55rem);
-      letter-spacing: 0.15em;
+      font-size: 9px;
+      line-height: 1;
+      white-space: nowrap;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--gold-light);
       background: rgba(4,18,23,0.75);
-      padding: 3px 14px;
+      padding: 7px 14px;
       border-radius: 30px;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(169,132,69,0.1);
-      transition: 0.3s ease;
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
       pointer-events: auto;
       cursor: pointer;
       opacity: 0.7;
       font-weight: 700;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-    .carousel-track .event-card .card-explore-badge:active { 
-      transform: scale(0.92); 
+    .carousel-track .event-card .card-explore-badge:active {
+      transform: scale(0.92);
       background: rgba(208,175,105,0.15);
       border-color: var(--gold);
       color: var(--gold-brilliant);
@@ -743,13 +748,11 @@
       height: 100%;
       object-fit: cover;
       z-index: 0;
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.6s ease;
       opacity: 0;
-      transform: scale(1.02);
     }
     .kingdom-featured-main .featured-bg.active {
       opacity: 1;
-      transform: scale(1);
     }
     .kingdom-featured-main .featured-bg.loading {
       opacity: 0.3;
@@ -766,7 +769,7 @@
       z-index: 2;
       padding: 30px 28px 24px 28px;
       width: 100%;
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition: opacity 0.5s ease;
     }
     .kingdom-featured-main .featured-content .fc-label {
       font-family: 'Cinzel', serif;
@@ -1073,8 +1076,8 @@
       touch-action: manipulation;
       user-select: none;
     }
-    .promo-cta:active { 
-      transform: scale(0.96); 
+    .promo-cta:active {
+      transform: scale(0.96);
       border-color: rgba(208,175,105,0.15);
       color: var(--gold-brilliant);
     }
@@ -1508,7 +1511,17 @@
       100% { opacity: 0; transform: scale(0.1) translateY(-20px); }
     }
 
-    /* ─── RESPONSIVE - MOBILE OPTIMIZATIONS ─── */
+    /* ─── MOBILE PERFORMANCE LAYER ────────────────────── */
+    /* Remove hero video filter to reduce GPU load */
+    .hero-section .video-container video {
+      filter: none;
+    }
+    .hero-section .overlay {
+      background:
+        radial-gradient(ellipse at 50% 60%, rgba(4,18,23,0.3) 0%, rgba(4,18,23,0.6) 70%, rgba(4,18,23,0.9) 100%),
+        linear-gradient(180deg, rgba(4,18,23,0.3) 0%, transparent 30%, transparent 70%, rgba(4,18,23,0.6) 100%);
+    }
+
     @media (max-width: 768px) {
       .header { top:12px; left:12px; }
       .hamburger-icon { padding:10px 10px; border-radius:12px; gap:5px; }
@@ -1519,24 +1532,25 @@
       .dropdown-item { font-size:11px; padding:8px 16px; gap:10px; min-height:44px; }
       .dropdown-item .icon { width:20px; height:20px; font-size:8px; }
       .dropdown-section-title { font-size:7px; padding:4px 16px 2px 16px; }
-      
+
       .hero-section { height: 85svh; min-height: 600px; }
       .hero-center { top: 6vh; }
       .hero-title { font-size: clamp(1.8rem, 7vw, 3.5rem); }
       .hero-subtitle { font-size: clamp(0.6rem, 1.5vw, 0.9rem); letter-spacing: 0.15em; }
       .explore-cta { bottom: 16px; opacity: 0.3; }
       .explore-cta .mouse-line { height: 16px; }
-      
+
       .section-divider { height: 0.5px; }
       .section-divider .divider-ornament { font-size: 0.4rem; padding: 0 10px; }
-      
+
       .explore-section { min-height: auto; padding: 32px 0 16px 0; }
       .explore-header { padding: 0 16px 8px 16px; }
       .explore-header h2 { font-size: clamp(1rem, 4vw, 1.8rem); }
-      
+
+      /* Mobile carousel - reduced glow, less shadow */
       .carousel-stage { padding: 8px 0 4px 0; }
       .carousel-track { gap: 8px; padding: 0 4px; }
-      .carousel-track .event-card { 
+      .carousel-track .event-card {
         flex: 0 0 calc(100vw - 32px);
         min-width: 200px;
         max-width: 400px;
@@ -1548,43 +1562,64 @@
         opacity: 1 !important;
         transform: scale(1) !important;
         filter: brightness(1) !important;
+        /* Only animate transform on mobile - box-shadow/border-color
+           animation forces paint on every frame and causes jank */
+        transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+        will-change: transform;
       }
-      .carousel-track .event-card.active-card { transform: scale(1.03) !important; }
+      .carousel-track .event-card.active-card {
+        transform: scale(1.03) !important;
+        box-shadow: 0 0 24px rgba(208, 175, 105, 0.08), 0 6px 24px rgba(0,0,0,0.8);
+      }
       .carousel-track .event-card.nearby-card { transform: scale(0.92); }
       .carousel-track .event-card.far-card { transform: scale(0.85); }
-      
-      .carousel-track .event-card .glow-aura { bottom: -20px; height: 50%; }
-      .carousel-track .event-card .card-content { 
+
+      /* Mobile glow aura - cheaper */
+      .carousel-track .event-card .glow-aura {
+        bottom: -20px;
+        height: 50%;
+        filter: blur(20px);
+        background: radial-gradient(ellipse at bottom center, rgba(208, 175, 105, 0.08) 0%, transparent 70%);
+      }
+
+      .carousel-track .event-card .card-content {
         margin: 0 -12px -10px -12px;
         padding: 22px 12px 10px 12px;
         border-radius: 0 0 14px 14px;
       }
-      .carousel-track .event-card .card-name { 
+      .carousel-track .event-card .card-name {
         font-size: clamp(1.2rem, 4.5vw, 1.8rem);
         font-weight: 900;
         letter-spacing: 0.08em;
       }
-      .carousel-track .event-card .card-sub { 
+      .carousel-track .event-card .card-sub {
         font-size: clamp(0.7rem, 1.8vw, 0.95rem);
         letter-spacing: 0.12em;
       }
-      .carousel-track .event-card .card-explore-badge { 
-        font-size: clamp(0.4rem, 1vw, 0.55rem);
-        padding: 4px 14px;
+      .carousel-track .event-card .card-explore-badge {
+        font-size: 9px;
+        line-height: 1;
+        white-space: nowrap;
+        padding: 8px 14px;
         bottom: 10px;
         right: 10px;
-        min-height: 32px;
+        min-height: 0;
+        backdrop-filter: none;
+        background: rgba(4,18,23,0.85);
       }
-      
+      .carousel-track .event-card.active-card .card-explore-badge {
+        box-shadow: 0 0 20px rgba(208, 175, 105, 0.06);
+      }
+
       .dots-container { gap: 10px; margin-top: 8px; padding: 4px 0 12px 0; }
       .dot { width: 6px; height: 6px; }
       .dot.active { width: 24px; height: 6px; border-radius: 4px; }
-      
+
       .kingdom-featured { padding: 24px 16px 30px 16px; }
       .kingdom-featured .kingdom-heading { margin-bottom: 14px; font-size: clamp(0.5rem, 1vw, 0.7rem); }
       .kingdom-featured-stage { flex-direction: column; gap: 12px; }
-      .kingdom-featured-main { 
-        min-height: 200px; border-radius: 14px; 
+      .kingdom-featured-main {
+        min-height: 200px; border-radius: 14px;
         flex: 0 0 auto; aspect-ratio: 16 / 9;
         min-height: unset; width: 100%; margin-bottom: 4px;
       }
@@ -1601,7 +1636,24 @@
       .kingdom-featured-item .ki-divider { width: 24px; }
       .kingdom-featured-item.active .ki-divider { width: 32px; }
       .kingdom-featured-main .featured-bg { object-fit: cover; object-position: center 30%; }
-      
+
+      /* Mobile promo - reduce video filters and backdrop */
+      .promo-section .video-container video {
+        filter: brightness(0.7) saturate(0.8);
+      }
+      .promo-content .promo-badge {
+        backdrop-filter: none;
+        background: rgba(4,18,23,0.6);
+      }
+      .promo-countdown .cd-item {
+        backdrop-filter: none;
+        background: rgba(4,18,23,0.7);
+      }
+      .promo-cta {
+        backdrop-filter: none;
+        background: rgba(4,18,23,0.5);
+      }
+
       .promo-section { height: auto; min-height: 60vh; padding: 20px 0 30px 0; display: flex; flex-direction: column; }
       .promo-section .video-container { position: relative; height: 40vh; min-height: 220px; width: 100%; flex-shrink: 0; }
       .promo-section .video-container video { object-fit: cover; height: 100%; width: 100%; }
@@ -1622,6 +1674,36 @@
       .site-footer .footer-social a { font-size: 0.6rem; padding: 4px 6px; min-height: 32px; letter-spacing: 0.15em; }
       .site-footer .footer-text { font-size: 0.5rem; }
       .site-footer .footer-text .copyright { font-size: 0.4rem; }
+
+      /* Reduce hero particles and rays on mobile */
+      .particles .part:nth-child(1) { display: none; }
+      .particles .part:nth-child(3) { display: none; }
+      .particles .part:nth-child(5) { display: none; }
+      .particles .part:nth-child(7) { display: none; }
+      .light-rays .ray:nth-child(2) { display: none; }
+      .light-rays .ray:nth-child(4) { display: none; }
+
+      /* Remove backdrop filter from hamburger on mobile */
+      .hamburger-icon {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(4,18,23,0.9);
+      }
+      .epic-dropdown {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(6,26,32,0.98);
+      }
+      .modal-overlay {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(4,18,23,0.9);
+      }
+      .login-modal {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(6,26,32,0.98);
+      }
     }
 
     @media (max-width: 480px) {
@@ -1652,6 +1734,12 @@
       .promo-countdown .cd-item span { font-size: 1.1rem; }
       .promo-cta { font-size: 0.45rem; padding: 6px 14px; min-height: 32px; }
       .site-footer .footer-social a { font-size: 0.5rem; }
+
+      /* Further reduce particles */
+      .particles .part:nth-child(2) { display: none; }
+      .particles .part:nth-child(6) { display: none; }
+      .particles .part:nth-child(8) { display: none; }
+      .light-rays .ray:nth-child(3) { display: none; }
     }
 
     @media (max-width: 380px) {
@@ -1820,7 +1908,7 @@
     <!-- PROMO COUNTDOWN -->
     <section class="promo-section" id="promo">
       <div class="video-container">
-        <video autoplay muted loop playsinline webkit-playsinline preload="metadata">
+        <video id="promoVideo" autoplay muted loop playsinline webkit-playsinline preload="metadata">
           <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
         </video>
       </div>
@@ -1919,9 +2007,16 @@
         isTransitioning = true;
         introEntered = true;
         if (e) e.preventDefault();
-        
+
         intro.classList.add('exit');
-        
+
+        // Stop intro animations
+        setTimeout(() => {
+          const particles = document.querySelectorAll('.ip');
+          particles.forEach(p => p.style.animation = 'none');
+          document.getElementById('introParticles').style.display = 'none';
+        }, 100);
+
         setTimeout(() => {
           scrollContainer.classList.add('active');
           scrollContainer.style.overflowY = 'auto';
@@ -1934,7 +2029,7 @@
       sealWrapper.addEventListener('click', enterAtlantis);
       sealWrapper.addEventListener('touchstart', (e) => { if(!introEntered){ e.preventDefault(); enterAtlantis(e); } }, { passive: false });
       sealWrapper.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); enterAtlantis(e); } });
-      
+
       console.log('🏛️ Atlantis Intro ready');
     })();
 
@@ -1957,26 +2052,29 @@
     ];
 
     // ═══════════════════════════════════════════════════════════
-    // 3. CAROUSEL - INFINITE LOOP WITH DYNAMIC SCALING
+    // 3. CAROUSEL - INFINITE LOOP + MOBILE PERFORMANCE
     // ═══════════════════════════════════════════════════════════
     (function() {
       const track = document.getElementById('carouselTrack');
       const stage = document.getElementById('carouselStage');
       const dotsContainer = document.getElementById('dotsContainer');
       const N = events.length;
-      
-      const SNAP_DURATION = 600;
+      const TOTAL_COPIES = 3; // first, middle, third
+      const TOTAL_CARDS = N * TOTAL_COPIES;
+      const MIDDLE_COPY_START = N;
+      const MIDDLE_COPY_END = 2 * N - 1;
+
+      const SNAP_DURATION = 500;
       const SNAP_EASING = 'cubic-bezier(0.23, 1, 0.32, 1)';
-      const VELOCITY_THRESHOLD = 0.12;
-      
+
       let cardWidth = 0;
       let cardGap = 12;
       let cardWidthWithGap = 0;
-      
+
       let currentPixelPos = 0;
-      let currentLogicalIndex = N;
-      let currentRealIndex = 0;
-      
+      // logical index in the total 3-copy array (0..TOTAL_CARDS-1)
+      let currentLogicalIndex = MIDDLE_COPY_START;
+
       let isDragging = false;
       let isSnapping = false;
       let snapTimeout = null;
@@ -1984,7 +2082,7 @@
       let autoplayPaused = false;
       let autoplayDelay = 4000;
       let interactionTimeout = null;
-      
+
       let pointerDownX = 0;
       let pointerDownPixelPos = 0;
       let velocitySamples = [];
@@ -1992,14 +2090,23 @@
       let lastMoveX = 0;
       let resizeTimeout = null;
 
+      // RAF scheduling
+      let rafId = null;
+      let latestPointerX = null;
+
+      // ─── DOM CACHE FOR OPTIMIZATION ──────────────────────
+      let allCards = [];
+      let activeCard = null;
+      let dotElements = [];
+
       // ─── AUTOPLAY ───────────────────────────────────────────
       function startAutoplay() {
         stopAutoplay();
         if (autoplayPaused) return;
         autoplayTimer = setTimeout(() => {
           if (!autoplayPaused && !isDragging && !isSnapping) {
-            const nextIndex = currentLogicalIndex + 1;
-            snapToIndex(nextIndex, true);
+            const next = currentLogicalIndex + 1;
+            snapToIndex(next, true);
           }
           startAutoplay();
         }, autoplayDelay);
@@ -2039,11 +2146,13 @@
 
       // ─── SPARKLE EFFECT ──────────────────────────────────
       function createSparkles(x, y, count = 12) {
-        for (let i = 0; i < count; i++) {
+        const isMobile = window.innerWidth < 768;
+        const actualCount = isMobile ? Math.min(count, 8) : count;
+        for (let i = 0; i < actualCount; i++) {
           const sparkle = document.createElement('div');
           sparkle.className = 'sparkle-particle';
           const angle = Math.random() * 2 * Math.PI;
-          const dist = 10 + Math.random() * 50;
+          const dist = 10 + Math.random() * 40;
           const dx = Math.cos(angle) * dist;
           const dy = Math.sin(angle) * dist - 20;
           sparkle.style.left = (x + dx) + 'px';
@@ -2060,22 +2169,22 @@
         const styles = getComputedStyle(track);
         return parseFloat(styles.gap) || 12;
       }
-      
+
       function getPadding() {
         const styles = getComputedStyle(track);
         return parseFloat(styles.paddingLeft) || 8;
       }
-      
+
       function getStageWidth() {
         return stage.clientWidth || window.innerWidth;
       }
-      
+
       function getTrackOffset() {
         const stageWidth = getStageWidth();
         const padding = getPadding();
         return (stageWidth - cardWidth) / 2 - padding;
       }
-      
+
       function measureCardWidth() {
         const first = track.querySelector('.event-card');
         cardWidth = first ? first.offsetWidth : 220;
@@ -2083,102 +2192,177 @@
         cardWidthWithGap = cardWidth + cardGap;
         return cardWidth;
       }
-      
+
       function getPixelPositionForCard(index) {
         const offset = getTrackOffset();
         return -(index * cardWidthWithGap) + offset;
       }
-      
+
       function getCardIndexFromPixel(pixelPos) {
         const offset = getTrackOffset();
         return -(pixelPos - offset) / cardWidthWithGap;
       }
-      
+
       function getNearestCardIndex(pixelPos) {
         const offset = getTrackOffset();
         const index = -(pixelPos - offset) / cardWidthWithGap;
         return Math.round(index);
       }
 
-      // ─── CARD VISUAL UPDATES - DYNAMIC SCALING ────────────
-      function updateCardVisuals(pixelPos) {
-        const cards = track.querySelectorAll('.event-card');
+      // ─── INVISIBLE TELEPORT (LOOP NORMALIZATION) ──────────
+      function normalizeInfinitePosition() {
+        let needsNormalize = false;
+        let newIndex = currentLogicalIndex;
+
+        if (currentLogicalIndex >= 2 * N) {
+          newIndex = currentLogicalIndex - N;
+          needsNormalize = true;
+        } else if (currentLogicalIndex < N) {
+          newIndex = currentLogicalIndex + N;
+          needsNormalize = true;
+        }
+
+        if (needsNormalize) {
+          // Store the real event index (0..N-1) before teleport
+          const realEventIndex = currentLogicalIndex % N;
+
+          // Ensure the new index is in the middle copy (N..2N-1)
+          if (newIndex < N) newIndex += N;
+          if (newIndex >= 2 * N) newIndex -= N;
+
+          // Make sure it represents the same real event
+          // The middle copy range is N..2N-1
+          const middleEventIndex = newIndex % N;
+          if (middleEventIndex !== realEventIndex) {
+            // Adjust to correct middle copy position
+            newIndex = N + realEventIndex;
+          }
+
+          const newPixelPos = getPixelPositionForCard(newIndex);
+
+          // Invisible teleport
+          track.style.transition = 'none';
+          track.style.transform = `translate3d(${newPixelPos}px, 0, 0)`;
+          currentPixelPos = newPixelPos;
+          currentLogicalIndex = newIndex;
+
+          // Update card visuals after teleport (only active/nearby)
+          updateCardVisualsAfterSnap(newPixelPos);
+
+          // Force reflow to ensure transition is cleared
+          void track.offsetHeight;
+        }
+      }
+
+      // ─── UPDATE CARD VISUALS (ONLY AROUND CENTER) ─────────
+      function updateCardVisualsAfterSnap(pixelPos) {
+        const cards = allCards.length ? allCards : track.querySelectorAll('.event-card');
         if (!cards.length || cardWidthWithGap === 0) return;
-        
+
         const stageWidth = getStageWidth();
         const halfStage = stageWidth / 2;
         const halfCard = cardWidth / 2;
-        
-        let closestDist = Infinity;
-        let closestCard = null;
-        let closestOrigIdx = 0;
-        
+
+        let centerIndex = 0;
+
+        // Determine which card is closest to center
+        let minDist = Infinity;
         cards.forEach((card, i) => {
           const cardCenter = pixelPos + i * cardWidthWithGap + halfCard;
           const dist = Math.abs(cardCenter - halfStage);
-          const maxDist = stageWidth / 2 + cardWidth;
-          const norm = Math.min(dist / maxDist, 1);
-          
-          let scale;
-          let opacityVal;
-          
-          // Clear all classes first
-          card.classList.remove('active-card', 'nearby-card', 'far-card');
-          
+          if (dist < minDist) {
+            minDist = dist;
+            centerIndex = i;
+          }
+        });
+
+        // Only update cards around center (active + 2 on each side)
+        const range = 2;
+        const start = Math.max(0, centerIndex - range);
+        const end = Math.min(cards.length - 1, centerIndex + range);
+
+        // First, reset all cards to far state
+        cards.forEach((card, i) => {
+          if (i < start || i > end) {
+            card.classList.remove('active-card', 'nearby-card');
+            card.classList.add('far-card');
+            card.style.transform = 'scale(0.85)';
+            card.style.opacity = '0.7';
+            card.style.zIndex = '1';
+          }
+        });
+
+        // Update center and nearby cards
+        for (let i = start; i <= end; i++) {
+          const card = cards[i];
+          const cardCenter = pixelPos + i * cardWidthWithGap + halfCard;
+          const dist = Math.abs(cardCenter - halfStage);
+
+          let scale, opacityVal, className;
           if (dist < 100) {
+            className = 'active-card';
             scale = 1.05;
             opacityVal = 1;
-            card.classList.add('active-card');
-            closestCard = card;
-            closestOrigIdx = parseInt(card.dataset.originalIndex) || 0;
+            // Store which original event is active for dots
+            const origIdx = parseInt(card.dataset.originalIndex);
+            if (!isNaN(origIdx)) {
+              updateDots(origIdx);
+            }
           } else if (dist < 250) {
+            className = 'nearby-card';
             const progress = (dist - 100) / 150;
             scale = 1.05 - progress * 0.13;
             opacityVal = 1 - progress * 0.15;
-            card.classList.add('nearby-card');
           } else {
+            className = 'far-card';
             const progress = Math.min((dist - 250) / 200, 1);
             scale = 0.92 - progress * 0.07;
             opacityVal = 0.85 - progress * 0.15;
-            card.classList.add('far-card');
           }
-          
+
+          // Only apply if different from current state
+          card.classList.remove('active-card', 'nearby-card', 'far-card');
+          card.classList.add(className);
           card.style.transform = `scale(${scale})`;
           card.style.opacity = Math.max(0.5, opacityVal);
           card.style.zIndex = Math.round(scale * 10);
-          
-          if (dist < closestDist) {
-            closestDist = dist;
-            closestCard = card;
-            closestOrigIdx = parseInt(card.dataset.originalIndex) || 0;
-          }
-        });
-        
-        dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
-          dot.classList.toggle('active', i === closestOrigIdx);
+        }
+      }
+
+      // ─── UPDATE DOTS ──────────────────────────────────────
+      function updateDots(originalIndex) {
+        if (!dotElements.length) {
+          dotElements = dotsContainer.querySelectorAll('.dot');
+        }
+        dotElements.forEach((dot, i) => {
+          dot.classList.toggle('active', i === originalIndex);
         });
       }
 
       // ─── RENDER TRACK ──────────────────────────────────────
       function renderTrack(pixelPos, animate = false, duration = SNAP_DURATION, easing = SNAP_EASING) {
-        const totalCards = N * 3;
+        const totalCards = TOTAL_CARDS;
         const minPos = -(totalCards - 1) * cardWidthWithGap + getTrackOffset();
         const maxPos = getTrackOffset();
         const clampedPos = Math.max(minPos, Math.min(maxPos, pixelPos));
-        
+
         currentPixelPos = clampedPos;
-        
+
         if (animate) {
           track.style.transition = `transform ${duration}ms ${easing}`;
         } else {
           track.style.transition = 'none';
         }
-        
+
         track.style.transform = `translate3d(${clampedPos}px, 0, 0)`;
-        updateCardVisuals(clampedPos);
+
+        // Update visuals after render (but only when not dragging)
+        if (!isDragging) {
+          updateCardVisualsAfterSnap(clampedPos);
+        }
       }
 
-      // ─── SNAP TO INDEX - INFINITE LOOP ────────────────────
+      // ─── SNAP TO INDEX ────────────────────────────────────
       function snapToIndex(targetIndex, animate = true, duration = SNAP_DURATION) {
         if (isSnapping) {
           if (snapTimeout) {
@@ -2186,48 +2370,41 @@
             snapTimeout = null;
           }
         }
-        
-        const totalCards = N * 3;
-        
-        if (targetIndex < N) {
-          targetIndex = 2 * N - 1;
-        } else if (targetIndex >= 2 * N) {
-          targetIndex = N;
-        }
-        
-        targetIndex = Math.max(0, Math.min(totalCards - 1, targetIndex));
-        currentLogicalIndex = targetIndex;
-        currentRealIndex = targetIndex % N;
-        
+
+        // Clamp target to valid range
+        targetIndex = Math.max(0, Math.min(TOTAL_CARDS - 1, targetIndex));
+
         const targetPixelPos = getPixelPositionForCard(targetIndex);
-        
+
         isSnapping = true;
         stage.classList.add('is-snapping');
-        
+
         renderTrack(targetPixelPos, animate, duration);
-        
+
         const delay = animate ? duration + 50 : 50;
         snapTimeout = setTimeout(() => {
           isSnapping = false;
           stage.classList.remove('is-snapping');
           snapTimeout = null;
-          
-          if (currentLogicalIndex < N + 1 || currentLogicalIndex >= 2 * N - 1) {
-            const normalizedIndex = ((currentLogicalIndex % N) + N) % N + N;
-            if (normalizedIndex !== currentLogicalIndex) {
-              currentLogicalIndex = normalizedIndex;
-              currentRealIndex = currentLogicalIndex % N;
-              const silentPos = getPixelPositionForCard(currentLogicalIndex);
-              track.style.transition = 'none';
-              track.style.transform = `translate3d(${silentPos}px, 0, 0)`;
-              currentPixelPos = silentPos;
-              updateCardVisuals(silentPos);
-            }
+
+          // Update logical index
+          currentLogicalIndex = targetIndex;
+
+          // INVISIBLE TELEPORT: normalize if at boundaries
+          normalizeInfinitePosition();
+
+          // Ensure dots are correct after teleport
+          const realIdx = currentLogicalIndex % N;
+          updateDots(realIdx);
+
+          // Resume autoplay if paused
+          if (!autoplayPaused) {
+            startAutoplay();
           }
         }, delay);
       }
 
-      // ─── DRAG HANDLING ─────────────────────────────────────
+      // ─── DRAG HANDLING - LIGHTWEIGHT (GPU ONLY) ──────────
       function handlePointerDown(e) {
         if (isSnapping) {
           if (snapTimeout) {
@@ -2237,18 +2414,20 @@
           isSnapping = false;
           stage.classList.remove('is-snapping');
         }
-        
+
         isDragging = true;
         stage.classList.add('is-dragging');
         stage.setPointerCapture(e.pointerId);
-        
+
         pointerDownX = e.clientX;
         pointerDownPixelPos = currentPixelPos;
-        
+
         velocitySamples = [];
         lastMoveX = e.clientX;
         lastMoveTime = performance.now();
-        
+
+        latestPointerX = e.clientX;
+
         track.style.transition = 'none';
         e.preventDefault();
         handleUserInteraction();
@@ -2257,10 +2436,7 @@
       function handlePointerMove(e) {
         if (!isDragging) return;
         e.preventDefault();
-        
-        const deltaX = e.clientX - pointerDownX;
-        const newPixelPos = pointerDownPixelPos + deltaX;
-        
+
         const now = performance.now();
         const dt = now - lastMoveTime;
         if (dt > 0) {
@@ -2271,10 +2447,33 @@
         }
         lastMoveTime = now;
         lastMoveX = e.clientX;
-        
+
+        latestPointerX = e.clientX;
+
+        if (rafId === null) {
+          rafId = requestAnimationFrame(handleRaf);
+        }
+      }
+
+      function handleRaf() {
+        rafId = null;
+
+        if (!isDragging || latestPointerX === null) return;
+
+        const deltaX = latestPointerX - pointerDownX;
+        const newPixelPos = pointerDownPixelPos + deltaX;
+
         currentPixelPos = newPixelPos;
+
+        // GPU-friendly: only update transform
         track.style.transform = `translate3d(${newPixelPos}px, 0, 0)`;
-        updateCardVisuals(newPixelPos);
+
+        // DO NOT update card visuals during drag (saves CPU)
+        // Visuals will update on pointerup via snap
+
+        if (isDragging) {
+          rafId = requestAnimationFrame(handleRaf);
+        }
       }
 
       function handlePointerUp(e) {
@@ -2282,7 +2481,12 @@
         isDragging = false;
         stage.classList.remove('is-dragging');
         stage.releasePointerCapture(e.pointerId);
-        
+
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+
         let avgVelocity = 0;
         if (velocitySamples.length > 0) {
           let totalWeight = 0;
@@ -2296,11 +2500,12 @@
           });
           avgVelocity = totalWeight > 0 ? weightedSum / totalWeight : 0;
         }
-        
+
         const dist = Math.abs(e.clientX - pointerDownX);
         let targetIndex;
-        
+
         if (dist < 8) {
+          // Tap: navigate
           targetIndex = getNearestCardIndex(currentPixelPos);
           const card = document.elementFromPoint(e.clientX, e.clientY)?.closest('.event-card');
           if (card) {
@@ -2314,18 +2519,24 @@
             }
           }
         } else {
+          // Swipe
           const currentIndex = getCardIndexFromPixel(currentPixelPos);
           const absVelocity = Math.abs(avgVelocity);
-          
-          if (absVelocity > VELOCITY_THRESHOLD) {
+
+          if (absVelocity > 0.12) {
             const direction = avgVelocity > 0 ? -1 : 1;
             targetIndex = Math.round(currentIndex + direction);
           } else {
             targetIndex = Math.round(currentIndex);
           }
         }
-        
-        targetIndex = Math.max(N - 1, Math.min(2 * N, targetIndex));
+
+        // Clamp target to middle copy range to prevent edge jumps
+        // But allow one step beyond for natural feel
+        let minTarget = N - 1;
+        let maxTarget = 2 * N;
+        targetIndex = Math.max(minTarget, Math.min(maxTarget, targetIndex));
+
         snapToIndex(targetIndex, true);
       }
 
@@ -2334,18 +2545,24 @@
           isDragging = false;
           stage.classList.remove('is-dragging');
           stage.releasePointerCapture(e.pointerId);
+
+          if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+
           snapToIndex(getNearestCardIndex(currentPixelPos), true);
         }
       }
 
       // ─── WHEEL HANDLING ──────────────────────────────────
       let wheelTimeout = null;
-      
+
       function handleWheel(e) {
         if (isDragging || isSnapping) return;
         e.preventDefault();
         handleUserInteraction();
-        
+
         if (wheelTimeout) clearTimeout(wheelTimeout);
         wheelTimeout = setTimeout(() => {
           const direction = (e.deltaX || e.deltaY) > 0 ? 1 : -1;
@@ -2363,7 +2580,7 @@
           currentPixelPos = newPos;
           track.style.transition = 'none';
           track.style.transform = `translate3d(${newPos}px, 0, 0)`;
-          updateCardVisuals(newPos);
+          updateCardVisualsAfterSnap(newPos);
           resizeTimeout = null;
         }, 120);
       }
@@ -2375,9 +2592,12 @@
         card.dataset.originalIndex = idx % N;
         card.dataset.globalIndex = globalIdx;
         card.dataset.href = evt.href || ('event-' + (idx % N) + '.html');
+
+        const shouldLoadEager = idx < 3;
+
         card.innerHTML = `
           <div class="card-image">
-            <img src="${evt.image}" alt="Event photo" loading="${idx < 3 ? 'eager' : 'lazy'}" fetchpriority="${idx < 3 ? 'high' : 'auto'}" />
+            <img src="${evt.image}" alt="Event photo" loading="${shouldLoadEager ? 'eager' : 'lazy'}" fetchpriority="${shouldLoadEager ? 'high' : 'auto'}" />
             <div class="img-placeholder"></div>
           </div>
           <div class="glow-aura"></div>
@@ -2387,11 +2607,11 @@
           </div>
           <div class="card-explore-badge" data-original-index="${idx % N}">Explore →</div>
         `;
-        
+
         const img = card.querySelector('img');
         if (img.complete) img.classList.add('loaded');
         img.addEventListener('load', () => img.classList.add('loaded'));
-        
+
         const badge = card.querySelector('.card-explore-badge');
         badge.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2405,7 +2625,7 @@
           }
           handleUserInteraction();
         });
-        
+
         card.addEventListener('click', (e) => {
           if (e.target.closest('.card-explore-badge')) return;
           if (isDragging || isSnapping) return;
@@ -2419,20 +2639,27 @@
           }
           handleUserInteraction();
         });
-        
+
         return card;
       }
 
       function buildCarousel() {
         track.innerHTML = '';
         dotsContainer.innerHTML = '';
-        
-        for (let copy = 0; copy < 3; copy++) {
+        dotElements = [];
+
+        // Build 3 copies
+        for (let copy = 0; copy < TOTAL_COPIES; copy++) {
           events.forEach((evt, idx) => {
-            track.appendChild(createCardElement(evt, idx, copy * N + idx));
+            const card = createCardElement(evt, idx, copy * N + idx);
+            track.appendChild(card);
           });
         }
-        
+
+        // Cache all cards
+        allCards = track.querySelectorAll('.event-card');
+
+        // Build dots
         for (let i = 0; i < N; i++) {
           const dot = document.createElement('div');
           dot.className = 'dot' + (i === 0 ? ' active' : '');
@@ -2447,70 +2674,74 @@
             }
           });
           dotsContainer.appendChild(dot);
+          dotElements.push(dot);
         }
-        
+
         requestAnimationFrame(() => {
           measureCardWidth();
-          currentLogicalIndex = N;
-          currentRealIndex = 0;
-          const initialPos = getPixelPositionForCard(N);
+          currentLogicalIndex = MIDDLE_COPY_START;
+          const initialPos = getPixelPositionForCard(MIDDLE_COPY_START);
           currentPixelPos = initialPos;
           track.style.transition = 'none';
           track.style.transform = `translate3d(${initialPos}px, 0, 0)`;
-          updateCardVisuals(initialPos);
-          
+          updateCardVisualsAfterSnap(initialPos);
+
           setTimeout(() => {
             startAutoplay();
           }, 1000);
         });
-        
-        console.log('🏛️ Carousel: Infinite Loop + Dynamic Scaling');
+
+        console.log('🏛️ Carousel: Infinite loop + mobile performance optimized');
       }
 
       // ─── PRELOAD IMAGES ──────────────────────────────────
       function preloadImagesWithPriority(eventData) {
         const firstBatch = eventData.slice(0, 3);
         const rest = eventData.slice(3);
-        
+
         firstBatch.forEach((e) => {
           const img = new Image();
           img.fetchPriority = 'high';
           img.src = e.image;
         });
-        
-        rest.forEach((e) => {
-          const img = new Image();
-          img.loading = 'lazy';
-          img.src = e.image;
-        });
-        
+
         setTimeout(() => {
-          document.querySelectorAll('.card-image img').forEach(el => el.classList.add('loaded'));
-        }, 1500);
+          rest.forEach((e, index) => {
+            setTimeout(() => {
+              const img = new Image();
+              img.loading = 'lazy';
+              img.src = e.image;
+            }, index * 100);
+          });
+        }, 1000);
       }
 
       // ─── INIT ─────────────────────────────────────────────
       function init() {
         preloadImagesWithPriority(events);
         buildCarousel();
-        
+
         stage.addEventListener('pointerdown', handlePointerDown);
         stage.addEventListener('pointermove', handlePointerMove);
         stage.addEventListener('pointerup', handlePointerUp);
         stage.addEventListener('pointercancel', handlePointerCancel);
         stage.addEventListener('wheel', handleWheel, { passive: false });
-        
+
         window.addEventListener('resize', handleResize);
-        
+
         if (window.ResizeObserver) {
           const ro = new ResizeObserver(() => handleResize());
           ro.observe(stage);
         }
-        
-        console.log('🏛️ Carousel ready - INFINITE LOOP + DYNAMIC SCALING');
+
+        console.log('🏛️ Carousel ready - Infinite loop + Mobile optimized');
       }
-      
-      init();
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
     })();
 
     // ═══════════════════════════════════════════════════════════
@@ -2518,19 +2749,19 @@
     // ═══════════════════════════════════════════════════════════
     const menuTrigger = document.getElementById('menuTrigger');
     const dropdown = document.getElementById('dropdownMenu');
-    
-    menuTrigger.addEventListener('click', (e) => { 
-      e.stopPropagation(); 
-      dropdown.classList.toggle('open'); 
+
+    menuTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
     });
-    
-    document.addEventListener('click', (e) => { 
-      if (!document.querySelector('.header').contains(e.target)) dropdown.classList.remove('open'); 
+
+    document.addEventListener('click', (e) => {
+      if (!document.querySelector('.header').contains(e.target)) dropdown.classList.remove('open');
     });
 
     function navigateTo(action, url) {
       dropdown.classList.remove('open');
-      
+
       if (action === 'home') {
         document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
       } else if (action === 'explore-event') {
@@ -2552,57 +2783,85 @@
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 5. SCROLL
+    // 5. SCROLL - OPTIMIZED WITH INTERSECTION OBSERVER
     // ═══════════════════════════════════════════════════════════
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          
-          const hero = document.getElementById('hero');
-          if (hero) {
-            hero.style.opacity = Math.max(0, 1 - scrollY * 0.001);
-          }
-          
-          const explore = document.getElementById('explore');
-          if (explore) {
-            const rect = explore.getBoundingClientRect();
-            const viewH = window.innerHeight;
-            if (rect.top < viewH && rect.bottom > 0) {
-              const p = Math.min(Math.max(1 - (rect.top / viewH), 0), 1);
-              explore.style.opacity = 0.7 + p * 0.3;
+    (function() {
+      const hero = document.getElementById('hero');
+      const explore = document.getElementById('explore');
+      const promo = document.getElementById('promo');
+
+      let scrollY = 0;
+      let ticking = false;
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            scrollY = window.scrollY;
+
+            if (hero) {
+              hero.style.opacity = Math.max(0, 1 - scrollY * 0.001);
             }
-          }
-          
-          const promo = document.getElementById('promo');
-          if (promo) {
-            const rect = promo.getBoundingClientRect();
-            const viewH = window.innerHeight;
-            if (rect.top < viewH && rect.bottom > 0) {
-              const p = Math.min(Math.max(1 - (rect.top / viewH), 0), 1);
-              promo.style.opacity = 0.7 + p * 0.3;
+
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      if ('IntersectionObserver' in window) {
+        const sections = [explore, promo].filter(Boolean);
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            const target = entry.target;
+            if (entry.isIntersecting) {
+              target.style.opacity = '1';
+            } else {
+              target.style.opacity = '0.7';
             }
-          }
-          
-          ticking = false;
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
         });
-        ticking = true;
+
+        sections.forEach(section => {
+          if (section) observer.observe(section);
+        });
       }
-    }, { passive: true });
+
+      console.log('📜 Scroll optimized with IntersectionObserver');
+    })();
 
     // ═══════════════════════════════════════════════════════════
-    // 6. COUNTDOWN
+    // 6. COUNTDOWN - CACHED
     // ═══════════════════════════════════════════════════════════
-    const promoTarget = new Date('2026-09-25T00:00:00');
-    function updatePromoCountdown() {
-      const diff = Math.max(0, promoTarget - Date.now());
-      document.getElementById('pDays').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
-      document.getElementById('pHours').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
-      document.getElementById('pMins').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-      document.getElementById('pSecs').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-    }
-    updatePromoCountdown(); setInterval(updatePromoCountdown, 1000);
+    (function() {
+      const promoTarget = new Date('2026-09-25T00:00:00');
+      const pDays = document.getElementById('pDays');
+      const pHours = document.getElementById('pHours');
+      const pMins = document.getElementById('pMins');
+      const pSecs = document.getElementById('pSecs');
+
+      let prevDays = '', prevHours = '', prevMins = '', prevSecs = '';
+
+      function updatePromoCountdown() {
+        const diff = Math.max(0, promoTarget - Date.now());
+        const days = String(Math.floor(diff/86400000)).padStart(2,'0');
+        const hours = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+        const mins = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+        const secs = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+
+        if (days !== prevDays) { pDays.textContent = days; prevDays = days; }
+        if (hours !== prevHours) { pHours.textContent = hours; prevHours = hours; }
+        if (mins !== prevMins) { pMins.textContent = mins; prevMins = mins; }
+        if (secs !== prevSecs) { pSecs.textContent = secs; prevSecs = secs; }
+      }
+
+      updatePromoCountdown();
+      setInterval(updatePromoCountdown, 1000);
+      console.log('⏱️ Countdown optimized - cached elements');
+    })();
 
     // ═══════════════════════════════════════════════════════════
     // 7. LOGIN SYSTEM
@@ -2677,7 +2936,7 @@
     loginPass.addEventListener('input', ()=>{ loginPass.classList.remove('error'); loginError.classList.remove('show'); });
     loginUser.addEventListener('input', ()=>{ loginError.classList.remove('show'); });
     setRole('admin');
-    console.log('🔱 DEPLOMAT · OPTIMIZED & BRIGHT');
+    console.log('🔱 DEPLOMAT · MOBILE OPTIMIZED');
 
     // ═══════════════════════════════════════════════════════════
     // 8. KINGDOM FEATURED NAVIGATION
@@ -2736,29 +2995,35 @@
 
       let currentIndex = 0;
       let isTransitioning = false;
-      
+
       let autoplayTimer = null;
       let resumeTimer = null;
       let autoplayPaused = false;
 
       function preloadFeaturedImages() {
-        navItems.forEach(item => {
-          const img = new Image();
-          img.src = item.image;
-          img.onload = () => {
-            document.querySelectorAll('.ki-thumb img').forEach(el => {
-              if (el.src === item.image) {
-                el.classList.add('loaded');
-              }
-            });
-          };
+        const first = navItems[0];
+        const firstImg = new Image();
+        firstImg.src = first.image;
+
+        navItems.slice(1).forEach((item, index) => {
+          setTimeout(() => {
+            const img = new Image();
+            img.src = item.image;
+            img.onload = () => {
+              document.querySelectorAll('.ki-thumb img').forEach(el => {
+                if (el.src === item.image) {
+                  el.classList.add('loaded');
+                }
+              });
+            };
+          }, 500 + index * 100);
         });
       }
 
       function setActive(index, fromAutoplay = false) {
         if (isTransitioning) return;
         if (index === currentIndex) return;
-        
+
         isTransitioning = true;
 
         currentIndex = index;
@@ -2784,16 +3049,16 @@
             featuredBg.classList.add('active');
             isTransitioning = false;
           };
-          
+
           setTimeout(() => {
             featuredBg.classList.remove('loading');
             featuredBg.classList.add('active');
             isTransitioning = false;
-          }, 900);
+          }, 600);
 
           featuredMain.dataset.href = item.href;
 
-        }, 400);
+        }, 300);
       }
 
       function buildSelector() {
@@ -2803,14 +3068,18 @@
           el.className = 'kingdom-featured-item' + (index === 0 ? ' active' : '');
           el.dataset.index = index;
           el.innerHTML = `
-            <div class="ki-thumb"><img src="${item.image}" alt="${item.title}" loading="lazy" /></div>
+            <div class="ki-thumb"><img src="${item.image}" alt="${item.title}" loading="${index === 0 ? 'eager' : 'lazy'}" fetchpriority="${index === 0 ? 'high' : 'auto'}" /></div>
             <div class="ki-info">
               <div class="ki-title">${item.title}</div>
               <div class="ki-divider"></div>
               <div class="ki-sub">${item.label.replace('✦ ', '')}</div>
             </div>
           `;
-          
+
+          const img = el.querySelector('img');
+          if (img.complete) img.classList.add('loaded');
+          img.addEventListener('load', () => img.classList.add('loaded'));
+
           el.addEventListener('pointerup', (e) => {
             e.preventDefault();
             if (isTransitioning) return;
@@ -2822,7 +3091,7 @@
             setActive(index);
             pauseAutoplay();
           });
-          
+
           selector.appendChild(el);
         });
       }
@@ -2867,7 +3136,7 @@
       function initFeatured() {
         preloadFeaturedImages();
         buildSelector();
-        
+
         const first = navItems[0];
         featuredBg.src = first.image;
         featuredBg.classList.add('active');
@@ -2924,11 +3193,13 @@
     })();
 
     // ═══════════════════════════════════════════════════════════
-    // 9. HERO VIDEO CONTROLLER
+    // 9. HERO VIDEO CONTROLLER + INTERSECTION OBSERVER
     // ═══════════════════════════════════════════════════════════
     (function() {
       const heroVideo = document.getElementById('heroVideo');
-      if (!heroVideo) return;
+      const promoVideo = document.getElementById('promoVideo');
+      const heroSection = document.getElementById('hero');
+      const promoSection = document.getElementById('promo');
 
       let isAttempting = false;
 
@@ -2945,6 +3216,42 @@
           .catch(() => {
             isAttempting = false;
           });
+      }
+
+      if ('IntersectionObserver' in window && heroVideo) {
+        const heroObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              if (heroVideo.paused) {
+                heroVideo.play().catch(() => {});
+              }
+            } else {
+              if (!heroVideo.paused) {
+                heroVideo.pause();
+              }
+            }
+          });
+        }, { threshold: 0.1 });
+
+        heroObserver.observe(heroSection);
+      }
+
+      if ('IntersectionObserver' in window && promoVideo) {
+        const promoObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              if (promoVideo.paused) {
+                promoVideo.play().catch(() => {});
+              }
+            } else {
+              if (!promoVideo.paused) {
+                promoVideo.pause();
+              }
+            }
+          });
+        }, { threshold: 0.1 });
+
+        promoObserver.observe(promoSection);
       }
 
       if (document.readyState === 'loading') {
@@ -2981,17 +3288,10 @@
         }
       });
 
-      const interactionEvents = ['touchstart', 'pointerdown', 'click', 'touchend'];
-      interactionEvents.forEach(eventType => {
-        document.addEventListener(eventType, () => {
-          ensureHeroVideoPlaying();
-        }, { once: false, passive: true });
-      });
-
-      console.log('🎬 Hero Video Controller initialized');
+      console.log('🎬 Video Controller with IntersectionObserver');
     })();
 
-    console.log('🔱 DEPLOMAT · OPTIMIZED & BRIGHT - INFINITE LOOP + DYNAMIC SCALING');
+    console.log('🔱 DEPLOMAT · MOBILE OPTIMIZED - SMOOTH & FAST');
   </script>
 </body>
 </html>
