@@ -17,6 +17,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* background orbs – preserved */
         .page-bg-orb {
             position: fixed;
             border-radius: 50%;
@@ -28,6 +29,7 @@
         .orb-a { width: 520px; height: 520px; background: #b000ff; top: -10%; right: -10%; }
         .orb-b { width: 460px; height: 460px; background: #00d4ff; bottom: -10%; left: -10%; }
 
+        /* home link – unchanged */
         .home-link {
             position: fixed;
             top: 28px;
@@ -60,6 +62,7 @@
         }
         .home-link:active { transform: scale(0.95); }
 
+        /* main container */
         .page-wrap {
             position: relative;
             z-index: 2;
@@ -67,11 +70,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 120px 24px 80px 24px;
+            padding: 120px 24px 60px 24px;
             text-align: center;
         }
 
+        /* page heading – preserved style */
         .page-title {
             font-family: 'Impact', 'Arial Black', sans-serif;
             font-size: clamp(2.8rem, 10vw, 6.5rem);
@@ -89,30 +92,143 @@
         .page-divider {
             width: min(220px, 60vw);
             height: 1px;
-            margin: 28px auto 32px auto;
+            margin: 28px auto 12px auto;
             background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), rgba(176, 0, 255, 0.5), transparent);
             border: none;
             opacity: 0.7;
         }
 
-        .glass-card {
-            max-width: 640px;
+        /* subtitle & section heading */
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
+            margin-top: 6px;
+            margin-bottom: 32px;
+        }
+        .section-head {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ffffff 0%, #b0b0ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+        }
+
+        /* coordinator grid */
+        .coordinator-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            max-width: 1200px;
             width: 100%;
+            margin: 0 auto;
+        }
+
+        /* card – glassmorphism, preserved style */
+        .coordinator-card {
             background: rgba(16, 16, 26, 0.55);
             backdrop-filter: blur(32px) saturate(1.2);
             -webkit-backdrop-filter: blur(32px) saturate(1.2);
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
-            padding: 34px 30px;
-            text-align: left;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+            padding: 28px 20px 24px;
+            text-align: center;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 380px;
+        }
+        .coordinator-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 212, 255, 0.25);
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 212, 255, 0.05);
         }
 
-        .page-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.7);
+        /* image container – circular, consistent */
+        .card-image-wrap {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 16px;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            transition: transform 0.4s ease;
+        }
+        .coordinator-card:hover .card-image-wrap {
+            transform: scale(1.02);
+        }
+        .card-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* label COORDINATOR */
+        .coord-label {
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 2px;
+        }
+
+        .card-name {
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #fff;
+            margin-bottom: 0px;
+        }
+        .card-primary {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #00d4ff;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 12px;
+        }
+
+        .card-other-roles {
+            font-size: 0.8rem;
             font-weight: 300;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+            margin-bottom: 14px;
+            flex: 1;
+        }
+        .card-other-roles span {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .card-phone {
+            margin-top: 6px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        .card-phone a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+        .card-phone a:hover {
+            color: #00d4ff;
+        }
+        .card-phone .phone-icon {
+            margin-right: 6px;
+            opacity: 0.5;
         }
 
         .page-tag {
@@ -120,38 +236,203 @@
             letter-spacing: 4px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.25);
-            margin-top: 24px;
+            margin-top: 48px;
             text-align: center;
         }
 
-        @media (max-width: 768px) {
-            .home-link { top: 20px; left: 20px; font-size: 0.7rem; padding: 9px 15px; letter-spacing: 2.5px; }
-            .page-wrap { padding: 100px 18px 60px 18px; }
-            .page-title { letter-spacing: 6px; }
-            .glass-card { padding: 26px 22px; border-radius: 20px; }
-            .page-text { font-size: 0.95rem; }
-            .page-divider { width: 55vw; margin: 22px auto 26px auto; }
+        /* responsive */
+        @media (max-width: 992px) {
+            .coordinator-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+        @media (max-width: 640px) {
+            .coordinator-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                max-width: 420px;
+            }
+            .card-image-wrap {
+                width: 100px;
+                height: 100px;
+            }
+            .page-wrap {
+                padding: 100px 18px 40px 18px;
+            }
+            .home-link {
+                top: 20px;
+                left: 20px;
+                font-size: 0.7rem;
+                padding: 9px 15px;
+                letter-spacing: 2.5px;
+            }
+            .section-head {
+                font-size: 1.5rem;
+            }
         }
         @media (max-width: 480px) {
-            .home-link { top: 16px; left: 16px; font-size: 0.65rem; padding: 8px 13px; letter-spacing: 2px; }
-            .page-title { letter-spacing: 4px; }
-            .glass-card { padding: 22px 18px; border-radius: 18px; }
-            .page-text { font-size: 0.9rem; line-height: 1.55; }
-            .page-divider { width: 50vw; margin: 18px auto 22px auto; }
+            .home-link {
+                top: 16px;
+                left: 16px;
+                font-size: 0.65rem;
+                padding: 8px 13px;
+                letter-spacing: 2px;
+            }
+            .page-title {
+                letter-spacing: 4px;
+            }
+            .coordinator-card {
+                padding: 22px 16px 20px;
+                min-height: 340px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="page-bg-orb orb-a"></div>
     <div class="page-bg-orb orb-b"></div>
+
     <a href="index.html" class="home-link" aria-label="Back to home">← Home</a>
+
     <main class="page-wrap">
         <h1 class="page-title">Connect</h1>
         <hr class="page-divider" />
-        <div class="glass-card">
-            <p class="page-text">This is the placeholder text for the Connect page. Replace this with your actual content later. Reach out, team up, and become part of the DEPLOMAT community — where every voice finds a stage and every idea sparks a connection.</p>
-        </div>
+        <p class="subtitle">Meet the team behind DEPLOMAT Fest 2026</p>
+        <h2 class="section-head">Meet the Coordinators</h2>
+
+        <!-- coordinator grid will be rendered by JS -->
+        <div class="coordinator-grid" id="coordinatorGrid"></div>
+
         <div class="page-tag">DEPLOMAT · Fest 2026</div>
     </main>
+
+    <script>
+        (function() {
+            // ----- data -----
+            const coordinators = [{
+                name: "Nida Beig",
+                image: "https://i.ibb.co/JwPbTnnR/IMG-20260906-140240-jpg.jpg",
+                phone: "+91 80500 20617",
+                phoneRaw: "+918050020617",
+                primary: "Council President",
+                roles: [
+                    "Rotaract Club — President",
+                    "Cultural Club — Secretary",
+                    "Class Representative"
+                ]
+            }, {
+                name: "Nida Fatima",
+                image: "https://i.ibb.co/HTxf54Kd/IMG-20260906-140315-jpg.jpg",
+                phone: "+91 96062 30873",
+                phoneRaw: "+919606230873",
+                primary: "Council Secretary",
+                roles: [
+                    "Entrepreneurship Club — President",
+                    "Rotaract Club — Secretary",
+                    "Class Representative"
+                ]
+            }, {
+                name: "Hema Gowda",
+                image: "https://i.ibb.co/R4ZKtqYh/IMG-20260906-140346-jpg.jpg",
+                phone: "+91 831-0255242",
+                phoneRaw: "+918310255242",
+                primary: "Business Club — President",
+                roles: [
+                    "Rotaract Club — Joint Secretary",
+                    "Class Representative"
+                ]
+            }, {
+                name: "Alejandra",
+                image: "https://i.ibb.co/zVGwqqVY/IMG-20260906-140358-jpg.jpg",
+                phone: "+91 8921-721694",
+                phoneRaw: "+918921721694",
+                primary: "Music Club — President",
+                roles: [
+                    "Rotaract Club — International Service Director"
+                ]
+            }, {
+                name: "Aftab Ahmed",
+                image: "https://i.ibb.co/LhHVrtdg/IMG-20260906-140327-jpg.jpg",
+                phone: "+91 90190 43876",
+                phoneRaw: "+919019043876",
+                primary: "Sports Club — President",
+                roles: []
+            }];
+
+            const grid = document.getElementById('coordinatorGrid');
+            if (!grid) return;
+
+            // build cards
+            coordinators.forEach(c => {
+                const card = document.createElement('div');
+                card.className = 'coordinator-card';
+
+                // image
+                const imgWrap = document.createElement('div');
+                imgWrap.className = 'card-image-wrap';
+                const img = document.createElement('img');
+                img.src = c.image;
+                img.alt = c.name;
+                img.loading = 'lazy';
+                img.onerror = function() {
+                    // subtle fallback: hide broken image, keep layout
+                    this.style.display = 'none';
+                };
+                imgWrap.appendChild(img);
+                card.appendChild(imgWrap);
+
+                // label
+                const label = document.createElement('div');
+                label.className = 'coord-label';
+                label.textContent = 'COORDINATOR';
+                card.appendChild(label);
+
+                // name
+                const nameEl = document.createElement('div');
+                nameEl.className = 'card-name';
+                nameEl.textContent = c.name;
+                card.appendChild(nameEl);
+
+                // primary role
+                const primaryEl = document.createElement('div');
+                primaryEl.className = 'card-primary';
+                primaryEl.textContent = c.primary;
+                card.appendChild(primaryEl);
+
+                // other roles (if any)
+                const rolesWrap = document.createElement('div');
+                rolesWrap.className = 'card-other-roles';
+                if (c.roles.length) {
+                    c.roles.forEach(r => {
+                        const span = document.createElement('span');
+                        span.textContent = r;
+                        rolesWrap.appendChild(span);
+                    });
+                } else {
+                    // if no other roles, keep empty but preserve spacing
+                    rolesWrap.innerHTML = '&nbsp;';
+                }
+                card.appendChild(rolesWrap);
+
+                // phone
+                const phoneWrap = document.createElement('div');
+                phoneWrap.className = 'card-phone';
+                const a = document.createElement('a');
+                a.href = 'tel:' + c.phoneRaw;
+                a.setAttribute('aria-label', 'Call ' + c.name);
+                // phone icon (simple unicode)
+                const icon = document.createElement('span');
+                icon.className = 'phone-icon';
+                icon.textContent = '📞 ';
+                a.appendChild(icon);
+                a.append(c.phone);
+                phoneWrap.appendChild(a);
+                card.appendChild(phoneWrap);
+
+                grid.appendChild(card);
+            });
+        })();
+    </script>
 </body>
 </html>
