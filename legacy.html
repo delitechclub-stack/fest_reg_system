@@ -6,60 +6,113 @@
     <title>DEPLOMAT · Legacy</title>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; overscroll-behavior: none; }
+        /* ----- reset & base ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overscroll-behavior: none;
+        }
+
         body {
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: #0a0a0f;
+            font-family: 'Segoe UI', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+            background: #08080e;
             color: #fff;
             overflow-x: hidden;
             min-height: 100dvh;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ----- background orbs (refined) ----- */
         .page-bg-orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.18;
+            filter: blur(130px);
+            opacity: 0.13;
             z-index: 0;
             pointer-events: none;
+            will-change: transform;
         }
-        .orb-a { width: 520px; height: 520px; background: #ff2a6d; top: 20%; left: -15%; }
-        .orb-b { width: 460px; height: 460px; background: #b000ff; bottom: -10%; right: -10%; }
 
+        .orb-a {
+            width: 600px;
+            height: 600px;
+            background: #2a6eff;
+            top: -10%;
+            left: -10%;
+        }
+
+        .orb-b {
+            width: 500px;
+            height: 500px;
+            background: #b000ff;
+            bottom: -15%;
+            right: -8%;
+        }
+
+        .orb-c {
+            width: 400px;
+            height: 400px;
+            background: #00d4ff;
+            top: 45%;
+            left: 60%;
+            opacity: 0.06;
+            filter: blur(150px);
+        }
+
+        /* ----- home link (cinematic) ----- */
         .home-link {
             position: fixed;
             top: 28px;
             left: 32px;
-            z-index: 20;
+            z-index: 30;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
-            font-size: 0.75rem;
-            letter-spacing: 3px;
+            font-size: 0.7rem;
+            letter-spacing: 3.5px;
             text-transform: uppercase;
             font-weight: 500;
-            padding: 10px 18px;
+            padding: 10px 22px;
             border-radius: 60px;
-            background: rgba(16, 16, 26, 0.5);
-            backdrop-filter: blur(20px) saturate(1.2);
-            -webkit-backdrop-filter: blur(20px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-            transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(10, 10, 18, 0.6);
+            backdrop-filter: blur(18px) saturate(1.3);
+            -webkit-backdrop-filter: blur(18px) saturate(1.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             -webkit-tap-highlight-color: transparent;
         }
+
         .home-link:hover {
             color: #00d4ff;
-            border-color: rgba(0, 212, 255, 0.2);
-            transform: translateX(-4px);
-            background: rgba(0, 212, 255, 0.06);
+            border-color: rgba(0, 212, 255, 0.25);
+            transform: translateX(-5px) scale(1.02);
+            background: rgba(0, 212, 255, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 212, 255, 0.08);
         }
-        .home-link:active { transform: scale(0.95); }
 
+        .home-link:active {
+            transform: scale(0.94);
+        }
+
+        .home-link .arrow {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .home-link:hover .arrow {
+            transform: translateX(-4px);
+        }
+
+        /* ----- main layout ----- */
         .page-wrap {
             position: relative;
             z-index: 2;
@@ -67,91 +120,610 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 120px 24px 80px 24px;
+            padding: 120px 28px 90px 28px;
+            max-width: 1360px;
+            margin: 0 auto;
+        }
+
+        /* ----- header section ----- */
+        .header-section {
+            width: 100%;
             text-align: center;
+            margin-bottom: 40px;
+            animation: fadeDown 0.9s cubic-bezier(0.23, 1, 0.32, 1) both;
         }
 
         .page-title {
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            font-size: clamp(2.8rem, 10vw, 6.5rem);
+            font-family: 'Impact', 'Arial Black', 'Helvetica Black', sans-serif;
+            font-size: clamp(3rem, 10vw, 6rem);
             font-weight: 900;
-            letter-spacing: 10px;
+            letter-spacing: 12px;
             text-transform: uppercase;
             line-height: 1.1;
-            background: linear-gradient(135deg, #00d4ff 0%, #b000ff 100%);
+            background: linear-gradient(135deg, #00d4ff 0%, #b000ff 90%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 80px rgba(0, 212, 255, 0.08);
+            text-shadow: 0 0 100px rgba(0, 212, 255, 0.06);
+            margin-bottom: 4px;
+        }
+
+        .page-sub {
+            font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+            margin-top: 4px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: inline-block;
         }
 
         .page-divider {
-            width: min(220px, 60vw);
+            width: min(260px, 70vw);
             height: 1px;
-            margin: 28px auto 32px auto;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), rgba(176, 0, 255, 0.5), transparent);
+            margin: 20px auto 24px auto;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.4), rgba(176, 0, 255, 0.4), transparent);
             border: none;
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
-        .glass-card {
-            max-width: 640px;
+        /* ----- card grid ----- */
+        .cards-grid {
             width: 100%;
-            background: rgba(16, 16, 26, 0.55);
-            backdrop-filter: blur(32px) saturate(1.2);
-            -webkit-backdrop-filter: blur(32px) saturate(1.2);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
-            padding: 34px 30px;
-            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+            animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+            animation-delay: 0.15s;
         }
 
-        .page-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 300;
+        /* featured card (card 1) */
+        .card-featured {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .page-tag {
-            font-size: 0.65rem;
-            letter-spacing: 4px;
+        .card-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ----- card base ----- */
+        .card-link {
+            display: block;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            text-decoration: none;
+            color: #fff;
+            background: #0e0e16;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s ease, border-color 0.3s ease;
+            will-change: transform;
+            aspect-ratio: 16 / 9;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .card-link:hover {
+            transform: scale(1.025);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 212, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.08);
+            z-index: 10;
+        }
+
+        .card-link:active {
+            transform: scale(0.98);
+        }
+
+        /* card image wrapper */
+        .card-image-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .card-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        .card-link:hover .card-image-wrap img {
+            transform: scale(1.04);
+        }
+
+        /* ----- gradient overlay (cinematic) ----- */
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0.05) 0%,
+                    rgba(0, 0, 0, 0.25) 40%,
+                    rgba(0, 0, 0, 0.7) 75%,
+                    rgba(0, 0, 0, 0.9) 100%);
+            pointer-events: none;
+            transition: background 0.4s ease;
+        }
+
+        .card-link:hover .card-overlay {
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0.02) 0%,
+                    rgba(0, 0, 0, 0.20) 35%,
+                    rgba(0, 0, 0, 0.75) 75%,
+                    rgba(0, 0, 0, 0.95) 100%);
+        }
+
+        /* edge glow (subtle) */
+        .card-link::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+            transition: box-shadow 0.4s ease;
+        }
+
+        .card-link:hover::after {
+            box-shadow: inset 0 0 0 1px rgba(0, 212, 255, 0.08), 0 0 30px rgba(0, 212, 255, 0.02);
+        }
+
+        /* ----- card content (bottom) ----- */
+        .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px 28px 22px 28px;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            pointer-events: none;
+        }
+
+        .card-label {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.25);
-            margin-top: 24px;
-            text-align: center;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.5);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card-link:hover .card-label {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 6px 16px 6px 14px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: auto;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.25s ease;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-link:hover .card-badge {
+            background: rgba(0, 212, 255, 0.12);
+            border-color: rgba(0, 212, 255, 0.15);
+            transform: scale(1.04);
+        }
+
+        .card-badge .icon {
+            display: inline-block;
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+
+        /* coming soon badge */
+        .badge-soon {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 3px;
+        }
+
+        .card-link:hover .badge-soon {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.06);
+            transform: scale(1.02);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .badge-soon .icon {
+            opacity: 0.5;
+        }
+
+        /* play icon (small) */
+        .play-icon {
+            display: inline-block;
+            font-size: 1rem;
+            line-height: 1;
+            margin-right: 2px;
+        }
+
+        /* ----- card 1 disabled state (no link) ----- */
+        .card-disabled {
+            cursor: default;
+        }
+
+        .card-disabled:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 255, 255, 0.01);
+            border-color: rgba(255, 255, 255, 0.04);
+        }
+
+        .card-disabled:active {
+            transform: scale(0.98);
+        }
+
+        /* ----- animation keyframes ----- */
+        @keyframes fadeDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* stagger children */
+        .card-grid-2 .card-link:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        .card-grid-2 .card-link:nth-child(2) {
+            animation-delay: 0.28s;
+        }
+        .card-featured .card-link {
+            animation-delay: 0.1s;
+        }
+
+        .card-link {
+            opacity: 0;
+            animation: fadeUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        /* reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .card-link:hover {
+                transform: none !important;
+            }
+            .card-link:hover .card-image-wrap img {
+                transform: none !important;
+            }
+            .card-link:hover .card-overlay {
+                background: linear-gradient(180deg,
+                        rgba(0, 0, 0, 0.05) 0%,
+                        rgba(0, 0, 0, 0.25) 40%,
+                        rgba(0, 0, 0, 0.7) 75%,
+                        rgba(0, 0, 0, 0.9) 100%);
+            }
+            .home-link:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ----- responsive ----- */
+        @media (max-width: 992px) {
+            .page-wrap {
+                padding: 110px 24px 70px 24px;
+            }
+            .card-grid-2 {
+                gap: 28px;
+            }
         }
 
         @media (max-width: 768px) {
-            .home-link { top: 20px; left: 20px; font-size: 0.7rem; padding: 9px 15px; letter-spacing: 2.5px; }
-            .page-wrap { padding: 100px 18px 60px 18px; }
-            .page-title { letter-spacing: 6px; }
-            .glass-card { padding: 26px 22px; border-radius: 20px; }
-            .page-text { font-size: 0.95rem; }
-            .page-divider { width: 55vw; margin: 22px auto 26px auto; }
+            .home-link {
+                top: 20px;
+                left: 20px;
+                font-size: 0.6rem;
+                padding: 8px 16px;
+                letter-spacing: 2.5px;
+            }
+            .page-wrap {
+                padding: 100px 18px 50px 18px;
+            }
+            .page-title {
+                letter-spacing: 8px;
+            }
+            .page-divider {
+                width: 55vw;
+                margin: 16px auto 20px auto;
+            }
+            .cards-grid {
+                gap: 28px;
+            }
+            .card-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+            .card-content {
+                padding: 18px 20px 16px 20px;
+            }
+            .card-label {
+                font-size: 0.6rem;
+                letter-spacing: 2px;
+            }
+            .card-badge {
+                font-size: 0.55rem;
+                padding: 4px 12px 4px 10px;
+                letter-spacing: 1.5px;
+            }
+            .card-link {
+                border-radius: 16px;
+            }
+            .card-link::after {
+                border-radius: 16px;
+            }
         }
+
         @media (max-width: 480px) {
-            .home-link { top: 16px; left: 16px; font-size: 0.65rem; padding: 8px 13px; letter-spacing: 2px; }
-            .page-title { letter-spacing: 4px; }
-            .glass-card { padding: 22px 18px; border-radius: 18px; }
-            .page-text { font-size: 0.9rem; line-height: 1.55; }
-            .page-divider { width: 50vw; margin: 18px auto 22px auto; }
+            .home-link {
+                top: 16px;
+                left: 16px;
+                font-size: 0.55rem;
+                padding: 7px 14px;
+                letter-spacing: 2px;
+                gap: 4px;
+            }
+            .page-wrap {
+                padding: 90px 14px 40px 14px;
+            }
+            .page-title {
+                letter-spacing: 5px;
+                font-size: clamp(2.4rem, 12vw, 3.6rem);
+            }
+            .page-sub {
+                font-size: 0.65rem;
+                letter-spacing: 4px;
+            }
+            .page-divider {
+                width: 50vw;
+                margin: 12px auto 16px auto;
+            }
+            .cards-grid {
+                gap: 22px;
+            }
+            .card-grid-2 {
+                gap: 22px;
+            }
+            .card-content {
+                padding: 14px 16px 14px 16px;
+            }
+            .card-label {
+                font-size: 0.5rem;
+                letter-spacing: 1.5px;
+            }
+            .card-badge {
+                font-size: 0.5rem;
+                padding: 3px 10px 3px 8px;
+                letter-spacing: 1px;
+                gap: 4px;
+            }
+            .card-link {
+                border-radius: 14px;
+            }
+            .card-link::after {
+                border-radius: 14px;
+            }
+        }
+
+        /* touch: prevent sticky hover on mobile */
+        @media (hover: hover) {
+            .card-link:hover {
+                transform: scale(1.025);
+            }
+            .card-disabled:hover {
+                transform: scale(1.02);
+            }
+        }
+
+        @media (hover: none) {
+            .card-link:hover {
+                transform: none !important;
+            }
+            .card-link:hover .card-image-wrap img {
+                transform: none !important;
+            }
+            .card-link:hover .card-overlay {
+                background: linear-gradient(180deg,
+                        rgba(0, 0, 0, 0.05) 0%,
+                        rgba(0, 0, 0, 0.25) 40%,
+                        rgba(0, 0, 0, 0.7) 75%,
+                        rgba(0, 0, 0, 0.9) 100%);
+            }
+            .card-link:active {
+                transform: scale(0.97) !important;
+            }
+            .home-link:hover {
+                transform: none !important;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- background orbs -->
     <div class="page-bg-orb orb-a"></div>
     <div class="page-bg-orb orb-b"></div>
-    <a href="index.html" class="home-link" aria-label="Back to home">← Home</a>
+    <div class="page-bg-orb orb-c"></div>
+
+    <!-- home link -->
+    <a href="index.html" class="home-link" aria-label="Back to home">
+        <span class="arrow">←</span> Home
+    </a>
+
     <main class="page-wrap">
-        <h1 class="page-title">Legacy</h1>
-        <hr class="page-divider" />
-        <div class="glass-card">
-            <p class="page-text">This is the placeholder text for the Legacy page. Replace this with your actual content later. Years of moments, milestones, and memories — the DEPLOMAT legacy is built by everyone who has ever stepped into the experience.</p>
+        <!-- header -->
+        <div class="header-section">
+            <h1 class="page-title">Legacy</h1>
+            <div class="page-sub">Moments that become memories</div>
+            <hr class="page-divider" />
         </div>
-        <div class="page-tag">DEPLOMAT · Fest 2026</div>
+
+        <!-- cards -->
+        <div class="cards-grid">
+            <!-- CARD 1 – featured / coming soon -->
+            <div class="card-featured">
+                <div class="card-link card-disabled" role="button" aria-label="Coming soon – no link" tabindex="0">
+                    <div class="card-image-wrap">
+                        <img src="https://i.ibb.co/35xSGM2c/1788690042912.png" alt="Legacy card 1 – coming soon" loading="lazy" />
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Featured</span>
+                        <span class="card-badge badge-soon">
+                            <span class="icon">✦</span> Coming soon
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2–5 in 2-column grid -->
+            <div class="card-grid-2">
+                <!-- CARD 2 -->
+                <a href="https://youtu.be/XEXfyTwYfG4?si=pqRHuBmYVnmlCGiX" target="_blank" rel="noopener noreferrer" class="card-link" aria-label="Watch video 2">
+                    <div class="card-image-wrap">
+                        <img src="https://i.ibb.co/twBRSjvf/1788690004144.png" alt="Legacy card 2" loading="lazy" />
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Watch</span>
+                        <span class="card-badge">
+                            <span class="icon play-icon">▶</span> Play
+                        </span>
+                    </div>
+                </a>
+
+                <!-- CARD 3 -->
+                <a href="https://youtu.be/Qrfcss-Q9RQ?si=HXZboBJdsxkdjV4n" target="_blank" rel="noopener noreferrer" class="card-link" aria-label="Watch video 3">
+                    <div class="card-image-wrap">
+                        <img src="https://i.ibb.co/HD9vt65n/1788689776930.png" alt="Legacy card 3" loading="lazy" />
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Watch</span>
+                        <span class="card-badge">
+                            <span class="icon play-icon">▶</span> Play
+                        </span>
+                    </div>
+                </a>
+
+                <!-- CARD 4 -->
+                <a href="https://youtu.be/Qrfcss-Q9RQ?si=HXZboBJdsxkdjV4n" target="_blank" rel="noopener noreferrer" class="card-link" aria-label="Watch video 4">
+                    <div class="card-image-wrap">
+                        <img src="https://i.ibb.co/jPrGB0VV/1788689680760.png" alt="Legacy card 4" loading="lazy" />
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Watch</span>
+                        <span class="card-badge">
+                            <span class="icon play-icon">▶</span> Play
+                        </span>
+                    </div>
+                </a>
+
+                <!-- CARD 5 -->
+                <a href="https://youtu.be/xdGhgirpvCw?si=BuUeOIrBzCVqXsRj" target="_blank" rel="noopener noreferrer" class="card-link" aria-label="Watch video 5">
+                    <div class="card-image-wrap">
+                        <img src="https://i.ibb.co/C5z83VvV/1788689354428.png" alt="Legacy card 5" loading="lazy" />
+                        <div class="card-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-label">Watch</span>
+                        <span class="card-badge">
+                            <span class="icon play-icon">▶</span> Play
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- subtle footer (not required but keeps DEPLOMAT identity) -->
+        <div style="margin-top: 56px; font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.08);">
+            DEPLOMAT · Fest 2026
+        </div>
     </main>
+
+    <!-- tiny script for keyboard accessibility on card 1 (coming soon) -->
+    <script>
+        (function() {
+            const disabledCard = document.querySelector('.card-disabled');
+            if (disabledCard) {
+                // prevent default on click (already no href, but for safety)
+                disabledCard.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // subtle haptic-like feedback (just a tiny style flash)
+                    this.style.transition = 'transform 0.1s ease';
+                    this.style.transform = 'scale(0.97)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 120);
+                });
+
+                // keyboard: Enter or Space -> same as click
+                disabledCard.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+
+                // ensure it's focusable
+                disabledCard.setAttribute('tabindex', '0');
+                disabledCard.setAttribute('role', 'button');
+            }
+
+            // for all other cards, they are <a> so they work natively
+            // but we ensure they open in new tab (target="_blank" already set)
+        })();
+    </script>
 </body>
 </html>
