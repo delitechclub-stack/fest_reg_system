@@ -36,12 +36,12 @@
       margin: 0 auto;
     }
 
-    /* ----- top bar ----- */
+    /* ----- top bar (unchanged) ----- */
     .top-bar {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      margin-bottom: 1.8rem;
+      margin-bottom: 0.6rem;
       padding: 0 0.2rem;
     }
 
@@ -64,88 +64,112 @@
       border-bottom-color: #A98445;
     }
 
-    /* ----- hero ----- */
-    .hero {
+    /* ----- HERO – LARGEST LOGO, tight spacing ----- */
+    .hero-club {
       text-align: center;
-      padding: 1.6rem 0.5rem 2.5rem 0.5rem;
+      padding: 0.2rem 0.5rem 1.2rem 0.5rem;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .hero-eyebrow {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #C09A52;
-      background: rgba(192, 154, 82, 0.06);
-      border: 1px solid rgba(192, 154, 82, 0.12);
-      padding: 0.3rem 1.4rem;
-      border-radius: 60px;
-      margin-bottom: 1.2rem;
-      backdrop-filter: blur(2px);
+    /* main club logo – MASSIVE, watermark, NO CARD */
+    .club-watermark {
+      display: block;
+      width: clamp(190px, 55vw, 340px);
+      max-width: 340px;
+      height: auto;
+      object-fit: contain;
+      opacity: 0.92;
+      filter: drop-shadow(0 0 30px rgba(192, 154, 82, 0.15)) drop-shadow(0 0 60px rgba(25, 213, 242, 0.06));
+      transition: filter 0.3s ease;
+      margin-bottom: 0.2rem;
+    }
+    .club-watermark:hover {
+      filter: drop-shadow(0 0 40px rgba(192, 154, 82, 0.22)) drop-shadow(0 0 80px rgba(25, 213, 242, 0.10));
     }
 
-    .hero h1 {
+    .club-main-heading {
       font-family: 'Cinzel', serif;
-      font-size: clamp(2.4rem, 7vw, 4.2rem);
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
       font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
+      letter-spacing: 0.04em;
       background: linear-gradient(180deg, #FFF8E7 0%, #C09A52 55%, #A98445 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      position: relative;
+      margin: 0.1rem 0 0.1rem 0;
+      line-height: 1.15;
+    }
+
+    /* tiny college row */
+    .college-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 0.1rem 0 0.4rem 0;
+      flex-wrap: wrap;
+    }
+
+    .tiny-college-logo {
+      width: 22px;
+      max-width: 24px;
+      height: auto;
+      object-fit: contain;
       display: inline-block;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 4px rgba(192, 154, 82, 0.08));
     }
 
-    .hero h1::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      bottom: -6px;
-      transform: translateX(-50%);
-      width: 60%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(192, 154, 82, 0.3), transparent);
-      border-radius: 2px;
+    .college-name {
+      font-size: clamp(0.85rem, 1.2vw, 1.1rem);
+      font-weight: 400;
+      color: #b6ccf0;
+      letter-spacing: 0.03em;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 0.1rem 0.6rem 0.1rem 0.2rem;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(2px);
     }
 
-    .hero-glow {
+    .club-sub-text {
+      font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+      color: #91A5AC;
+      font-weight: 350;
+      letter-spacing: 0.02em;
+      margin-top: 0.05rem;
+      padding: 0 0.5rem;
+      max-width: 500px;
+    }
+
+    /* subtle glow behind (not a card) */
+    .hero-club .hero-glow {
       position: absolute;
-      top: 30%;
+      top: 25%;
       left: 50%;
       transform: translate(-50%, -30%);
-      width: 70%;
-      max-width: 500px;
+      width: 60%;
+      max-width: 600px;
       height: 200px;
       background: radial-gradient(ellipse, rgba(192, 154, 82, 0.08) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
-      filter: blur(20px);
+      filter: blur(30px);
     }
 
-    .hero p {
-      max-width: 600px;
-      margin: 1.2rem auto 0 auto;
-      color: #91A5AC;
-      font-size: clamp(1rem, 1.3vw, 1.2rem);
-      font-weight: 400;
-      letter-spacing: 0.01em;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ----- grid ----- */
+    /* ----- grid (unchanged) ----- */
     .developers-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 2rem 1.8rem;
-      margin: 2rem 0 2.5rem 0;
+      margin: 1.6rem 0 2.5rem 0;
     }
 
-    /* ----- card ----- */
+    /* ----- card (unchanged) ----- */
     .dev-card {
       background: rgba(6, 26, 32, 0.72);
       backdrop-filter: blur(10px) saturate(1.2);
@@ -332,7 +356,6 @@
       box-shadow: 0 0 30px rgba(192, 154, 82, 0.04);
     }
 
-    /* featured subtle glow for Ashik */
     .dev-card.featured {
       border-color: rgba(192, 154, 82, 0.12);
       box-shadow: 0 0 0 1px rgba(192, 154, 82, 0.04), 0 20px 40px -16px #000000b3;
@@ -343,12 +366,12 @@
       box-shadow: 0 0 0 1px rgba(192, 154, 82, 0.06), 0 32px 60px -20px #000000cc;
     }
 
-    /* ----- footer / closing ----- */
+    /* ----- footer (unchanged) ----- */
     .closing {
       text-align: center;
       padding: 2rem 0.5rem 0.8rem 0.5rem;
       border-top: 1px solid rgba(255, 255, 255, 0.02);
-      margin-top: 1rem;
+      margin-top: 0.6rem;
     }
 
     .closing p:first-child {
@@ -367,11 +390,14 @@
       font-weight: 400;
     }
 
-    /* ----- responsive ----- */
+    /* ----- responsive adjustments – LARGEST LOGO possible ----- */
     @media (min-width: 600px) {
       .developers-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem 1.8rem;
+      }
+      .club-watermark {
+        width: clamp(220px, 40vw, 280px);
       }
     }
 
@@ -386,11 +412,14 @@
       .card-body {
         padding: 1.6rem 1.8rem 2rem 1.8rem;
       }
+      .club-watermark {
+        width: clamp(260px, 28vw, 340px);
+      }
     }
 
     @media (max-width: 480px) {
       body {
-        padding: 0.8rem 0.6rem;
+        padding: 0.6rem 0.5rem;
       }
       .card-body {
         padding: 1rem 1.2rem 1.4rem 1.2rem;
@@ -401,11 +430,11 @@
       .quote-text {
         font-size: 0.8rem;
       }
-      .hero {
-        padding: 0.8rem 0.2rem 1.8rem 0.2rem;
+      .hero-club {
+        padding: 0.1rem 0.2rem 0.8rem 0.2rem;
       }
       .top-bar {
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.2rem;
       }
       .dev-card {
         border-radius: 22px;
@@ -419,6 +448,15 @@
       }
       .image-glow {
         border-radius: 22px 22px 0 0;
+      }
+      .tiny-college-logo {
+        width: 20px;
+        max-width: 20px;
+      }
+      /* mobile 360-480: massive logo */
+      .club-watermark {
+        width: clamp(190px, 58vw, 250px);
+        max-width: 250px;
       }
     }
 
@@ -442,22 +480,27 @@
       .image-glow {
         border-radius: 18px 18px 0 0;
       }
+      .club-watermark {
+        width: clamp(175px, 60vw, 210px);
+        max-width: 210px;
+      }
+      .tiny-college-logo {
+        width: 18px;
+        max-width: 18px;
+      }
     }
 
-    /* small touch for smoothness */
     .dev-card,
     .card-image-wrap img,
     .social-btn {
       transition: all 0.3s ease;
     }
 
-    /* no horizontal scroll */
     img {
       max-width: 100%;
       vertical-align: middle;
     }
 
-    /* accessibility */
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -473,20 +516,32 @@
 <body>
 <div class="page-wrap">
 
-  <!-- TOP BAR -->
+  <!-- TOP BAR (unchanged) -->
   <div class="top-bar">
     <a href="javascript:history.back()" class="back-link" aria-label="Go back to previous page">← Back</a>
   </div>
 
-  <!-- HERO -->
-  <section class="hero">
+  <!-- HERO – LARGEST LOGO, tight spacing -->
+  <section class="hero-club">
     <div class="hero-glow" aria-hidden="true"></div>
-    <span class="hero-eyebrow">THE MINDS BEHIND THE EXPERIENCE</span>
-    <h1>Meet the Developers</h1>
-    <p>Passion, creativity, technology, and innovation come together behind every experience.</p>
+
+    <!-- 1. MAIN CLUB LOGO – MASSIVE, watermark, NO card/box -->
+    <img class="club-watermark" src="https://i.ibb.co/3gstSPM/club-logo-png.png" alt="Delitech IT Club logo" loading="lazy" />
+
+    <!-- 2. MAIN HEADER -->
+    <h1 class="club-main-heading">DELITECH IT CLUB</h1>
+
+    <!-- 3. COLLEGE NAME with tiny logo -->
+    <div class="college-row">
+      <img class="tiny-college-logo" src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College logo" loading="lazy" />
+      <span class="college-name">De Paul College Mysore</span>
+    </div>
+
+    <!-- 4. DESCRIPTION (exact wording) -->
+    <p class="club-sub-text">Meet the student co-ordinators of Delitech IT Club</p>
   </section>
 
-  <!-- DEVELOPERS GRID -->
+  <!-- DEVELOPERS GRID (unchanged) -->
   <main class="developers-grid">
 
     <!-- 1. C.A ASHIK UMER -->
@@ -609,7 +664,7 @@
 
   </main>
 
-  <!-- CLOSING -->
+  <!-- FOOTER (unchanged) -->
   <footer class="closing">
     <p>Built with curiosity. Driven by innovation.</p>
     <p>DELITECH IT CLUB · DE PAUL COLLEGE MYSORE</p>
