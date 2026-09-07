@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Minds Behind · DEPLOMAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #041217;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(25, 213, 242, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 90% 30%, rgba(192, 154, 82, 0.05) 0%, transparent 35%),
+        radial-gradient(circle at 50% 85%, rgba(7, 135, 162, 0.05) 0%, transparent 45%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #F2F6F7;
+      padding: 1.5rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.5;
+    }
+
+    .page-wrap {
+      max-width: 1320px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ----- top bar ----- */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 1.8rem;
+      padding: 0 0.2rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #91A5AC;
+      text-decoration: none;
+      font-weight: 450;
+      font-size: 0.95rem;
+      padding: 0.4rem 0.2rem;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s ease;
+      letter-spacing: 0.01em;
+    }
+
+    .back-link:hover {
+      color: #C09A52;
+      border-bottom-color: #A98445;
+    }
+
+    /* ----- hero ----- */
+    .hero {
+      text-align: center;
+      padding: 1.6rem 0.5rem 2.5rem 0.5rem;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #C09A52;
+      background: rgba(192, 154, 82, 0.06);
+      border: 1px solid rgba(192, 154, 82, 0.12);
+      padding: 0.3rem 1.4rem;
+      border-radius: 60px;
+      margin-bottom: 1.2rem;
+      backdrop-filter: blur(2px);
+    }
+
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.4rem, 7vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #FFF8E7 0%, #C09A52 55%, #A98445 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero h1::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(192, 154, 82, 0.3), transparent);
+      border-radius: 2px;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      width: 70%;
+      max-width: 500px;
+      height: 200px;
+      background: radial-gradient(ellipse, rgba(192, 154, 82, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(20px);
+    }
+
+    .hero p {
+      max-width: 600px;
+      margin: 1.2rem auto 0 auto;
+      color: #91A5AC;
+      font-size: clamp(1rem, 1.3vw, 1.2rem);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ----- grid ----- */
+    .developers-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem 1.8rem;
+      margin: 2rem 0 2.5rem 0;
+    }
+
+    /* ----- card ----- */
+    .dev-card {
+      background: rgba(6, 26, 32, 0.72);
+      backdrop-filter: blur(10px) saturate(1.2);
+      -webkit-backdrop-filter: blur(10px) saturate(1.2);
+      border: 1px solid rgba(169, 132, 69, 0.08);
+      border-radius: 28px;
+      box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.015) inset;
+      transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      will-change: transform;
+      transform: translateZ(0);
+    }
+
+    .dev-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(169, 132, 69, 0.2);
+      box-shadow: 0 32px 60px -20px #000000cc, 0 0 0 1px rgba(169, 132, 69, 0.06) inset;
+    }
+
+    .card-image-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 4.5;
+      overflow: hidden;
+      background: #0a1c24;
+      border-radius: 28px 28px 0 0;
+    }
+
+    .card-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+      transform: scale(1);
+    }
+
+    .dev-card:hover .card-image-wrap img {
+      transform: scale(1.02);
+    }
+
+    .card-image-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45%;
+      background: linear-gradient(0deg, rgba(4, 18, 23, 0.75) 0%, transparent 100%);
+      pointer-events: none;
+      border-radius: 0;
+    }
+
+    .image-glow {
+      position: absolute;
+      inset: 0;
+      box-shadow: 0 0 40px rgba(192, 154, 82, 0.04) inset;
+      pointer-events: none;
+      border-radius: 28px 28px 0 0;
+    }
+
+    .card-body {
+      padding: 1.4rem 1.6rem 1.8rem 1.6rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .role-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #19D5F2;
+      background: rgba(25, 213, 242, 0.06);
+      border: 1px solid rgba(25, 213, 242, 0.10);
+      padding: 0.2rem 0.9rem;
+      border-radius: 60px;
+      margin-bottom: 0.3rem;
+    }
+
+    .dev-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #F2F6F7;
+      line-height: 1.2;
+      margin-bottom: 0.1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .dev-edu {
+      font-size: 0.8rem;
+      color: #91A5AC;
+      font-weight: 400;
+      margin-bottom: 0.1rem;
+    }
+
+    .dev-edu span {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 0.1rem 0.6rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .club-badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #C09A52;
+      background: rgba(192, 154, 82, 0.06);
+      border: 1px solid rgba(192, 154, 82, 0.10);
+      padding: 0.1rem 0.8rem;
+      border-radius: 40px;
+      display: inline-block;
+      align-self: flex-start;
+      margin: 0.2rem 0 0.3rem 0;
+      letter-spacing: 0.02em;
+    }
+
+    .specialization {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #90DFFF;
+      letter-spacing: 0.02em;
+      margin-top: -0.1rem;
+    }
+
+    .quote-area {
+      margin: 0.5rem 0 0.6rem 0;
+      padding: 0.5rem 0 0 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      position: relative;
+    }
+
+    .quote-area .quote-mark {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      color: rgba(192, 154, 82, 0.2);
+      line-height: 0.8;
+      margin-right: 0.2rem;
+      font-weight: 700;
+    }
+
+    .quote-text {
+      font-size: 0.85rem;
+      color: #b6ccf0;
+      font-weight: 350;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .social-btn-wrap {
+      margin-top: 0.6rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 1.2rem;
+      background: rgba(192, 154, 82, 0.06);
+      border: 1px solid rgba(192, 154, 82, 0.15);
+      border-radius: 60px;
+      color: #C09A52;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      letter-spacing: 0.02em;
+    }
+
+    .social-btn:hover {
+      background: rgba(192, 154, 82, 0.12);
+      border-color: rgba(192, 154, 82, 0.35);
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(192, 154, 82, 0.04);
+    }
+
+    /* featured subtle glow for Ashik */
+    .dev-card.featured {
+      border-color: rgba(192, 154, 82, 0.12);
+      box-shadow: 0 0 0 1px rgba(192, 154, 82, 0.04), 0 20px 40px -16px #000000b3;
+    }
+
+    .dev-card.featured:hover {
+      border-color: rgba(192, 154, 82, 0.25);
+      box-shadow: 0 0 0 1px rgba(192, 154, 82, 0.06), 0 32px 60px -20px #000000cc;
+    }
+
+    /* ----- footer / closing ----- */
+    .closing {
+      text-align: center;
+      padding: 2rem 0.5rem 0.8rem 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      margin-top: 1rem;
+    }
+
+    .closing p:first-child {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      color: #b6ccf0;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .closing p:last-child {
+      font-size: 0.75rem;
+      color: #5a7a9a;
+      letter-spacing: 0.06em;
+      margin-top: 0.3rem;
+      font-weight: 400;
+    }
+
+    /* ----- responsive ----- */
+    @media (min-width: 600px) {
+      .developers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem 1.8rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .developers-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.2rem 2rem;
+      }
+      body {
+        padding: 2.2rem 2rem;
+      }
+      .card-body {
+        padding: 1.6rem 1.8rem 2rem 1.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 0.8rem 0.6rem;
+      }
+      .card-body {
+        padding: 1rem 1.2rem 1.4rem 1.2rem;
+      }
+      .dev-name {
+        font-size: 1.1rem;
+      }
+      .quote-text {
+        font-size: 0.8rem;
+      }
+      .hero {
+        padding: 0.8rem 0.2rem 1.8rem 0.2rem;
+      }
+      .top-bar {
+        margin-bottom: 0.8rem;
+      }
+      .dev-card {
+        border-radius: 22px;
+      }
+      .card-image-wrap {
+        border-radius: 22px 22px 0 0;
+      }
+      .social-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.75rem;
+      }
+      .image-glow {
+        border-radius: 22px 22px 0 0;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .dev-card {
+        border-radius: 18px;
+      }
+      .card-image-wrap {
+        border-radius: 18px 18px 0 0;
+      }
+      .card-body {
+        padding: 0.8rem 0.9rem 1.2rem 0.9rem;
+      }
+      .role-badge {
+        font-size: 0.55rem;
+        padding: 0.1rem 0.7rem;
+      }
+      .dev-name {
+        font-size: 1rem;
+      }
+      .image-glow {
+        border-radius: 18px 18px 0 0;
+      }
+    }
+
+    /* small touch for smoothness */
+    .dev-card,
+    .card-image-wrap img,
+    .social-btn {
+      transition: all 0.3s ease;
+    }
+
+    /* no horizontal scroll */
+    img {
+      max-width: 100%;
+      vertical-align: middle;
+    }
+
+    /* accessibility */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <a href="javascript:history.back()" class="back-link" aria-label="Go back to previous page">← Back</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <span class="hero-eyebrow">THE MINDS BEHIND THE EXPERIENCE</span>
+    <h1>Meet the Developers</h1>
+    <p>Passion, creativity, technology, and innovation come together behind every experience.</p>
+  </section>
+
+  <!-- DEVELOPERS GRID -->
+  <main class="developers-grid">
+
+    <!-- 1. C.A ASHIK UMER -->
+    <article class="dev-card featured">
+      <div class="card-image-wrap">
+        <img src="https://i.ibb.co/TMdC61RF/Whats-App-Image-2026-09-07-at-6-17-08-PM-3.jpg" alt="C.A Ashik Umer — Full Stack Developer" loading="lazy" />
+        <div class="image-glow" aria-hidden="true"></div>
+      </div>
+      <div class="card-body">
+        <span class="role-badge">Full Stack</span>
+        <h2 class="dev-name">C.A ASHIK UMER</h2>
+        <div class="dev-edu"><span>FINAL YEAR BCA</span> · Bachelor of Computer Applications</div>
+        <span class="club-badge">PRESIDENT · DELITECH IT CLUB DE PAUL COLLEGE MYSORE</span>
+        <div class="specialization">Aspiring Cloud Solution Architect</div>
+        <div class="quote-area">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <span class="quote-text">Change is constant; the one who adapts, applies, and implements leads this world of tech! Stay ambitious, stay hungry!.</span>
+        </div>
+        <div class="social-btn-wrap">
+          <a href="https://www.linkedin.com/in/c-a-ashik-umer-b9ab22385?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="social-btn">
+            <span aria-hidden="true">→</span> View LinkedIn
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2. Ahmed Khan -->
+    <article class="dev-card">
+      <div class="card-image-wrap">
+        <img src="https://i.ibb.co/TMXc3jCX/Whats-App-Image-2026-09-07-at-6-17-08-PM-2.jpg" alt="Ahmed Khan — Blockchain Developer" loading="lazy" />
+        <div class="image-glow" aria-hidden="true"></div>
+      </div>
+      <div class="card-body">
+        <span class="role-badge">Blockchain</span>
+        <h2 class="dev-name">Ahmed Khan</h2>
+        <div class="dev-edu"><span>SECOND YEAR BCA</span> · Bachelor of Computer Applications</div>
+        <div class="quote-area">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <span class="quote-text">I’m interested in technology because it combines creativity, innovation, and problem-solving. I enjoy learning new technologies and finding better ways to solve challenges. I want to turn my ideas into useful digital solutions and grow in the tech industry.</span>
+        </div>
+        <!-- no social -->
+      </div>
+    </article>
+
+    <!-- 3. Suraj Kumar -->
+    <article class="dev-card">
+      <div class="card-image-wrap">
+        <img src="https://i.ibb.co/qL669pmy/Whats-App-Image-2026-09-07-at-6-17-08-PM.jpg" alt="Suraj Kumar — Technology / IT Club" loading="lazy" />
+        <div class="image-glow" aria-hidden="true"></div>
+      </div>
+      <div class="card-body">
+        <span class="role-badge">Technology</span>
+        <h2 class="dev-name">Suraj Kumar</h2>
+        <div class="dev-edu"><span>THIRD YEAR BCA</span> · Bachelor of Computer Applications</div>
+        <span class="club-badge">SECRETARY · DELITECH IT CLUB DE PAUL COLLEGE MYSORE</span>
+        <div class="quote-area">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <span class="quote-text">Technology allows me to turn creative ideas into practical solutions. As an IT Club Coordinator, I enjoy working on tech activities and sharing knowledge with others. This motivates me to build a strong future in the technology field.</span>
+        </div>
+        <!-- no social -->
+      </div>
+    </article>
+
+    <!-- 4. Sayed Nihal -->
+    <article class="dev-card">
+      <div class="card-image-wrap">
+        <img src="https://i.ibb.co/35N8fhQv/Whats-App-Image-2026-09-07-at-6-17-08-PM-1.jpg" alt="Sayed Nihal — Gen AI · Visual / Creative" loading="lazy" />
+        <div class="image-glow" aria-hidden="true"></div>
+      </div>
+      <div class="card-body">
+        <span class="role-badge">Gen AI · Visual</span>
+        <h2 class="dev-name">Sayed Nihal</h2>
+        <div class="dev-edu"><span>SECOND YEAR BCA</span> · Bachelor of Computer Applications</div>
+        <span class="club-badge">TREASURER · DELITECH IT CLUB DE PAUL COLLEGE MYSORE</span>
+        <div class="quote-area">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <span class="quote-text">I’m interested in technology because I enjoy learning new things and solving problems creatively. As a BCA student and IT Club Coordinator, I love exploring AI and emerging technologies. I want to use technology to create innovative solutions and build a successful career.</span>
+        </div>
+        <!-- no social -->
+      </div>
+    </article>
+
+    <!-- 5. MILAN -->
+    <article class="dev-card">
+      <div class="card-image-wrap">
+        <img src="https://i.ibb.co/zwCSm7B/Whats-App-Image-2026-09-07-at-6-17-09-PM-1.jpg" alt="MILAN — Technology / Creative" loading="lazy" />
+        <div class="image-glow" aria-hidden="true"></div>
+      </div>
+      <div class="card-body">
+        <span class="role-badge">Technology · Creative</span>
+        <h2 class="dev-name">MILAN</h2>
+        <div class="dev-edu"><span>SECOND YEAR BCA</span> · Bachelor of Computer Applications</div>
+        <span class="club-badge">VICE-PRESIDENT · DELITECH IT CLUB DE PAUL COLLEGE MYSORE</span>
+        <div class="quote-area">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <span class="quote-text">I’m interested in technology because it is constantly evolving and offers endless opportunities to learn. I enjoy experimenting with new tools and understanding how technology works. My goal is to keep learning and grow with the tech industry.</span>
+        </div>
+        <!-- no social -->
+      </div>
+    </article>
+
+    <!-- 6. ABDUL -->
+    <article class="dev-card">
+      <div class="card-image-wrap">
+        <img src="https://i.ibb.co/hFkqqzGc/Whats-App-Image-2026-09-07-at-6-17-09-PM.jpg" alt="ABDUL — Technology / AI" loading="lazy" />
+        <div class="image-glow" aria-hidden="true"></div>
+      </div>
+      <div class="card-body">
+        <span class="role-badge">AI · Technology</span>
+        <h2 class="dev-name">ABDUL</h2>
+        <div class="dev-edu"><span>FIRST YEAR BCA</span> · Bachelor of Computer Applications</div>
+        <span class="club-badge">JOINT-SECRETARY · DELITECH IT CLUB DE PAUL COLLEGE MYSORE</span>
+        <div class="quote-area">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <span class="quote-text">I’m fascinated by how technology can make everyday tasks easier and more efficient. I enjoy learning about AI, software, and other emerging technologies. I want to develop innovative solutions and make a positive impact through technology.</span>
+        </div>
+        <!-- no social -->
+      </div>
+    </article>
+
+  </main>
+
+  <!-- CLOSING -->
+  <footer class="closing">
+    <p>Built with curiosity. Driven by innovation.</p>
+    <p>DELITECH IT CLUB · DE PAUL COLLEGE MYSORE</p>
+  </footer>
+
+</div>
+</body>
+</html>
