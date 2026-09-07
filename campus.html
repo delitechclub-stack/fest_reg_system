@@ -263,6 +263,46 @@
             }
         }
 
+        /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top-right) ─── */
+        .depaul-brand {
+            position: fixed;
+            top: 30px;
+            right: 36px;
+            z-index: 12;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        .depaul-brand img {
+            width: clamp(30px, 3.4vw, 44px);
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
+        }
+        .depaul-brand span {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.6rem, 1vw, 0.85rem);
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(232, 217, 184, 0.75);
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+            white-space: nowrap;
+        }
+        /* fade with overlay when tour begins */
+        body.overlay-hidden .depaul-brand { opacity: 0; }
+
+        @media (max-width: 640px) {
+            .depaul-brand { top: 22px; right: 24px; gap: 8px; }
+        }
+        @media (max-width: 420px) {
+            .depaul-brand { top: 16px; right: 18px; gap: 6px; }
+            .depaul-brand img { width: 24px; }
+            .depaul-brand span { font-size: 0.55rem; letter-spacing: 0.12em; }
+        }
+
         @media (max-width: 420px) {
             #overlay {
                 padding: 16px 18px;
@@ -325,6 +365,12 @@
     </div>
 </div>
 
+<!-- ─── DE PAUL COLLEGE MYSORE BRANDING (institutional, top-right) ─── -->
+<div class="depaul-brand">
+    <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" loading="lazy" />
+    <span>DE PAUL COLLEGE MYSORE</span>
+</div>
+
 <!-- ─── HINT ─── -->
 <div id="hint">↻ Tap anywhere to begin</div>
 
@@ -339,6 +385,8 @@
     function dismissOverlay() {
         if (overlay.classList.contains('hidden')) return;
         overlay.classList.add('hidden');
+        // fade institutional branding together with the intro overlay
+        document.body.classList.add('overlay-hidden');
     }
 
     overlay.addEventListener('click', dismissOverlay);

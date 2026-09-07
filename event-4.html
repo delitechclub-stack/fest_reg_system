@@ -280,10 +280,46 @@
         padding: 0.8rem 1rem;
       }
     }
+  /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top) ─── */
+    .depaul-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      margin: 0 auto 18px auto;
+      pointer-events: none;
+      flex: 0 0 100%;
+    }
+    .depaul-brand img {
+      width: clamp(30px, 4.5vw, 44px);
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
+    }
+    .depaul-brand span {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.6rem, 1.4vw, 0.85rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(232, 217, 184, 0.7);
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
+      white-space: nowrap;
+    }
+    @media (max-width: 640px) {
+      .depaul-brand { gap: 0.4rem; margin-bottom: 14px; }
+      .depaul-brand img { width: 24px; }
+      .depaul-brand span { font-size: 0.55rem; letter-spacing: 0.12em; }
+    }
   </style>
 </head>
 <body>
   <div class="event-wrapper">
+  <!-- De Paul College Mysore branding (institutional) -->
+  <div class="depaul-brand">
+    <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" loading="lazy" />
+    <span>DE PAUL COLLEGE MYSORE</span>
+  </div>
     <div class="glass-card">
 
       <!-- HEADER - Submit Reel button removed -->

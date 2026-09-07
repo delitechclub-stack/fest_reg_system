@@ -118,6 +118,35 @@
             transform: scale(0.95);
         }
 
+        /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top-center, clear of Refresh) ─── */
+        .depaul-brand {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .depaul-brand img {
+            width: clamp(28px, 3vw, 40px);
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
+        }
+        .depaul-brand span {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.55rem, 0.9vw, 0.8rem);
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(232, 217, 184, 0.7);
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
+        }
+
         .refresh-btn {
             position: fixed;
             top: 28px;
@@ -977,6 +1006,17 @@
                 padding: 8px 14px;
                 letter-spacing: 2px;
             }
+            .depaul-brand {
+                top: 20px;
+                gap: 8px;
+            }
+            .depaul-brand img {
+                width: 24px;
+            }
+            .depaul-brand span {
+                font-size: 0.52rem;
+                letter-spacing: 0.12em;
+            }
             .refresh-btn {
                 top: 18px;
                 right: 18px;
@@ -1059,6 +1099,12 @@
         }
 
         @media (max-width: 480px) {
+            .depaul-brand span {
+                letter-spacing: 0.09em;
+            }
+            .depaul-brand img {
+                width: 20px;
+            }
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -1186,6 +1232,12 @@
     <a href="index.html" class="home-link" aria-label="Back to home">
         <i class="fas fa-arrow-left"></i> Home
     </a>
+
+    <!-- De Paul College Mysore branding (institutional, top-center) -->
+    <div class="depaul-brand">
+        <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" loading="lazy" />
+        <span>DE PAUL COLLEGE MYSORE</span>
+    </div>
 
     <button class="refresh-btn" id="refreshBtn" aria-label="Refresh data">
         <i class="fas fa-sync-alt"></i> Refresh

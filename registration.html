@@ -18,6 +18,12 @@
     .home-link { position:fixed; top:28px; left:32px; z-index:20; display:inline-flex; align-items:center; gap:8px; color:rgba(232,217,184,0.6); text-decoration:none; font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; font-weight:500; padding:10px 18px; border-radius:60px; background:rgba(4,18,23,0.6); backdrop-filter:blur(20px) saturate(1.2); -webkit-backdrop-filter:blur(20px) saturate(1.2); border:1px solid rgba(169,132,69,0.12); box-shadow:0 12px 32px rgba(0,0,0,0.6); transition:0.25s cubic-bezier(0.34,1.56,0.64,1); -webkit-tap-highlight-color:transparent; }
     .home-link:hover { color:#C09A52; border-color:rgba(169,132,69,0.25); transform:translateX(-4px); background:rgba(169,132,69,0.06); }
     .home-link:active { transform:scale(0.95); }
+    /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top-right) ─── */
+    .depaul-brand { position:fixed; top:34px; right:36px; z-index:20; display:inline-flex; align-items:center; gap:10px; pointer-events:none; }
+    .depaul-brand img { width:clamp(30px,3.4vw,44px); height:auto; object-fit:contain; filter:drop-shadow(0 2px 14px rgba(0,0,0,0.7)); }
+    .depaul-brand span { font-family:'Cinzel',serif; font-size:clamp(0.6rem,1vw,0.85rem); font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(232,217,184,0.7); text-shadow:0 2px 16px rgba(0,0,0,0.85); white-space:nowrap; }
+    @media (max-width:768px) { .depaul-brand { top:24px; right:22px; gap:8px; } .depaul-brand img { width:26px; } .depaul-brand span { font-size:0.55rem; letter-spacing:0.12em; } }
+    @media (max-width:480px) { .depaul-brand { top:20px; right:18px; gap:6px; } .depaul-brand img { width:22px; } .depaul-brand span { font-size:0.5rem; } }
     .register-wrap { position:relative; z-index:2; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:100px 24px 60px 24px; }
     .register-container { width:min(100%,720px); animation:reveal 0.65s ease both; }
     @keyframes reveal { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
@@ -217,7 +223,12 @@
 <div class="page-bg-orb orb-1"></div>
 <div class="page-bg-orb orb-2"></div>
 <div class="page-bg-orb orb-3"></div>
-<a href="index.html" class="home-link" aria-label="Back to home">← Home</a>
+<a id="contextBackLink" href="index.html" class="home-link" aria-label="Back">← Home</a>
+<!-- De Paul College Mysore branding (institutional, top-right) -->
+<div class="depaul-brand">
+  <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" loading="lazy" />
+  <span>DE PAUL COLLEGE MYSORE</span>
+</div>
 <main class="register-wrap">
   <div class="register-container">
     <div class="register-card">
@@ -1268,6 +1279,23 @@
       }
     } catch(_) {}
   }
+
+  // ─── CONTEXTUAL BACK NAVIGATION (Event ↔ Registration) ────────────────
+  (function() {
+    const backLink = document.getElementById('contextBackLink');
+    if (!backLink) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const eventParam = params.get('event');
+      if (eventParam !== null && !isNaN(parseInt(eventParam, 10)) && parseInt(eventParam, 10) >= 0 && parseInt(eventParam, 10) <= 11) {
+        backLink.href = 'event-' + parseInt(eventParam, 10) + '.html';
+        backLink.textContent = '← Back to Event';
+        backLink.setAttribute('aria-label', 'Back to event page');
+      }
+    } catch (e) {
+      // keep default Home link on any parsing failure
+    }
+  })();
 </script>
 </body>
 </html>

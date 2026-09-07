@@ -253,6 +253,49 @@
             margin: 0 0.2rem;
         }
 
+        /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top-right) ─── */
+        .depaul-brand {
+            position: fixed;
+            top: 2rem;
+            right: 2.2rem;
+            z-index: 30;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            pointer-events: none;
+        }
+        .depaul-brand img {
+            width: clamp(30px, 3.4vw, 44px);
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
+        }
+        .depaul-brand span {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.6rem, 1vw, 0.85rem);
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(232, 217, 184, 0.7);
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
+            white-space: nowrap;
+        }
+
+        @media (max-width: 640px) {
+            .depaul-brand {
+                top: 1.1rem;
+                right: 1.2rem;
+                gap: 0.45rem;
+            }
+            .depaul-brand img {
+                width: 26px;
+            }
+            .depaul-brand span {
+                font-size: 0.55rem;
+                letter-spacing: 0.12em;
+            }
+        }
+
         .error-state {
             text-align: center;
             padding: 3rem 1.5rem;
@@ -320,11 +363,17 @@
 </head>
 <body>
 
+<!-- De Paul College Mysore branding (institutional, top-right) -->
+<div class="depaul-brand">
+    <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" loading="lazy" />
+    <span>DE PAUL COLLEGE MYSORE</span>
+</div>
+
 <div class="coordinator-wrapper">
     <div class="glass-card">
 
         <div class="header-section">
-            <a href="javascript:history.back()" class="back-link">← Back</a>
+            <a id="contextBackLink" href="index.html" class="back-link">← Home</a>
             <span class="event-tag">📞 Contact Coordinator</span>
         </div>
 
@@ -892,7 +941,7 @@
             </div>
 
             <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.03);">
-                <a href="javascript:history.back()" style="color: #7a9bc7; text-decoration: none; font-size: 0.9rem;">
+                <a id="backToEventInline" href="index.html" style="color: #7a9bc7; text-decoration: none; font-size: 0.9rem;">
                     ← Back to event page
                 </a>
             </div>
@@ -958,6 +1007,30 @@
 
     // Log available events for debugging
     console.log('📋 Available events:', coordinatorData.event_coordinators.map(e => e.event_name).join(', '));
+
+    // ─── CONTEXTUAL BACK NAVIGATION (Event ↔ Coordinator) ────────────────
+    (function() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            let eventParam = params.get('event');
+            if (!eventParam) {
+                const stored = sessionStorage.getItem('selectedEvent');
+                if (stored && !isNaN(parseInt(stored, 10))) eventParam = String(parseInt(stored, 10));
+            }
+            const id = parseInt(eventParam, 10);
+            if (!isNaN(id) && id >= 0 && id <= 11) {
+                const backLink = document.getElementById('contextBackLink');
+                if (backLink) {
+                    backLink.href = 'event-' + id + '.html';
+                    backLink.textContent = '← Back to Event';
+                }
+                const inlineLink = document.getElementById('backToEventInline');
+                if (inlineLink) inlineLink.href = 'event-' + id + '.html';
+            }
+        } catch (e) {
+            // keep default Home links on any parsing failure
+        }
+    })();
 </script>
 
 </body>

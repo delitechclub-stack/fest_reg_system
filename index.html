@@ -306,12 +306,31 @@
     .hero-subtitle {
       font-family: 'Cormorant Garamond',serif;
       font-weight: 600;
-      font-size: clamp(0.7rem, 1.8vw, 1.3rem);
+      font-size: clamp(0.8rem, 2vw, 1.45rem);
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: rgba(232,217,184,0.9);
       text-shadow: 0 2px 20px rgba(0,0,0,0.8);
       margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      column-gap: 0.6em;
+    }
+    /* De Paul institutional lockup: logo + name as one brand element */
+    .depaul-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55em;
+    }
+    .depaul-lockup img {
+      height: 1.2em;
+      width: auto;
+      max-width: 3em;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 10px rgba(0,0,0,0.45));
     }
     .hero-subtitle .gold { color: var(--gold-bright); font-weight:700; }
     .hero-subtitle .divider {
@@ -1344,6 +1363,67 @@
     }
     .login-error.show { display: block; animation: fadeIn 0.25s ease; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+    /* ─── FOOTER POWERED BY (Delitech · De Paul) ─────────── */
+    .footer-powered {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .footer-powered .powered-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(192,154,82,0.55);
+    }
+    .footer-powered .powered-brands {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px 28px;
+    }
+    .footer-powered .powered-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      border-radius: 0;
+    }
+    .footer-powered .powered-brand img {
+      height: 30px;
+      width: auto;
+      max-width: 110px;
+      object-fit: contain;
+      display: block;
+    }
+    .footer-powered .powered-brand .brand-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: rgba(232,217,184,0.7);
+      white-space: nowrap;
+    }
+    .footer-powered .powered-brand-primary .brand-name {
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    @media (max-width: 480px) {
+      .footer-powered .powered-brands {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .footer-powered .powered-brand img { height: 26px; max-width: 96px; }
+      .footer-powered .powered-brand .brand-name { font-size: 0.58rem; letter-spacing: 0.18em; }
+    }
     .login-toast {
       position: fixed;
       bottom: 80px;
@@ -1536,7 +1616,8 @@
       .hero-section { height: 85svh; min-height: 600px; }
       .hero-center { top: 6vh; }
       .hero-title { font-size: clamp(1.8rem, 7vw, 3.5rem); }
-      .hero-subtitle { font-size: clamp(0.6rem, 1.5vw, 0.9rem); letter-spacing: 0.15em; }
+      .hero-subtitle { font-size: clamp(0.65rem, 1.6vw, 0.9rem); letter-spacing: 0.15em; }
+      .depaul-lockup img { height: 1.25em; max-width: 2.6em; }
       .explore-cta { bottom: 16px; opacity: 0.3; }
       .explore-cta .mouse-line { height: 16px; }
 
@@ -1851,7 +1932,7 @@
       <div class="particles"><div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div><div class="part"></div></div>
       <div class="hero-center">
         <div class="hero-title">DEPLOMAT<span class="accent">2K26</span></div>
-        <div class="hero-subtitle">DE PAUL COLLEGE <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
+        <div class="hero-subtitle"><span class="depaul-lockup"><img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" /><span>DE PAUL COLLEGE MYSORE</span></span> <span class="divider"></span> <span class="gold">PU / UG FEST</span></div>
         <div class="hero-tagline"><span class="ornament">✦</span> THE LOST KINGDOM <span class="ornament">✦</span></div>
       </div>
       <div class="explore-cta"><span>Descend</span><div class="mouse-line"></div></div>
@@ -1940,8 +2021,20 @@
         <a href="#">YouTube</a>
         <a href="#">Twitter</a>
       </div>
+      <div class="footer-powered">
+        <div class="powered-label">✦ POWERED BY ✦</div>
+        <div class="powered-brands">
+          <div class="powered-brand powered-brand-primary">
+            <img src="https://i.ibb.co/3gstSPM/club-logo-png.png" alt="Delitech IT Club logo" loading="lazy" />
+            <span class="brand-name">DELITECH IT CLUB</span>
+          </div>
+          <div class="powered-brand">
+            <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" loading="lazy" />
+            <span class="brand-name">DE PAUL COLLEGE MYSORE</span>
+          </div>
+        </div>
+      </div>
       <div class="footer-text">
-        <span class="highlight">✦ POWERED BY DELITECH I.T CLUB ✦</span>
         <span class="copyright">© 2026 DELITECH I.T CLUB · DE PAUL COLLEGE MYSORE</span>
         <span class="copyright" style="font-size:0.35rem; letter-spacing:0.2em; color:rgba(232,217,184,0.05);">
           Designed with ❤️ for the Lost Kingdom

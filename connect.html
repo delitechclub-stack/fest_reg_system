@@ -77,6 +77,42 @@
         }
         .home-link:active { transform: scale(0.95); }
 
+        /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top-right) ─── */
+        .depaul-brand {
+            position: fixed;
+            top: 28px;
+            right: 32px;
+            z-index: 20;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .depaul-brand img {
+            width: clamp(30px, 3.4vw, 44px);
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.6));
+        }
+        .depaul-brand span {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(0.6rem, 1vw, 0.85rem);
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(232, 217, 184, 0.7);
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+        }
+        @media (max-width: 640px) {
+            .depaul-brand { top: 20px; right: 20px; gap: 8px; }
+        }
+        @media (max-width: 480px) {
+            .depaul-brand { top: 16px; right: 16px; gap: 6px; }
+            .depaul-brand img { width: 24px; }
+            .depaul-brand span { font-size: 0.55rem; letter-spacing: 0.12em; }
+        }
+
         /* main container */
         .page-wrap {
             position: relative;
@@ -310,6 +346,12 @@
     <div class="page-bg-orb orb-b"></div>
 
     <a href="index.html" class="home-link" aria-label="Back to home">← Home</a>
+
+    <!-- De Paul College Mysore branding (institutional, top-right) -->
+    <div class="depaul-brand">
+        <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" loading="lazy" />
+        <span>DE PAUL COLLEGE MYSORE</span>
+    </div>
 
     <main class="page-wrap">
         <h1 class="page-title">Connect</h1>

@@ -93,12 +93,34 @@
             align-items: center;
         }
 
+        /* ----- Institutional title lockup: logo + DE PAUL COLLEGE MYSORE ----- */
+        .depaul-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 8px;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+        .depaul-title img {
+            width: clamp(90px, 18vw, 150px);
+            height: auto;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 6px 24px rgba(169, 132, 69, 0.25));
+        }
+        .depaul-title .page-title {
+            margin-bottom: 0;
+        }
+
         /* ----- Main title (preserved style) ----- */
         .page-title {
             font-family: 'Cinzel', serif;
-            font-size: clamp(2.8rem, 10vw, 6.5rem);
+            font-size: clamp(1.5rem, 5.5vw, 3.4rem);
             font-weight: 900;
-            letter-spacing: 10px;
+            letter-spacing: clamp(3px, 0.8vw, 7px);
             text-transform: uppercase;
             line-height: 1.1;
             background: linear-gradient(180deg, #FFF8E7 0%, #E6C875 25%, #C09A52 50%, #8B6B3A 75%, #5C4020 100%);
@@ -338,6 +360,8 @@
             .page-wrap { padding: 120px 16px 60px 16px; }
             .home-link { top: 16px; left: 16px; font-size: 0.65rem; padding: 8px 13px; letter-spacing: 2px; }
             .page-title { letter-spacing: 4px; }
+            .depaul-title { gap: 12px; }
+            .depaul-title img { width: clamp(64px, 22vw, 96px); }
             .page-divider { margin: 12px auto 32px auto; }
             .info-card { padding: 18px 16px; border-radius: 20px; gap: 18px; }
             .card-content p { font-size: 0.92rem; line-height: 1.6; }
@@ -377,7 +401,10 @@
     <a href="index.html" class="home-link" aria-label="Back to home">← Home</a>
 
     <main class="page-wrap">
-        <h1 class="page-title">About Us</h1>
+        <h1 class="depaul-title">
+            <img src="https://i.ibb.co/whxRRhTh/LOG.png" alt="De Paul College Mysore logo" />
+            <span class="page-title">DE PAUL COLLEGE MYSORE</span>
+        </h1>
         <hr class="page-divider" />
 
         <div class="cards-container">
