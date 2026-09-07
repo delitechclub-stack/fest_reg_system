@@ -13,11 +13,10 @@
 
         body {
             min-height: 100vh;
-            background: #0b0f1a;
+            background: #041217;
             background-image:
-                radial-gradient(circle at 20% 30%, rgba(0, 180, 255, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 80% 70%, rgba(255, 70, 150, 0.06) 0%, transparent 40%),
-                repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 6px);
+                radial-gradient(circle at 20% 30%, rgba(7, 135, 162, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 80% 70%, rgba(169, 132, 69, 0.05) 0%, transparent 40%);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #f0f4fc;
             padding: 2rem 1.5rem;
@@ -33,10 +32,10 @@
         }
 
         .glass-card {
-            background: rgba(18, 28, 46, 0.65);
+            background: rgba(6, 26, 32, 0.75);
             backdrop-filter: blur(14px) saturate(1.2);
             -webkit-backdrop-filter: blur(14px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(169, 132, 69, 0.08);
             border-radius: 2.5rem;
             box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
             padding: 2.5rem 2.8rem;
@@ -44,8 +43,8 @@
         }
 
         .glass-card:hover {
-            border-color: rgba(100, 210, 255, 0.15);
-            box-shadow: 0 40px 80px -20px #000000cc, 0 0 0 1px rgba(100, 210, 255, 0.05) inset;
+            border-color: rgba(169, 132, 69, 0.15);
+            box-shadow: 0 40px 80px -20px #000000cc, 0 0 0 1px rgba(169, 132, 69, 0.05) inset;
         }
 
         .header-section {
@@ -61,7 +60,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: #8bb4e0;
+            color: #91A5AC;
             text-decoration: none;
             font-weight: 450;
             padding: 0.4rem 0;
@@ -71,29 +70,30 @@
         }
 
         .back-link:hover {
-            color: #b8d6ff;
-            border-bottom-color: #64d8ff;
+            color: #C09A52;
+            border-bottom-color: #A98445;
         }
 
         .event-tag {
             display: inline-block;
-            background: rgba(100, 210, 255, 0.08);
-            border: 1px solid rgba(100, 210, 255, 0.2);
+            background: rgba(169, 132, 69, 0.08);
+            border: 1px solid rgba(169, 132, 69, 0.2);
             border-radius: 100px;
             padding: 0.4rem 1.2rem;
             font-size: 0.7rem;
             font-weight: 600;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: #90dfff;
+            color: #C09A52;
         }
 
         .event-title {
+            font-family: 'Cinzel', serif;
             font-size: clamp(2rem, 5vw, 3.2rem);
             font-weight: 700;
             line-height: 1.1;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 0%, #b0daff 80%);
+            background: linear-gradient(180deg, #FFF8E7 0%, #C09A52 60%, #A98445 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -103,7 +103,7 @@
         .divider {
             width: 100%;
             height: 1px;
-            background: linear-gradient(90deg, rgba(100, 210, 255, 0.2), transparent 80%);
+            background: linear-gradient(90deg, rgba(169, 132, 69, 0.2), transparent 80%);
             margin: 1.5rem 0 1.5rem 0;
         }
 
@@ -119,8 +119,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(169, 132, 69, 0.02);
+            border: 1px solid rgba(169, 132, 69, 0.04);
             border-radius: 1.2rem;
             transition: all 0.2s ease;
             gap: 1rem;
@@ -128,8 +128,8 @@
         }
 
         .coordinator-item:hover {
-            background: rgba(100, 210, 255, 0.04);
-            border-color: rgba(100, 210, 255, 0.12);
+            background: rgba(169, 132, 69, 0.04);
+            border-color: rgba(169, 132, 69, 0.12);
             transform: translateX(4px);
         }
 
@@ -142,9 +142,10 @@
         }
 
         .coordinator-name {
-            font-size: 1.1rem;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
             font-weight: 600;
-            color: #e7f0ff;
+            color: #F2F6F7;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -164,31 +165,31 @@
         }
 
         .coordinator-role.main {
-            background: rgba(0, 200, 255, 0.1);
-            border-color: rgba(0, 200, 255, 0.2);
-            color: #64d8ff;
+            background: rgba(169, 132, 69, 0.1);
+            border-color: rgba(169, 132, 69, 0.2);
+            color: #C09A52;
         }
 
         .coordinator-role.sub {
-            background: rgba(255, 200, 0, 0.08);
-            border-color: rgba(255, 200, 0, 0.15);
-            color: #ffd966;
+            background: rgba(7, 135, 162, 0.1);
+            border-color: rgba(7, 135, 162, 0.2);
+            color: #19D5F2;
         }
 
         .coordinator-role.third {
-            background: rgba(255, 100, 200, 0.08);
-            border-color: rgba(255, 100, 200, 0.15);
-            color: #ff8ac4;
+            background: rgba(25, 213, 242, 0.06);
+            border-color: rgba(25, 213, 242, 0.12);
+            color: #19D5F2;
         }
 
         .coordinator-role.faculty {
-            background: rgba(100, 255, 150, 0.08);
-            border-color: rgba(100, 255, 150, 0.15);
-            color: #80e8a0;
+            background: rgba(100, 165, 172, 0.08);
+            border-color: rgba(100, 165, 172, 0.15);
+            color: #91A5AC;
         }
 
         .coordinator-phone {
-            color: #b6ccf0;
+            color: #91A5AC;
             font-size: 0.95rem;
             font-weight: 400;
             letter-spacing: 0.02em;
@@ -199,10 +200,10 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.6rem 1.2rem;
-            background: rgba(100, 210, 255, 0.08);
-            border: 1px solid rgba(100, 210, 255, 0.2);
+            background: rgba(169, 132, 69, 0.08);
+            border: 1px solid rgba(169, 132, 69, 0.2);
             border-radius: 60px;
-            color: #90dfff;
+            color: #C09A52;
             text-decoration: none;
             font-weight: 500;
             font-size: 0.9rem;
@@ -211,10 +212,10 @@
         }
 
         .call-btn:hover {
-            background: rgba(100, 210, 255, 0.15);
-            border-color: rgba(100, 210, 255, 0.4);
+            background: rgba(169, 132, 69, 0.15);
+            border-color: rgba(169, 132, 69, 0.4);
             transform: scale(1.03);
-            box-shadow: 0 0 30px rgba(100, 210, 255, 0.1);
+            box-shadow: 0 0 30px rgba(169, 132, 69, 0.1);
         }
 
         .priority-badge {
@@ -230,8 +231,8 @@
         .call-priority-info {
             margin-top: 1.5rem;
             padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(100, 210, 255, 0.06);
+            background: rgba(169, 132, 69, 0.02);
+            border: 1px solid rgba(169, 132, 69, 0.06);
             border-radius: 1rem;
             font-size: 0.85rem;
             color: #7a9bc7;
@@ -245,8 +246,8 @@
             display: inline-block;
             padding: 0.1rem 0.6rem;
             border-radius: 100px;
-            background: rgba(100, 210, 255, 0.06);
-            color: #90dfff;
+            background: rgba(169, 132, 69, 0.06);
+            color: #C09A52;
             font-size: 0.7rem;
             font-weight: 600;
             margin: 0 0.2rem;

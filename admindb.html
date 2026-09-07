@@ -31,8 +31,8 @@
 
         body {
             font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
+            background: #041217;
+            color: #F2F6F7;
             overflow-x: hidden;
             min-height: 100dvh;
             -webkit-font-smoothing: antialiased;
@@ -49,25 +49,26 @@
         .orb-1 {
             width: 600px;
             height: 600px;
-            background: #00d4ff;
+            background: #0787A2;
             top: -15%;
             left: -15%;
         }
         .orb-2 {
             width: 500px;
             height: 500px;
-            background: #b000ff;
+            background: #A98445;
             bottom: -15%;
             right: -15%;
+            opacity: 0.10;
         }
         .orb-3 {
             width: 400px;
             height: 400px;
-            background: #ff2a6d;
+            background: #19D5F2;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.05;
+            opacity: 0.03;
         }
 
         body::before {
@@ -75,8 +76,8 @@
             inset: 0;
             z-index: 0;
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+                linear-gradient(rgba(169, 132, 69, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(169, 132, 69, 0.02) 1px, transparent 1px);
             background-size: 46px 46px;
             content: "";
             mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent 85%);
@@ -91,7 +92,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(232, 217, 184, 0.6);
             text-decoration: none;
             font-size: 0.75rem;
             letter-spacing: 3px;
@@ -99,19 +100,19 @@
             font-weight: 500;
             padding: 10px 18px;
             border-radius: 60px;
-            background: rgba(16, 16, 26, 0.5);
+            background: rgba(4, 18, 23, 0.6);
             backdrop-filter: blur(20px) saturate(1.2);
             -webkit-backdrop-filter: blur(20px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(169, 132, 69, 0.12);
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
             transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             -webkit-tap-highlight-color: transparent;
         }
         .home-link:hover {
-            color: #00d4ff;
-            border-color: rgba(0, 212, 255, 0.2);
+            color: #C09A52;
+            border-color: rgba(169, 132, 69, 0.25);
             transform: translateX(-4px);
-            background: rgba(0, 212, 255, 0.06);
+            background: rgba(169, 132, 69, 0.06);
         }
         .home-link:active {
             transform: scale(0.95);
@@ -142,11 +143,11 @@
             user-select: none;
         }
         .refresh-btn:hover {
-            color: #65d8ff;
-            border-color: rgba(101, 216, 255, 0.25);
-            background: rgba(101, 216, 255, 0.07);
+            color: #C09A52;
+            border-color: rgba(169, 132, 69, 0.25);
+            background: rgba(169, 132, 69, 0.07);
             transform: scale(1.04);
-            box-shadow: 0 0 24px rgba(101, 216, 255, 0.06);
+            box-shadow: 0 0 24px rgba(169, 132, 69, 0.06);
         }
         .refresh-btn:active {
             transform: scale(0.94);
@@ -180,7 +181,7 @@
         }
 
         .dashboard-header .eyebrow {
-            color: #65d8ff;
+            color: #C09A52;
             font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 0.28em;
@@ -189,12 +190,12 @@
         }
 
         .dashboard-header h1 {
-            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-family: 'Cinzel', serif;
             font-size: clamp(2.2rem, 5vw, 4rem);
             font-weight: 900;
             letter-spacing: 0.06em;
             line-height: 1.1;
-            background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
+            background: linear-gradient(180deg, #FFF8E7 0%, #C09A52 60%, #A98445 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -229,9 +230,9 @@
             border: 1px solid rgba(76, 175, 80, 0.1);
         }
         .connection-status.offline {
-            background: rgba(255, 42, 109, 0.15);
-            color: #ff2a6d;
-            border: 1px solid rgba(255, 42, 109, 0.1);
+            background: rgba(255, 85, 119, 0.15);
+            color: #FF5577;
+            border: 1px solid rgba(255, 85, 119, 0.1);
         }
         .connection-status.syncing {
             background: rgba(255, 197, 61, 0.15);
@@ -249,10 +250,10 @@
         }
 
         .stat-card {
-            background: rgba(16, 16, 26, 0.5);
+            background: rgba(6, 26, 32, 0.55);
             backdrop-filter: blur(16px) saturate(1.2);
             -webkit-backdrop-filter: blur(16px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(169, 132, 69, 0.06);
             border-radius: 16px;
             padding: 18px 16px;
             text-align: center;
@@ -260,7 +261,7 @@
         }
 
         .stat-card:hover {
-            border-color: rgba(101, 216, 255, 0.15);
+            border-color: rgba(169, 132, 69, 0.15);
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
         }
@@ -300,19 +301,19 @@
         }
 
         .stat-card.accent .number {
-            color: #65d8ff;
+            color: #C09A52;
         }
         .stat-card.gold .number {
             color: #FFC53D;
         }
         .stat-card.pink .number {
-            color: #ff2a6d;
+            color: #FF5577;
         }
         .stat-card.green .number {
             color: #4caf50;
         }
         .stat-card.purple .number {
-            color: #b000ff;
+            color: #0787A2;
         }
         .stat-card.orange .number {
             color: #ff8a65;
@@ -333,17 +334,17 @@
         }
 
         .analytics-card {
-            background: rgba(16, 16, 26, 0.5);
+            background: rgba(6, 26, 32, 0.55);
             backdrop-filter: blur(16px) saturate(1.2);
             -webkit-backdrop-filter: blur(16px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(169, 132, 69, 0.06);
             border-radius: 16px;
             padding: 20px 20px 24px 20px;
             transition: 0.3s ease;
         }
 
         .analytics-card:hover {
-            border-color: rgba(101, 216, 255, 0.08);
+            border-color: rgba(169, 132, 69, 0.08);
         }
 
         .analytics-card .card-title {
@@ -359,7 +360,7 @@
         }
 
         .analytics-card .card-title i {
-            color: #65d8ff;
+            color: #C09A52;
         }
 
         .analytics-card .card-title .filter-select {
@@ -426,7 +427,7 @@
         .event-bar-item .e-bar-fill {
             height: 100%;
             border-radius: 4px;
-            background: linear-gradient(90deg, #65d8ff, #3b7bff);
+            background: linear-gradient(90deg, #C09A52, #A98445);
             transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
             width: 0%;
         }
@@ -488,10 +489,10 @@
         }
 
         .column-chart-container .col-bar.ug-bar {
-            background: linear-gradient(180deg, #65d8ff, #3b7bff);
+            background: linear-gradient(180deg, #C09A52, #A98445);
         }
         .column-chart-container .col-bar.pu-bar {
-            background: linear-gradient(180deg, #FFC53D, #f5a623);
+            background: linear-gradient(180deg, #19D5F2, #0787A2);
         }
 
         .column-chart-container .col-label {
@@ -519,17 +520,17 @@
         }
 
         .extra-card {
-            background: rgba(16, 16, 26, 0.5);
+            background: rgba(6, 26, 32, 0.55);
             backdrop-filter: blur(16px) saturate(1.2);
             -webkit-backdrop-filter: blur(16px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(169, 132, 69, 0.06);
             border-radius: 16px;
             padding: 18px 18px 20px 18px;
             transition: 0.3s ease;
         }
 
         .extra-card:hover {
-            border-color: rgba(101, 216, 255, 0.08);
+            border-color: rgba(169, 132, 69, 0.08);
         }
 
         .extra-card .card-title {
@@ -544,7 +545,7 @@
         }
 
         .extra-card .card-title i {
-            color: #65d8ff;
+            color: #C09A52;
             font-size: 0.8rem;
         }
 
@@ -560,16 +561,16 @@
             color: #FFC53D;
         }
         .extra-card .big-number.pink {
-            color: #ff2a6d;
+            color: #FF5577;
         }
         .extra-card .big-number.green {
             color: #4caf50;
         }
         .extra-card .big-number.cyan {
-            color: #65d8ff;
+            color: #C09A52;
         }
         .extra-card .big-number.purple {
-            color: #b000ff;
+            color: #0787A2;
         }
         .extra-card .big-number.orange {
             color: #ff8a65;
@@ -609,10 +610,10 @@
 
         /* ─── TABLE CARD ────────────────────────────────────────────── */
         .table-card {
-            background: rgba(16, 16, 26, 0.5);
+            background: rgba(6, 26, 32, 0.55);
             backdrop-filter: blur(16px) saturate(1.2);
             -webkit-backdrop-filter: blur(16px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(169, 132, 69, 0.06);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
@@ -631,14 +632,14 @@
         }
 
         .table-card .card-title i {
-            color: #65d8ff;
+            color: #C09A52;
         }
 
         /* ─── DOWNLOAD BUTTON ───────────────────────────────────────── */
         .download-btn {
-            background: rgba(101, 216, 255, 0.08);
-            border: 1px solid rgba(101, 216, 255, 0.15);
-            color: #65d8ff;
+            background: rgba(169, 132, 69, 0.08);
+            border: 1px solid rgba(169, 132, 69, 0.15);
+            color: #C09A52;
             padding: 5px 12px;
             border-radius: 6px;
             cursor: pointer;
@@ -651,8 +652,8 @@
             margin-left: 10px;
         }
         .download-btn:hover {
-            background: rgba(101, 216, 255, 0.15);
-            border-color: rgba(101, 216, 255, 0.3);
+            background: rgba(169, 132, 69, 0.15);
+            border-color: rgba(169, 132, 69, 0.3);
             transform: scale(1.04);
         }
         .download-btn:active {
@@ -713,15 +714,15 @@
 
         .filter-badge.ug {
             background: rgba(101, 216, 255, 0.15);
-            color: #65d8ff;
+            color: #C09A52;
         }
         .filter-badge.pu {
             background: rgba(255, 197, 61, 0.15);
             color: #FFC53D;
         }
         .filter-badge.mixed {
-            background: rgba(176, 0, 255, 0.15);
-            color: #b000ff;
+            background: rgba(7, 135, 162, 0.15);
+            color: #19D5F2;
         }
 
         .active-filters-info {
@@ -754,7 +755,7 @@
 
         .active-filters-info .filter-chip .clear-filter:hover {
             opacity: 1;
-            color: #ff2a6d;
+            color: #FF5577;
         }
 
         /* ─── TABLE SCROLL ──────────────────────────────────────────── */
@@ -767,7 +768,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.8rem;
-            min-width: 700px;
+            min-width: 750px;
         }
 
         .table-scroll table thead th {
@@ -808,7 +809,7 @@
 
         .tag.ug {
             background: rgba(101, 216, 255, 0.12);
-            color: #65d8ff;
+            color: #C09A52;
         }
         .tag.pu {
             background: rgba(255, 197, 61, 0.12);
@@ -816,8 +817,8 @@
         }
 
         .tag.event-tag {
-            background: rgba(176, 0, 255, 0.1);
-            color: #b000ff;
+            background: rgba(7, 135, 162, 0.1);
+            color: #19D5F2;
             font-size: 0.55rem;
             max-width: 120px;
             white-space: nowrap;
@@ -869,9 +870,30 @@
             border: 1px solid rgba(255, 197, 61, 0.1);
         }
         .status-badge.rejected {
-            background: rgba(255, 42, 109, 0.15);
-            color: #ff2a6d;
-            border: 1px solid rgba(255, 42, 109, 0.1);
+            background: rgba(255, 85, 119, 0.15);
+            color: #FF5577;
+            border: 1px solid rgba(255, 85, 119, 0.1);
+        }
+
+        /* ─── SOURCE BADGE ──────────────────────────────────────────── */
+        .source-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .source-badge.public {
+            background: rgba(101, 216, 255, 0.10);
+            color: #C09A52;
+            border: 1px solid rgba(101, 216, 255, 0.08);
+        }
+        .source-badge.coordinator {
+            background: rgba(255, 197, 61, 0.12);
+            color: #FFC53D;
+            border: 1px solid rgba(255, 197, 61, 0.08);
         }
 
         /* ─── ACTION BUTTON STYLES ─────────────────────────────────── */
@@ -893,7 +915,7 @@
             background: rgba(76, 175, 80, 0.15);
         }
         .action-btn.reject:hover {
-            background: rgba(255, 42, 109, 0.15);
+            background: rgba(255, 85, 119, 0.15);
         }
 
         /* ─── TOOLTIP ───────────────────────────────────────────────── */
@@ -929,12 +951,12 @@
             color: #81c784;
         }
         .tooltip.error {
-            border-color: rgba(255, 42, 109, 0.3);
+            border-color: rgba(255, 85, 119, 0.3);
             color: #ff6b8a;
         }
         .tooltip.info {
             border-color: rgba(101, 216, 255, 0.3);
-            color: #65d8ff;
+            color: #C09A52;
         }
 
         /* ─── RESPONSIVE ────────────────────────────────────────────── */
@@ -1091,7 +1113,7 @@
             background: rgba(255, 255, 255, 0.02);
         }
         .table-scroll::-webkit-scrollbar-thumb {
-            background: rgba(101, 216, 255, 0.2);
+            background: rgba(169, 132, 69, 0.2);
             border-radius: 4px;
         }
 
@@ -1151,7 +1173,7 @@
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 0.75rem;
-            color: #65d8ff;
+            color: #C09A52;
         }
     </style>
 </head>
@@ -1356,13 +1378,14 @@
                             <th>Participants</th>
                             <th>UTR</th>
                             <th>Status</th>
+                            <th>Source</th>
                             <th>Amount</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                            <td colspan="12" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
                                 <i class="fas fa-spinner fa-spin" style="font-size:1.2rem;display:block;margin-bottom:8px;"></i>
                                 Loading registrations...
                             </td>
@@ -1376,17 +1399,15 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════
-        //  🔐 SUPABASE CONFIG - FIXED WITH CORRECT API KEY
+        //  🔐 SUPABASE CONFIG
         // ═══════════════════════════════════════════════════════════════
 
         const SUPABASE_URL = 'https://gfzeafvkkjbkqwmhzbhh.supabase.co';
-        // ✅ FIXED: Using the correct anon key provided by the user
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ciV-bON--bAuofVltQySLA_m24_M8j_';
 
         let supabaseClient = null;
         let isSupabaseConnected = false;
 
-        // ✅ Improved initialization with retry
         function initSupabase() {
             try {
                 if (typeof supabase !== 'undefined' && supabase.createClient) {
@@ -1413,7 +1434,6 @@
             }
         }
 
-        // Initialize Supabase
         initSupabase();
 
         // ─── EVENT DATA ──────────────────────────────────────────────
@@ -1481,118 +1501,85 @@
         let renderScheduled = false;
         let dataSource = 'localStorage';
 
-        // ─── SUPABASE SETUP SQL SCRIPT ──────────────────────────────
-        const SUPABASE_SETUP_SQL = `
-        -- ═══════════════════════════════════════════════════════════════
-        --  DEPLOMAT · Supabase Setup Script
-        --  Run this in Supabase SQL Editor to set up the database
-        -- ═══════════════════════════════════════════════════════════════
+        // ─── NORMALIZATION HELPERS ──────────────────────────────────
 
-        -- 1. Create the registrations table
-        CREATE TABLE IF NOT EXISTS registrations (
-            id BIGSERIAL PRIMARY KEY,
-            event_name TEXT,
-            event_sub TEXT,
-            college TEXT,
-            ug_pu TEXT CHECK (ug_pu IN ('UG', 'PU')),
-            team_leader TEXT,
-            email TEXT,
-            phone TEXT,
-            total_amount INTEGER,
-            txn TEXT UNIQUE,
-            participants JSONB,
-            status TEXT DEFAULT 'VERIFIED' CHECK (status IN ('VERIFIED', 'PENDING', 'REJECTED')),
-            registered_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-            verified_at TIMESTAMP WITH TIME ZONE,
-            is_pending BOOLEAN DEFAULT FALSE,
-            timeout_triggered BOOLEAN DEFAULT FALSE,
-            rejection_reason TEXT,
-            rejected_at TIMESTAMP WITH TIME ZONE
-        );
-
-        -- 2. Create indexes for better performance
-        CREATE INDEX IF NOT EXISTS idx_registrations_email ON registrations(email);
-        CREATE INDEX IF NOT EXISTS idx_registrations_txn ON registrations(txn);
-        CREATE INDEX IF NOT EXISTS idx_registrations_status ON registrations(status);
-        CREATE INDEX IF NOT EXISTS idx_registrations_event ON registrations(event_name);
-        CREATE INDEX IF NOT EXISTS idx_registrations_ug_pu ON registrations(ug_pu);
-
-        -- 3. Enable Row Level Security
-        ALTER TABLE registrations ENABLE ROW LEVEL SECURITY;
-
-        -- 4. Create RLS policies (this is the critical fix for "invalid api key")
-        DO $$ 
-        BEGIN
-            -- Drop existing policies if they exist
-            DROP POLICY IF EXISTS "Allow anonymous inserts" ON registrations;
-            DROP POLICY IF EXISTS "Allow anonymous selects" ON registrations;
-            DROP POLICY IF EXISTS "Allow anonymous updates" ON registrations;
-            
-            -- Allow INSERT from anyone (fixes the API key error)
-            CREATE POLICY "Allow anonymous inserts" 
-            ON registrations 
-            FOR INSERT 
-            WITH CHECK (true);
-            
-            -- Allow SELECT from anyone
-            CREATE POLICY "Allow anonymous selects" 
-            ON registrations 
-            FOR SELECT 
-            USING (true);
-            
-            -- Allow UPDATE from anyone
-            CREATE POLICY "Allow anonymous updates" 
-            ON registrations 
-            FOR UPDATE 
-            USING (true) 
-            WITH CHECK (true);
-        END $$;
-
-        -- 5. Verify policies
-        SELECT 
-            tablename,
-            policyname,
-            cmd,
-            qual,
-            with_check
-        FROM pg_policies 
-        WHERE tablename = 'registrations';
-        `;
-
-        // ─── POPULATE DROPDOWNS ──────────────────────────────────────
-
-        function populateDropdowns() {
-            let dropdownHTML = '<option value="all">📊 All Events</option>';
-            EVENTS.forEach(e => {
-                dropdownHTML += `<option value="${e.name}">${e.name} · ${e.type}</option>`;
-            });
-            eventFilterDropdown.innerHTML = dropdownHTML;
-
-            let tableFilterHTML = '<option value="">All Events</option>';
-            EVENTS.forEach(e => {
-                tableFilterHTML += `<option value="${e.name}">${e.name} · ${e.type}</option>`;
-            });
-            eventFilter.innerHTML = tableFilterHTML;
+        /**
+         * Normalize text for comparison (case-insensitive, trim, collapse spaces)
+         */
+        function normalizeText(value) {
+            return String(value ?? '')
+                .trim()
+                .replace(/\s+/g, ' ')
+                .toLowerCase();
         }
 
-        // ─── HELPERS ──────────────────────────────────────────────────
+        /**
+         * Normalize status value
+         */
+        function normalizeStatus(value) {
+            const status = String(value ?? 'VERIFIED')
+                .trim()
+                .toUpperCase();
 
+            if (status === 'PENDING') return 'PENDING';
+            if (status === 'REJECTED') return 'REJECTED';
+            if (status === 'VERIFIED') return 'VERIFIED';
+            return 'VERIFIED';
+        }
+
+        /**
+         * Robust category normalization - handles all variations
+         */
         function getRegistrationCategory(registration) {
-            const category = registration.ug_pu || 'UG';
-            return category.toUpperCase();
+            const raw = String(registration?.ug_pu ?? '')
+                .trim()
+                .toUpperCase();
+
+            // PU variations
+            if (
+                raw === 'PU' ||
+                raw === 'P.U.' ||
+                raw === 'P.U' ||
+                raw === 'POSTGRADUATE' ||
+                raw === 'POST GRADUATE'
+            ) {
+                return 'PU';
+            }
+
+            // UG variations
+            if (
+                raw === 'UG' ||
+                raw === 'U.G.' ||
+                raw === 'U.G' ||
+                raw === 'UNDERGRADUATE' ||
+                raw === 'UNDER GRADUATE'
+            ) {
+                return 'UG';
+            }
+
+            // Default to UG for backwards compatibility
+            return 'UG';
         }
 
+        /**
+         * Get participants array from registration (handles all formats)
+         */
         function getParticipantsArray(registration) {
             const r = registration;
             if (!r) return [];
 
-            if (r.participants && Array.isArray(r.participants)) return r.participants;
+            // Already an array
+            if (r.participants && Array.isArray(r.participants)) {
+                return r.participants;
+            }
 
+            // JSON string
             if (typeof r.participants === 'string' && r.participants.trim()) {
                 try {
                     const parsed = JSON.parse(r.participants);
                     if (Array.isArray(parsed)) return parsed;
                 } catch (e) {
+                    // Try comma-separated
                     return r.participants.split(',').map(p => ({
                         name: p.trim(),
                         phone: 'N/A',
@@ -1601,6 +1588,7 @@
                 }
             }
 
+            // Fallback: use team_leader as single participant
             if (r.team_leader) {
                 return [{ name: r.team_leader, phone: r.phone || 'N/A', otherEvent: 'No' }];
             }
@@ -1608,9 +1596,33 @@
             return [];
         }
 
+        /**
+         * Get team size (handles all formats)
+         */
         function getTeamSize(registration) {
             const parts = getParticipantsArray(registration);
             return parts.length || 1;
+        }
+
+        /**
+         * Get display source (handles missing field)
+         */
+        function getRegistrationSource(registration) {
+            const raw = String(registration?.registration_source ?? 'PUBLIC')
+                .trim()
+                .toUpperCase();
+
+            if (raw === 'STUDENT_COORDINATOR') return 'STUDENT_COORDINATOR';
+            return 'PUBLIC';
+        }
+
+        /**
+         * Get display source label
+         */
+        function getSourceLabel(registration) {
+            const source = getRegistrationSource(registration);
+            if (source === 'STUDENT_COORDINATOR') return 'Student Coordinator';
+            return 'Public';
         }
 
         function safeString(val) {
@@ -1637,7 +1649,6 @@
             } else if (status === 'offline') {
                 connectionStatus.classList.add('offline');
                 isSupabaseConnected = false;
-                // Show setup banner if we're offline
                 setupBanner.classList.add('show');
             } else if (status === 'syncing') {
                 connectionStatus.classList.add('syncing');
@@ -1653,7 +1664,7 @@
             }
 
             try {
-                const { data, error, status } = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('registrations')
                     .select('count', { count: 'exact', head: true });
 
@@ -1677,6 +1688,22 @@
                 updateConnectionStatus('offline', '⚠️ Connection error');
                 return false;
             }
+        }
+
+        // ─── POPULATE DROPDOWNS ──────────────────────────────────────
+
+        function populateDropdowns() {
+            let dropdownHTML = '<option value="all">📊 All Events</option>';
+            EVENTS.forEach(e => {
+                dropdownHTML += `<option value="${e.name}">${e.name} · ${e.type}</option>`;
+            });
+            eventFilterDropdown.innerHTML = dropdownHTML;
+
+            let tableFilterHTML = '<option value="">All Events</option>';
+            EVENTS.forEach(e => {
+                tableFilterHTML += `<option value="${e.name}">${e.name} · ${e.type}</option>`;
+            });
+            eventFilter.innerHTML = tableFilterHTML;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -1720,7 +1747,7 @@
                 'S.No', 'Team Leader', 'Email', 'Phone', 'College',
                 'Event Name', 'Event Type', 'Category', 'Team Size',
                 'Participants', 'UTR / Transaction ID', 'Amount (₹)',
-                'Registration Date', 'Status'
+                'Registration Date', 'Status', 'Source'
             ];
 
             const rows = data.map((r, idx) => {
@@ -1735,6 +1762,7 @@
                 let statusLabel = 'Verified';
                 if (status === 'PENDING') statusLabel = 'Pending';
                 else if (status === 'REJECTED') statusLabel = 'Rejected';
+                const sourceLabel = getSourceLabel(r);
 
                 return [
                     idx + 1,
@@ -1750,7 +1778,8 @@
                     r.txn || '—',
                     r.total_amount || 0,
                     r.registered_at ? new Date(r.registered_at).toLocaleString('en-IN') : '—',
-                    statusLabel
+                    statusLabel,
+                    sourceLabel
                 ];
             });
 
@@ -1798,7 +1827,7 @@
             const headers = ['S.No', 'Team Leader', 'Email', 'Phone', 'College',
                 'Event Name', 'Event Type', 'Category', 'Team Size',
                 'Participants', 'UTR / Transaction ID', 'Amount (₹)',
-                'Registration Date', 'Status'
+                'Registration Date', 'Status', 'Source'
             ];
 
             const rows = data.map((r, idx) => {
@@ -1813,6 +1842,7 @@
                 let statusLabel = 'Verified';
                 if (status === 'PENDING') statusLabel = 'Pending';
                 else if (status === 'REJECTED') statusLabel = 'Rejected';
+                const sourceLabel = getSourceLabel(r);
 
                 return [
                     idx + 1,
@@ -1828,7 +1858,8 @@
                     r.txn || '—',
                     r.total_amount || 0,
                     r.registered_at ? new Date(r.registered_at).toLocaleString('en-IN') : '—',
-                    statusLabel
+                    statusLabel,
+                    sourceLabel
                 ];
             });
 
@@ -1863,7 +1894,6 @@
             let data = [];
             let fromSupabase = false;
 
-            // Try Supabase first
             if (supabaseClient) {
                 try {
                     updateConnectionStatus('syncing', '🔄 Fetching from Supabase...');
@@ -1889,12 +1919,24 @@
                         console.log('✅ Loaded from Supabase:', data.length, 'records');
                         console.log('📋 Sample record:', data[0]);
 
-                        // Log category distribution for debugging
+                        // 🔍 DEBUG: Log registration #41 if it exists
+                        const coord41 = data.find(r => String(r.id) === '41');
+                        if (coord41) {
+                            console.log('🎓 Coordinator registration #41 found:', coord41);
+                        } else {
+                            console.log('🔍 Registration #41 not found in Supabase data');
+                        }
+
+                        // Log category distribution
                         const ugCount = data.filter(r => getRegistrationCategory(r) === 'UG').length;
                         const puCount = data.filter(r => getRegistrationCategory(r) === 'PU').length;
                         console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
 
-                        // Save to localStorage as backup
+                        // Log source distribution
+                        const publicCount = data.filter(r => getRegistrationSource(r) === 'PUBLIC').length;
+                        const coordCount = data.filter(r => getRegistrationSource(r) === 'STUDENT_COORDINATOR').length;
+                        console.log(`📊 Source distribution: PUBLIC=${publicCount}, STUDENT_COORDINATOR=${coordCount}`);
+
                         try {
                             localStorage.setItem('deplomat_db', JSON.stringify(data));
                             localStorage.setItem('deplomat_db_timestamp', new Date().toISOString());
@@ -1908,7 +1950,6 @@
                     } else {
                         console.warn('⚠️ No data returned from Supabase');
                         updateConnectionStatus('offline', '⚠️ No data in Supabase');
-                        // Try loading from localStorage
                         try {
                             const localData = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                             if (localData.length > 0) {
@@ -1925,7 +1966,6 @@
                 } catch (e) {
                     console.error('❌ Supabase fetch failed:', e);
                     updateConnectionStatus('offline', `❌ ${e.message || 'Connection failed'}`);
-                    // Try loading from localStorage as fallback
                     try {
                         const localData = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                         if (localData.length > 0) {
@@ -1939,7 +1979,6 @@
                     }
                 }
             } else {
-                // No Supabase client, try localStorage
                 try {
                     const localData = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
                     if (localData.length > 0) {
@@ -1963,7 +2002,7 @@
                 showTooltip('⚠️ No data found. Please check your connection or run setup script.', 'error');
                 tableBody.innerHTML = `
                         <tr>
-                            <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                            <td colspan="12" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
                                 <i class="fas fa-database" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
                                 No registrations found<br>
                                 <span style="font-size:0.7rem;color:rgba(255,255,255,0.1);">
@@ -1978,68 +2017,136 @@
             }
         }
 
-        // ─── FILTERING ───────────────────────────────────────────────
+        // ─── FILTERING - ROBUST VERSION ─────────────────────────────
 
         function applyFilters() {
-    const search = searchInput.value.toLowerCase().trim();
-    const event = eventFilter.value;
-    const category = categoryFilter.value;
-    const teamSize = teamSizeFilter.value;
-    const status = statusFilter.value;
+            const search = normalizeText(searchInput.value);
 
-    filteredRegistrations = allRegistrations.filter(r => {
+            const selectedEvent = String(eventFilter.value || '').trim();
 
-        // Search filter
-        if (search) {
-            const searchable = [
-                r.team_leader || '',
-                r.email || '',
-                r.phone || '',
-                r.txn || '',
-                r.college || '',
-                r.event_name || '',
-                r.registration_source || ''
-            ].join(' ').toLowerCase();
+            const selectedCategory =
+                String(categoryFilter.value || 'all')
+                .trim()
+                .toLowerCase();
 
-            if (!searchable.includes(search)) {
-                return false;
+            const selectedTeamSize =
+                String(teamSizeFilter.value || 'all')
+                .trim()
+                .toLowerCase();
+
+            const selectedStatus =
+                String(statusFilter.value || 'all')
+                .trim()
+                .toUpperCase();
+
+            filteredRegistrations = allRegistrations.filter(registration => {
+
+                // ── SEARCH ──────────────────────────────────────────
+                if (search) {
+                    const searchable = [
+                        registration.team_leader,
+                        registration.email,
+                        registration.phone,
+                        registration.txn,
+                        registration.college,
+                        registration.event_name,
+                        registration.registration_source
+                    ]
+                    .filter(Boolean)
+                    .map(normalizeText)
+                    .join(' ');
+
+                    if (!searchable.includes(search)) {
+                        return false;
+                    }
+                }
+
+                // ── EVENT ───────────────────────────────────────────
+                if (selectedEvent) {
+                    if (normalizeText(registration.event_name) !== normalizeText(selectedEvent)) {
+                        return false;
+                    }
+                }
+
+                // ── CATEGORY ────────────────────────────────────────
+                if (selectedCategory !== 'all' && selectedCategory !== '') {
+                    const registrationCategory = getRegistrationCategory(registration);
+
+                    if (selectedCategory === 'ug' && registrationCategory !== 'UG') {
+                        return false;
+                    }
+
+                    if (selectedCategory === 'pu' && registrationCategory !== 'PU') {
+                        return false;
+                    }
+                }
+
+                // ── TEAM SIZE ──────────────────────────────────────
+                if (selectedTeamSize !== 'all' && selectedTeamSize !== '') {
+                    const size = getTeamSize(registration);
+
+                    if (selectedTeamSize === '5plus') {
+                        if (size < 5) {
+                            return false;
+                        }
+                    } else {
+                        const requiredSize = parseInt(selectedTeamSize, 10);
+
+                        if (Number.isFinite(requiredSize) && size !== requiredSize) {
+                            return false;
+                        }
+                    }
+                }
+
+                // ── STATUS ──────────────────────────────────────────
+                if (selectedStatus !== 'ALL' && selectedStatus !== '') {
+                    const registrationStatus = normalizeStatus(registration.status);
+
+                    if (registrationStatus !== selectedStatus) {
+                        return false;
+                    }
+                }
+
+                // ════════════════════════════════════════════════════
+                // ✅ IMPORTANT: NO registration_source filter here.
+                // PUBLIC and STUDENT_COORDINATOR are both valid.
+                // ════════════════════════════════════════════════════
+
+                return true;
+            });
+
+            // ── DEBUG LOGGING ──────────────────────────────────────
+            console.log('🔎 Filter state:', {
+                search,
+                event: selectedEvent,
+                category: selectedCategory,
+                teamSize: selectedTeamSize,
+                status: selectedStatus
+            });
+
+            console.log(
+                '📊 Filtering:',
+                allRegistrations.length,
+                '→',
+                filteredRegistrations.length
+            );
+
+            const coordinator41 = allRegistrations.find(r => String(r.id) === '41');
+            if (coordinator41) {
+                console.log('🎓 Coordinator registration #41:', coordinator41);
+
+                const survives = filteredRegistrations.some(r => String(r.id) === '41');
+                console.log('🎓 Coordinator #41 survives filters:', survives);
             }
+
+            renderTable();
+            renderStats();
+            renderEventBars();
+            renderColumnChart();
+            renderExtraAnalytics();
+            updateRecordCount();
+            updateActiveFilters();
         }
-
-        // Event filter
-        if (event && event !== 'all' && r.event_name !== event) {
-            return false;
-        }
-
-        // Category filter
-        if (category && category !== 'all' && getRegistrationCategory(r) !== category) {
-            return false;
-        }
-
-        // Team size filter
-        if (
-            teamSize &&
-            teamSize !== 'all' &&
-            getParticipantsArray(r).length !== parseInt(teamSize)
-        ) {
-            return false;
-        }
-
-        // Status filter
-        if (status && status !== 'all' && r.status !== status) {
-            return false;
-        }
-
-        return true;
-    });
-
-    renderTable();
-    renderStats();
-    renderEventBars();
-    renderColumnChart();
-    renderExtraAnalytics();
-    updateRecordCount();
-}
 
         // ─── UPDATE ACTIVE FILTERS DISPLAY ─────────────────────────
 
@@ -2100,17 +2207,6 @@
         }
 
         window.clearFilter = clearFilter;
-
-        // ─── SCHEDULED RENDER ────────────────────────────────────────
-
-        function scheduleRender() {
-            if (renderScheduled) return;
-            renderScheduled = true;
-            requestAnimationFrame(() => {
-                renderScheduled = false;
-                renderAll();
-            });
-        }
 
         // ─── RENDER ALL ──────────────────────────────────────────────
 
@@ -2360,7 +2456,7 @@
             if (regs.length === 0) {
                 tableBody.innerHTML = `
                             <tr>
-                                <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                                <td colspan="12" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
                                     <i class="fas fa-inbox" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
                                     ${allRegistrations.length === 0 ? 'No registrations loaded' : 'No matching records found'}
                                 </td>
@@ -2404,6 +2500,18 @@
                     statusClass = 'verified';
                 }
 
+                // ── SOURCE DISPLAY ─────────────────────────────────
+                const source = getRegistrationSource(r);
+                let sourceDisplay = '';
+                let sourceClass = '';
+                if (source === 'STUDENT_COORDINATOR') {
+                    sourceDisplay = '📋 Student Coordinator';
+                    sourceClass = 'coordinator';
+                } else {
+                    sourceDisplay = '🌐 Public';
+                    sourceClass = 'public';
+                }
+
                 const teamSize = getTeamSize(r);
                 let sizeBadge = '';
                 if (teamSize === 1) sizeBadge = '👤';
@@ -2434,6 +2542,7 @@
                                 </td>
                                 <td><span class="txn-code">${safeString(r.txn)}</span></td>
                                 <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
+                                <td><span class="source-badge ${sourceClass}">${sourceDisplay}</span></td>
                                 <td style="color:#65d8ff;font-weight:600;">₹${r.total_amount || 0}</td>
                                 <td>${actionsHtml}</td>
                             </tr>
@@ -2517,7 +2626,6 @@
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'VERIFIED';
 
-                    // Update localStorage
                     localStorage.setItem('deplomat_db', JSON.stringify(allRegistrations));
 
                     showTooltip('✅ Registration verified!', 'success');
@@ -2553,7 +2661,6 @@
                     const reg = allRegistrations.find(r => String(r.id) === String(id));
                     if (reg) reg.status = 'REJECTED';
 
-                    // Update localStorage
                     localStorage.setItem('deplomat_db', JSON.stringify(allRegistrations));
 
                     showTooltip('❌ Registration rejected', 'error');
@@ -2578,7 +2685,10 @@
         categoryFilter.addEventListener('change', applyFilters);
         teamSizeFilter.addEventListener('change', applyFilters);
         statusFilter.addEventListener('change', applyFilters);
-        eventFilterDropdown.addEventListener('change', applyFilters);
+        eventFilterDropdown.addEventListener('change', function() {
+            selectedEventFilter = this.value;
+            applyFilters();
+        });
         refreshBtn.addEventListener('click', refreshData);
         downloadBtn.addEventListener('click', handleDownload);
 
@@ -2623,7 +2733,7 @@
 
             tableBody.innerHTML = `
                     <tr>
-                        <td colspan="11" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
+                        <td colspan="12" style="text-align:center;padding:40px 0;color:rgba(255,255,255,0.2);">
                             <i class="fas fa-spinner fa-spin" style="font-size:1.2rem;display:block;margin-bottom:8px;"></i>
                             Loading registrations...
                         </td>
@@ -2637,13 +2747,82 @@
             console.log('1. Go to Supabase Dashboard → SQL Editor');
             console.log('2. Paste and run the SQL script below:');
             console.log('==================================================');
-            console.log(SUPABASE_SETUP_SQL);
+            console.log(`
+            -- ═══════════════════════════════════════════════════════════════
+            --  DEPLOMAT · Supabase Setup Script
+            -- ═══════════════════════════════════════════════════════════════
+
+            -- 1. Create the registrations table
+            CREATE TABLE IF NOT EXISTS registrations (
+                id BIGSERIAL PRIMARY KEY,
+                event_name TEXT,
+                event_sub TEXT,
+                college TEXT,
+                ug_pu TEXT CHECK (ug_pu IN ('UG', 'PU')),
+                team_leader TEXT,
+                email TEXT,
+                phone TEXT,
+                total_amount INTEGER,
+                txn TEXT UNIQUE,
+                participants JSONB,
+                status TEXT DEFAULT 'VERIFIED' CHECK (status IN ('VERIFIED', 'PENDING', 'REJECTED')),
+                registered_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                verified_at TIMESTAMP WITH TIME ZONE,
+                is_pending BOOLEAN DEFAULT FALSE,
+                timeout_triggered BOOLEAN DEFAULT FALSE,
+                rejection_reason TEXT,
+                rejected_at TIMESTAMP WITH TIME ZONE,
+                registration_source TEXT DEFAULT 'PUBLIC'
+            );
+
+            -- 2. Create indexes for better performance
+            CREATE INDEX IF NOT EXISTS idx_registrations_email ON registrations(email);
+            CREATE INDEX IF NOT EXISTS idx_registrations_txn ON registrations(txn);
+            CREATE INDEX IF NOT EXISTS idx_registrations_status ON registrations(status);
+            CREATE INDEX IF NOT EXISTS idx_registrations_event ON registrations(event_name);
+            CREATE INDEX IF NOT EXISTS idx_registrations_ug_pu ON registrations(ug_pu);
+            CREATE INDEX IF NOT EXISTS idx_registrations_source ON registrations(registration_source);
+
+            -- 3. Enable Row Level Security
+            ALTER TABLE registrations ENABLE ROW LEVEL SECURITY;
+
+            -- 4. Create RLS policies
+            DO $$ 
+            BEGIN
+                DROP POLICY IF EXISTS "Allow anonymous inserts" ON registrations;
+                DROP POLICY IF EXISTS "Allow anonymous selects" ON registrations;
+                DROP POLICY IF EXISTS "Allow anonymous updates" ON registrations;
+                
+                CREATE POLICY "Allow anonymous inserts" 
+                ON registrations 
+                FOR INSERT 
+                WITH CHECK (true);
+                
+                CREATE POLICY "Allow anonymous selects" 
+                ON registrations 
+                FOR SELECT 
+                USING (true);
+                
+                CREATE POLICY "Allow anonymous updates" 
+                ON registrations 
+                FOR UPDATE 
+                USING (true) 
+                WITH CHECK (true);
+            END $$;
+
+            -- 5. Verify policies
+            SELECT 
+                tablename,
+                policyname,
+                cmd,
+                qual,
+                with_check
+            FROM pg_policies 
+            WHERE tablename = 'registrations';
+            `);
             console.log('==================================================');
 
-            // Test Supabase connection
             await testSupabaseConnection();
-
-            // Load data
             await loadData();
 
             window.addEventListener('resize', handleResize);
@@ -2660,16 +2839,20 @@
                 refreshData();
             }, 1500);
 
-            console.log('📊 DEPLOMAT Admin Dashboard v3.0');
+            console.log('📊 DEPLOMAT Admin Dashboard v4.0 - FIXED');
             console.log(`📈 Loaded ${allRegistrations.length} registrations from ${dataSource}`);
             console.log('🎯 Features: Filters, Search, Export, Verification');
             console.log('⌨️  Keyboard shortcuts: Ctrl+R (refresh), Ctrl+Shift+E (export)');
-            console.log('✅ Fixed API key issue - using correct anon key');
-            console.log('📋 Check console for setup instructions if needed');
+            console.log('✅ Fixed: Category normalization, Team size filtering, Search');
+            console.log('✅ Fixed: registration_source handling with default fallback');
+            console.log('✅ Added: Source column showing PUBLIC / STUDENT COORDINATOR');
 
             const ugCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'UG').length;
             const puCount = allRegistrations.filter(r => getRegistrationCategory(r) === 'PU').length;
+            const publicCount = allRegistrations.filter(r => getRegistrationSource(r) === 'PUBLIC').length;
+            const coordCount = allRegistrations.filter(r => getRegistrationSource(r) === 'STUDENT_COORDINATOR').length;
             console.log(`📊 Category distribution: UG=${ugCount}, PU=${puCount}`);
+            console.log(`📊 Source distribution: PUBLIC=${publicCount}, STUDENT_COORDINATOR=${coordCount}`);
         }
 
         // Start the dashboard

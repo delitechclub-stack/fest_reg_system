@@ -24,8 +24,8 @@
 
         body {
             font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
+            background: #041217;
+            color: #F2F6F7;
             overflow-x: hidden;
             min-height: 100dvh;
             -webkit-font-smoothing: antialiased;
@@ -43,25 +43,26 @@
         .orb-1 {
             width: 600px;
             height: 600px;
-            background: #00d4ff;
+            background: #0787A2;
             top: -15%;
             left: -15%;
         }
         .orb-2 {
             width: 500px;
             height: 500px;
-            background: #b000ff;
+            background: #A98445;
             bottom: -15%;
             right: -15%;
+            opacity: 0.10;
         }
         .orb-3 {
             width: 400px;
             height: 400px;
-            background: #ff2a6d;
+            background: #19D5F2;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.05;
+            opacity: 0.03;
         }
 
         body::before {
@@ -69,8 +70,8 @@
             inset: 0;
             z-index: 0;
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+                linear-gradient(rgba(169, 132, 69, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(169, 132, 69, 0.02) 1px, transparent 1px);
             background-size: 46px 46px;
             content: "";
             mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent 85%);
@@ -86,7 +87,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(232, 217, 184, 0.6);
             text-decoration: none;
             font-size: 0.75rem;
             letter-spacing: 3px;
@@ -94,19 +95,19 @@
             font-weight: 500;
             padding: 10px 18px;
             border-radius: 60px;
-            background: rgba(16, 16, 26, 0.5);
+            background: rgba(4, 18, 23, 0.6);
             backdrop-filter: blur(20px) saturate(1.2);
             -webkit-backdrop-filter: blur(20px) saturate(1.2);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(169, 132, 69, 0.12);
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
             transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             -webkit-tap-highlight-color: transparent;
         }
         .home-link:hover {
-            color: #00d4ff;
-            border-color: rgba(0, 212, 255, 0.2);
+            color: #C09A52;
+            border-color: rgba(169, 132, 69, 0.25);
             transform: translateX(-4px);
-            background: rgba(0, 212, 255, 0.06);
+            background: rgba(169, 132, 69, 0.06);
         }
         .home-link:active {
             transform: scale(0.95);
@@ -145,9 +146,9 @@
             position: relative;
             overflow: hidden;
             padding: clamp(32px, 5vw, 56px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(169, 132, 69, 0.08);
             border-radius: 24px;
-            background: rgba(17, 24, 38, 0.75);
+            background: rgba(6, 26, 32, 0.80);
             box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
@@ -159,7 +160,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background: linear-gradient(90deg, transparent, #65d8ff, transparent);
+            background: linear-gradient(90deg, transparent, #C09A52, transparent);
             content: "";
             opacity: 0.8;
         }
@@ -170,7 +171,7 @@
         }
 
         .status-header .eyebrow {
-            color: #65d8ff;
+            color: #C09A52;
             font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 0.28em;
@@ -179,7 +180,7 @@
         }
 
         .status-header h1 {
-            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-family: 'Cinzel', serif;
             font-size: clamp(1.8rem, 4.5vw, 3.2rem);
             font-weight: 900;
             letter-spacing: 0.06em;
@@ -224,7 +225,7 @@
         }
 
         .search-form .form-group label .required {
-            color: #ff2a6d;
+            color: #FF5577;
             margin-left: 4px;
         }
 
@@ -252,8 +253,8 @@
         }
 
         .search-form .form-group input.input-error {
-            border-color: rgba(255, 42, 109, 0.4);
-            box-shadow: 0 0 0 4px rgba(255, 42, 109, 0.08);
+            border-color: rgba(255, 85, 119, 0.4);
+            box-shadow: 0 0 0 4px rgba(255, 85, 119, 0.08);
         }
 
         .search-form .form-actions {
@@ -282,13 +283,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #65d8ff, #3b7bff);
-            color: #0a0a0f;
+            background: linear-gradient(135deg, #C09A52, #A98445);
+            color: #041217;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(101, 216, 255, 0.2);
+            box-shadow: 0 12px 32px rgba(169, 132, 69, 0.2);
         }
 
         .btn-secondary {
@@ -342,7 +343,7 @@
         }
 
         .search-hint strong {
-            color: #65d8ff;
+            color: #C09A52;
             font-weight: 600;
         }
 
@@ -385,7 +386,7 @@
         }
 
         .results-header .count strong {
-            color: #65d8ff;
+            color: #C09A52;
             font-weight: 700;
         }
 
@@ -477,7 +478,7 @@
         }
 
         .reg-result .reg-body .reg-item .value.leader {
-            color: #65d8ff;
+            color: #C09A52;
         }
 
         .reg-result .reg-body .reg-item .value.highlight {
@@ -638,7 +639,7 @@
             display: none !important;
         }
         .text-aqua {
-            color: #65d8ff;
+            color: #C09A52;
         }
         .text-gold {
             color: #FFC53D;
@@ -653,8 +654,8 @@
         /* ─── ERROR BANNER ───────────────────────────────────────────── */
         .error-banner {
             display: none;
-            background: rgba(255, 42, 109, 0.12);
-            border: 1px solid rgba(255, 42, 109, 0.2);
+            background: rgba(255, 85, 119, 0.12);
+            border: 1px solid rgba(255, 85, 119, 0.2);
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 16px;
@@ -788,7 +789,7 @@
                 <div class="text-center mt-16">
                     <p style="color: rgba(255,255,255,0.15); font-size: 0.7rem; letter-spacing: 0.1em;">
                         Not registered yet?
-                        <a href="registration.html" style="color: #65d8ff; text-decoration: none; font-weight: 600;">
+                        <a href="registration.html" style="color: #C09A52; text-decoration: none; font-weight: 600;">
                             Register now →
                         </a>
                     </p>
