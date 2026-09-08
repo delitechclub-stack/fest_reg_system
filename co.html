@@ -445,28 +445,6 @@
                 "phone": "9482245677"
             }]
         }, {
-            "event_id": 3,
-            "event_name": "COURT OF THE DEEP",
-            "event_display": "Moot Court",
-            "main_student_coordinator": {
-                "name": "Hema V",
-                "phone": "8310255242"
-            },
-            "sub_event_coordinators": [{
-                "name": "Priya",
-                "phone": "8088454811"
-            }, {
-                "name": "Zunira",
-                "phone": "8217328213"
-            }, {
-                "name": "Rachana",
-                "phone": "8660881164"
-            }],
-            "faculty_event_coordinators": [{
-                "name": "Rekha B",
-                "phone": "8310519133"
-            }]
-        }, {
             "event_id": 4,
             "event_name": "THE SIREN'S ACT",
             "event_display": "Reels Making",
@@ -632,11 +610,6 @@
         "TRIDENT WAR": "THE TRIDENT WAR",
         "TRIDENT": "THE TRIDENT WAR",
         "FREE FIRE": "THE TRIDENT WAR",
-
-        "COURT OF THE DEEP": "COURT OF THE DEEP",
-        "COURT": "COURT OF THE DEEP",
-        "MOOT COURT": "COURT OF THE DEEP",
-        "MOOT": "COURT OF THE DEEP",
 
         "THE SIREN'S ACT": "THE SIREN'S ACT",
         "SIREN'S ACT": "THE SIREN'S ACT",
@@ -1018,7 +991,7 @@
                 if (stored && !isNaN(parseInt(stored, 10))) eventParam = String(parseInt(stored, 10));
             }
             const id = parseInt(eventParam, 10);
-            if (!isNaN(id) && id >= 0 && id <= 11) {
+            if (!isNaN(id) && id >= 0 && id <= 11 && id !== 3) {
                 const backLink = document.getElementById('contextBackLink');
                 if (backLink) {
                     backLink.href = 'event-' + id + '.html';

@@ -264,7 +264,6 @@
               <option value="0">THE ATLANTEAN TRIALS · Escape Room</option>
               <option value="1">THE LOST RELIC · Treasure Hunt</option>
               <option value="2">THE TRIDENT WAR · Free Fire</option>
-              <option value="3">COURT OF THE DEEP · Moot Court</option>
               <option value="4">THE SIREN'S ACT · Reels Making</option>
               <option value="5">ECHOS OF ATLANTIS · Solo Singing</option>
               <option value="6">THE MERMAID'S WALTZ · Solo Dance</option>
@@ -372,7 +371,6 @@
     { id:0, name:"THE ATLANTEAN TRIALS", sub:"Escape Room", min:3, max:3, category:'both', pricing:{ type:'fixed', amount:750 } },
     { id:1, name:"THE LOST RELIC", sub:"Treasure Hunt", min:2, max:2, category:'both', pricing:{ type:'fixed', amount:500 } },
     { id:2, name:"THE TRIDENT WAR", sub:"Free Fire", min:4, max:4, category:'both', pricing:{ type:'fixed', amount:1000 } },
-    { id:3, name:"COURT OF THE DEEP", sub:"Moot Court", min:2, max:3, category:'both', pricing:{ type:'perParticipant', amount:250 } },
     { id:4, name:"THE SIREN'S ACT", sub:"Reels Making", min:1, max:3, category:'both', pricing:{ type:'fixed', amount:750 } },
     { id:5, name:"ECHOS OF ATLANTIS", sub:"Solo Singing", min:1, max:1, category:'both', pricing:{ type:'fixed', amount:250 } },
     { id:6, name:"THE MERMAID'S WALTZ", sub:"Solo Dance", min:1, max:1, category:'both', pricing:{ type:'fixed', amount:250 } },
@@ -1270,6 +1268,11 @@
       const eventIndex = params.get('event');
       if(eventIndex !== null) {
         const select = document.getElementById('eventSelect');
+        if(eventIndex === '3') { // ⛔ Cancelled event (COURT OF THE DEEP / Moot Court)
+          select.value = '';
+          showBlockNotice('⛔ <strong>Court of the Deep (Moot Court) has been cancelled.</strong> This event is no longer available for registration.');
+          return;
+        }
         if(select && Array.from(select.options).some(opt => opt.value === eventIndex)) {
           select.value = eventIndex;
           select.dispatchEvent(new Event('change'));
@@ -1286,8 +1289,7 @@
     if (!backLink) return;
     try {
       const params = new URLSearchParams(window.location.search);
-      const eventParam = params.get('event');
-      if (eventParam !== null && !isNaN(parseInt(eventParam, 10)) && parseInt(eventParam, 10) >= 0 && parseInt(eventParam, 10) <= 11) {
+      const eventParam = params.get('event');        if (eventParam !== null && !isNaN(parseInt(eventParam, 10)) && parseInt(eventParam, 10) >= 0 && parseInt(eventParam, 10) <= 11 && eventParam !== '3') {
         backLink.href = 'event-' + parseInt(eventParam, 10) + '.html';
         backLink.textContent = '← Back to Event';
         backLink.setAttribute('aria-label', 'Back to event page');

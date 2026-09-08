@@ -1336,7 +1336,7 @@
                     } catch (e) {}
                 }
                 const id = parseInt(eventParam, 10);
-                if (!isNaN(id) && id >= 0 && id <= 11) {
+                if (!isNaN(id) && id >= 0 && id <= 11 && id !== 3) {
                     backLink.href = 'event-' + id + '.html';
                     backLink.textContent = '← Back to Event';
                     backLink.setAttribute('aria-label', 'Back to event page');
