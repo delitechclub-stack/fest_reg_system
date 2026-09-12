@@ -592,220 +592,333 @@
   showQr2Btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(!PAYMENT_CONFIG.upiId2){ alert('⚠️ QR 2 is coming soon. Please use QR 1 for now.'); return false; } const total=getTotalAmount(); openQRModal('qr2', PAYMENT_CONFIG.upiId2, total); const vis=qr2Container.classList.contains('active'); qr2Container.classList.toggle('active', !vis); qr1Container.classList.remove('active'); showQr2Btn.textContent = vis ? '🔄 QR 1 not working? Try QR 2' : '🔄 HIDE QR 2'; showQr1Btn.textContent='📱 SHOW QR 1'; showQr1Btn.className='pay-btn btn-qr-primary qr-btn-no-nav'; return false; });
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // ─── FIXED: ROBUST AMOUNT EXTRACTION ─────────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ─── ROBUST SCREENSHOT VERIFICATION ──────────────────────────────────────
+  // ─── canvas preprocessing + multi-pass OCR + context-aware candidate     ──
+  // ─── scoring + cross-pass agreement + STRICT final validation            ──  // ═══════════════════════════════════════════════════════════════════════════
 
-  /**
-   * Extract payment amount from OCR text with context awareness.
-   * Prioritizes amounts associated with currency symbols and payment labels.
-   * Excludes time, date, UTR, phone numbers, and other non-payment numbers.
-   *
-   * @param {string} text - Raw OCR text
-   * @param {number} expectedAmount - Expected amount for context
-   * @returns {Object} { amount: number|null, source: string, raw: string, confidence: string }
-   */
-  function extractPaymentAmountFromOCR(text, expectedAmount) {
-    // Normalize the text for better matching
-    const normalizedText = text.replace(/\s+/g, ' ').trim();
-    
-    console.log("🔍 EXTRACT AMOUNT - OCR RAW TEXT:", normalizedText.substring(0, 500) + (normalizedText.length > 500 ? '...' : ''));
-    console.log("🔍 EXPECTED AMOUNT:", expectedAmount);
-    
-    const candidates = [];
-    
-    // ─── STEP 1: Look for currency-prefixed amounts ──────────────────
-    // Priority: ₹, Rs, Rs., INR (case insensitive)
-    // Must capture comma-separated amounts properly: ₹2,000 -> 2000
-    
-    const currencyRegexes = [
-      // ₹2,000 or ₹2,000.00
-      { pattern: /[₹]\s*([\d,]+(?:\.\d{2})?)/gi, label: '₹' },
-      // Rs. 2,000 or Rs 2,000
-      { pattern: /Rs[.\s]*([\d,]+(?:\.\d{2})?)/gi, label: 'Rs' },
-      // INR 2,000 or INR2,000
-      { pattern: /INR\s*([\d,]+(?:\.\d{2})?)/gi, label: 'INR' },
-      // Amount with comma but no currency symbol: 2,000 (only if preceded by payment context)
-      { pattern: /(?:Amount|Paid|Payment|Total|Transferred|You paid)\s*[:]?\s*([\d,]+(?:\.\d{2})?)/gi, label: 'context' }
-    ];
-    
-    for (const regex of currencyRegexes) {
-      let match;
-      // Reset regex state
-      const pattern = new RegExp(regex.pattern);
-      while ((match = pattern.exec(normalizedText)) !== null) {
-        const rawAmount = match[1];
-        const amountStr = rawAmount.replace(/,/g, '');
-        const amount = parseFloat(amountStr);
-        if (!isNaN(amount) && amount > 0) {
-          // Check context around this match
-          const matchStart = match.index;
-          const contextStart = Math.max(0, matchStart - 30);
-          const contextEnd = Math.min(normalizedText.length, matchStart + match[0].length + 30);
-          const context = normalizedText.substring(contextStart, contextEnd);
-          
-          // Exclude obvious non-payment contexts
-          const isNonPaymentContext = /(?:phone|mobile|contact|whatsapp|date|time|ref|utr|account|bank|cvv|pin|otp|password|aadhar|pan)/i.test(context);
-          
-          // Exclude time patterns like 01:10 or 12:30
-          const isTimePattern = /(\d{1,2}:\d{2})/.test(context) && amount <= 12;
-          
-          // Exclude dates like 26 Aug 2026 (amount would be 26, which is small)
-          const isDatePattern = /(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i.test(context) && amount <= 31;
-          
-          // Exclude small numbers that are likely not payment amounts unless they match expected
-          // (e.g., if expected is small like 250, 500)
-          const isTooSmall = amount < 10 && amount !== expectedAmount;
-          
-          if (!isNonPaymentContext && !isTimePattern && !isDatePattern && !isTooSmall) {
-            candidates.push({
-              amount: amount,
-              raw: match[0],
-              context: context,
-              source: regex.label,
-              confidence: 'high',
-              matchIndex: match.index
-            });
-          } else {
-            // Low confidence candidate (excluded but log for debugging)
-            console.log(`⚠️ Excluded candidate: ${match[0]} = ${amount} (${isNonPaymentContext ? 'non-payment context' : isTimePattern ? 'time pattern' : isDatePattern ? 'date pattern' : 'too small'})`);
-          }
+  function text_flat(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
+
+  // ─── A. IMAGE PREPROCESSING (canvas only; the uploaded file is never modified) ───
+  function buildOcrVariants(file) {
+    return new Promise((resolve) => {
+      const imageUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(imageUrl);
+        try {
+          // Mild upscale helps OCR read small UPI-app text; capped for mobile memory.
+          const MAX_DIM = 2000;
+          const scale = Math.min(1.6, Math.max(1, MAX_DIM / Math.max(img.width, img.height)));
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          const ctx = c.getContext('2d');
+          ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve([
+            { name: 'original', imageUrl: URL.createObjectURL(file), canvas: null, ocrSrc: null },
+            { name: 'enhanced_upscaled', imageUrl: null, canvas: c, ocrSrc: null }
+          ]);
+        } catch (e) {
+          console.warn('⚠️ Preprocessing failed; falling back to the original image only.', e);
+          resolve([{ name: 'original', imageUrl: URL.createObjectURL(file), canvas: null, ocrSrc: null }]);
         }
-      }
-    }
-    
-    // ─── STEP 2: Look for amount words (Rupees, Two Thousand, etc.) ──
-    // This is a fallback for OCR that misreads currency symbols
-    const wordToNumber = {
-      'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
-      'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
-      'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14,
-      'fifteen': 15, 'sixteen': 16, 'seventeen': 17, 'eighteen': 18,
-      'nineteen': 19, 'twenty': 20, 'thirty': 30, 'forty': 40,
-      'fifty': 50, 'sixty': 60, 'seventy': 70, 'eighty': 80,
-      'ninety': 90, 'hundred': 100, 'thousand': 1000
-    };
-    
-    // Look for "Rupees Two Thousand Only" pattern
-    const wordAmountRegex = /(?:Rupees|Rs|INR)\s+([A-Za-z\s]+)\s+(?:Only)/i;
-    const wordMatch = wordAmountRegex.exec(normalizedText);
-    if (wordMatch) {
-      const words = wordMatch[1].toLowerCase().trim().split(/\s+/);
-      let total = 0;
-      let current = 0;
-      for (const word of words) {
-        if (word === 'and') continue;
-        const val = wordToNumber[word];
-        if (val === 100 && current > 0) {
-          current *= val;
-        } else if (val === 1000) {
-          current = (current || 1) * val;
-          total += current;
-          current = 0;
-        } else if (val) {
-          current += val;
-        }
-      }
-      total += current;
-      if (total > 0) {
-        candidates.push({
-          amount: total,
-          raw: wordMatch[0],
-          context: wordMatch[0],
-          source: 'word_amount',
-          confidence: 'medium'
-        });
-      }
-    }
-    
-    // ─── STEP 3: Find number close to expected amount ────────────────
-    // As a fallback, find any number that matches the expected amount
-    // But only if we have no candidates yet
-    if (candidates.length === 0 && expectedAmount > 0) {
-      // Find all numbers in the text
-      const allNumbers = [];
-      const numRegex = /\b(\d{1,6}(?:\.\d{2})?)\b/g;
-      let numMatch;
-      while ((numMatch = numRegex.exec(normalizedText)) !== null) {
-        const val = parseFloat(numMatch[1].replace(/,/g, ''));
-        if (!isNaN(val) && val > 0) {
-          allNumbers.push({ value: val, raw: numMatch[0], index: numMatch.index });
-        }
-      }
-      
-      // Check if any number equals the expected amount (with small tolerance)
-      for (const num of allNumbers) {
-        if (Math.abs(num.value - expectedAmount) < 0.01) {
-          // Check context to ensure it's not a time or date
-          const contextStart = Math.max(0, num.index - 20);
-          const contextEnd = Math.min(normalizedText.length, num.index + 20);
-          const context = normalizedText.substring(contextStart, contextEnd);
-          
-          const isNonPaymentContext = /(?:time|date|ref|utr|account|phone|mobile)/i.test(context);
-          const isTimePattern = /(\d{1,2}:\d{2})/.test(context);
-          
-          if (!isNonPaymentContext && !isTimePattern) {
-            candidates.push({
-              amount: num.value,
-              raw: num.raw,
-              context: context,
-              source: 'exact_match',
-              confidence: 'low'
-            });
-          }
-        }
-      }
-    }
-    
-    // ─── STEP 4: Sort candidates by confidence ──────────────────────
-    const confidenceOrder = { 'high': 3, 'medium': 2, 'low': 1 };
-    candidates.sort((a, b) => {
-      // First by confidence
-      if (confidenceOrder[a.confidence] !== confidenceOrder[b.confidence]) {
-        return confidenceOrder[b.confidence] - confidenceOrder[a.confidence];
-      }
-      // Then by match index (earlier matches preferred for currency contexts)
-      return (a.matchIndex || 0) - (b.matchIndex || 0);
+      };
+      img.onerror = () => { URL.revokeObjectURL(imageUrl); resolve([{ name: 'original', imageUrl: URL.createObjectURL(file), canvas: null, ocrSrc: null }]); };
+      img.src = imageUrl;
     });
-    
-    console.log("🔍 AMOUNT CANDIDATES:", candidates.map(c => ({
-      amount: c.amount,
-      raw: c.raw,
-      source: c.source,
-      confidence: c.confidence,
-      context: c.context.substring(0, 50) + '...'
-    })));
-    
-    // ─── STEP 5: Select the best candidate ──────────────────────────
-    if (candidates.length === 0) {
-      console.log("❌ No amount candidates found.");
-      return { amount: null, source: 'none', raw: null, confidence: 'none' };
-    }
-    
-    // Use the highest confidence candidate
-    // But verify it makes sense with the expected amount
-    const best = candidates[0];
-    
-    // If confidence is 'low' and we have expected amount, only accept if it matches
-    if (best.confidence === 'low' && expectedAmount > 0) {
-      if (Math.abs(best.amount - expectedAmount) > 0.01) {
-        console.log(`⚠️ Low confidence candidate ${best.amount} doesn't match expected ${expectedAmount}, rejecting.`);
-        return { amount: null, source: 'rejected_low_confidence', raw: best.raw, confidence: 'low' };
-      }
-    }
-    
-    console.log(`✅ SELECTED AMOUNT: ${best.amount} (${best.source}, ${best.confidence} confidence)`);
-    
-    return {
-      amount: best.amount,
-      source: best.source,
-      raw: best.raw,
-      confidence: best.confidence
-    };
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ─── SCREENSHOT VERIFICATION (Enhanced with robust amount extraction) ───
-  // ═══════════════════════════════════════════════════════════════════════════
+  // Grayscale + contrast stretch (+ auto-invert dark-mode screenshots) → new canvas
+  function enhanceContrast(sourceCanvas) {
+    const c = document.createElement('canvas');
+    c.width = sourceCanvas.width; c.height = sourceCanvas.height;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(sourceCanvas, 0, 0);
+    const imageData = ctx.getImageData(0, 0, c.width, c.height);
+    const d = imageData.data;
+    let lo = 255, hi = 0, sum = 0, n = 0;
+    for (let i = 0; i < d.length; i += 16) {
+      const g = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      if (g < lo) lo = g;
+      if (g > hi) hi = g;
+      sum += g; n++;
+    }
+    if (hi - lo < 24) { lo = 0; hi = 255; }
+    const range = Math.max(1, hi - lo);
+    const invert = n > 0 && (sum / n) < 110; // dark-mode screenshot → normalize to dark text on light
+    for (let i = 0; i < d.length; i += 4) {
+      let g = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      g = Math.max(0, Math.min(255, ((g - lo) / range) * 255));
+      if (invert) g = 255 - g;
+      d[i] = d[i + 1] = d[i + 2] = g;
+    }
+    ctx.putImageData(imageData, 0, 0);
+    return c;
+  }
+
+  // Otsu binarization → new canvas (used only when earlier passes stay ambiguous)
+  function binarize(sourceCanvas) {
+    const c = document.createElement('canvas');
+    c.width = sourceCanvas.width; c.height = sourceCanvas.height;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(sourceCanvas, 0, 0);
+    const imageData = ctx.getImageData(0, 0, c.width, c.height);
+    const d = imageData.data;
+    const hist = new Array(256).fill(0);
+    let total = 0;
+    for (let i = 0; i < d.length; i += 16) {
+      hist[Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2])]++; total++;
+    }
+    let sum = 0;
+    for (let t = 0; t < 256; t++) sum += t * hist[t];
+    let sumB = 0, wB = 0, maxVar = -1, threshold = 127;
+    for (let t = 0; t < 256; t++) {
+      wB += hist[t];
+      if (wB === 0) continue;
+      const wF = total - wB;
+      if (wF === 0) break;
+      sumB += t * hist[t];
+      const mB = sumB / wB;
+      const mF = (sum - sumB) / wF;
+      const between = wB * wF * (mB - mF) * (mB - mF);
+      if (between > maxVar) { maxVar = between; threshold = t; }
+    }
+    for (let i = 0; i < d.length; i += 4) {
+      const g = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      const v = g > threshold ? 255 : 0;
+      d[i] = d[i + 1] = d[i + 2] = v;
+    }
+    ctx.putImageData(imageData, 0, 0);
+    return c;
+  }
+
+  // Tesseract.js v4 nests words inside blocks; older builds expose data.words.
+  function getOcrWords(data) {
+    if (!data) return null;
+    if (Array.isArray(data.words) && data.words.length > 0) return data.words;
+    const out = [];
+    try {
+      (data.blocks || []).forEach(b => (b.paragraphs || []).forEach(p => (p.lines || []).forEach(l => (l.words || []).forEach(w => out.push(w)))));
+    } catch (e) { /* ignore structure differences */ }
+    return out.length > 0 ? out : null;
+  }
+
+  // ─── B. UTR EXTRACTION (context-validated, separator-tolerant) ────────────
+  function extractUtrCandidates(text) {
+    const flat = text.replace(/\s+/g, ' ').trim();
+    const candidates = [];
+    const seen = new Set();
+    // Digit runs that may contain OCR separators: 123456789012 / 1234 5678 9012 / 1234-5678-9012
+    const runRe = /\d(?:[\d\- ]{10,}\d)?/g;
+    let m;
+    while ((m = runRe.exec(flat)) !== null) {
+      const raw = m[0];
+      const digits = raw.replace(/[\- ]/g, '');
+      if (digits.length !== 12) continue; // a UTR is exactly 12 digits
+      if (seen.has(digits)) continue;
+      seen.add(digits);
+      const before = flat.substring(Math.max(0, m.index - 26), m.index).toLowerCase();
+      const beforeNear = flat.substring(Math.max(0, m.index - 8), m.index).toLowerCase();
+      const after = flat.substring(m.index + raw.length, m.index + raw.length + 26).toLowerCase();
+      const ctx = before + ' ' + after;
+      let score = 0;
+      const reasons = [];
+      // Hard negatives: card / account number labels sit immediately before the
+      // digits, so only the NEAR context can trigger this (never UTRs).
+      if (/(card|cvv|expiry|valid thru|aadhaar|aadhar|pan no|a\/c|account (no|number))/.test(beforeNear)) { score -= 100; reasons.push('card_or_account_context'); }
+      // Hard negative: phone numbers (e.g. 91XXXXXXXXXX) are not UTRs
+      if (/(phone|mobile|contact|call|whatsapp)/.test(ctx)) { score -= 100; reasons.push('phone_context'); }
+      // Soft negative: sits right next to an amount with no UTR/reference label
+      if (/(₹|rs\.?|inr|amount|paid|total)/.test(ctx) && !/(utr|ref|transaction|txn)/.test(ctx)) { score -= 20; reasons.push('amount_like_context'); }
+      // Positives: explicit UTR/reference labels and payment-app context
+      if (/\b(utr|ref|reference|transaction|txn)\b/.test(ctx)) { score += 50; reasons.push('utr_label'); }
+      if (/(google pay|gpay|phonepe|paytm|bhim|amazon pay|upi|bank|payment)/.test(ctx)) { score += 10; reasons.push('payment_app_context'); }
+      if (raw.indexOf(' ') !== -1 || raw.indexOf('-') !== -1) { score += 5; reasons.push('grouped_format'); }
+      candidates.push({ utr: digits, raw, score, reasons, context: ctx.trim() });
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    return candidates;
+  }
+
+  // ─── C. RECEIVER EXTRACTION (normalization-tolerant, exact match enforced) ───
+  function extractReceiverCandidates(text, expectedUpi) {
+    const flat = text.replace(/\s+/g, ' ').trim();
+    const candidates = [];
+    const seen = new Set();
+    // UPI-ID-shaped tokens, tolerating stray spaces/line breaks around the @
+    const re = /([a-zA-Z0-9][a-zA-Z0-9.\-_]{0,30}[a-zA-Z0-9])\s*@\s*([a-zA-Z][a-zA-Z0-9.\-]{1,40})/g;
+    let m;
+    while ((m = re.exec(flat)) !== null) {
+      const joined = (m[1] + '@' + m[2]).toLowerCase();
+      if (seen.has(joined)) continue;
+      seen.add(joined);
+      candidates.push({ raw: m[0], normalized: joined, context: flat.substring(Math.max(0, m.index - 30), m.index + m[0].length + 30) });
+    }
+    // Fallback: strip ALL whitespace from the text and search for the exact
+    // expected ID — recovers IDs broken across lines ("baijuacm ⏎ @okicici").
+    if (expectedUpi) {
+      const noSpace = flat.toLowerCase().replace(/\s+/g, '');
+      if (noSpace.indexOf(expectedUpi) !== -1 && !seen.has(expectedUpi)) {
+        candidates.push({ raw: expectedUpi, normalized: expectedUpi, context: '(found after whitespace normalization)' });
+      }
+    }
+    return candidates;
+  }
+
+  // ─── D. AMOUNT PARSING + CONTEXT-AWARE CANDIDATE EXTRACTION ──────────────
+  // Parse one amount token: handles commas (2,000 → 2000), decimals (900.00 → 900),
+  // and OCR letter-O→0 confusion ONLY inside a digit-shaped token (never globally).
+  function parseAmountToken(str) {
+    if (!str) return null;
+    let s = String(str).trim();
+    if (!s) return null;
+    s = s.replace(/^(?:₹|¥|₨|rs\.?|inr)/i, ''); // strip a leading currency marker
+    if (!/^[0-9.,Oo]+$/.test(s)) return null;   // anything word-like is rejected
+    if (!/[0-9]/.test(s)) return null;
+    s = s.replace(/[Oo]/g, '0');                // "2,O00" → "2000" (token-local only)
+    if (!/^\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?$|^\d+(?:\.\d{1,2})?$/.test(s)) return null;
+    s = s.replace(/,/g, '');
+    const v = parseFloat(s);
+    return isNaN(v) ? null : v;
+  }
+
+  function isCurrencyLike(token) {
+    return /^(?:₹|¥|₨|rs\.?|inr)[.:]?$/i.test(String(token || '').trim());
+  }
+
+  // Extract amount candidates for one OCR pass. Uses Tesseract word boxes so each
+  // candidate carries its surrounding words on the same line as evidence.
+  function extractAmountCandidatesFromOCR(text, ocrWords, passIndex, expectedAmount) {
+    const flat = text.replace(/\s+/g, ' ').trim();
+    const candidates = [];
+    const seen = new Set();
+    const ADD = (amount, raw, context, source, baseScore) => {
+      if (amount === null || !(amount > 0)) return;
+      const key = source + '|' + amount.toFixed(2);
+      if (seen.has(key)) return;
+      seen.add(key);
+      candidates.push({ amount, raw, context, source, score: baseScore, pass: passIndex });
+    };
+    const AMOUNT_LABELS = ['amount', 'amountpaid', 'paid', 'payment', 'total', 'sent', 'debited', 'transferred', 'transfer', 'yougave', 'yousent', 'transactionamount', 'debitedamount', 'paidamount'];
+    const hasPaymentVocab = /(paid|payment|amount|upi|transaction|txn|bank|debited|transferred|sent)/i.test(flat);
+
+    // Word/line-based extraction (uses word bounding boxes from Tesseract)
+    if (Array.isArray(ocrWords) && ocrWords.length > 0) {
+      const words = [];
+      ocrWords.forEach(w => {
+        if (w && typeof w.text === 'string' && w.text.trim() && w.bbox && typeof w.bbox.x0 === 'number') {
+          words.push({ t: w.text.trim(), cx: (w.bbox.x0 + w.bbox.x1) / 2, cy: (w.bbox.y0 + w.bbox.y1) / 2 });
+        }
+      });
+      const lines = [];
+      words.forEach(w => {
+        let line = null;
+        for (let i = 0; i < lines.length; i++) { if (Math.abs(lines[i].y - w.cy) <= 20) { line = lines[i]; break; } }
+        if (!line) { line = { y: w.cy, words: [] }; lines.push(line); }
+        line.words.push(w);
+      });
+      lines.forEach(line => {
+        const ws = line.words.slice().sort((a, b) => a.cx - b.cx);
+        const lineText = ws.map(x => x.t).join(' ');
+        for (let i = 0; i < ws.length; i++) {
+          const w = ws[i];
+          const bare = w.t.toLowerCase().replace(/[^a-z]/g, '');
+          const isLabel = AMOUNT_LABELS.indexOf(bare) !== -1;
+          const isCurrencyWord = isCurrencyLike(w.t);
+          const inlineVal = parseAmountToken(w.t);
+          // Case C: one word containing currency + digits — "₹900", "Rs.2,000", "INR900"
+          if ((/^[₹¥₨]/.test(w.t) || /^(rs\.?|inr)\s*[\dOo,]/i.test(w.t)) && w.t.length > 1 && inlineVal !== null) {
+            ADD(inlineVal, w.t, lineText, 'currency_context', 50);
+          }
+          const next = (i + 1 < ws.length) ? ws[i + 1] : null;
+          const nextVal = next ? parseAmountToken(next.t) : null;
+          // Case A: label ... (currency) ... number — "Amount ₹900", "Paid: 2,000", "Total ₹ 900"
+          if (isLabel) {
+            for (let k = i + 1; k <= Math.min(i + 3, ws.length - 1); k++) {
+              const v = parseAmountToken(ws[k].t);
+              if (v !== null) { ADD(v, ws[k].t, lineText, 'label_adjacent', 60); break; }
+              if (!isCurrencyLike(ws[k].t)) break;
+            }
+          }
+          // Case B: currency word followed by number — "₹" "900"
+          if (isCurrencyWord && nextVal !== null) ADD(nextVal, next.t, lineText, 'currency_context', 50);
+          // Case E (weak): standalone number equal to the expected amount inside a
+          // receipt that clearly talks about payments. Evidence exists (the digits
+          // are on screen) but it is the weakest signal and only a tie-breaker.
+          if (hasPaymentVocab && inlineVal !== null && expectedAmount > 0 && inlineVal === expectedAmount && w.t.replace(/[^0-9]/g, '').length <= 6) {
+            ADD(inlineVal, w.t, lineText, 'bare_number_in_payment_context', 20);
+          }
+        }
+      });
+    }
+
+    // Regex fallbacks over the full text (works even without word box data)
+    const regexFallbacks = [
+      { re: '[₹¥₨]\\s*([\\dOo,]+(?:\\.\\d{1,2})?)', flags: 'g', label: 'currency_context', score: 45 },
+      { re: '\\b(?:rs|inr)\\.?\\s*([\\dOo,]+(?:\\.\\d{1,2})?)', flags: 'gi', label: 'currency_context', score: 45 },
+      { re: '\\b(?:amount|paid|payment|total|sent|debited|transferred)\\s*[:=]?\\s*(?:₹|rs\\.?|inr)?\\s*([\\dOo,]+(?:\\.\\d{1,2})?)', flags: 'gi', label: 'label_adjacent', score: 55 }
+    ];
+    regexFallbacks.forEach(cfg => {
+      const rx = new RegExp(cfg.re, cfg.flags);
+      let m;
+      while ((m = rx.exec(flat)) !== null) {
+        const v = parseAmountToken(m[1]);
+        if (v !== null) {
+          const ctx = flat.substring(Math.max(0, m.index - 30), Math.min(flat.length, m.index + m[0].length + 30));
+          ADD(v, m[0], ctx, cfg.label, cfg.score);
+        }
+      }
+    });
+
+    // Merge: same amount seen via different sources/words → combine evidence
+    const merged = [];
+    candidates.forEach(c => {
+      const ex = merged.find(x => x.amount === c.amount);
+      if (ex) { ex.score += 8; if (ex.sources.indexOf(c.source) === -1) ex.sources.push(c.source); }
+      else merged.push({ amount: c.amount, raw: c.raw, context: c.context, source: c.source, sources: [c.source], score: c.score, pass: c.pass });
+    });
+    merged.sort((a, b) => b.score - a.score);
+    return merged;
+  }
+
+  // Pick the best amount across ALL passes with cross-pass agreement weighting.
+  // expectedAmount is a SCORING SIGNAL ONLY — it never fabricates a value.
+  function selectBestAmount(allCandidates, expectedAmount, totalPasses) {
+    if (!allCandidates || allCandidates.length === 0) {
+      return { amount: null, confidence: 'none', sources: [], passAgreement: 0, totalPasses: totalPasses || 0, evidence: [] };
+    }
+    const byValue = new Map();
+    allCandidates.forEach(c => {
+      const key = c.amount.toFixed(2);
+      if (!byValue.has(key)) byValue.set(key, { amount: c.amount, score: 0, sources: new Set(), passes: new Set() });
+      const e = byValue.get(key);
+      e.score += c.score;
+      if (c.source) e.sources.add(c.source);
+      if (typeof c.pass === 'number') e.passes.add(c.pass);
+    });
+    const entries = Array.from(byValue.values());
+    entries.forEach(e => {
+      e.score += Math.max(0, e.passes.size - 1) * 40; // cross-pass agreement boost
+      if (expectedAmount > 0 && Math.abs(e.amount - expectedAmount) < 0.01) e.score += 15; // tie-breaker only
+      if (e.amount >= 1000000) e.score -= 80; // 7+ digit "amounts" are IDs/metadata
+      // A bare number with no currency/label context is only 'medium'/'high' when
+      // confirmed by multiple passes; a single bare-number hit stays 'low'.
+      const hasStrongSource = Array.from(e.sources).some(s => s !== 'bare_number_in_payment_context');
+      e.confidence = (e.passes.size >= 2 || (e.score >= 55 && hasStrongSource)) ? 'high' : ((e.score >= 30 && hasStrongSource) ? 'medium' : 'low');
+    });
+    entries.sort((a, b) => b.score - a.score);
+    const best = entries[0];
+    return {
+      amount: best.amount,
+      confidence: best.confidence,
+      sources: Array.from(best.sources),
+      passAgreement: best.passes.size,
+      totalPasses: totalPasses || 0,
+      evidence: entries.slice(0, 5).map(x => ({ amount: x.amount, score: Math.round(x.score), passes: x.passes.size, sources: Array.from(x.sources) }))
+    };
+  }
 
   async function handleScreenshotUpload(file) {
     if(registrationComplete) { alert('✅ Registration already complete.'); return; }
@@ -834,71 +947,148 @@
     }
   }
 
+
+  // ─── E. MAIN VERIFICATION PIPELINE ────────────────────────────────────────
   async function verifyPaymentScreenshot(file) {
+    const allUrls = [];
     try {
       const Tesseract = window.Tesseract; if(!Tesseract) throw new Error('OCR library not loaded.');
-      const imageUrl = URL.createObjectURL(file);
-      updateModalUI(PAYMENT_STATES.VERIFYING, { message:'Processing... 0%' });
-      const result = await Tesseract.recognize(imageUrl, 'eng', { 
-        logger: (m) => { 
-          if(m.status === 'recognizing text') { 
-            const progress = Math.round(m.progress * 100); 
-            updateModalUI(PAYMENT_STATES.VERIFYING, { message:`Processing... ${progress}%` }); 
-          } 
-        } 
-      });
-      const text = result.data.text;
-      console.log("📝 OCR EXTRACTED TEXT:", text);
-      
-      // ─── 1. UTR ──────────────────────────────────────────────────────
-      const utrMatch = text.match(/\b\d{12}\b/);
-      if(!utrMatch) return { success:false, state:PAYMENT_STATES.UTR_NOT_FOUND };
-      const extractedUTR = utrMatch[0];
-      
-      // ─── 2. Duplicate UTR Check ────────────────────────────────────
+      const expectedAmount = getTotalAmount();
+      const expectedUpi = (PAYMENT_CONFIG.upiId1 || '').toLowerCase();
+      updateModalUI(PAYMENT_STATES.VERIFYING, { message:'Preparing screenshot...' });
+
+      const variants = await buildOcrVariants(file);
+      variants.forEach(v => { if (v.imageUrl) allUrls.push(v.imageUrl); });
+
+      const passTexts = [];
+      const passNames = [];
+      const amountCandidatesAll = [];
+      let utrCandidatesCache = [];
+      let extractedUTR = null;
+      let receiverRaw = null;
+      let progressBase = 0;
+
+      const runPass = async (variant, plannedTotal) => {
+        let src;
+        if (variant.name === 'original') {
+          src = variant.imageUrl;
+        } else {
+          if (!variant.ocrSrc) {
+            const enhanced = enhanceContrast(variant.canvas);
+            variant.ocrSrc = (variant.name === 'binarized') ? binarize(enhanced).toDataURL('image/png') : enhanced.toDataURL('image/png');
+          }
+          src = variant.ocrSrc;
+        }
+        const base = progressBase;
+        const data = await Tesseract.recognize(src, 'eng', {
+          logger: (m) => {
+            if (m.status === 'recognizing text') {
+              const pct = Math.min(99, Math.round(((base + m.progress) / plannedTotal) * 100));
+              updateModalUI(PAYMENT_STATES.VERIFYING, { message:`Verifying payment screenshot... ${pct}%` });
+            }
+          }
+        });
+        progressBase += 1;
+        const text = (data && data.text) || '';
+        passTexts.push(text);
+        passNames.push(variant.name);
+        console.log(`🔎 OCR PASS ${passTexts.length} [${variant.name}] → ${text.replace(/\s+/g, ' ').trim().length} chars extracted`);
+        console.log(`📝 OCR PASS ${passTexts.length} TEXT:`, text);
+        return data;
+      };
+
+      let plannedTotal = variants.length; // pass 3 (binarized) is added only if needed
+      for (let i = 0; i < plannedTotal; i++) {
+        const variant = variants[i];
+        const data = await runPass(variant, plannedTotal);
+        const flat = text_flat(data.text || '');
+
+        // Amount candidates from this pass
+        const passAmountCandidates = extractAmountCandidatesFromOCR(data.text || '', getOcrWords(data), i, expectedAmount);
+        amountCandidatesAll.push.apply(amountCandidatesAll, passAmountCandidates);
+
+        // UTR (first pass that finds one wins; later passes only fill gaps)
+        if (!extractedUTR) {
+          utrCandidatesCache = extractUtrCandidates(flat);
+          const bestUtr = utrCandidatesCache.find(u => u.score > -90);
+          if (bestUtr) { extractedUTR = bestUtr.utr; console.log('🧾 UTR CANDIDATE:', bestUtr); }
+        }
+
+        // Receiver (normalized; must EXACTLY equal the expected UPI ID)
+        if (!receiverRaw) {
+          const receiverCandidates = extractReceiverCandidates(flat, expectedUpi);
+          console.log('👤 RECEIVER CANDIDATES:', receiverCandidates.map(c => c.normalized));
+          const match = receiverCandidates.find(c => c.normalized === expectedUpi);
+          if (match) receiverRaw = match.raw;
+        }
+
+        // Early exit once sufficient reliable evidence exists (saves passes)
+        const current = selectBestAmount(amountCandidatesAll, expectedAmount, passTexts.length);
+        const sufficient = extractedUTR && receiverRaw && current.amount !== null
+          && Math.abs(current.amount - expectedAmount) <= 0.01
+          && current.confidence !== 'low';
+        console.log(`📊 AFTER PASS ${passTexts.length} [${variant.name}]: amount=${current.amount} (${current.confidence}) agreement=${current.passAgreement}/${passTexts.length} utr=${extractedUTR ? '✔' : '✖'} receiver=${receiverRaw ? '✔' : '✖'}`);
+        if (sufficient) { console.log('✅ Sufficient evidence after pass', passTexts.length, '— skipping extra OCR passes.'); break; }
+
+        // Still ambiguous after pass 2 → one final binarized pass (max 3 total)
+        if (i === plannedTotal - 1 && variants.length === 2 && variants[1] && variants[1].canvas) {
+          variants.push({ name: 'binarized', imageUrl: null, canvas: variants[1].canvas, ocrSrc: null });
+          plannedTotal += 1;
+        }
+      }
+
+      variants.forEach(v => { if (v.imageUrl) { try { URL.revokeObjectURL(v.imageUrl); } catch (e) {} } });
+
+      // ─── FINAL VALIDATION (strict; order = evidence first, hard rules last) ───
+      const amountResult = selectBestAmount(amountCandidatesAll, expectedAmount, passTexts.length);
+      console.log('🧮 AMOUNT CANDIDATES (all passes):', amountResult.evidence);
+      console.log(`🎯 SELECTED AMOUNT: ${amountResult.amount} | EXPECTED: ${expectedAmount} | source=${amountResult.sources.join('+')} | pass agreement=${amountResult.passAgreement}/${passTexts.length} | confidence=${amountResult.confidence}`);
+
+      // 1. Amount present at all?
+      if (amountResult.amount === null) {
+        return { success:false, state:'AMOUNT_MISMATCH', message:`❌ PAYMENT AMOUNT NOT DETECTED<br>Expected: <strong>₹${expectedAmount}</strong><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">The payment amount could not be read reliably from this screenshot.<br>Please upload a clear screenshot showing the amount you paid (₹${expectedAmount}).</span>` };
+      }
+
+      // 1b. Weak-only evidence guard: a bare number that merely equals the expected
+      // amount (no ₹/Rs/INR symbol and no amount label next to it) is only trusted
+      // when two or more OCR passes independently produced it. Otherwise, ask for
+      // a clearer screenshot instead of guessing. Security is never weakened: a
+      // strong-context WRONG amount still rejects below, and no value is invented.
+      const weakOnlySources = amountResult.sources.length > 0 && amountResult.sources.every(s => s === 'bare_number_in_payment_context');
+      if (weakOnlySources && amountResult.passAgreement < 2) {
+        console.log('⚠️ Only weak amount evidence (bare number, no currency/label context) without cross-pass confirmation — requesting a clearer screenshot.');
+        return { success:false, state:'AMOUNT_MISMATCH', message:`❌ PAYMENT AMOUNT NOT CLEARLY DETECTED<br>Expected: <strong>₹${expectedAmount}</strong><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">The amount could not be confirmed with a currency symbol or "Amount/Paid" label. Please upload a clearer screenshot showing the amount ₹${expectedAmount}.</span>` };
+      }
+
+      // 2. Exact amount match (decimal-precision tolerance only: ₹900.00 = ₹900)
+      if (Math.abs(amountResult.amount - expectedAmount) > 0.01) {
+        const ambiguous = amountResult.confidence !== 'high';
+        return { success:false, state:'AMOUNT_MISMATCH', message: (ambiguous
+          ? `❌ PAYMENT AMOUNT UNCLEAR<br>Expected: <strong>₹${expectedAmount}</strong><br>Best reading: ₹${amountResult.amount} (low confidence — possibly an OCR misread)<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">Please upload a clearer screenshot showing the full amount ₹${expectedAmount}.</span>`
+          : `❌ PAYMENT AMOUNT DOES NOT MATCH<br>Expected: <strong>₹${expectedAmount}</strong><br>Detected: <strong>₹${amountResult.amount}</strong><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">The screenshot clearly shows a different amount than the one required.</span>`) };
+      }
+
+      // 3. UTR present?
+      if (!extractedUTR) {
+        console.log('🧾 UTR candidates (none accepted):', utrCandidatesCache.slice(0, 3));
+        return { success:false, state: PAYMENT_STATES.UTR_NOT_FOUND };
+      }
+
+      // 4. Receiver present + exact (normalized) match?
+      if (!receiverRaw) {
+        const detected = (passTexts.join(' ').match(/[a-zA-Z0-9._\-]+\s*@\s*[a-zA-Z0-9.\-]+/) || [''])[0];
+        return { success:false, state:'RECEIVER_MISMATCH', message:`❌ RECEIVER DOES NOT MATCH<br>Expected: <strong>${PAYMENT_CONFIG.upiId1}</strong><br>${detected ? `Detected: ${detected.replace(/\s+/g, '')}` : 'No UPI ID detected in screenshot'}<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">Please upload a clearer screenshot showing the recipient UPI ID.</span>` };
+      }
+
+      // 5. Duplicate UTR check (unchanged logic, still enforced)
       const duplicateCheck = await checkDuplicateUTR(extractedUTR);
       if(duplicateCheck.error) return { success:false, state:PAYMENT_STATES.ERROR, error:`Database error: ${duplicateCheck.error}` };
       if(duplicateCheck.exists) return { success:false, state:PAYMENT_STATES.UTR_DUPLICATE, utr:extractedUTR };
-      
-      // ─── 3. Receiver Check ─────────────────────────────────────────
-      const receiverMatch = text.match(/baijuacm@okicici/i);
-      if(!receiverMatch) {
-        const detected = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        return { success:false, state:'RECEIVER_MISMATCH', message:`❌ RECEIVER DOES NOT MATCH<br>Expected: <strong>baijuacm@okicici</strong><br>${detected ? `Detected: ${detected[0]}` : 'No UPI ID detected in screenshot'}` };
-      }
-      
-      // ─── 4. FIXED: Amount Extraction using robust helper ──────────
-      const expectedAmount = getTotalAmount();
-      const amountResult = extractPaymentAmountFromOCR(text, expectedAmount);
-      
-      console.log("🔍 AMOUNT EXTRACTION RESULT:", amountResult);
-      
-      // If no amount detected, reject with clear message
-      if (amountResult.amount === null) {
-        return { 
-          success: false, 
-          state: 'AMOUNT_MISMATCH', 
-          message: `❌ PAYMENT AMOUNT NOT DETECTED<br>Expected: ₹${expectedAmount}<br>Could not confidently detect the payment amount in the screenshot.<br><br>Please upload a clear screenshot showing:<br>• The amount (e.g., ₹${expectedAmount})<br>• The UPI transaction details`
-        };
-      }
-      
-      const detectedAmount = amountResult.amount;
-      
-      // Check if detected amount matches expected (with small tolerance for decimal)
-      if (Math.abs(detectedAmount - expectedAmount) > 0.01) {
-        return { 
-          success: false, 
-          state: 'AMOUNT_MISMATCH', 
-          message: `❌ PAYMENT AMOUNT DOES NOT MATCH<br>Expected: ₹${expectedAmount}<br>Detected: ₹${detectedAmount}<br>Source: ${amountResult.source} (${amountResult.confidence} confidence)`
-        };
-      }
-      
-      console.log(`✅ AMOUNT MATCHED: Expected ₹${expectedAmount}, Detected ₹${detectedAmount} (${amountResult.source})`);
-      
-      // ─── 5. Time Check ──────────────────────────────────────────────
-      const timeMatch = text.match(/\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?/i);
+
+      // 6. Payment time (kept exactly as before: informational tolerance check)
+      const timeMatch = (passTexts[0] || '').match(/\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?/i);
       const detectedTime = timeMatch ? timeMatch[0] : null;
-      
+
       let timeWithinTolerance = true;
       if (detectedTime) {
         try {
@@ -920,36 +1110,34 @@
           }
         } catch(e) { /* ignore parsing errors */ }
       }
-      
-      // ─── 6. Build Verification Data ────────────────────────────────
+
+      // 7. Build verification data (same keys as before + evidence fields)
       const verificationData = {
         utr: extractedUTR,
-        amount: detectedAmount,
-        amountSource: amountResult.source,
+        amount: amountResult.amount,
+        amountSource: amountResult.sources.join('+'),
         amountConfidence: amountResult.confidence,
-        amountRaw: amountResult.raw,
-        receiver: receiverMatch[0],
+        amountPassAgreement: `${amountResult.passAgreement}/${passTexts.length}`,
+        ocrPasses: passNames,
+        receiver: PAYMENT_CONFIG.upiId1,
         paymentTime: detectedTime,
         expectedAmount: expectedAmount,
-        amountMatched: (Math.abs(detectedAmount - expectedAmount) <= 0.01),
+        amountMatched: true,
         receiverMatched: true,
         utrUnique: !duplicateCheck.exists,
         timeWithinTolerance: timeWithinTolerance,
         verifiedAt: new Date().toISOString()
       };
-      
-      return { 
-        success: true, 
-        state: PAYMENT_STATES.UTR_VERIFIED, 
-        utr: extractedUTR, 
-        data: verificationData 
-      };
-      
+
+      return { success:true, state: PAYMENT_STATES.UTR_VERIFIED, utr: extractedUTR, data: verificationData };
+
     } catch(error) {
       console.error('❌ Verification error:', error);
+      allUrls.forEach(u => { try { URL.revokeObjectURL(u); } catch (e) {} });
       return { success:false, state:PAYMENT_STATES.ERROR, error:error.message || 'Screenshot verification failed' };
     }
   }
+
 
   async function checkDuplicateUTR(utr) {
     try {
