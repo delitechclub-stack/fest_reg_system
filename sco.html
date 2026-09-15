@@ -1487,11 +1487,10 @@
                         <input type="tel" class="player-phone" placeholder="+91 98765 43210" required /></div>
                 </div>`;
             } else {
+                // Only the Team Leader collects contact info; other participants need a name only.
                 fieldsHtml = `<div class="player-fields">
                     <div class="field-group"><label>Full Name <span class="required">*</span></label>
                         <input type="text" class="player-name" placeholder="Player ${index} full name" required /></div>
-                    <div class="field-group"><label>Phone <span class="required">*</span></label>
-                        <input type="tel" class="player-phone" placeholder="+91 98765 43210" required /></div>
                 </div>`;
             }
 
@@ -1592,14 +1591,15 @@
                         return false;
                     }
                 } else {
+                    // Other participants: name is the only required field (no email/phone collected).
+                    const email = entry.querySelector('.player-email');
                     const phone = entry.querySelector('.player-phone');
-                    if (phone) {
-                        const phoneDigits = (phone.value || '').replace(/\D/g, '');
-                        if (phoneDigits.length < 10) {
-                            alert(`⚠️ Please enter a valid 10-digit phone number for Player ${i + 1}.`);
-                            phone.focus();
-                            return false;
-                        }
+                    if (!email && !phone) continue;
+                    const phoneDigits = ((phone && phone.value) || '').replace(/\D/g, '');
+                    if (phone && phoneDigits.length < 10) {
+                        alert(`⚠️ Please enter a valid 10-digit phone number for Player ${i + 1}.`);
+                        phone.focus();
+                        return false;
                     }
                 }
             }
@@ -1624,15 +1624,13 @@
                 const total = getTotalAmount();
                 const leader = getLeaderName();
 
-                // Build participants JSON with all required fields
+                // Build participants JSON: leader keeps name+email+phone,
+                // other participants carry only their name.
                 const participantsData = participants.map((p, idx) => {
-                    const base = {
-                        name: p.name || '',
-                        phone: p.phone || '',
-                    };
+                    const base = { name: p.name || '', isLeader: idx === 0 };
                     if (idx === 0) {
                         base.email = p.email || '';
-                        base.isLeader = true;
+                        base.phone = p.phone || '';
                     }
                     return base;
                 });

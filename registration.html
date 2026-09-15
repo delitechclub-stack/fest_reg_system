@@ -451,7 +451,7 @@
   let registrationComplete = false;
   let isPendingSubmission = false;
 
-  const PAYMENT_STATES = { IDLE:'IDLE', QR_OPEN:'QR_OPEN', UPLOADING:'UPLOADING', VERIFYING:'VERIFYING', UTR_NOT_FOUND:'UTR_NOT_FOUND', UTR_DUPLICATE:'UTR_DUPLICATE', UTR_VERIFIED:'UTR_VERIFIED', SUBMITTING:'SUBMITTING', SUCCESS:'SUCCESS', ERROR:'ERROR' };
+  const PAYMENT_STATES = { IDLE:'IDLE', QR_OPEN:'QR_OPEN', UPLOADING:'UPLOADING', VERIFYING:'VERIFYING', UTR_NOT_FOUND:'UTR_NOT_FOUND', UTR_DUPLICATE:'UTR_DUPLICATE', UTR_VERIFIED:'UTR_VERIFIED', UTR_PARTIAL:'UTR_PARTIAL', SUBMITTING:'SUBMITTING', SUCCESS:'SUCCESS', ERROR:'ERROR' };
   let paymentState = { current:PAYMENT_STATES.IDLE, qrType:null, file:null, utr:null, error:null, isSubmitting:false, verificationData:null };
 
   // ─── HELPERS ────────────────────────────────────────────────────────
@@ -575,7 +575,8 @@
       case PAYMENT_STATES.VERIFYING: qrStatusArea.className = 'status-area loading show'; qrStatusIcon.textContent = '⏳'; qrStatusMessage.textContent = data?.message || 'Verifying payment screenshot...'; qrUtrDisplay.textContent = ''; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'none'; reuploadBtn.style.display = 'none'; break;
       case PAYMENT_STATES.UTR_NOT_FOUND: qrStatusArea.className = 'status-area error show'; qrStatusIcon.textContent = '❌'; qrStatusMessage.innerHTML = 'UTR NOT FOUND<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">We couldn\'t detect a valid UTR number from this screenshot. Please upload a clear payment screenshot showing the transaction/UTR number.</span>'; qrUtrDisplay.textContent = ''; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'none'; reuploadBtn.style.display = 'block'; reuploadBtn.textContent = '📤 Re-upload Screenshot'; break;
       case PAYMENT_STATES.UTR_DUPLICATE: qrStatusArea.className = 'status-area error show'; qrStatusIcon.textContent = '❌'; qrStatusMessage.innerHTML = 'UTR ALREADY USED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">This payment transaction has already been used for another registration.</span>'; qrUtrDisplay.textContent = data?.utr || ''; qrUtrDisplay.className = 'utr-display duplicate'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'none'; reuploadBtn.style.display = 'block'; reuploadBtn.textContent = '📤 Re-upload Screenshot'; break;
-      case PAYMENT_STATES.UTR_VERIFIED: qrStatusArea.className = 'status-area success show'; qrStatusIcon.textContent = '✅'; qrStatusMessage.innerHTML = 'UTR VERIFIED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">Transaction ID:</span>'; qrUtrDisplay.textContent = data?.utr || ''; qrUtrDisplay.className = 'utr-display'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'block'; confirmRegBtn.disabled = false; confirmRegBtn.textContent = '🔱 Confirm Registration'; reuploadBtn.style.display = 'none'; break;
+      case PAYMENT_STATES.UTR_VERIFIED: qrStatusArea.className = 'status-area success show'; qrStatusIcon.textContent = '✅'; qrStatusMessage.innerHTML = 'UTR DETECTED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">Transaction ID (payment will be verified manually):</span>'; qrUtrDisplay.textContent = data?.utr || ''; qrUtrDisplay.className = 'utr-display'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'block'; confirmRegBtn.disabled = false; confirmRegBtn.textContent = '🔱 Confirm Registration'; reuploadBtn.style.display = 'none'; break;
+      case PAYMENT_STATES.UTR_PARTIAL: qrStatusArea.className = 'status-area success show'; qrStatusIcon.textContent = '✅'; qrStatusMessage.innerHTML = 'SCREENSHOT ACCEPTED — UTR NOT DETECTED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">We could not read a UTR from this screenshot. You can still continue — our team will verify the payment manually.</span>'; qrUtrDisplay.textContent = '—'; qrUtrDisplay.className = 'utr-display'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'block'; confirmRegBtn.disabled = false; confirmRegBtn.textContent = '🔱 Continue Registration'; reuploadBtn.style.display = 'none'; break;
       case PAYMENT_STATES.SUBMITTING: qrStatusArea.className = 'status-area loading show'; qrStatusIcon.textContent = '⏳'; qrStatusMessage.textContent = 'Submitting registration...'; qrUtrDisplay.textContent = ''; confirmRegBtn.disabled = true; confirmRegBtn.innerHTML = '<span class="spinner"></span> Submitting...'; break;
       case PAYMENT_STATES.ERROR: qrStatusArea.className = 'status-area error show'; qrStatusIcon.textContent = '❌'; qrStatusMessage.innerHTML = data?.message || 'An error occurred. Please try again.'; qrUtrDisplay.textContent = ''; document.getElementById('qrUploadSection').style.display = 'block'; uploadScreenshotBtn.disabled = false; uploadScreenshotBtn.textContent = '📤 Try Again'; confirmRegBtn.style.display = 'none'; reuploadBtn.style.display = 'none'; break;
       default: break;
@@ -587,7 +588,7 @@
   uploadScreenshotBtn.addEventListener('click', function(e){ e.preventDefault(); if(!registrationComplete && paymentState.current!==PAYMENT_STATES.SUBMITTING) screenshotFileInput.click(); });
   screenshotFileInput.addEventListener('change', function(e){ if(e.target.files.length>0 && !registrationComplete){ const file=e.target.files[0]; handleScreenshotUpload(file); } });
   reuploadBtn.addEventListener('click', function(e){ e.preventDefault(); if(!registrationComplete){ resetModalUI(); document.getElementById('qrUploadSection').style.display='block'; uploadScreenshotBtn.disabled=false; uploadScreenshotBtn.textContent='📤 UPLOAD SCREENSHOT'; screenshotFileInput.value=''; screenshotFileInput.click(); } });
-  confirmRegBtn.addEventListener('click', function(e){ e.preventDefault(); if(paymentState.utr && !registrationComplete){ confirmRegistration(); } });
+  confirmRegBtn.addEventListener('click', function(e){ e.preventDefault(); if((paymentState.utr || paymentState.current === PAYMENT_STATES.UTR_PARTIAL) && !registrationComplete){ confirmRegistration(); } });
   showQr1Btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); const total=getTotalAmount(); openQRModal('qr1', PAYMENT_CONFIG.upiId1, total); const vis=qr1Container.classList.contains('active'); qr1Container.classList.toggle('active', !vis); qr2Container.classList.remove('active'); showQr1Btn.textContent = vis ? '📱 SHOW QR 1' : '📱 HIDE QR 1'; showQr1Btn.className = vis ? 'pay-btn btn-qr-primary qr-btn-no-nav' : 'pay-btn btn-qr-secondary qr-btn-no-nav'; return false; });
   showQr2Btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(!PAYMENT_CONFIG.upiId2){ alert('⚠️ QR 2 is coming soon. Please use QR 1 for now.'); return false; } const total=getTotalAmount(); openQRModal('qr2', PAYMENT_CONFIG.upiId2, total); const vis=qr2Container.classList.contains('active'); qr2Container.classList.toggle('active', !vis); qr1Container.classList.remove('active'); showQr2Btn.textContent = vis ? '🔄 QR 1 not working? Try QR 2' : '🔄 HIDE QR 2'; showQr1Btn.textContent='📱 SHOW QR 1'; showQr1Btn.className='pay-btn btn-qr-primary qr-btn-no-nav'; return false; });
 
@@ -931,9 +932,11 @@
     if(result.success) {
       paymentState.utr = result.utr;
       paymentState.verificationData = result.data;
-      paymentState.current = PAYMENT_STATES.UTR_VERIFIED;
-      updateModalUI(PAYMENT_STATES.UTR_VERIFIED, { utr: result.utr });
+      paymentState.current = result.state; // UTR_VERIFIED (UTR read) or UTR_PARTIAL (no readable UTR)
+      updateModalUI(result.state, { utr: result.utr });
     } else if(result.state === PAYMENT_STATES.UTR_NOT_FOUND) {
+      // Legacy state: with the simplified flow OCR failures no longer block;
+      // offer a re-upload but still allow continuing manually via Re-upload → Confirm.
       paymentState.current = PAYMENT_STATES.UTR_NOT_FOUND; updateModalUI(PAYMENT_STATES.UTR_NOT_FOUND);
     } else if(result.state === PAYMENT_STATES.UTR_DUPLICATE) {
       paymentState.current = PAYMENT_STATES.UTR_DUPLICATE; updateModalUI(PAYMENT_STATES.UTR_DUPLICATE, { utr: result.utr });
@@ -1039,53 +1042,24 @@
 
       variants.forEach(v => { if (v.imageUrl) { try { URL.revokeObjectURL(v.imageUrl); } catch (e) {} } });
 
-      // ─── FINAL VALIDATION (strict; order = evidence first, hard rules last) ───
+      // ─── FINAL EVALUATION (OCR records evidence; nothing above blocks registration) ───
+      // OCR is used to READ AND RECORD the UTR. Amount/receiver/time mismatches,
+      // low confidence, or missing readings are recorded for manual review and
+      // NEVER block the registration. Only a duplicate UTR (when one was read)
+      // still requires a different screenshot.
       const amountResult = selectBestAmount(amountCandidatesAll, expectedAmount, passTexts.length);
       console.log('🧮 AMOUNT CANDIDATES (all passes):', amountResult.evidence);
       console.log(`🎯 SELECTED AMOUNT: ${amountResult.amount} | EXPECTED: ${expectedAmount} | source=${amountResult.sources.join('+')} | pass agreement=${amountResult.passAgreement}/${passTexts.length} | confidence=${amountResult.confidence}`);
 
-      // 1. Amount present at all?
-      if (amountResult.amount === null) {
-        return { success:false, state:'AMOUNT_MISMATCH', message:`❌ PAYMENT AMOUNT NOT DETECTED<br>Expected: <strong>₹${expectedAmount}</strong><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">The payment amount could not be read reliably from this screenshot.<br>Please upload a clear screenshot showing the amount you paid (₹${expectedAmount}).</span>` };
+      // Duplicate UTR check ONLY when a UTR was actually read (never invented).
+      let duplicateCheck = { exists: false };
+      if (extractedUTR) {
+        duplicateCheck = await checkDuplicateUTR(extractedUTR);
+        if(duplicateCheck.error) return { success:false, state:PAYMENT_STATES.ERROR, error:`Database error: ${duplicateCheck.error}` };
+        if(duplicateCheck.exists) return { success:false, state:PAYMENT_STATES.UTR_DUPLICATE, utr:extractedUTR };
       }
 
-      // 1b. Weak-only evidence guard: a bare number that merely equals the expected
-      // amount (no ₹/Rs/INR symbol and no amount label next to it) is only trusted
-      // when two or more OCR passes independently produced it. Otherwise, ask for
-      // a clearer screenshot instead of guessing. Security is never weakened: a
-      // strong-context WRONG amount still rejects below, and no value is invented.
-      const weakOnlySources = amountResult.sources.length > 0 && amountResult.sources.every(s => s === 'bare_number_in_payment_context');
-      if (weakOnlySources && amountResult.passAgreement < 2) {
-        console.log('⚠️ Only weak amount evidence (bare number, no currency/label context) without cross-pass confirmation — requesting a clearer screenshot.');
-        return { success:false, state:'AMOUNT_MISMATCH', message:`❌ PAYMENT AMOUNT NOT CLEARLY DETECTED<br>Expected: <strong>₹${expectedAmount}</strong><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">The amount could not be confirmed with a currency symbol or "Amount/Paid" label. Please upload a clearer screenshot showing the amount ₹${expectedAmount}.</span>` };
-      }
-
-      // 2. Exact amount match (decimal-precision tolerance only: ₹900.00 = ₹900)
-      if (Math.abs(amountResult.amount - expectedAmount) > 0.01) {
-        const ambiguous = amountResult.confidence !== 'high';
-        return { success:false, state:'AMOUNT_MISMATCH', message: (ambiguous
-          ? `❌ PAYMENT AMOUNT UNCLEAR<br>Expected: <strong>₹${expectedAmount}</strong><br>Best reading: ₹${amountResult.amount} (low confidence — possibly an OCR misread)<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">Please upload a clearer screenshot showing the full amount ₹${expectedAmount}.</span>`
-          : `❌ PAYMENT AMOUNT DOES NOT MATCH<br>Expected: <strong>₹${expectedAmount}</strong><br>Detected: <strong>₹${amountResult.amount}</strong><br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">The screenshot clearly shows a different amount than the one required.</span>`) };
-      }
-
-      // 3. UTR present?
-      if (!extractedUTR) {
-        console.log('🧾 UTR candidates (none accepted):', utrCandidatesCache.slice(0, 3));
-        return { success:false, state: PAYMENT_STATES.UTR_NOT_FOUND };
-      }
-
-      // 4. Receiver present + exact (normalized) match?
-      if (!receiverRaw) {
-        const detected = (passTexts.join(' ').match(/[a-zA-Z0-9._\-]+\s*@\s*[a-zA-Z0-9.\-]+/) || [''])[0];
-        return { success:false, state:'RECEIVER_MISMATCH', message:`❌ RECEIVER DOES NOT MATCH<br>Expected: <strong>${PAYMENT_CONFIG.upiId1}</strong><br>${detected ? `Detected: ${detected.replace(/\s+/g, '')}` : 'No UPI ID detected in screenshot'}<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6);">Please upload a clearer screenshot showing the recipient UPI ID.</span>` };
-      }
-
-      // 5. Duplicate UTR check (unchanged logic, still enforced)
-      const duplicateCheck = await checkDuplicateUTR(extractedUTR);
-      if(duplicateCheck.error) return { success:false, state:PAYMENT_STATES.ERROR, error:`Database error: ${duplicateCheck.error}` };
-      if(duplicateCheck.exists) return { success:false, state:PAYMENT_STATES.UTR_DUPLICATE, utr:extractedUTR };
-
-      // 6. Payment time (kept exactly as before: informational tolerance check)
+      // Payment time is informational only — never a rejection condition.
       const timeMatch = (passTexts[0] || '').match(/\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?/i);
       const detectedTime = timeMatch ? timeMatch[0] : null;
 
@@ -1111,25 +1085,39 @@
         } catch(e) { /* ignore parsing errors */ }
       }
 
-      // 7. Build verification data (same keys as before + evidence fields)
+      // Amount/receiver matched flags: informational evidence for manual review.
+      const amountMatched = amountResult.amount !== null && Math.abs(amountResult.amount - expectedAmount) <= 0.01;
+      const receiverMatched = !!receiverRaw;
+      if (!amountMatched) console.warn(`ℹ️ Amount not confirmed by OCR (detected: ${amountResult.amount}) — recorded for manual review, not blocking.`);
+      if (!receiverMatched) console.warn('ℹ️ Receiver UPI ID not confirmed by OCR — recorded for manual review, not blocking.');
+      if (!extractedUTR) console.log('🧾 UTR candidates (none accepted):', utrCandidatesCache.slice(0, 3));
+
+      // Build verification data (same keys as before + evidence fields)
       const verificationData = {
-        utr: extractedUTR,
+        utr: extractedUTR || null,
         amount: amountResult.amount,
         amountSource: amountResult.sources.join('+'),
         amountConfidence: amountResult.confidence,
         amountPassAgreement: `${amountResult.passAgreement}/${passTexts.length}`,
         ocrPasses: passNames,
-        receiver: PAYMENT_CONFIG.upiId1,
+        receiver: receiverRaw ? PAYMENT_CONFIG.upiId1 : null,
         paymentTime: detectedTime,
         expectedAmount: expectedAmount,
-        amountMatched: true,
-        receiverMatched: true,
+        amountMatched,
+        receiverMatched,
         utrUnique: !duplicateCheck.exists,
         timeWithinTolerance: timeWithinTolerance,
+        needsManualReview: !(amountMatched && receiverMatched) || !extractedUTR || !timeWithinTolerance,
         verifiedAt: new Date().toISOString()
       };
 
-      return { success:true, state: PAYMENT_STATES.UTR_VERIFIED, utr: extractedUTR, data: verificationData };
+      if (extractedUTR) {
+        // UTR successfully read → display and store it.
+        return { success:true, state: PAYMENT_STATES.UTR_VERIFIED, utr: extractedUTR, data: verificationData };
+      }
+      // No readable UTR → DO NOT invent one. Registration continues with txn = null;
+      // the payment stays PENDING for manual verification.
+      return { success:true, state: PAYMENT_STATES.UTR_PARTIAL, utr: null, data: verificationData };
 
     } catch(error) {
       console.error('❌ Verification error:', error);
@@ -1168,7 +1156,7 @@
 
   // ─── CONFIRM REGISTRATION ───────────────────────────────────────────
   async function confirmRegistration() {
-    if(!paymentState.utr) { alert('⚠️ No UTR verified. Please upload a screenshot first.'); return; }
+    if(paymentState.current !== PAYMENT_STATES.UTR_VERIFIED && paymentState.current !== PAYMENT_STATES.UTR_PARTIAL) { alert('⚠️ Please upload a payment screenshot first.'); return; }
     if(registrationComplete) { alert('✅ Registration already complete.'); return; }
     if(paymentState.isSubmitting) return;
     paymentState.isSubmitting = true; paymentState.current = PAYMENT_STATES.SUBMITTING; updateModalUI(PAYMENT_STATES.SUBMITTING);
@@ -1189,15 +1177,19 @@
         email: participants[0]?.email || '',
         phone: participants[0]?.phone || '',
         total_amount: total,
-        txn: paymentState.utr,
+        // OCR-read UTR, or null when OCR could not detect one (never invented).
+        txn: paymentState.utr || null,
         participants: participants,
-        status: 'VERIFIED',
+        // OCR reading a UTR does not prove the payment is genuine — the payment
+        // stays PENDING until an admin verifies it manually.
+        status: 'PENDING',
         registered_at: new Date().toISOString(),
-        verified_at: new Date().toISOString(),
+        verified_at: null,
         legacy_duplicate: false,
-        payment_amount_detected: paymentState.verificationData?.amount || null,
-        payment_receiver_detected: paymentState.verificationData?.receiver || null,
-        payment_time_detected: paymentState.verificationData?.paymentTime || null,
+        is_pending: true,
+        payment_amount_detected: paymentState.verificationData?.amount ?? null,
+        payment_receiver_detected: paymentState.verificationData?.receiver ?? null,
+        payment_time_detected: paymentState.verificationData?.paymentTime ?? null,
         payment_qr_type: paymentState.qrType || null,
         payment_verification: paymentState.verificationData || null
       };
@@ -1208,17 +1200,20 @@
         closeQRModal(); goToStep(4);
         successIcon.textContent = '✅';
         successTitle.textContent = 'Registration Complete!';
-        successSub.textContent = '🎉 Payment Verified Successfully!';
+        successSub.textContent = '✅ Registration submitted — payment will be verified manually by our team.';
         successDetails.innerHTML = `
           <p><strong>Event:</strong> ${registrationData.event_name}</p>
           <p><strong>Team Leader:</strong> ${leaderName}</p>
           <p><strong>College:</strong> ${college}</p>
-          <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${paymentState.utr}</span></p>
-          <p><strong>Amount Paid:</strong> ₹${total}</p>
+          <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${paymentState.utr || 'Not detected — will be verified manually'}</span></p>
+          <p><strong>Amount:</strong> ₹${total}</p>
           <p><strong>Participants:</strong> ${participants.length}</p>
+          <p><strong>Status:</strong> PENDING (awaiting manual payment verification)</p>
         `;
         localStorage.removeItem('pending_registration'); localStorage.removeItem('payment_initiated'); sessionStorage.removeItem('returning_from_payment'); localStorage.removeItem('deplomat_registration_state'); sessionStorage.removeItem('deplomat_registration_state_backup');
       } else if(result.error === 'DUPLICATE_UTR') {
+        // Only reachable when a UTR was read (null UTR rows cannot collide with the
+        // UNIQUE constraint), so paymentState.utr is populated here.
         paymentState.current = PAYMENT_STATES.UTR_DUPLICATE; updateModalUI(PAYMENT_STATES.UTR_DUPLICATE, { utr:paymentState.utr }); paymentState.isSubmitting = false;
       } else {
         paymentState.current = PAYMENT_STATES.ERROR; updateModalUI(PAYMENT_STATES.ERROR, { message:`Registration could not be completed: ${result.error || 'Unknown error'}. Please try again.` }); paymentState.isSubmitting = false;
@@ -1245,7 +1240,8 @@
     }
     try {
       const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-      const exists = db.some(r => r.txn === registrationData.txn && (r.status === 'VERIFIED' || r.status === 'PENDING'));
+      // Only compare UTRs when one was actually read; null/null must not collide.
+      const exists = !!registrationData.txn && db.some(r => r.txn === registrationData.txn && (r.status === 'VERIFIED' || r.status === 'PENDING'));
       if(exists) return { success:false, error:'DUPLICATE_UTR' };
       db.push(registrationData); localStorage.setItem('deplomat_db', JSON.stringify(db));
       return { success:true };
