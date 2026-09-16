@@ -573,7 +573,10 @@
     qrStatusArea.style.display = 'flex';
     switch(state){
       case PAYMENT_STATES.VERIFYING: qrStatusArea.className = 'status-area loading show'; qrStatusIcon.textContent = '⏳'; qrStatusMessage.textContent = data?.message || 'Verifying payment screenshot...'; qrUtrDisplay.textContent = ''; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'none'; reuploadBtn.style.display = 'none'; break;
-      case PAYMENT_STATES.UTR_NOT_FOUND: qrStatusArea.className = 'status-area error show'; qrStatusIcon.textContent = '❌'; qrStatusMessage.innerHTML = 'UTR NOT FOUND<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">We couldn\'t detect a valid UTR number from this screenshot. Please upload a clear payment screenshot showing the transaction/UTR number.</span>'; qrUtrDisplay.textContent = ''; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'none'; reuploadBtn.style.display = 'block'; reuploadBtn.textContent = '📤 Re-upload Screenshot'; break;
+      // Simplified flow: OCR never rejects a screenshot. This legacy state is kept
+      // only so it can never render a blocking "UTR not found" UI — it now behaves
+      // exactly like an accepted screenshot continuing to manual verification.
+      case PAYMENT_STATES.UTR_NOT_FOUND: qrStatusArea.className = 'status-area success show'; qrStatusIcon.textContent = '✅'; qrStatusMessage.innerHTML = 'SCREENSHOT RECEIVED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">Your payment screenshot has been received — our team will verify it manually.</span>'; qrUtrDisplay.textContent = '—'; qrUtrDisplay.className = 'utr-display'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'block'; confirmRegBtn.disabled = false; confirmRegBtn.textContent = '🔱 Continue Registration'; reuploadBtn.style.display = 'none'; break;
       case PAYMENT_STATES.UTR_DUPLICATE: qrStatusArea.className = 'status-area error show'; qrStatusIcon.textContent = '❌'; qrStatusMessage.innerHTML = 'UTR ALREADY USED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">This payment transaction has already been used for another registration.</span>'; qrUtrDisplay.textContent = data?.utr || ''; qrUtrDisplay.className = 'utr-display duplicate'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'none'; reuploadBtn.style.display = 'block'; reuploadBtn.textContent = '📤 Re-upload Screenshot'; break;
       case PAYMENT_STATES.UTR_VERIFIED: qrStatusArea.className = 'status-area success show'; qrStatusIcon.textContent = '✅'; qrStatusMessage.innerHTML = 'UTR DETECTED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">Transaction ID (payment will be verified manually):</span>'; qrUtrDisplay.textContent = data?.utr || ''; qrUtrDisplay.className = 'utr-display'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'block'; confirmRegBtn.disabled = false; confirmRegBtn.textContent = '🔱 Confirm Registration'; reuploadBtn.style.display = 'none'; break;
       case PAYMENT_STATES.UTR_PARTIAL: qrStatusArea.className = 'status-area success show'; qrStatusIcon.textContent = '✅'; qrStatusMessage.innerHTML = 'SCREENSHOT ACCEPTED — UTR NOT DETECTED<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">We could not read a UTR from this screenshot. You can still continue — our team will verify the payment manually.</span>'; qrUtrDisplay.textContent = '—'; qrUtrDisplay.className = 'utr-display'; document.getElementById('qrUploadSection').style.display = 'none'; uploadScreenshotBtn.disabled = true; confirmRegBtn.style.display = 'block'; confirmRegBtn.disabled = false; confirmRegBtn.textContent = '🔱 Continue Registration'; reuploadBtn.style.display = 'none'; break;
@@ -588,14 +591,15 @@
   uploadScreenshotBtn.addEventListener('click', function(e){ e.preventDefault(); if(!registrationComplete && paymentState.current!==PAYMENT_STATES.SUBMITTING) screenshotFileInput.click(); });
   screenshotFileInput.addEventListener('change', function(e){ if(e.target.files.length>0 && !registrationComplete){ const file=e.target.files[0]; handleScreenshotUpload(file); } });
   reuploadBtn.addEventListener('click', function(e){ e.preventDefault(); if(!registrationComplete){ resetModalUI(); document.getElementById('qrUploadSection').style.display='block'; uploadScreenshotBtn.disabled=false; uploadScreenshotBtn.textContent='📤 UPLOAD SCREENSHOT'; screenshotFileInput.value=''; screenshotFileInput.click(); } });
-  confirmRegBtn.addEventListener('click', function(e){ e.preventDefault(); if((paymentState.utr || paymentState.current === PAYMENT_STATES.UTR_PARTIAL) && !registrationComplete){ confirmRegistration(); } });
+  confirmRegBtn.addEventListener('click', function(e){ e.preventDefault(); if((paymentState.utr || paymentState.current === PAYMENT_STATES.UTR_PARTIAL || paymentState.current === PAYMENT_STATES.UTR_NOT_FOUND) && !registrationComplete){ confirmRegistration(); } });
   showQr1Btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); const total=getTotalAmount(); openQRModal('qr1', PAYMENT_CONFIG.upiId1, total); const vis=qr1Container.classList.contains('active'); qr1Container.classList.toggle('active', !vis); qr2Container.classList.remove('active'); showQr1Btn.textContent = vis ? '📱 SHOW QR 1' : '📱 HIDE QR 1'; showQr1Btn.className = vis ? 'pay-btn btn-qr-primary qr-btn-no-nav' : 'pay-btn btn-qr-secondary qr-btn-no-nav'; return false; });
   showQr2Btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); if(!PAYMENT_CONFIG.upiId2){ alert('⚠️ QR 2 is coming soon. Please use QR 1 for now.'); return false; } const total=getTotalAmount(); openQRModal('qr2', PAYMENT_CONFIG.upiId2, total); const vis=qr2Container.classList.contains('active'); qr2Container.classList.toggle('active', !vis); qr1Container.classList.remove('active'); showQr2Btn.textContent = vis ? '🔄 QR 1 not working? Try QR 2' : '🔄 HIDE QR 2'; showQr1Btn.textContent='📱 SHOW QR 1'; showQr1Btn.className='pay-btn btn-qr-primary qr-btn-no-nav'; return false; });
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // ─── ROBUST SCREENSHOT VERIFICATION ──────────────────────────────────────
-  // ─── canvas preprocessing + multi-pass OCR + context-aware candidate     ──
-  // ─── scoring + cross-pass agreement + STRICT final validation            ──  // ═══════════════════════════════════════════════════════════════════════════
+  // ─── SCREENSHOT OCR (optional UTR extraction ONLY — never rejects) ──────
+  // ─── The screenshot is always accepted. OCR is attempted opportunistically  ──
+  // ─── to read a real UTR (saved to registrations.txn) or nothing (txn=NULL). ──
+  // ═══════════════════════════════════════════════════════════════════════════
 
   function text_flat(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
 
@@ -929,25 +933,22 @@
     paymentState.file = file; paymentState.current = PAYMENT_STATES.VERIFYING;
     updateModalUI(PAYMENT_STATES.VERIFYING, { message:'Verifying payment screenshot...' });
     const result = await verifyPaymentScreenshot(file);
-    if(result.success) {
-      paymentState.utr = result.utr;
-      paymentState.verificationData = result.data;
-      paymentState.current = result.state; // UTR_VERIFIED (UTR read) or UTR_PARTIAL (no readable UTR)
-      updateModalUI(result.state, { utr: result.utr });
-    } else if(result.state === PAYMENT_STATES.UTR_NOT_FOUND) {
-      // Legacy state: with the simplified flow OCR failures no longer block;
-      // offer a re-upload but still allow continuing manually via Re-upload → Confirm.
-      paymentState.current = PAYMENT_STATES.UTR_NOT_FOUND; updateModalUI(PAYMENT_STATES.UTR_NOT_FOUND);
-    } else if(result.state === PAYMENT_STATES.UTR_DUPLICATE) {
+    if(result.state === PAYMENT_STATES.UTR_DUPLICATE) {
+      // The ONLY remaining rejection: a GENUINE (OCR-read) UTR already used for
+      // another registration. A missing/unreadable UTR never reaches here.
       paymentState.current = PAYMENT_STATES.UTR_DUPLICATE; updateModalUI(PAYMENT_STATES.UTR_DUPLICATE, { utr: result.utr });
-    } else if(result.state === 'RECEIVER_MISMATCH') {
-      paymentState.current = PAYMENT_STATES.ERROR; updateModalUI(PAYMENT_STATES.ERROR, { message: result.message });
-    } else if(result.state === 'AMOUNT_MISMATCH') {
-      paymentState.current = PAYMENT_STATES.ERROR; updateModalUI(PAYMENT_STATES.ERROR, { message: result.message });
-    } else {
-      paymentState.current = PAYMENT_STATES.ERROR; paymentState.error = result.error || 'Verification failed';
-      updateModalUI(PAYMENT_STATES.ERROR, { message: paymentState.error });
+      return;
     }
+    // Simplified flow: the screenshot is ALWAYS accepted. OCR is optional and used
+    // only to extract a real UTR. No UTR, low confidence, unreadable amount/receiver/
+    // time, or any OCR failure never blocks the upload or the registration — the
+    // user simply sees the screenshot was received and can submit.
+    paymentState.utr = result.utr || null;
+    paymentState.verificationData = result.data || null;
+    paymentState.current = (result.success && result.state === PAYMENT_STATES.UTR_VERIFIED)
+      ? PAYMENT_STATES.UTR_VERIFIED  // real UTR found → save it and show it
+      : PAYMENT_STATES.UTR_PARTIAL;  // no UTR / OCR failed → accept silently
+    updateModalUI(paymentState.current, { utr: paymentState.utr });
   }
 
 
@@ -1055,7 +1056,12 @@
       let duplicateCheck = { exists: false };
       if (extractedUTR) {
         duplicateCheck = await checkDuplicateUTR(extractedUTR);
-        if(duplicateCheck.error) return { success:false, state:PAYMENT_STATES.ERROR, error:`Database error: ${duplicateCheck.error}` };
+        if(duplicateCheck.error) {
+          // Duplicate-UTR check unavailable → do NOT block; keep the genuine UTR
+          // and let the existing PENDING/manual verification sort out duplicates.
+          console.warn('ℹ️ Duplicate-UTR check unavailable — continuing; manual verification will confirm.', duplicateCheck.error);
+          duplicateCheck = { exists:false, error: duplicateCheck.error };
+        }
         if(duplicateCheck.exists) return { success:false, state:PAYMENT_STATES.UTR_DUPLICATE, utr:extractedUTR };
       }
 
@@ -1120,9 +1126,12 @@
       return { success:true, state: PAYMENT_STATES.UTR_PARTIAL, utr: null, data: verificationData };
 
     } catch(error) {
-      console.error('❌ Verification error:', error);
+      // OCR can fail for any reason (library blocked, browser restrictions, etc.).
+      // An OCR failure must NEVER reject the screenshot or stop registration:
+      // accept the upload with no UTR and continue into the PENDING workflow.
+      console.warn('ℹ️ OCR failed — accepting screenshot without a UTR (manual verification).', error);
       allUrls.forEach(u => { try { URL.revokeObjectURL(u); } catch (e) {} });
-      return { success:false, state:PAYMENT_STATES.ERROR, error:error.message || 'Screenshot verification failed' };
+      return { success:true, state:PAYMENT_STATES.UTR_PARTIAL, utr:null, data:{ utr:null, needsManualReview:true, verifiedAt:new Date().toISOString() } };
     }
   }
 
@@ -1205,7 +1214,7 @@
           <p><strong>Event:</strong> ${registrationData.event_name}</p>
           <p><strong>Team Leader:</strong> ${leaderName}</p>
           <p><strong>College:</strong> ${college}</p>
-          <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${paymentState.utr || 'Not detected — will be verified manually'}</span></p>
+          <p><strong>UTR Number:</strong> <span style="color:#4caf50;font-size:1.2rem;font-family:monospace;">${paymentState.utr || '—'}</span></p>
           <p><strong>Amount:</strong> ₹${total}</p>
           <p><strong>Participants:</strong> ${participants.length}</p>
           <p><strong>Status:</strong> PENDING (awaiting manual payment verification)</p>
