@@ -505,13 +505,6 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
-        .reg-result .reg-footer .txn {
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.2);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.04em;
-        }
-
         /* ─── NO RESULTS ─────────────────────────────────────────────── */
         .no-results {
             text-align: center;
@@ -776,8 +769,8 @@
                 <!-- ─── HEADER ─────────────────────────────────────────── -->
                 <div class="status-header">
                     <p class="eyebrow">DEPLOMAT · 2026</p>
-                    <h1>CHECK STATUS</h1>
-                    <p class="sub">Verify your registration in the Atlantean Trials</p>
+                    <h1>CHECK REGISTRATION</h1>
+                    <p class="sub">Enter your registered phone number</p>
                 </div>
 
                 <!-- ─── ERROR BANNER ───────────────────────────────────── -->
@@ -796,30 +789,14 @@
                 <form class="search-form" id="searchForm" novalidate>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="searchPhone">Team Leader Phone Number <span class="required">*</span></label>
-                            <input type="tel" id="searchPhone" placeholder="+91 98765 43210" required />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="searchCollege">College Name</label>
-                            <input type="text" id="searchCollege" placeholder="Optional — filter by college" />
-                        </div>
-                        <div class="form-group">
-                            <label for="searchEvent">Event Name</label>
-                            <input type="text" id="searchEvent" placeholder="Optional — filter by event" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="searchLeader">Team Leader Name</label>
-                            <input type="text" id="searchLeader" placeholder="Optional — filter by team leader" />
+                            <label for="searchPhone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="searchPhone" placeholder="+91 XXXXX XXXXX" required />
                         </div>
                     </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary" id="searchBtn">
-                            🔍 Check Status
+                            🔍 CHECK REGISTRATION
                         </button>
                         <button type="reset" class="btn btn-secondary" id="clearBtn">
                             Clear All
@@ -827,7 +804,7 @@
                     </div>
 
                     <p class="search-hint">
-                        ✦ Enter the <strong>Team Leader Phone Number</strong> used during registration (required). College, Event and Team Leader name are optional filters.
+                        ✦ Enter the <strong>phone number</strong> used during registration. Formats like +91, 91 or 0 prefixes are handled automatically.
                     </p>
                 </form>
 
@@ -891,9 +868,6 @@
 
         const form = document.getElementById('searchForm');
         const searchPhone = document.getElementById('searchPhone');
-        const searchCollege = document.getElementById('searchCollege');
-        const searchEvent = document.getElementById('searchEvent');
-        const searchLeader = document.getElementById('searchLeader');
         const searchBtn = document.getElementById('searchBtn');
         const clearBtn = document.getElementById('clearBtn');
         const clearResultsBtn = document.getElementById('clearResultsBtn');
@@ -960,37 +934,52 @@
         }
 
         function getSearchParams() {
-            return {
-                phone: searchPhone.value.trim(),
-                college: searchCollege.value.trim(),
-                event: searchEvent.value.trim(),
-                leader: searchLeader.value.trim()
-            };
+            return { phone: searchPhone.value.trim() };
         }
 
-        function hasSearchTerms() {
-            const p = getSearchParams();
-            return !!p.phone;
+        // ─── PHONE NORMALIZATION ──────────────────────────────────────
+        // Strips spaces, hyphens, brackets and every other non-numeric
+        // character, then reduces +91XXXXXXXXXX / 91XXXXXXXXXX / 0XXXXXXXXXX
+        // to the final 10-digit Indian mobile number.
+
+        function normalizePhone(raw) {
+            let digits = String(raw || '').replace(/\D/g, '');
+            if (digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
+            if (digits.length === 11 && digits.startsWith('0')) digits = digits.slice(1);
+            return digits;
+        }
+
+        function isValidIndianMobile(digits) {
+            return /^[6-9]\d{9}$/.test(digits);
         }
 
         // ─── QUERY SUPABASE (SECURE RPC — MINIMUM FIELDS ONLY) ───────
-        // Uses the search_registrations_public RPC so the public page never
+        // Uses the existing SECURITY DEFINER RPC so the public page never
         // reads the registrations table directly and never receives emails,
         // payment internals, verification fields or admin information.
+        // Phone number is the ONLY search parameter — the optional filters
+        // (college / event / team leader) are always passed as null.
 
         async function queryRegistrations(params) {
             if (supabaseClient) {
                 try {
-                    // Normalize phone: keep digits only (strips +91, spaces, hyphens,
-                    // parentheses). Falls back to last 10 digits matching in SQL.
-                    const cleanPhone = params.phone.replace(/\D/g, '');
+                    const normalizedPhone = normalizePhone(params.phone);
+                    const rpcArgs = {
+                        p_phone: normalizedPhone,
+                        p_college: null,
+                        p_event_name: null,
+                        p_team_leader: null
+                    };
 
-                    const { data, error } = await supabaseClient.rpc('search_registrations_public', {
-                        p_phone: cleanPhone,
-                        p_college: params.college || null,
-                        p_event_name: params.event || null,
-                        p_team_leader: params.leader || null
-                    });
+                    // Prefer the check_registration RPC; fall back to the deployed
+                    // search_registrations_public RPC (same secure contract) if the
+                    // former is not present in this project (PGRST202 = not found).
+                    let { data, error } = await supabaseClient.rpc('check_registration', rpcArgs);
+                    if (error && error.code === 'PGRST202') {
+                        const fallback = await supabaseClient.rpc('search_registrations_public', rpcArgs);
+                        data = fallback.data;
+                        error = fallback.error;
+                    }
 
                     if (error) {
                         console.warn('⚠️ Supabase RPC error:', error);
@@ -1008,67 +997,21 @@
             return { data: null, error: 'Supabase unavailable', source: 'supabase' };
         }
 
-        // ─── QUERY LOCALSTORAGE (FALLBACK) ───────────────────────────
-
-        function queryLocalStorage(params) {
-            try {
-                const db = JSON.parse(localStorage.getItem('deplomat_db') || '[]');
-                if (!db.length) return [];
-
-                const norm = s => String(s || '').replace(/\D/g, '');
-                const lc = s => String(s || '').toLowerCase();
-                const phoneClean = norm(params.phone);
-                const phoneLast10 = phoneClean.slice(-10);
-
-                const results = db.filter(entry => {
-                    // Phone is the required primary key (digits-only, last-10 match)
-                    const entryPhone = norm(entry.phone);
-                    const entryPhoneLast10 = entryPhone.slice(-10);
-                    const phoneMatch = entryPhone === phoneClean ||
-                        (phoneLast10.length === 10 && entryPhoneLast10 === phoneLast10);
-                    if (!phoneMatch) return false;
-
-                    // Optional filters (case-insensitive substring)
-                    const entryCollege = entry.college || '';
-                    const entryEvent = entry.event || entry.event_name || '';
-                    const entryLeader = entry.teamLeader || entry.team_leader || '';
-                    if (params.college && !lc(entryCollege).includes(lc(params.college))) return false;
-                    if (params.event && !lc(entryEvent).includes(lc(params.event))) return false;
-                    if (params.leader && !lc(entryLeader).includes(lc(params.leader))) return false;
-
-                    return true;
-                });
-
-                // Transform localStorage entries to the same minimal shape the RPC returns
-                return results.map(entry => ({
-                    event_name: entry.event || entry.event_name || 'Unknown',
-                    event_sub: entry.eventSub || entry.event_sub || '',
-                    college: entry.college || '—',
-                    ug_pu: entry.ug_pu || '—',
-                    team_leader: entry.teamLeader || entry.team_leader || '—',
-                    phone: entry.phone || '—',
-                    total_amount: entry.amount || entry.total_amount || 0,
-                    txn: entry.txn || null,
-                    status: entry.status || 'PENDING',
-                    participants: (entry.participants || '').split(',').map(p => p.trim()).filter(Boolean),
-                    registered_at: entry.registered_at || new Date().toISOString(),
-                    _source: 'localStorage'
-                }));
-
-            } catch (err) {
-                console.warn('⚠️ localStorage query failed:', err);
-                return [];
-            }
-        }
-
         // ─── SEARCH ────────────────────────────────────────────────────
 
         async function performSearch() {
             const params = getSearchParams();
 
-            // Validate: phone is the required primary search field
+            // Normalize + validate the phone number (the only required field)
+            const normalizedPhone = normalizePhone(params.phone);
             if (!params.phone) {
-                showError('⚠️ Please enter the Team Leader Phone Number used during registration.');
+                showError('Please enter your registered phone number.');
+                markError(searchPhone);
+                clearResults();
+                return;
+            }
+            if (!isValidIndianMobile(normalizedPhone)) {
+                showError('Please enter a valid phone number.');
                 markError(searchPhone);
                 clearResults();
                 return;
@@ -1081,32 +1024,15 @@
             clearResults();
 
             try {
-                // 1. Try Supabase
+                // 1. Try Supabase — NO localStorage fallback (privacy: the RPC is
+                //    the only sanctioned path to registration data)
                 let results = [];
 
                 const supabaseResult = await queryRegistrations(params);
                 if (supabaseResult.data && supabaseResult.data.length > 0) {
                     results = supabaseResult.data;
-                } else if (supabaseResult.data && supabaseResult.data.length === 0) {
-                    // No results from Supabase, try localStorage
-                    const localResults = queryLocalStorage(params);
-                    if (localResults.length > 0) {
-                        results = localResults;
-                    }
-                } else {
-                    // Supabase error or unavailable, fallback to localStorage
-                    const localResults = queryLocalStorage(params);
-                    if (localResults.length > 0) {
-                        results = localResults;
-                    }
-                }
-
-                // If still no results, try localStorage as a final fallback
-                if (results.length === 0) {
-                    const localResults = queryLocalStorage(params);
-                    if (localResults.length > 0) {
-                        results = localResults;
-                    }
+                } else if (supabaseResult.error) {
+                    console.warn('⚠️ Supabase RPC error:', supabaseResult.error);
                 }
 
                 // ─── DISPLAY RESULTS ────────────────────────────────────
@@ -1115,13 +1041,13 @@
                             <div class="no-results">
                                 <span class="icon">🔍</span>
                                 <h3>No Registrations Found</h3>
-                                <p>We couldn't find any registration matching the Team Leader Phone Number you entered.</p>
-                                <p class="suggestions">💡 Please double‑check the Team Leader Phone Number used during registration. College, Event and Team Leader name act as additional filters — leave them out if unsure.</p>
+                                <p>No registration found for this phone number.</p>
+                                <p class="suggestions">💡 Please double‑check the phone number used during registration, or register now if you haven't yet.</p>
                             </div>
                         `;
                     resultCount.innerHTML = 'Found <strong>0</strong> registration(s)';
                     resultsArea.classList.add('show');
-                    showError('❌ No registration found with the provided Team Leader Phone Number (and any applied filters).');
+                    showError('No registration found for this phone number.');
                     return;
                 }
 
@@ -1132,17 +1058,17 @@
                 resultCount.innerHTML = `Found <strong>${results.length}</strong> registration(s)`;
 
                 let html = '';
-                results.forEach((reg, idx) => {
-                    const isLocal = reg._source === 'localStorage';
+                results.forEach((reg) => {
                     const eventName = reg.event_name || 'Unknown Event';
                     const eventSub = reg.event_sub || '';
                     const college = reg.college || '—';
                     const ugPu = reg.ug_pu || '—';
                     const leader = reg.team_leader || '—';
                     const phone = reg.phone || '—';
-                    const amount = reg.total_amount || 0;
-                    const txn = reg.txn || '—';
                     const regStatus = reg.status || 'PENDING';
+                    // Registration number: prefer a dedicated column when the RPC
+                    // provides one; otherwise use the record's row id.
+                    const regNumber = reg.registration_number || reg.reg_no || reg.id || '—';
                     const date = reg.registered_at ? new Date(reg.registered_at).toLocaleString() : '—';
 
                     // Participants
@@ -1163,12 +1089,6 @@
                         }
                     }
 
-                    // If no participants, try to get from localStorage format
-                    if (participantsList.length === 0 && isLocal) {
-                        const parts = (reg.participants || '').split(',').map(p => p.trim()).filter(Boolean);
-                        if (parts.length > 0) participantsList = parts;
-                    }
-
                     const participantCount = participantsList.length || 1;
                     const displayParticipants = participantsList.slice(0, 5);
                     const moreCount = participantCount - displayParticipants.length;
@@ -1181,12 +1101,15 @@
                                             ${eventName}
                                             ${eventSub ? `<span class="sub">· ${eventSub}</span>` : ''}
                                         </span>
-                                        ${isLocal ? '<span style="font-size:0.55rem;color:rgba(255,255,255,0.15);margin-left:8px;">(local backup)</span>' : ''}
                                     </div>
                                     <span class="reg-badge">${regStatus === 'VERIFIED' ? '✅ Verified' : regStatus === 'REJECTED' ? '❌ Rejected' : '⏳ Pending'}</span>
                                 </div>
 
                                 <div class="reg-body">
+                                    <div class="reg-item">
+                                        <span class="label">Registration No.</span>
+                                        <span class="value highlight">${regNumber}</span>
+                                    </div>
                                     <div class="reg-item">
                                         <span class="label">College</span>
                                         <span class="value">${college}</span>
@@ -1203,10 +1126,6 @@
                                         <span class="label">Phone</span>
                                         <span class="value">${phone}</span>
                                     </div>
-                                    <div class="reg-item">
-                                        <span class="label">Fee</span>
-                                        <span class="value highlight">₹${amount}</span>
-                                    </div>
                                     <div class="reg-item" style="grid-column: 1 / -1;">
                                         <span class="label">Registered On</span>
                                         <span class="value" style="font-size:0.8rem;color:rgba(255,255,255,0.4);">${date}</span>
@@ -1219,7 +1138,6 @@
                                         ${displayParticipants.length > 0 ? `· ${displayParticipants.join(', ')}` : ''}
                                         ${moreCount > 0 ? ` <span style="color:rgba(255,255,255,0.2);">+${moreCount} more</span>` : ''}
                                     </span>
-                                    <span class="txn">📋 UTR: ${txn || '— (manual verification)'}</span>
                                 </div>
                             </div>
                         `;
@@ -1250,9 +1168,6 @@
         // Clear button (clears form fields + results)
         clearBtn.addEventListener('click', () => {
             searchPhone.value = '';
-            searchCollege.value = '';
-            searchEvent.value = '';
-            searchLeader.value = '';
             clearError(searchPhone);
             hideAllBanners();
             clearResults();
@@ -1268,13 +1183,11 @@
         searchPhone.addEventListener('focus', () => clearError(searchPhone));
 
         // Enter key triggers search
-        [searchPhone, searchCollege, searchEvent, searchLeader].forEach(input => {
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    performSearch();
-                }
-            });
+        searchPhone.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
         });
 
         // ─── AUTO-SEARCH FROM URL PARAMS ──────────────────────────────
@@ -1283,17 +1196,9 @@
             try {
                 const params = new URLSearchParams(window.location.search);
                 const phone = params.get('phone');
-                const college = params.get('college');
-                const event = params.get('event');
-                const leader = params.get('leader');
 
-                let hasAuto = false;
-                if (phone) { searchPhone.value = phone; hasAuto = true; }
-                if (college) { searchCollege.value = college; }
-                if (event) { searchEvent.value = event; }
-                if (leader) { searchLeader.value = leader; }
-
-                if (hasAuto) {
+                if (phone) {
+                    searchPhone.value = phone;
                     setTimeout(() => {
                         performSearch();
                     }, 400);
@@ -1307,8 +1212,7 @@
 
         console.log('🔍 DEPLOMAT Registration Status ready!');
         console.log('🔐 Supabase available:', !!supabaseClient);
-        console.log('💾 localStorage fallback: enabled');
-        console.log('📌 Search uses Team Leader Phone Number (required) + optional College / Event / Leader filters');
+        console.log('📌 Search uses registered phone number only');
 
         // Auto-search if URL params present
         autoSearchFromURL();
@@ -1318,7 +1222,6 @@
         window.__status = {
             search: performSearch,
             querySupabase: queryRegistrations,
-            queryLocal: queryLocalStorage,
             clear: clearResults,
             supabase: supabaseClient
         };
