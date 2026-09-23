@@ -6,12 +6,18 @@
   <title>The Minds Behind · DEPLOMAT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    :root {
+      --font-royal: 'Cormorant SC', serif;
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
     }
 
     body {
@@ -21,7 +27,7 @@
         radial-gradient(circle at 10% 20%, rgba(25, 213, 242, 0.06) 0%, transparent 40%),
         radial-gradient(circle at 90% 30%, rgba(192, 154, 82, 0.05) 0%, transparent 35%),
         radial-gradient(circle at 50% 85%, rgba(7, 135, 162, 0.05) 0%, transparent 45%);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: var(--font-body);
       color: #F2F6F7;
       padding: 1.5rem 1.2rem;
       display: flex;
@@ -63,7 +69,7 @@
       filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.6));
     }
     .depaul-brand span {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: clamp(0.6rem, 1vw, 0.85rem);
       font-weight: 700;
       letter-spacing: 0.22em;
@@ -129,7 +135,7 @@
     }
 
     .club-main-heading {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-royal);
       font-size: clamp(1.8rem, 5vw, 3.2rem);
       font-weight: 700;
       letter-spacing: 0.04em;
@@ -294,7 +300,7 @@
     }
 
     .dev-name {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 1.2rem;
       font-weight: 700;
       color: #F2F6F7;
@@ -348,7 +354,7 @@
     }
 
     .quote-area .quote-mark {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-royal);
       font-size: 1.4rem;
       color: rgba(192, 154, 82, 0.2);
       line-height: 0.8;
@@ -412,8 +418,8 @@
     }
 
     .closing p:first-child {
-      font-family: 'Cinzel', serif;
-      font-weight: 400;
+      font-family: var(--font-display);
+      font-weight: 500;
       color: #b6ccf0;
       font-size: 1rem;
       letter-spacing: 0.04em;
@@ -549,6 +555,7 @@
       border: 0;
     }
   </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
 <div class="page-wrap">

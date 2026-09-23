@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         /* ----- CSS Variables (keep existing theme) ----- */
         :root {
@@ -24,11 +24,16 @@
             --secondary-text: #91A5AC;
             --muted-text: #647A82;
             --error: #FF5577;
+
+            /* Typography */
+            --font-royal: 'Cormorant SC', serif;
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; overscroll-behavior: none; }
         body {
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            font-family: var(--font-body);
             background: var(--abyss);
             color: var(--primary-text);
             overflow-x: hidden;
@@ -117,9 +122,9 @@
 
         /* ----- Main title (preserved style) ----- */
         .page-title {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-royal);
             font-size: clamp(1.5rem, 5.5vw, 3.4rem);
-            font-weight: 900;
+            font-weight: 700;
             letter-spacing: clamp(3px, 0.8vw, 7px);
             text-transform: uppercase;
             line-height: 1.1;
@@ -227,7 +232,7 @@
             justify-content: center;
         }
         .card-content h2 {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-display);
             font-size: clamp(1.4rem, 3.2vw, 2.2rem);
             font-weight: 700;
             letter-spacing: 2px;
@@ -391,6 +396,7 @@
             html { scroll-behavior: auto; }
         }
     </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
     <!-- Orbs -->

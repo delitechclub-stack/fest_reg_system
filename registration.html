@@ -4,12 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>DEPLOMAT · Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; overscroll-behavior:none; }
-    body { font-family:'Segoe UI','Helvetica Neue',sans-serif; background:#041217; color:#F2F6F7; overflow-x:hidden; min-height:100dvh; -webkit-font-smoothing:antialiased; }
+    * { margin:0; padding:0; box-sizing:border-box; }    html { scroll-behavior:smooth; overscroll-behavior:none; }
+  :root { --font-royal: 'Cormorant SC', serif; --font-display: 'Cinzel', serif; --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif; }
+  body { font-family:var(--font-body); background:#041217; color:#F2F6F7; overflow-x:hidden; min-height:100dvh; -webkit-font-smoothing:antialiased; }
     .page-bg-orb { position:fixed; border-radius:50%; filter:blur(120px); opacity:0.15; z-index:0; pointer-events:none; }
     .orb-1 { width:600px; height:600px; background:#0787A2; top:-15%; left:-15%; }
     .orb-2 { width:500px; height:500px; background:#A98445; bottom:-15%; right:-15%; opacity:0.10; }
@@ -21,7 +24,7 @@
     /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top-right) ─── */
     .depaul-brand { position:fixed; top:34px; right:36px; z-index:20; display:inline-flex; align-items:center; gap:10px; pointer-events:none; }
     .depaul-brand img { width:clamp(30px,3.4vw,44px); height:auto; object-fit:contain; filter:drop-shadow(0 2px 14px rgba(0,0,0,0.7)); }
-    .depaul-brand span { font-family:'Cinzel',serif; font-size:clamp(0.6rem,1vw,0.85rem); font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(232,217,184,0.7); text-shadow:0 2px 16px rgba(0,0,0,0.85); white-space:nowrap; }
+    .depaul-brand span { font-family:var(--font-display); font-size:clamp(0.6rem,1vw,0.85rem); font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(232,217,184,0.7); text-shadow:0 2px 16px rgba(0,0,0,0.85); white-space:nowrap; }
     @media (max-width:768px) { .depaul-brand { top:24px; right:22px; gap:8px; } .depaul-brand img { width:26px; } .depaul-brand span { font-size:0.55rem; letter-spacing:0.12em; } }
     @media (max-width:480px) { .depaul-brand { top:20px; right:18px; gap:6px; } .depaul-brand img { width:22px; } .depaul-brand span { font-size:0.5rem; } }
     .register-wrap { position:relative; z-index:2; min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:100px 24px 60px 24px; }
@@ -31,7 +34,7 @@
     .register-card::after { position:absolute; top:0; left:0; width:100%; height:3px; background:linear-gradient(90deg,transparent,#C09A52,transparent); content:""; opacity:0.8; }
     .register-header { text-align:center; margin-bottom:32px; }
     .register-header .eyebrow { color:#C09A52; font-size:0.7rem; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; margin-bottom:8px; }
-    .register-header h1 { font-family:'Cinzel',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; letter-spacing:0.06em; line-height:1.1;    background:linear-gradient(180deg,#FFF8E7 0%,#C09A52 60%,#A98445 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .register-header h1 { font-family:var(--font-royal); font-size:clamp(2rem,5vw,3.5rem); font-weight:700; letter-spacing:0.06em; line-height:1.1;    background:linear-gradient(180deg,#FFF8E7 0%,#C09A52 60%,#A98445 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
     .register-header .sub { color:rgba(255,255,255,0.3); font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; margin-top:4px; }
     .event-banner { display:none; background:rgba(101,216,255,0.06); border:1px solid rgba(101,216,255,0.15); border-radius:14px; padding:14px 20px; margin-bottom:24px; align-items:center; gap:14px; animation:fadeStep 0.5s ease both; }
     .event-banner.show { display:flex; }
@@ -99,7 +102,7 @@
     .payment-summary .summary-row.total { border-top:1px solid rgba(255,255,255,0.06); padding-top:12px; margin-top:6px; font-weight:700; font-size:1.1rem; color:#F2F6F7; }
     .payment-summary .summary-row.total .amount { color:#C09A52; }
     .payment-side { width:100%; text-align:center; background:rgba(255,255,255,0.02); padding:25px 20px; border-radius:16px; border:1px solid rgba(255,197,61,0.15); margin-top:20px; }
-    .payment-side h5 { font-family:'Impact','Arial Black',sans-serif; font-size:1.8rem; color:#FFC53D; margin-bottom:5px; letter-spacing:2px; }
+    .payment-side h5 { font-family:var(--font-royal); font-size:1.8rem; color:#FFC53D; margin-bottom:5px; letter-spacing:2px; font-weight:700; }
     .payment-side p { font-size:0.75rem; color:rgba(255,255,255,0.4); margin-bottom:15px; }
     .qr-section { display:flex; flex-direction:column; align-items:center; gap:16px; margin:12px 0; }
     .qr-container { display:none; flex-direction:column; align-items:center; gap:8px; animation:fadeStep 0.3s ease; width:100%; }
@@ -112,7 +115,7 @@
     .qr-switch-btn:hover { background:rgba(255,255,255,0.12); color:#F2F6F7; }
     .qr-switch-btn:active { transform:scale(0.96); }
     .qr-switch-btn .icon { margin-right:6px; }
-    .pay-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:16px; border-radius:12px; font-family:'Segoe UI',sans-serif; font-weight:700; font-size:1.05rem; cursor:pointer; transition:0.3s; border:none; margin-bottom:10px; text-decoration:none; color:#F2F6F7; -webkit-tap-highlight-color:transparent; }
+    .pay-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:16px; border-radius:12px; font-family:var(--font-body); font-weight:700; font-size:1.05rem; cursor:pointer; transition:0.3s; border:none; margin-bottom:10px; text-decoration:none; color:#F2F6F7; -webkit-tap-highlight-color:transparent; }
     .pay-btn:hover { transform:translateY(-2px); box-shadow:0 5px 15px rgba(0,0,0,0.3); }
     .pay-btn:active { transform:scale(0.96); }
     .pay-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none !important; }
@@ -152,7 +155,7 @@
     .btn:disabled { opacity:0.4; cursor:not-allowed; transform:none !important; }
     .success-state { text-align:center; padding:20px 0; }
     .success-state .check { font-size:4rem; display:block; margin-bottom:16px; }
-    .success-state h2 { font-family:'Impact','Arial Black',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); letter-spacing:0.04em; margin-bottom:8px;    background:linear-gradient(180deg,#FFF8E7 0%,#C09A52 60%,#A98445 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .success-state h2 { font-family:var(--font-royal); font-size:clamp(1.8rem,4vw,2.8rem); letter-spacing:0.04em; font-weight:700; margin-bottom:8px;    background:linear-gradient(180deg,#FFF8E7 0%,#C09A52 60%,#A98445 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
     .success-state p { color:rgba(255,255,255,0.5); font-size:0.95rem; line-height:1.6; max-width:400px; margin:0 auto; }
     .success-state .reg-details { background:rgba(255,255,255,0.03); border-radius:12px; padding:16px 20px; margin:20px auto; max-width:400px; text-align:left; font-size:0.85rem; color:rgba(255,255,255,0.6); }
     .success-state .reg-details strong { color:#F2F6F7; }
@@ -163,7 +166,7 @@
     .qr-payment-modal .modal-box { background:rgba(17,24,38,0.98); border:1px solid rgba(255,255,255,0.08); border-radius:24px; padding:32px 28px; max-width:480px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 30px 80px rgba(0,0,0,0.9); position:relative; }
     .qr-payment-modal .modal-box .close-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:rgba(255,255,255,0.3); font-size:1.8rem; cursor:pointer; transition:0.3s ease; -webkit-tap-highlight-color:transparent; padding:4px 8px; border-radius:8px; }
     .qr-payment-modal .modal-box .close-btn:hover { color:#F2F6F7; background:rgba(255,255,255,0.06); }
-    .qr-payment-modal .modal-box .modal-title { text-align:center; font-family:'Impact','Arial Black',sans-serif; font-size:1.4rem; letter-spacing:0.08em; color:#FFC53D; margin-bottom:16px; }
+    .qr-payment-modal .modal-box .modal-title { text-align:center; font-family:var(--font-royal); font-size:1.4rem; letter-spacing:0.08em; color:#FFC53D; margin-bottom:16px; font-weight:700; }
     .qr-payment-modal .modal-box .qr-display { text-align:center; padding:12px 0; }
     .qr-payment-modal .modal-box .qr-display .qr-image-wrap { display:inline-block; background:#fff; padding:10px; border-radius:12px; border:2px solid rgba(255,197,61,0.3); box-shadow:0 0 40px rgba(255,197,61,0.08); }
     .qr-payment-modal .modal-box .qr-display .qr-image-wrap img { width:180px; height:180px; display:block; max-width:100%; }
@@ -218,6 +221,7 @@
     .warning-text { font-size:0.7rem; color:rgba(255,197,61,0.5); margin-top:12px; padding:10px 12px; background:rgba(255,197,61,0.04); border-radius:8px; border:1px solid rgba(255,197,61,0.06); }
     .warning-text strong { color:#FFC53D; }
   </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
 <div class="page-bg-orb orb-1"></div>

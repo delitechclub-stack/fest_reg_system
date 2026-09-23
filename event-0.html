@@ -6,13 +6,13 @@
   <title>THE ATLANTEAN TRIALS · DEPLOMAT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     /* ─── RESET & BASE ─────────────────────────────── */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: 'Inter','Segoe UI','Helvetica Neue',sans-serif;
+      font-family: var(--font-body);
       background: #050911;
       color: #f0f4fa;
       overflow-x: hidden;
@@ -24,6 +24,9 @@
         #041217;
     }
     :root {
+      --font-royal: 'Cormorant SC', serif;
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
       --bg: #041217;
       --panel: rgba(6, 26, 32, 0.85);
       --line: rgba(169, 132, 69, 0.08);
@@ -96,9 +99,9 @@
     }
     .title-group { flex: 1; min-width: 200px; }
     h1 {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-royal);
       font-size: clamp(2.6rem, 8vw, 5.2rem);
-      font-weight: 800;
+      font-weight: 700;
       line-height: 0.96;
       letter-spacing: -0.02em;
       background: linear-gradient(180deg, #FFF8E7 0%, #C09A52 60%, #A98445 100%);
@@ -267,7 +270,7 @@
       filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
     }
     .depaul-brand span {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: clamp(0.6rem, 1.4vw, 0.85rem);
       font-weight: 700;
       letter-spacing: 0.22em;
@@ -286,6 +289,7 @@
       .action-card, .back-link { transition: none; }
     }
   </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
   <!-- De Paul College Mysore branding (institutional) -->

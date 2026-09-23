@@ -14,10 +14,10 @@
     <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
     <link rel="preload" as="document" href="https://share.google/VW9zZQhOLe5Qg6l3J" />
 
-    <!-- Google Fonts: Cinzel + Cormorant Garamond -->
+    <!-- Google Fonts: Cinzel + Cormorant SC + Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
     <style>
         * {
@@ -35,6 +35,11 @@
             --gold-bright: #D0AF69;
             --cream: #F4EBDD;
             --text-muted: rgba(232, 217, 184, 0.7);
+
+            /* Typography */
+            --font-royal: 'Cormorant SC', serif;
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
         }
 
         body,
@@ -43,7 +48,7 @@
             height: 100%;
             overflow: hidden;
             background: var(--abyss);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-body);
         }
 
         /* ─── VR IFRAME ─── */
@@ -115,7 +120,7 @@
         /* ─── TITLE ─── */
         #title {
             color: var(--cream);
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-royal);
             font-size: clamp(2rem, 5.5vw, 3.8rem);
             font-weight: 700;
             letter-spacing: 0.04em;
@@ -126,7 +131,7 @@
         }
         #title .sub {
             display: block;
-            font-family: 'Cormorant Garamond', serif;
+            font-family: var(--font-body);
             font-size: 0.35em;
             font-weight: 400;
             letter-spacing: 0.28em;
@@ -148,9 +153,9 @@
             left: 50%;
             transform: translateX(-50%);
             color: var(--text-muted);
-            font-family: 'Cormorant Garamond', serif;
+            font-family: var(--font-body);
             font-size: 0.9rem;
-            font-weight: 300;
+            font-weight: 400;
             letter-spacing: 0.2em;
             text-transform: uppercase;
             text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
@@ -207,7 +212,7 @@
             border-radius: 12px;
             border: 1px solid rgba(169, 132, 69, 0.2);
             color: var(--gold-bright);
-            font-family: 'Cormorant Garamond', serif;
+            font-family: var(--font-body);
             font-size: 0.95rem;
             letter-spacing: 0.06em;
             opacity: 0;
@@ -282,7 +287,7 @@
             filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
         }
         .depaul-brand span {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-display);
             font-size: clamp(0.6rem, 1vw, 0.85rem);
             font-weight: 700;
             letter-spacing: 0.22em;
@@ -331,6 +336,7 @@
             }
         }
     </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
 

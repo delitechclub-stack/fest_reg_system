@@ -6,13 +6,13 @@
   <title>DEPLOMAT · Atlantis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     /* ─── RESET & BASE ─────────────────────────────── */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: 'Segoe UI','Helvetica Neue',sans-serif;
+      font-family: var(--font-body);
       background: #041217;
       color: #e8d9b8;
       overflow-x: hidden;
@@ -33,6 +33,9 @@
       --ivory: #F4EBDD;
       --shadow-deep: 0 20px 60px rgba(0,0,0,0.85);
       --gradient-gold: linear-gradient(135deg, #A98445, #D0AF69, #F4E8B0, #C09A52, #A98445);
+      --font-royal: 'Cormorant SC', serif;
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
     }
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--abyss); }
@@ -108,7 +111,7 @@
       transform: scale(1) translateY(0);
     }
     .dropdown-section-title {
-      font-family: 'Cinzel',serif;
+      font-family: var(--font-display);
       font-size: 8px;
       font-weight: 700;
       letter-spacing: 2.5px;
@@ -135,7 +138,7 @@
       transition: 0.15s;
       border-left: 2px solid transparent;
       white-space: nowrap;
-      font-family: 'Cinzel',serif;
+      font-family: var(--font-body);
       touch-action: manipulation;
       cursor: pointer;
       position: relative;
@@ -277,8 +280,8 @@
       transform: translateZ(0);
     }
     .hero-title {
-      font-family: 'Cinzel',serif;
-      font-weight: 900;
+      font-family: var(--font-royal);
+      font-weight: 700;
       font-size: clamp(2.2rem, 9vw, 5.5rem);
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -293,7 +296,7 @@
       word-wrap: break-word;
     }
     .hero-title .accent {
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: 0.25em;
       font-size: 0.45em;
       display: block;
@@ -304,7 +307,7 @@
       background-clip: text;
     }
     .hero-subtitle {
-      font-family: 'Cormorant Garamond',serif;
+      font-family: var(--font-body);
       font-weight: 600;
       font-size: clamp(0.8rem, 2vw, 1.45rem);
       letter-spacing: 0.25em;
@@ -342,7 +345,7 @@
       vertical-align: middle;
     }
     .hero-tagline {
-      font-family: 'Cinzel',serif;
+      font-family: var(--font-display);
       font-weight: 400;
       font-size: clamp(0.4rem, 0.9vw, 0.75rem);
       letter-spacing: 0.35em;
@@ -368,7 +371,7 @@
       animation: pulseDescend 4s ease-in-out infinite;
     }
     .explore-cta span {
-      font-family: 'Cinzel',serif;
+      font-family: var(--font-body);
       font-size: 0.5rem;
       letter-spacing: 0.35em;
       text-transform: uppercase;
@@ -404,7 +407,7 @@
       font-size: 0.6rem;
       color: rgba(169,132,69,0.2);
       letter-spacing: 0.5em;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
     }
 
     /* ─── EXPLORE SECTION ────────────────────────────── */
@@ -437,7 +440,7 @@
       text-align: center;
     }
     .explore-header .section-label {
-      font-family:'Cinzel',serif;
+      font-family: var(--font-body);
       font-size:0.5rem;
       letter-spacing:0.35em;
       text-transform:uppercase;
@@ -453,7 +456,7 @@
       font-size: 0.4rem;
     }
     .explore-header h2 {
-      font-family:'Cinzel',serif;
+      font-family: var(--font-royal);
       font-size:clamp(1.3rem,4vw,2.6rem);
       font-weight:700;
       letter-spacing:0.1em;
@@ -623,9 +626,9 @@
       border-radius: 0 0 16px 16px;
     }
     .carousel-track .event-card .card-name {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-      font-weight: 900;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--ivory);
@@ -635,7 +638,7 @@
       transition: text-shadow 0.4s ease, color 0.4s ease;
     }
     .carousel-track .event-card .card-sub {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--font-body);
       font-size: clamp(0.7rem, 1.2vw, 1rem);
       letter-spacing: 0.15em;
       text-transform: uppercase;
@@ -652,7 +655,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 9px;
       line-height: 1;
       white-space: nowrap;
@@ -721,7 +724,7 @@
       padding: 40px 20px 60px 20px;
     }
     .kingdom-featured .kingdom-heading {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: clamp(0.6rem, 1.2vw, 0.9rem);
       letter-spacing: 0.35em;
       text-transform: uppercase;
@@ -791,7 +794,7 @@
       transition: opacity 0.5s ease;
     }
     .kingdom-featured-main .featured-content .fc-label {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.5rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
@@ -799,9 +802,9 @@
       margin-bottom: 4px;
     }
     .kingdom-featured-main .featured-content .fc-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: clamp(1.4rem, 3vw, 2.6rem);
-      font-weight: 900;
+      font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
       color: var(--ivory);
@@ -810,7 +813,7 @@
       margin-bottom: 4px;
     }
     .kingdom-featured-main .featured-content .fc-desc {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--font-body);
       font-size: clamp(0.7rem, 1.1vw, 1rem);
       font-weight: 600;
       letter-spacing: 0.05em;
@@ -821,9 +824,9 @@
     }
     .kingdom-featured-main .featured-content .fc-cta {
       display: inline-block;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.55rem;
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--gold-light);
@@ -898,7 +901,7 @@
       min-width: 0;
     }
     .kingdom-featured-item .ki-title {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 0.65rem;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -917,7 +920,7 @@
       transition: width 0.4s ease, background 0.4s ease;
     }
     .kingdom-featured-item .ki-sub {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--font-body);
       font-size: 0.5rem;
       letter-spacing: 0.05em;
       color: rgba(232,217,184,0.2);
@@ -1002,7 +1005,7 @@
       pointer-events: none;
     }
     .promo-content .promo-badge {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.45rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
@@ -1015,7 +1018,7 @@
       backdrop-filter: blur(4px);
     }
     .event-date-display {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-royal);
       font-size: clamp(0.8rem, 2.6vw, 1.6rem);
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -1057,7 +1060,7 @@
     }
     .promo-countdown .cd-item span {
       display: block;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-royal);
       font-size: 1.8rem;
       font-weight: 700;
       color: var(--ivory);
@@ -1065,7 +1068,7 @@
       line-height: 1.1;
     }
     .promo-countdown .cd-item small {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.4rem;
       text-transform: uppercase;
       letter-spacing: 0.2em;
@@ -1076,7 +1079,7 @@
     .promo-countdown .cd-item.accent span { color: var(--gold-light); }
     .promo-countdown .cd-item.accent { border-color: rgba(169,132,69,0.1); }
     .promo-cta {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.6rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
@@ -1113,7 +1116,7 @@
       text-align: center;
     }
     .site-footer .footer-logo {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-royal);
       font-size: 1.2rem;
       font-weight: 700;
       letter-spacing: 0.15em;
@@ -1123,7 +1126,7 @@
       background-clip: text;
     }
     .site-footer .footer-logo span {
-      font-weight: 400;
+      font-weight: 500;
       font-size: 0.6rem;
       letter-spacing: 0.3em;
       display: block;
@@ -1139,7 +1142,7 @@
       background: linear-gradient(90deg, transparent, rgba(169,132,69,0.2), transparent);
     }
     .site-footer .footer-text {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--font-body);
       font-size: 0.55rem;
       letter-spacing: 0.1em;
       color: rgba(232,217,184,0.15);
@@ -1168,7 +1171,7 @@
       text-decoration: none;
       font-size: 0.7rem;
       transition: 0.3s;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       letter-spacing: 0.1em;
     }
     .site-footer .footer-social a:active { color: var(--gold-light); transform: scale(0.9); }
@@ -1207,7 +1210,7 @@
     }
     .modal-overlay.open .login-modal { transform: scale(1) translateY(0); opacity: 1; }
     .login-modal h3 {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-royal);
       font-size: 1.6rem;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -1221,7 +1224,7 @@
     }
     .login-modal .modal-sub {
       text-align: center;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--font-body);
       font-size: 0.6rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
@@ -1243,7 +1246,7 @@
       text-transform: uppercase;
       cursor: pointer;
       transition: all 0.25s;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       text-align: center;
       touch-action: manipulation;
     }
@@ -1253,7 +1256,7 @@
     .login-field { margin-bottom: 12px; }
     .login-field label {
       display: block;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.4rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -1268,7 +1271,7 @@
       padding: 10px 12px;
       color: var(--ivory);
       font-size: 13px;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: var(--font-body);
       outline: none;
       transition: 0.25s;
       -webkit-appearance: none;
@@ -1291,8 +1294,8 @@
       border: 1px solid rgba(169,132,69,0.06);
       background: linear-gradient(135deg,rgba(169,132,69,0.04),rgba(169,132,69,0.02));
       color: rgba(232,217,184,0.6);
-      font-weight: 700;
-      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-family: var(--font-body);
       font-size: 0.6rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -1319,7 +1322,7 @@
       display: block;
       text-align: center;
       margin-top: 10px;
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.45rem;
       letter-spacing: 0.1em;
       color: rgba(192,154,82,0.2);
@@ -1344,7 +1347,7 @@
       justify-content: center;
       transition: 0.2s;
       z-index: 10;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: var(--font-body);
       touch-action: manipulation;
     }
     .modal-close:active { background: rgba(169,132,69,0.06); color: var(--gold-light); }
@@ -1359,7 +1362,7 @@
       text-align: center;
       display: none;
       letter-spacing: 0.04em;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: var(--font-body);
     }
     .login-error.show { display: block; animation: fadeIn 0.25s ease; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
@@ -1372,7 +1375,7 @@
       margin-bottom: 10px;
     }
     .footer-powered .powered-label {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: 0.5rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
@@ -1403,7 +1406,7 @@
       display: block;
     }
     .footer-powered .powered-brand .brand-name {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-display);
       font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.22em;
@@ -1436,7 +1439,7 @@
       border: 1px solid rgba(169,132,69,0.06);
       color: rgba(232,217,184,0.6);
       font-size: 0.7rem;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: var(--font-body);
       z-index: 2000;
       opacity: 0;
       transition: opacity 0.35s, transform 0.35s;
@@ -1517,8 +1520,8 @@
       100%{opacity:1;transform:scale(1)}
     }
     .intro-title {
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
+      font-family: var(--font-royal);
+      font-weight: 700;
       font-size: clamp(1.5rem,4.5vw,3rem);
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -1534,7 +1537,7 @@
       line-height: 1.05;
     }
     .intro-title .accent {
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: 0.25em;
       font-size: 0.45em;
       display: block;
@@ -1548,7 +1551,7 @@
       100%{opacity:1;transform:translateY(0)}
     }
     .intro-enter-text {
-      font-family: 'Cinzel', serif;
+      font-family: var(--font-body);
       font-size: clamp(0.4rem,0.8vw,0.6rem);
       letter-spacing: 0.35em;
       text-transform: uppercase;
@@ -1670,7 +1673,7 @@
       }
       .carousel-track .event-card .card-name {
         font-size: clamp(1.2rem, 4.5vw, 1.8rem);
-        font-weight: 900;
+        font-weight: 700;
         letter-spacing: 0.08em;
       }
       .carousel-track .event-card .card-sub {
@@ -1854,6 +1857,7 @@
       .intro-seal svg { animation: sealReveal 0.5s ease forwards !important; }
     }
   </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
 

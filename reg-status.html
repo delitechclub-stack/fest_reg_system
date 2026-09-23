@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DEPLOMAT · Registration Status</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
     <!-- ═══ SUPABASE CLIENT ═══ -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
@@ -22,8 +26,14 @@
             overscroll-behavior: none;
         }
 
+        :root {
+            --font-royal: 'Cormorant SC', serif;
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            font-family: var(--font-body);
             background: #041217;
             color: #F2F6F7;
             overflow-x: hidden;
@@ -180,9 +190,9 @@
         }
 
         .status-header h1 {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-royal);
             font-size: clamp(1.8rem, 4.5vw, 3.2rem);
-            font-weight: 900;
+            font-weight: 700;
             letter-spacing: 0.06em;
             line-height: 1.1;
             background: linear-gradient(180deg, #ffffff 0%, #8a8a8a 100%);
@@ -718,7 +728,7 @@
             filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
         }
         .depaul-brand span {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-display);
             font-size: clamp(0.6rem, 1vw, 0.85rem);
             font-weight: 700;
             letter-spacing: 0.22em;
@@ -743,6 +753,7 @@
             }
         }
     </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
 

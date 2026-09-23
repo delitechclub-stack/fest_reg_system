@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         :root {
             --abyss: #041217;
@@ -20,11 +20,16 @@
             --teal-surface: #0A2933;
             --primary-text: #F2F6F7;
             --secondary-text: #91A5AC;
+
+            /* Typography */
+            --font-royal: 'Cormorant SC', serif;
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; overscroll-behavior: none; }
         body {
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            font-family: var(--font-body);
             background: var(--abyss);
             color: var(--primary-text);
             overflow-x: hidden;
@@ -95,7 +100,7 @@
             filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.6));
         }
         .depaul-brand span {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-display);
             font-size: clamp(0.6rem, 1vw, 0.85rem);
             font-weight: 700;
             letter-spacing: 0.22em;
@@ -127,9 +132,9 @@
 
         /* page heading – preserved style */
         .page-title {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-royal);
             font-size: clamp(2.8rem, 10vw, 6.5rem);
-            font-weight: 900;
+            font-weight: 700;
             letter-spacing: 10px;
             text-transform: uppercase;
             line-height: 1.1;
@@ -158,7 +163,7 @@
             margin-bottom: 32px;
         }
         .section-head {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-display);
             font-size: 1.8rem;
             font-weight: 600;
             letter-spacing: 2px;
@@ -239,7 +244,7 @@
             margin-bottom: 0px;
         }
         .card-primary {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-display);
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--gold-light);
@@ -340,6 +345,7 @@
             }
         }
     </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
 </head>
 <body>
     <div class="page-bg-orb orb-a"></div>
