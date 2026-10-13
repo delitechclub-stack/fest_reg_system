@@ -881,6 +881,10 @@
                 <div style="margin-top: 0.3rem; color: #7a9bc7; font-size: 0.9rem;">
                     ${coordinators.length} coordinator${coordinators.length > 1 ? 's' : ''} available
                 </div>
+                ${String(event.event_name || '').toUpperCase() === 'MOOT COURT' ? `
+                <div style="margin-top: 0.6rem; padding: 0.55rem 0.75rem; border: 1px solid rgba(192, 154, 82, 0.35); border-radius: 8px; background: rgba(192, 154, 82, 0.08); color: #e8c88a; font-size: 0.85rem; line-height: 1.5;">
+                    ⚖️ <strong>Registration guidance:</strong> Each Moot Court team must consist of exactly two participants. Teams with fewer or more than two participants are not permitted.
+                </div>` : ''}
             </div>
 
             <div class="divider"></div>

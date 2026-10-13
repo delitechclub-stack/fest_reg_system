@@ -1146,7 +1146,7 @@
                 }
             },
             {
-                id: 3, name: 'MOOT COURT', sub: 'Moot Court', min: 2, max: 3, category: 'both', pricing: {
+                id: 3, name: 'MOOT COURT', sub: 'Moot Court', min: 2, max: 2, category: 'both', pricing: {
                     type: 'perParticipant',
                     amount: 250
                 }
@@ -1271,6 +1271,31 @@
             return playersContainer.children.length;
         }
 
+        // ─── MOOT COURT · STRICT 2-PARTICIPANT LIMIT ─────────────────
+        const MOOT_COURT_TEAM_SIZE = 2;
+
+        function isMootCourtEvent(ev) {
+            return !!ev && ev.id === 3 && String(ev.name || '').toUpperCase() === 'MOOT COURT';
+        }
+
+        function isMootCourtName(name) {
+            return String(name || '').toUpperCase() === 'MOOT COURT';
+        }
+
+        function mootCourtTeamSizeMessage(count) {
+            return `⚖️ MOOT COURT requires exactly ${MOOT_COURT_TEAM_SIZE} participants per team. You entered ${count} participant${count === 1 ? '' : 's'}. Teams with fewer or more than two participants are not permitted.`;
+        }
+
+        // Shared guard used by both the frontend validation and the insert handler.
+        function validateMootCourtTeamSize(eventName, participants) {
+            if (!isMootCourtName(eventName)) return { valid: true };
+            const count = Array.isArray(participants) ? participants.length : 0;
+            if (count !== MOOT_COURT_TEAM_SIZE) {
+                return { valid: false, error: 'MOOT_COURT_TEAM_SIZE', message: mootCourtTeamSizeMessage(count) };
+            }
+            return { valid: true };
+        }
+
         function getTotalAmount() {
             const count = getTeamSize();
             const pricing = selectedEvent ? selectedEvent.pricing : null;
@@ -1358,8 +1383,11 @@
                 ev.category === 'ug' ? '🟣 UG Only' : '🟢 UG + PU';
 
             if (ev.min === ev.max) {
+                const exactNote = isMootCourtEvent(ev)
+                    ? `<br>⚖️ Each team must consist of exactly two participants. Teams with fewer or more than two participants are not permitted.`
+                    : '';
                 limitText.innerHTML =
-                    `<strong>${ev.name}</strong> · ${ev.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${ev.min}</strong> participants (including Team Leader)`;
+                    `<strong>${ev.name}</strong> · ${ev.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${ev.min}</strong> participants (including Team Leader)${exactNote}`;
             } else {
                 limitText.innerHTML =
                     `<strong>${ev.name}</strong> · ${ev.sub} &nbsp; <span style="color:#65d8ff;font-size:0.7rem;">${catLabel}</span><br>📌 Team size: <strong>${ev.min} – ${ev.max}</strong> participants allowed (including Team Leader)`;
@@ -1426,7 +1454,9 @@
             const count = playersContainer.children.length;
             if (count >= currentMax) {
                 addPlayerBtn.disabled = true;
-                addPlayerBtn.textContent = `✓ Max ${currentMax} players reached`;
+                addPlayerBtn.textContent = isMootCourtEvent(selectedEvent)
+                    ? `⚖️ Exactly ${MOOT_COURT_TEAM_SIZE} participants required`
+                    : `✓ Max ${currentMax} players reached`;
             } else {
                 addPlayerBtn.disabled = false;
                 addPlayerBtn.textContent = '+ Add Player';
@@ -1449,7 +1479,7 @@
                 }
                 const removeBtn = entry.querySelector('.remove-btn');
                 if (removeBtn) {
-                    removeBtn.style.display = isFirst ? 'none' : 'block';
+                    removeBtn.style.display = (isFirst || isMootCourtEvent(selectedEvent)) ? 'none' : 'block';
                 }
             });
             updateAddButtonState();
@@ -1492,7 +1522,7 @@
                     ${isFirst ? '👑 Team Leader' : `Player ${index}`}
                     ${isFirst ? '<span class="leader-badge">Leader</span>' : ''}
                 </span>
-                ${!isFirst ? `<button type="button" class="remove-btn" title="Remove player">✕</button>` : ''}
+                ${!isFirst && !isMootCourtEvent(selectedEvent) ? `<button type="button" class="remove-btn" title="Remove player">✕</button>` : ''}
             </div>`;
 
             let fieldsHtml = '';
@@ -1516,7 +1546,8 @@
             div.innerHTML = headerHtml + fieldsHtml;
 
             if (!isFirst) {
-                div.querySelector('.remove-btn').addEventListener('click', () => {
+                const removeBtn = div.querySelector('.remove-btn');
+                if (removeBtn) removeBtn.addEventListener('click', () => {
                     if (playersContainer.children.length > currentMin) {
                         div.remove();
                         updatePlayerNumbers();
@@ -1576,6 +1607,12 @@
 
             // Participants count
             const count = playersContainer.children.length;
+            // MOOT COURT: exactly two participants per team — reject 1 or 3+
+            const sizeEvent = getEventById(eventSelect.value) || selectedEvent;
+            if (isMootCourtEvent(sizeEvent) && count !== MOOT_COURT_TEAM_SIZE) {
+                alert(mootCourtTeamSizeMessage(count));
+                return false;
+            }
             if (count < currentMin) {
                 alert(`⚠️ This event requires at least ${currentMin} participant(s). Please add more.`);
                 return false;
@@ -1688,6 +1725,13 @@
                     rejection_reason: null,
                     rejected_at: null
                 };
+
+                // Backend guard: MOOT COURT registrations must contain exactly 2
+                // participants before any row is inserted into public.registrations.
+                const sizeCheck = validateMootCourtTeamSize(registrationData.event_name, registrationData.participants);
+                if (!sizeCheck.valid) {
+                    throw new Error(sizeCheck.message);
+                }
 
                 let success = false;
                 let insertedData = null;

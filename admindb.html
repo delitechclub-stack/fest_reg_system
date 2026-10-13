@@ -2581,6 +2581,16 @@
                 else if (teamSize === 2) sizeBadge = '👥';
                 else if (teamSize >= 3) sizeBadge = `👥 ${teamSize}`;
 
+                // ── MOOT COURT · STRICT 2-PARTICIPANT LIMIT ──────────────
+                // Moot Court teams must contain exactly 2 participants; flag any
+                // record that does not so admins can spot invalid registrations.
+                const isMootCourt = String(eventName).toUpperCase() === 'MOOT COURT';
+                let teamSizeWarning = '';
+                if (isMootCourt && teamSize !== 2) {
+                    sizeBadge = `👥 ${teamSize}`;
+                    teamSizeWarning = `<span class="tag" title="MOOT COURT requires exactly 2 participants" style="margin-left:4px;background:rgba(255,82,82,0.18);color:#ff8f8f;border:1px solid rgba(255,82,82,0.35);">⚠ needs exactly 2</span>`;
+                }
+
                 let actionsHtml = '';
                 if (status === 'PENDING') {
                     const id = r.id || idx;
@@ -2601,7 +2611,7 @@
                                 <td><span class="tag event-tag">${eventName}</span></td>
                                 <td>${tagClass ? `<span class="tag ${tagClass}">${categoryDisplay}</span>` : '—'}</td>
                                 <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;">
-                                    ${sizeBadge} ${participantNames || '—'}
+                                    ${sizeBadge} ${participantNames || '—'}${teamSizeWarning}
                                 </td>
                                 <td><span class="txn-code">${safeString(r.txn)}</span></td>
                                 <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>

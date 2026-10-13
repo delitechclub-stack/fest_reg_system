@@ -377,7 +377,7 @@
     { id:0, name:"THE ATLANTEAN TRIALS", sub:"Escape Room", min:3, max:3, category:'both', pricing:{ type:'fixed', amount:500 } },
     { id:1, name:"THE LOST RELIC", sub:"Treasure Hunt", min:2, max:2, category:'both', pricing:{ type:'fixed', amount:500 } },
     { id:2, name:"THE TRIDENT WAR", sub:"Free Fire", min:4, max:4, category:'both', pricing:{ type:'fixed', amount:600 } },
-    { id:3, name:"MOOT COURT", sub:"Moot Court", min:2, max:3, category:'both', pricing:{ type:'perParticipant', amount:250 } },
+    { id:3, name:"MOOT COURT", sub:"Moot Court", min:2, max:2, category:'both', pricing:{ type:'perParticipant', amount:250 } },
     { id:4, name:"THE SIREN'S ACT", sub:"Reels Making", min:1, max:3, category:'both', pricing:{ type:'fixed', amount:300 } },
     { id:5, name:"ECHOS OF ATLANTIS", sub:"Solo Singing", min:1, max:1, category:'both', pricing:{ type:'fixed', amount:250 } },
     { id:6, name:"THE MERMAID'S WALTZ", sub:"Solo Dance", min:1, max:1, category:'both', pricing:{ type:'fixed', amount:250 } },
@@ -492,6 +492,21 @@
     return { valid:true, message:'' };
   }
   function showBlockNotice(msg) { if(msg){ blockMsg.innerHTML=msg; blockNotice.classList.add('show'); } else blockNotice.classList.remove('show'); }
+
+  // ─── MOOT COURT · STRICT 2-PARTICIPANT LIMIT ───────────────────────
+  const MOOT_COURT_TEAM_SIZE = 2;
+  function isMootCourtEvent(ev) { return !!ev && ev.id === 3 && String(ev.name || '').toUpperCase() === 'MOOT COURT'; }
+  function isMootCourtName(name) { return String(name || '').toUpperCase() === 'MOOT COURT'; }
+  function mootCourtTeamSizeMessage(count) {
+    return `⚖️ MOOT COURT requires exactly ${MOOT_COURT_TEAM_SIZE} participants per team. You entered ${count} participant${count === 1 ? '' : 's'}. Teams with fewer or more than two participants are not permitted.`;
+  }
+  // Shared guard used by both the frontend validation and the insert handler.
+  function validateMootCourtTeamSize(eventName, participants) {
+    if(!isMootCourtName(eventName)) return { valid:true };
+    const count = Array.isArray(participants) ? participants.length : 0;
+    if(count !== MOOT_COURT_TEAM_SIZE) return { valid:false, error:'MOOT_COURT_TEAM_SIZE', message:mootCourtTeamSizeMessage(count) };
+    return { valid:true };
+  }
 
   // ─── PRICING LOGIC ──────────────────────────────────────────────────
   function getTotalAmount() {
@@ -1227,6 +1242,8 @@
           <p><strong>Status:</strong> PENDING (awaiting manual payment verification)</p>
         `;
         localStorage.removeItem('pending_registration'); localStorage.removeItem('payment_initiated'); sessionStorage.removeItem('returning_from_payment'); localStorage.removeItem('deplomat_registration_state'); sessionStorage.removeItem('deplomat_registration_state_backup');
+      } else if(result.error === 'MOOT_COURT_TEAM_SIZE') {
+        paymentState.current = PAYMENT_STATES.ERROR; updateModalUI(PAYMENT_STATES.ERROR, { message:result.message || '⚖️ MOOT COURT requires exactly 2 participants per team.' }); paymentState.isSubmitting = false;
       } else if(result.error === 'DUPLICATE_UTR') {
         // Only reachable when a UTR was read (null UTR rows cannot collide with the
         // UNIQUE constraint), so paymentState.utr is populated here.
@@ -1241,6 +1258,10 @@
   }
 
   async function executeRegistrationInsert(registrationData) {
+    // Backend guard: MOOT COURT rows must contain exactly 2 participants before
+    // any record is written to public.registrations (frontend checks can be bypassed).
+    const sizeCheck = validateMootCourtTeamSize(registrationData ? registrationData.event_name : '', registrationData ? registrationData.participants : null);
+    if(!sizeCheck.valid) return { success:false, error:sizeCheck.error, message:sizeCheck.message };
     if(supabaseClient) {
       try {
         const { data, error } = await supabaseClient.from('registrations').insert([registrationData]).select();
@@ -1290,6 +1311,7 @@
     }
     if(step===2) {
       const entries = playersContainer.querySelectorAll('.player-entry');
+      if(isMootCourtEvent(selectedEvent) && entries.length !== MOOT_COURT_TEAM_SIZE) { alert(mootCourtTeamSizeMessage(entries.length)); return false; }
       if(entries.length < currentMin) { alert(`This event requires at least ${currentMin} participant(s).`); return false; }
       if(entries.length > currentMax) { alert(`Maximum ${currentMax} participants allowed.`); return false; }
       const leader = entries[0]; const lName = leader.querySelector('.player-name'); const lEmail = leader.querySelector('.player-email'); const lPhone = leader.querySelector('.player-phone');
@@ -1318,7 +1340,7 @@
     const index = count + 1;
     const div = document.createElement('div'); div.className = 'player-entry';
     const isFirst = count === 0;
-    let headerHtml = `<div class="player-header"><span class="player-number ${isFirst?'leader':''}">${isFirst?'👑 Team Leader':`Player ${index}`}${isFirst?'<span class="leader-badge">Leader</span>':''}</span>${!isFirst?`<button type="button" class="remove-btn" title="Remove player">✕</button>`:''}</div>`;
+    let headerHtml = `<div class="player-header"><span class="player-number ${isFirst?'leader':''}">${isFirst?'👑 Team Leader':`Player ${index}`}${isFirst?'<span class="leader-badge">Leader</span>':''}</span>${!isFirst && !isMootCourtEvent(selectedEvent)?`<button type="button" class="remove-btn" title="Remove player">✕</button>`:''}</div>`;
     let fieldsHtml = '';
     if(isFirst) {
       fieldsHtml = `<div class="player-fields leader-fields">
@@ -1331,7 +1353,8 @@
     }
     div.innerHTML = headerHtml + fieldsHtml;
     if(!isFirst) {
-      div.querySelector('.remove-btn').addEventListener('click', () => {
+      const removeBtn = div.querySelector('.remove-btn');
+      if(removeBtn) removeBtn.addEventListener('click', () => {
         if(playersContainer.children.length > currentMin) { div.remove(); updatePlayerNumbers(); updateAddButtonState(); saveRegistrationState(); refreshPricingUI(); }
         else { alert(`Minimum ${currentMin} participant(s) required.`); }
       });
@@ -1349,13 +1372,16 @@
         else { numSpan.textContent = `Player ${index+1}`; numSpan.className = 'player-number'; }
       }
       const removeBtn = entry.querySelector('.remove-btn');
-      if(removeBtn) removeBtn.style.display = isFirst ? 'none' : 'block';
+      if(removeBtn) removeBtn.style.display = (isFirst || isMootCourtEvent(selectedEvent)) ? 'none' : 'block';
     });
     updateAddButtonState();
   }
   function updateAddButtonState() {
     const count = playersContainer.children.length;
-    if(count >= currentMax) { addPlayerBtn.disabled = true; addPlayerBtn.textContent = `✓ Max ${currentMax} players reached`; }
+    if(count >= currentMax) {
+      addPlayerBtn.disabled = true;
+      addPlayerBtn.textContent = isMootCourtEvent(selectedEvent) ? `⚖️ Exactly ${MOOT_COURT_TEAM_SIZE} participants required` : `✓ Max ${currentMax} players reached`;
+    }
     else { addPlayerBtn.disabled = false; addPlayerBtn.textContent = '+ Add Player'; }
   }
   function updateEventLimitInfo() {
@@ -1365,7 +1391,8 @@
     currentMin = limits.min; currentMax = limits.max;
     let catLabel = limits.category === 'pu' ? '🔵 PU Only' : limits.category === 'ug' ? '🟣 UG Only' : '🟢 UG + PU';
     if(limits.min === limits.max) {
-      limitText.innerHTML = `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#C09A52;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)`;
+      const exactNote = isMootCourtEvent(limits) ? `<br>⚖️ Each team must consist of exactly two participants. Teams with fewer or more than two participants are not permitted.` : '';
+      limitText.innerHTML = `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#C09A52;font-size:0.7rem;">${catLabel}</span><br>📌 Fixed team size: <strong>${limits.min}</strong> participants (including Team Leader)${exactNote}`;
     } else {
       limitText.innerHTML = `<strong>${limits.name}</strong> · ${limits.sub} &nbsp; <span style="color:#C09A52;font-size:0.7rem;">${catLabel}</span><br>📌 Team size: <strong>${limits.min} – ${limits.max}</strong> participants allowed (including Team Leader)`;
     }
