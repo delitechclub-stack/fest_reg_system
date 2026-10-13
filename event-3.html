@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="assets/js/reg-gate.js"></script>
+<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOOT COURT · DEPLOMAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --font-royal: 'Cormorant SC', serif;
+      --font-display: 'Cinzel', serif;
+      --font-body: 'Montserrat', 'Segoe UI', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #041217;
+      background-image:
+        radial-gradient(circle at 15% 25%, rgba(7, 135, 162, 0.06) 0%, transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(169, 132, 69, 0.03) 0%, transparent 40%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.008) 0px, rgba(255,255,255,0.008) 2px, transparent 2px, transparent 6px);
+      font-family: var(--font-body);
+      color: #F2F6F7;
+      padding: 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-wrapper {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .glass-card {
+      background: rgba(14, 24, 44, 0.7);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 2.8rem;
+      box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+      padding: 2.6rem 2.8rem;
+      transition: all 0.2s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(169, 132, 69, 0.08);
+    }
+
+    .space-y-6>*+* {
+      margin-top: 2rem;
+    }
+    .space-y-4>*+* {
+      margin-top: 1.2rem;
+    }
+    .space-y-3>*+* {
+      margin-top: 0.9rem;
+    }
+
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .flex-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(169, 132, 69, 0.06);
+      border: 1px solid rgba(169, 132, 69, 0.12);
+      border-radius: 100px;
+      padding: 0.35rem 1.2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #C09A52;
+      backdrop-filter: blur(2px);
+      width: fit-content;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 10vw, 5.6rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #C09A52 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0.2rem 0 0.1rem 0;
+    }
+
+    .subhead {
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: #91A5AC;
+      letter-spacing: 0.02em;
+      border-left: 3px solid #C09A52;
+      padding-left: 1rem;
+      opacity: 0.9;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .subhead .chip {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 60px;
+      padding: 0.2rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #b0d0f5;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .divider-light {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(169, 132, 69, 0.1), transparent 80%);
+      margin: 1.6rem 0 1rem 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #d0e5ff;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-head .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(169, 132, 69, 0.1), transparent);
+    }
+
+    .about-box {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border-left: 3px solid #C09A52;
+      background: rgba(169, 132, 69, 0.01);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .about-box p {
+      color: #91A5AC;
+      line-height: 1.7;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .about-box strong {
+      color: #e8f0ff;
+    }
+
+    /* ─── EVENT DETAILS ─── */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .detail-box {
+      padding: 0.9rem 1.2rem;
+      border-left: 3px solid #C09A52;
+      background: rgba(169, 132, 69, 0.015);
+      border-radius: 0 12px 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .detail-box .detail-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #C09A52;
+    }
+
+    .detail-box .detail-value {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #F2F6F7;
+      line-height: 1.5;
+      overflow-wrap: break-word;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      padding: 0.6rem 1rem 0.6rem 1.2rem;
+      background: rgba(169, 132, 69, 0.015);
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: all 0.15s;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #dce9ff;
+    }
+
+    .rule-item:hover {
+      background: rgba(169, 132, 69, 0.02);
+      border-color: rgba(169, 132, 69, 0.08);
+      transform: translateX(4px);
+    }
+
+    .rule-item .num {
+      font-weight: 600;
+      color: #C09A52;
+      min-width: 1.8rem;
+      font-size: 0.8rem;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.8rem 0 0.4rem 0;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 60px;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #F2F6F7;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .action-btn:hover {
+      background: rgba(169, 132, 69, 0.03);
+      border-color: rgba(169, 132, 69, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -10px rgba(0, 150, 255, 0.15);
+    }
+
+    .action-btn .icon {
+      font-size: 1.2rem;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #91A5AC;
+      text-decoration: none;
+      font-weight: 450;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s;
+      padding: 0.4rem 0;
+    }
+
+    .back-home:hover {
+      color: #C09A52;
+      border-bottom-color: #C09A52;
+    }
+
+    .section-spacer {
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .rules-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 0.8rem;
+      }
+      .glass-card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 2rem;
+      }
+      .flex-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .rule-item {
+        border-radius: 20px;
+        padding: 0.7rem 1rem;
+      }
+      .grid-2col {
+        grid-template-columns: 1fr;
+      }
+      .action-btn {
+        white-space: normal;
+      }
+      .about-box {
+        padding: 0.8rem 1rem;
+      }
+      .detail-box {
+        padding: 0.8rem 1rem;
+      }
+    }
+    /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top) ─── */
+    .depaul-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      margin: 0 auto 18px auto;
+      pointer-events: none;
+      flex: 0 0 100%;
+    }
+    .depaul-brand img {
+      width: clamp(30px, 4.5vw, 44px);
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.7));
+    }
+    .depaul-brand span {
+      font-family: var(--font-display);
+      font-size: clamp(0.6rem, 1.4vw, 0.85rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(232, 217, 184, 0.7);
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
+      white-space: nowrap;
+    }
+    @media (max-width: 640px) {
+      .depaul-brand { gap: 0.4rem; margin-bottom: 14px; }
+      .depaul-brand img { width: 24px; }
+      .depaul-brand span { font-size: 0.55rem; letter-spacing: 0.12em; }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/typography.css" />
+</head>
+<body>
+  <div class="event-wrapper">
+  <!-- De Paul College Mysore branding (institutional) -->
+  <div class="depaul-brand">
+    <img src="assets/img/depaul-logo.png" alt="De Paul College Mysore logo" loading="lazy" />
+    <span>DE PAUL COLLEGE MYSORE</span>
+  </div>
+    <div class="glass-card">
+
+      <!-- HEADER -->
+      <div class="flex-row">
+        <div class="flex-col">
+          <span class="tag">⚖️ DEPLOMAT · MOOT COURT</span>
+          <h1>MOOT COURT</h1>
+          <div class="subhead">
+            <span>⚖️ .moot court · debate &amp; advocacy</span>
+            <span class="chip">2–3 members / team</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT EVENT -->
+      <div style="margin-top: 2rem;">
+        <div class="section-head">
+          <span>📄 About Event</span>
+          <span class="line"></span>
+        </div>
+        <div class="about-box">
+          <p><strong>Moot Court</strong> — a prestigious moot court competition where aspiring advocates argue complex legal cases before a panel of esteemed judges. Sharpen your advocacy skills, present compelling arguments, and experience the thrill of the courtroom.</p>
+        </div>
+      </div>
+
+      <!-- RULES -->
+      <div style="margin-top: 2rem;">
+        <div class="section-head">
+          <span>📋 Rules &amp; Regulations</span>
+          <span class="line"></span>
+        </div>
+        <div class="rules-grid" style="margin-top: 0.8rem;">
+          <div class="rule-item"><span class="num">❶</span> Teams of 2 members per side (prosecution/defense)</div>
+          <div class="rule-item"><span class="num">❷</span> Each team will receive the case materials 48 hours in advance</div>
+          <div class="rule-item"><span class="num">❸</span> Oral submissions limited to 15 minutes per side</div>
+          <div class="rule-item"><span class="num">❹</span> Use of electronic devices during proceedings is prohibited</div>
+          <div class="rule-item"><span class="num">❺</span> All participants must dress in formal court attire</div>
+          <div class="rule-item"><span class="num">❻</span> Judgement will be based on legal reasoning, presentation, and courtroom etiquette</div>
+          <div class="rule-item"><span class="num">❼</span> Any form of plagiarism in written submissions will lead to disqualification</div>
+          <div class="rule-item"><span class="num">❽</span> The decision of the judging panel shall be final and binding</div>
+          <div class="rule-item"><span class="num">💰</span> <strong>Registration Fee:</strong> ₹250 per participant</div>
+        </div>
+      </div>
+
+      <!-- EVENT DETAILS -->
+      <div style="margin-top: 2rem;">
+        <div class="section-head">
+          <span>📅 Event Details</span>
+          <span class="line"></span>
+        </div>
+        <div class="details-grid">
+          <div class="detail-box">
+            <span class="detail-label">Date</span>
+            <span class="detail-value">30th &amp; 31st October 2026</span>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Team Size</span>
+            <span class="detail-value">2–3 members per team</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div style="margin-top: 2rem;">
+        <div class="grid-2col">
+          <!-- ORIGINAL (restore when registration reopens): registration.html?event=3 -->
+          <a href="registration.html?event=3" class="action-btn">
+            <span class="icon">📝</span> Register
+          </a>
+          <a href="co.html?event=3" class="action-btn">
+            <span class="icon">📞</span> Connect Coordinator
+          </a>
+          <a href="reg-status.html" class="action-btn">
+            <span class="icon">📊</span> Check Registration
+          </a>
+        </div>
+      </div>
+
+      <!-- DIVIDER & BACK -->
+      <div class="divider-light"></div>
+      <div style="display: flex; justify-content: flex-start;">
+        <a href="index.html#explore" class="back-home">← Back to Explore</a>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
