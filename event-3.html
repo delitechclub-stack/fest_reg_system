@@ -336,6 +336,107 @@
         padding: 0.8rem 1rem;
       }
     }
+    /* ─── EVENT CONTENT · description, judging criteria table ─── */
+    .about-box p + p {
+      margin-top: 0.8rem;
+    }
+
+    .content-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 4.5vw, 2.1rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 0%, #C09A52 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .meta-line {
+      color: #91A5AC;
+      font-size: 0.97rem;
+      line-height: 1.65;
+    }
+
+    .meta-line strong {
+      color: #C09A52;
+      font-weight: 600;
+    }
+
+    .topic-line {
+      color: #dce9ff;
+      font-style: italic;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      background: rgba(169, 132, 69, 0.015);
+    }
+
+    .criteria-table {
+      width: 100%;
+      min-width: 320px;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .criteria-table th,
+    .criteria-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    .criteria-table th {
+      background: rgba(169, 132, 69, 0.06);
+      color: #C09A52;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .criteria-table td {
+      color: #dce9ff;
+      overflow-wrap: break-word;
+    }
+
+    .criteria-table th:last-child,
+    .criteria-table td:last-child {
+      text-align: right;
+      white-space: nowrap;
+      width: 90px;
+    }
+
+    .criteria-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .criteria-table .total-row td {
+      color: #e8f0ff;
+      font-weight: 700;
+      background: rgba(169, 132, 69, 0.05);
+      border-top: 1px solid rgba(169, 132, 69, 0.25);
+    }
+
+    @media (max-width: 640px) {
+      .criteria-table th,
+      .criteria-table td {
+        padding: 0.55rem 0.6rem;
+        font-size: 0.85rem;
+      }
+      .criteria-table th:last-child,
+      .criteria-table td:last-child {
+        width: 64px;
+      }
+    }
+
     /* ─── DE PAUL COLLEGE MYSORE · institutional branding (top) ─── */
     .depaul-brand {
       display: flex;
@@ -391,14 +492,45 @@
         </div>
       </div>
 
-      <!-- ABOUT EVENT -->
+      <!-- EVENT DESCRIPTION -->
       <div style="margin-top: 2rem;">
         <div class="section-head">
-          <span>📄 About Event</span>
+          <span>📄 Event Description</span>
           <span class="line"></span>
         </div>
         <div class="about-box">
-          <p><strong>Moot Court</strong> — a prestigious moot court competition where aspiring advocates argue complex legal cases before a panel of esteemed judges. Sharpen your advocacy skills, present compelling arguments, and experience the thrill of the courtroom.</p>
+          <p class="content-title">DEBATE COMPETITION – AI &amp; LAW</p>
+          <p class="meta-line"><strong>Organised by:</strong> Moot Court Society, De Paul Law College</p>
+          <p class="meta-line"><strong>Debate Topic:</strong> <span class="topic-line">“Role of Judiciary in Protecting, Preserving and Promoting Constitutional Objectives and Values in the Era of AI”</span></p>
+          <p>The Debate Competition will provide participants with an opportunity to present and defend legal arguments on the given topic. The competition will be conducted in one round, with two participants forming a team. Participants must prepare both FOR and AGAINST the motion, as the side will be allotted by the organisers on the day of the competition. The winner will be decided based on the marks awarded by the judging panel.</p>
+        </div>
+      </div>
+
+      <!-- JUDGING CRITERIA -->
+      <div style="margin-top: 2rem;">
+        <div class="section-head">
+          <span>⚖️ Judging Criteria</span>
+          <span class="line"></span>
+        </div>
+        <div class="table-wrap">
+          <table class="criteria-table">
+            <thead>
+              <tr>
+                <th scope="col">Criteria</th>
+                <th scope="col">Marks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Knowledge of Law &amp; Legal Concepts</td><td>20</td></tr>
+              <tr><td>Constitutional &amp; Legal Reasoning</td><td>20</td></tr>
+              <tr><td>Strength and Relevance of Arguments</td><td>20</td></tr>
+              <tr><td>Rebuttal &amp; Counter-Arguments</td><td>15</td></tr>
+              <tr><td>Use of Legal Authorities / Cases / Examples</td><td>10</td></tr>
+              <tr><td>Clarity, Communication &amp; Presentation</td><td>10</td></tr>
+              <tr><td>Time Management &amp; Overall Impact</td><td>5</td></tr>
+              <tr class="total-row"><td>Total</td><td>100</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -409,15 +541,16 @@
           <span class="line"></span>
         </div>
         <div class="rules-grid" style="margin-top: 0.8rem;">
-          <div class="rule-item"><span class="num">❶</span> <strong>Team Size:</strong> Each team must consist of exactly two participants. Teams with fewer or more than two participants are not permitted.</div>
-          <div class="rule-item"><span class="num">❷</span> Each team will receive the case materials 48 hours in advance</div>
-          <div class="rule-item"><span class="num">❸</span> Oral submissions limited to 15 minutes per side</div>
-          <div class="rule-item"><span class="num">❹</span> Use of electronic devices during proceedings is prohibited</div>
-          <div class="rule-item"><span class="num">❺</span> All participants must dress in formal court attire</div>
-          <div class="rule-item"><span class="num">❻</span> Judgement will be based on legal reasoning, presentation, and courtroom etiquette</div>
-          <div class="rule-item"><span class="num">❼</span> Any form of plagiarism in written submissions will lead to disqualification</div>
-          <div class="rule-item"><span class="num">❽</span> The decision of the judging panel shall be final and binding</div>
-          <div class="rule-item"><span class="num">💰</span> <strong>Registration Fee:</strong> ₹250 per participant</div>
+          <div class="rule-item"><span class="num">❶</span> Each team shall consist of two participants. Teams may be homogeneous or heterogeneous.</div>
+          <div class="rule-item"><span class="num">❷</span> The competition will consist of one round only.</div>
+          <div class="rule-item"><span class="num">❸</span> Participants must prepare both FOR and AGAINST the motion. The side will be allotted by the organisers on the day of the competition.</div>
+          <div class="rule-item"><span class="num">❹</span> Both team members must actively participate and adhere to the speaking time announced by the organisers.</div>
+          <div class="rule-item"><span class="num">❺</span> Arguments must be relevant to the topic and should demonstrate sound legal reasoning, supported by relevant laws, constitutional provisions, case laws, judicial decisions or credible examples wherever appropriate.</div>
+          <div class="rule-item"><span class="num">❻</span> Participants must maintain professional decorum. Personal remarks, offensive language, disrespectful comments or attacks against the opposing team are strictly prohibited.</div>
+          <div class="rule-item"><span class="num">❼</span> Exceeding the allotted time may result in deduction of marks.</div>
+          <div class="rule-item"><span class="num">❽</span> Participants may use notes or references, but must demonstrate independent understanding and legal reasoning.</div>
+          <div class="rule-item"><span class="num">❾</span> Plagiarism or deliberate misrepresentation of legal authorities may lead to disqualification. Participants are responsible for the accuracy of information and sources used.</div>
+          <div class="rule-item"><span class="num">❿</span> The decision of the judging panel shall be final and binding. The organisers reserve the right to take appropriate decisions on matters not covered by these rules.</div>
         </div>
       </div>
 
@@ -431,6 +564,10 @@
           <div class="detail-box">
             <span class="detail-label">Date</span>
             <span class="detail-value">30th &amp; 31st October 2026</span>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Format</span>
+            <span class="detail-value">One Round | Team of Two</span>
           </div>
           <div class="detail-box">
             <span class="detail-label">Team Size</span>
