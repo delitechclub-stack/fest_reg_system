@@ -1170,7 +1170,7 @@
                 }
             },
             {
-                id: 7, name: 'TIDES OF RYTHM', sub: 'Group Dance', min: 6, max: 12, category: 'both', pricing: {
+                id: 7, name: 'TIDES OF RYTHM', sub: 'Group Dance', min: 3, max: 7, category: 'both', pricing: {
                     type: 'perParticipant',
                     amount: 150
                 }
@@ -1292,6 +1292,43 @@
             const count = Array.isArray(participants) ? participants.length : 0;
             if (count !== MOOT_COURT_TEAM_SIZE) {
                 return { valid: false, error: 'MOOT_COURT_TEAM_SIZE', message: mootCourtTeamSizeMessage(count) };
+            }
+            return { valid: true };
+        }
+
+        // ─── TIDES OF RYTHM (GROUP DANCE) · 3–7 PARTICIPANTS INCLUDING LEADER ─
+        const GROUP_DANCE_MIN = 3;
+        const GROUP_DANCE_MAX = 7;
+
+        function isGroupDanceEvent(ev) {
+            return !!ev && ev.id === 7 && String(ev.name || '').toUpperCase() === 'TIDES OF RYTHM';
+        }
+
+        function isGroupDanceName(name) {
+            return String(name || '').toUpperCase() === 'TIDES OF RYTHM';
+        }
+
+        function groupDanceTeamSizeMessage(count) {
+            return `💃 TIDES OF RYTHM (Group Dance) requires 3–7 participants per team, including the Team Leader. You entered ${count} participant${count === 1 ? '' : 's'}. Teams with fewer than 3 or more than 7 participants cannot be registered.`;
+        }
+
+        function groupDanceDuplicateLeaderMessage() {
+            return '💃 TIDES OF RYTHM (Group Dance): the Team Leader appears more than once in the participant list, so the participant count is wrong. Each participant (including the Team Leader) must be listed exactly once.';
+        }
+
+        // Shared guard used by both the frontend validation and the insert handler.
+        // The leader is ONE entry of the participants array — never counted twice.
+        function validateGroupDanceTeamSize(eventName, participants) {
+            if (!isGroupDanceName(eventName)) return { valid: true };
+            const list = Array.isArray(participants) ? participants : [];
+            const count = list.length;
+            if (count < GROUP_DANCE_MIN || count > GROUP_DANCE_MAX) {
+                return { valid: false, error: 'GROUP_DANCE_TEAM_SIZE', message: groupDanceTeamSizeMessage(count) };
+            }
+            const leaderFlags = list.filter(p => p && p.isLeader === true).length;
+            if (leaderFlags > 1) return { valid: false, error: 'GROUP_DANCE_DUPLICATE_LEADER', message: groupDanceDuplicateLeaderMessage() };
+            if (leaderFlags === 1 && list[0] && list[0].isLeader !== true) {
+                return { valid: false, error: 'GROUP_DANCE_DUPLICATE_LEADER', message: groupDanceDuplicateLeaderMessage() };
             }
             return { valid: true };
         }
@@ -1420,6 +1457,9 @@
             if (p.type === 'fixed') {
                 participantNotice.innerHTML =
                     `Enter all participants for this event. ⚡ Registration fee: ${strong(`₹${p.amount}`)}`;
+            } else if (p.type === 'perParticipant' && isGroupDanceEvent(selectedEvent)) {
+                participantNotice.innerHTML =
+                    `Team size <strong style="color:#65d8ff;">3–7 participants</strong> (Team Leader included in the count). ⚡ Fee: ${strong(`₹${p.amount}`)} <strong style="color:#65d8ff;">per participant</strong> — total = participants × ₹${p.amount} (3 = ₹450 · 4 = ₹600 · 5 = ₹750 · 6 = ₹900 · 7 = ₹1,050)`;
             } else if (p.type === 'perParticipant') {
                 participantNotice.innerHTML =
                     `Enter all participants for this event. ⚡ Fee per participant: ${strong(`₹${p.amount}`)}`;
@@ -1731,6 +1771,14 @@
                 const sizeCheck = validateMootCourtTeamSize(registrationData.event_name, registrationData.participants);
                 if (!sizeCheck.valid) {
                     throw new Error(sizeCheck.message);
+                }
+
+                // Backend guard: TIDES OF RYTHM rows must contain 3–7 participants
+                // (leader counted once) before any row is inserted into
+                // public.registrations.
+                const gdCheck = validateGroupDanceTeamSize(registrationData.event_name, registrationData.participants);
+                if (!gdCheck.valid) {
+                    throw new Error(gdCheck.message);
                 }
 
                 let success = false;

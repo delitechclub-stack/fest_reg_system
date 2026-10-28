@@ -381,7 +381,7 @@
     { id:4, name:"THE SIREN'S ACT", sub:"Reels Making", min:1, max:3, category:'both', pricing:{ type:'fixed', amount:300 } },
     { id:5, name:"ECHOS OF ATLANTIS", sub:"Solo Singing", min:1, max:1, category:'both', pricing:{ type:'fixed', amount:250 } },
     { id:6, name:"THE MERMAID'S WALTZ", sub:"Solo Dance", min:1, max:1, category:'both', pricing:{ type:'fixed', amount:250 } },
-    { id:7, name:"TIDES OF RYTHM", sub:"Group Dance", min:6, max:12, category:'both', pricing:{ type:'perParticipant', amount:150 } },
+    { id:7, name:"TIDES OF RYTHM", sub:"Group Dance", min:3, max:7, category:'both', pricing:{ type:'perParticipant', amount:150 } },
     { id:8, name:"RUNWAY OF REALMS", sub:"Rampwalk", min:10, max:12, category:'both', pricing:{ type:'category', PU:1500, UG:2000 } },
     { id:9, name:"THE KRAKEN'S PITCH", sub:"Cricket (PU/UG Boys)", min:7, max:10, category:'both', pricing:{ type:'category', UG:2500, PU:2000 } },
     { id:10, name:"POSEIDON'S CUP", sub:"Football (P.U Boys)", min:7, max:10, category:'pu', pricing:{ type:'fixed', amount:2000 } },
@@ -508,6 +508,32 @@
     return { valid:true };
   }
 
+  // ─── TIDES OF RYTHM (GROUP DANCE) · 3–7 PARTICIPANTS INCLUDING LEADER ──
+  const GROUP_DANCE_MIN = 3;
+  const GROUP_DANCE_MAX = 7;
+  function isGroupDanceEvent(ev) { return !!ev && ev.id === 7 && String(ev.name || '').toUpperCase() === 'TIDES OF RYTHM'; }
+  function isGroupDanceName(name) { return String(name || '').toUpperCase() === 'TIDES OF RYTHM'; }
+  function groupDanceTeamSizeMessage(count) {
+    return `💃 TIDES OF RYTHM (Group Dance) requires 3–7 participants per team, including the Team Leader. You entered ${count} participant${count === 1 ? '' : 's'}. Teams with fewer than 3 or more than 7 participants cannot be registered.`;
+  }
+  function groupDanceDuplicateLeaderMessage() {
+    return '💃 TIDES OF RYTHM (Group Dance): the Team Leader appears more than once in the participant list, so the participant count is wrong. Each participant (including the Team Leader) must be listed exactly once — please re-check your team entries.';
+  }
+  // Shared guard used by both the frontend validation and the insert handler.
+  // Counting convention: the leader is ONE entry of the participants array
+  // (participants[0], isLeader:true) — never counted a second time.
+  function validateGroupDanceTeamSize(eventName, participants) {
+    if(!isGroupDanceName(eventName)) return { valid:true };
+    const list = Array.isArray(participants) ? participants : [];
+    const count = list.length;
+    if(count < GROUP_DANCE_MIN || count > GROUP_DANCE_MAX) return { valid:false, error:'GROUP_DANCE_TEAM_SIZE', message:groupDanceTeamSizeMessage(count) };
+    // Reject counts inflated by a double-counted team leader.
+    const leaderFlags = list.filter(p => p && p.isLeader === true).length;
+    if(leaderFlags > 1) return { valid:false, error:'GROUP_DANCE_DUPLICATE_LEADER', message:groupDanceDuplicateLeaderMessage() };
+    if(leaderFlags === 1 && list[0] && list[0].isLeader !== true) return { valid:false, error:'GROUP_DANCE_DUPLICATE_LEADER', message:groupDanceDuplicateLeaderMessage() };
+    return { valid:true };
+  }
+
   // ─── PRICING LOGIC ──────────────────────────────────────────────────
   function getTotalAmount() {
     const count = playersContainer.children.length;
@@ -546,6 +572,7 @@
     const p = selectedEvent.pricing;
     const strong = (txt) => `<strong style="color:#C09A52;">${txt}</strong>`;
     if(p.type === 'fixed') step2FeeText.innerHTML = `Enter all participants for this event. ⚡ Registration fee: ${strong(`₹${p.amount}`)}`;
+    else if(p.type === 'perParticipant' && isGroupDanceEvent(selectedEvent)) step2FeeText.innerHTML = `Team size <strong style="color:#C09A52;">3–7 participants</strong> (Team Leader included in the count). ⚡ Fee: ${strong(`₹${p.amount}`)} <strong style="color:#C09A52;">per participant</strong> — total = participants × ₹${p.amount} (3 = ₹450 · 4 = ₹600 · 5 = ₹750 · 6 = ₹900 · 7 = ₹1,050)`;
     else if(p.type === 'perParticipant') step2FeeText.innerHTML = `Enter all participants for this event. ⚡ Fee per participant: ${strong(`₹${p.amount}`)}`;
     else if(p.type === 'category') { const amt = p[getSelectedCategoryForPricing()]; step2FeeText.innerHTML = `Enter all participants for this event. ⚡ Registration fee: ${strong(amt ? `₹${amt}` : '—')}`; }
   }
@@ -1244,6 +1271,10 @@
         localStorage.removeItem('pending_registration'); localStorage.removeItem('payment_initiated'); sessionStorage.removeItem('returning_from_payment'); localStorage.removeItem('deplomat_registration_state'); sessionStorage.removeItem('deplomat_registration_state_backup');
       } else if(result.error === 'MOOT_COURT_TEAM_SIZE') {
         paymentState.current = PAYMENT_STATES.ERROR; updateModalUI(PAYMENT_STATES.ERROR, { message:result.message || '⚖️ MOOT COURT requires exactly 2 participants per team.' }); paymentState.isSubmitting = false;
+      } else if(result.error === 'GROUP_DANCE_TEAM_SIZE') {
+        paymentState.current = PAYMENT_STATES.ERROR; updateModalUI(PAYMENT_STATES.ERROR, { message:result.message || groupDanceTeamSizeMessage(0) }); paymentState.isSubmitting = false;
+      } else if(result.error === 'GROUP_DANCE_DUPLICATE_LEADER') {
+        paymentState.current = PAYMENT_STATES.ERROR; updateModalUI(PAYMENT_STATES.ERROR, { message:result.message || groupDanceDuplicateLeaderMessage() }); paymentState.isSubmitting = false;
       } else if(result.error === 'DUPLICATE_UTR') {
         // Only reachable when a UTR was read (null UTR rows cannot collide with the
         // UNIQUE constraint), so paymentState.utr is populated here.
@@ -1262,6 +1293,10 @@
     // any record is written to public.registrations (frontend checks can be bypassed).
     const sizeCheck = validateMootCourtTeamSize(registrationData ? registrationData.event_name : '', registrationData ? registrationData.participants : null);
     if(!sizeCheck.valid) return { success:false, error:sizeCheck.error, message:sizeCheck.message };
+    // Backend guard: TIDES OF RYTHM rows must contain 3–7 participants (leader
+    // included) before any record is written to public.registrations.
+    const gdCheck = validateGroupDanceTeamSize(registrationData ? registrationData.event_name : '', registrationData ? registrationData.participants : null);
+    if(!gdCheck.valid) return { success:false, error:gdCheck.error, message:gdCheck.message };
     if(supabaseClient) {
       try {
         const { data, error } = await supabaseClient.from('registrations').insert([registrationData]).select();
@@ -1312,6 +1347,7 @@
     if(step===2) {
       const entries = playersContainer.querySelectorAll('.player-entry');
       if(isMootCourtEvent(selectedEvent) && entries.length !== MOOT_COURT_TEAM_SIZE) { alert(mootCourtTeamSizeMessage(entries.length)); return false; }
+      if(isGroupDanceEvent(selectedEvent) && (entries.length < GROUP_DANCE_MIN || entries.length > GROUP_DANCE_MAX)) { alert(groupDanceTeamSizeMessage(entries.length)); return false; }
       if(entries.length < currentMin) { alert(`This event requires at least ${currentMin} participant(s).`); return false; }
       if(entries.length > currentMax) { alert(`Maximum ${currentMax} participants allowed.`); return false; }
       const leader = entries[0]; const lName = leader.querySelector('.player-name'); const lEmail = leader.querySelector('.player-email'); const lPhone = leader.querySelector('.player-phone');
